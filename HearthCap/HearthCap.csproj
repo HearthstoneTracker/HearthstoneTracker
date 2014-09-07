@@ -987,8 +987,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
@@ -1003,6 +1002,9 @@ xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64.dll" "$(TargetDir)"
 xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64Svc.exe" "$(TargetDir)"
 xcopy /s /y "$(SolutionDir)lib\D3DX9_43.dll" "$(TargetDir)"
 xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="$(SolutionDir)\.build\MSBuild.Community.Tasks.Targets" />
