@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/HearthstoneTracker/HearthstoneTracker.png?label=ready&title=Ready)](https://waffle.io/HearthstoneTracker/HearthstoneTracker)
 # HearthstoneTracker
 
 Issue Tracker for HearthstoneTracker &amp; HearthstoneTracker.com
