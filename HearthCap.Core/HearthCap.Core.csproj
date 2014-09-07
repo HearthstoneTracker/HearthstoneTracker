@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A35DBB0-2892-4257-BB58-B6E383D8F408}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HearthCap.Core</RootNamespace>
+    <AssemblyName>HearthCap.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Caliburn.Micro, Version=2.0.1.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Caliburn.Micro.Core.2.0.1\lib\net45\Caliburn.Micro.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Platform">
+      <HintPath>..\packages\Caliburn.Micro.2.0.1\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="HearthCap.Logger.Interface">
+      <HintPath>..\lib\HearthCap\HearthCap.Logger.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Caliburn.Micro.2.0.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GameCapture\AutoCaptureEngine.cs" />
+    <Compile Include="GameCapture\CaptureMethod.cs" />
+    <Compile Include="GameCapture\EngineEvent.cs" />
+    <Compile Include="GameCapture\EngineEvents\CaptureEngineStarted.cs" />
+    <Compile Include="GameCapture\EngineEvents\CaptureEngineStopped.cs" />
+    <Compile Include="GameCapture\EngineEvents\WindowFound.cs" />
+    <Compile Include="GameCapture\EngineEvents\WindowMinimized.cs" />
+    <Compile Include="GameCapture\EngineEvents\WindowNotFound.cs" />
+    <Compile Include="GameCapture\EngineSwitchEventArgs.cs" />
+    <Compile Include="GameCapture\HS\Commands\RequestArenaDeckScreenshot.cs" />
+    <Compile Include="GameCapture\HS\Commands\RequestDeckScreenshot.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaDeckScreenshotTaken.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaSessionEnded.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaSessionStarted.cs" />
+    <Compile Include="GameCapture\HS\Events\DeckScreenshotTaken.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaDrafting.cs" />
+    <Compile Include="GameCapture\HS\Commands\ResetCurrentGame.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaHeroDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaLossesDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\ArenaWinsDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\CoinDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\DeckDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\GameEnded.cs" />
+    <Compile Include="GameCapture\HS\Events\GameEvent.cs" />
+    <Compile Include="GameCapture\HS\Events\GameModeChanged.cs" />
+    <Compile Include="GameCapture\HS\Events\GameStarted.cs" />
+    <Compile Include="GameCapture\HS\Events\HeroDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\NewRound.cs" />
+    <Compile Include="GameCapture\HS\Events\OpponentHeroDetected.cs" />
+    <Compile Include="GameCapture\HS\Events\VictoryDetected.cs" />
+    <Compile Include="GameCapture\HS\HSImageScanner.cs" />
+    <Compile Include="GameCapture\HS\IScanAreaProvider.cs" />
+    <Compile Include="GameCapture\HS\ResolutionHelper.cs" />
+    <Compile Include="GameCapture\HS\ScanArea.cs" />
+    <Compile Include="GameCapture\HS\ScanAreaProvider.cs" />
+    <Compile Include="GameCapture\HS\ScanAreas.cs" />
+    <Compile Include="GameCapture\HS\Events\WindowInBackground.cs" />
+    <Compile Include="GameCapture\ICaptureEngine.cs" />
+    <Compile Include="GameCapture\IImageScanner.cs" />
+    <Compile Include="GameCapture\EngineEvents\IncompatibleHooksFound.cs" />
+    <Compile Include="GameCapture\LogCaptureEngine.cs" />
+    <Compile Include="GameCapture\Logging\CaptureEngineLogEventArgs.cs" />
+    <Compile Include="GameCapture\Logging\CaptureEngineLogger.cs" />
+    <Compile Include="GameCapture\Logging\ICaptureEngineLogger.cs" />
+    <Compile Include="GameCapture\Logging\LogEvent.cs" />
+    <Compile Include="GameCapture\Logging\LogEvents\WindowCaptured.cs" />
+    <Compile Include="GameCapture\Logging\LogLevel.cs" />
+    <Compile Include="GameCapture\ScanAreaImageDictionary.cs" />
+    <Compile Include="GameCapture\ScanAreaDictionary.cs" />
+    <Compile Include="GameCapture\ScreenshotCaptureException.cs" />
+    <Compile Include="GameCapture\Speeds.cs" />
+    <Compile Include="GameCapture\TraceLogger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\HearthstoneHelper.cs" />
+    <Compile Include="Util\ImageUtils.cs" />
+    <Compile Include="Util\Mostly.cs" />
+    <Compile Include="Util\ScreenCapture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Capture\Capture.csproj">
+      <Project>{23178a3d-2ac0-419a-b1b6-59ca45191270}</Project>
+      <Name>Capture</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HearthCap.Data\HearthCap.Data.csproj">
+      <Project>{DE8E519E-B0AF-4605-8076-37D59651A775}</Project>
+      <Name>HearthCap.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PHash\PHash.csproj">
+      <Project>{8CB58721-58DF-4E3D-8814-682275982EBF}</Project>
+      <Name>PHash</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="data\areas.json" />
+    <EmbeddedResource Include="data\images\0.png" />
+    <EmbeddedResource Include="data\images\1.png" />
+    <EmbeddedResource Include="data\images\10.png" />
+    <EmbeddedResource Include="data\images\11.png" />
+    <EmbeddedResource Include="data\images\12.png" />
+    <EmbeddedResource Include="data\images\2.png" />
+    <EmbeddedResource Include="data\images\3.png" />
+    <EmbeddedResource Include="data\images\4.png" />
+    <EmbeddedResource Include="data\images\5.png" />
+    <EmbeddedResource Include="data\images\6.png" />
+    <EmbeddedResource Include="data\images\7.png" />
+    <EmbeddedResource Include="data\images\8.png" />
+    <EmbeddedResource Include="data\images\9.png" />
+    <EmbeddedResource Include="data\cards.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

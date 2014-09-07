@@ -1,0 +1,471 @@
+﻿<UserControl x:Class="HearthCap.Features.ArenaSessions.CurrentSessionFlyoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:model="clr-namespace:HearthCap.Features.ArenaSessions"
+             xmlns:controls="clr-namespace:HearthCap.UI.Controls"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             MinWidth="320"
+             d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance Type=model:CurrentSessionFlyoutViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />-->
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="16"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='320|Auto'}"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|320'}"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Margin="8 0 8 0"
+              Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='1|0'}"
+              Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0"
+                  Margin="0 0 0 0"
+                  Height="64"
+                  HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            Margin="0 0 8 0">
+                    <Button Margin="0 0 0 0"
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding CanTakeScreenshot}"
+                            Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
+                            Name="TakeFirstScreenshot">Take first screenshot</Button>
+                    <Button Margin="0 4 0 0"
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{Binding CanTakeScreenshot}"
+                            Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
+                            Name="TakeSecondScreenshot">Take second screenshot</Button>
+                    <Button Margin="0 0 0 0"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibility}}"
+                            Name="CancelTakeScreenshot">Wait (click to cancel)</Button>
+                </StackPanel>
+                <Button Width="100"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Margin="6 0 0 0"
+                        VerticalAlignment="Bottom"
+                        Visibility="{Binding DeckScreenshot1, Converter={StaticResource nullToCollapsed}}"
+                        Name="SaveScreenshotToDisk">Save to disk</Button>
+            </Grid>
+            <ScrollViewer Grid.Row="1"
+                          Margin="0 6 0 0"
+                          HorizontalAlignment="Stretch"
+                          HorizontalScrollBarVisibility="Disabled"
+                          UseLayoutRounding="True"
+                          SnapsToDevicePixels="True"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Image x:Name="Screenshot"
+                           IsHitTestVisible="False"
+                           UseLayoutRounding="True"
+                           SnapsToDevicePixels="True"
+                           Stretch="Uniform"
+                           StretchDirection="DownOnly"
+                           RenderOptions.BitmapScalingMode="Fant"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Source="{Binding DeckScreenshot1}" />
+                    <Separator Margin="0 8 0 8"></Separator>
+                    <Image x:Name="Screenshot2"
+                           IsHitTestVisible="False"
+                           UseLayoutRounding="True"
+                           SnapsToDevicePixels="True"
+                           Stretch="Uniform"
+                           StretchDirection="DownOnly"
+                           RenderOptions.BitmapScalingMode="Fant"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Source="{Binding DeckScreenshot2}" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='0|1'}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="1"
+                  HorizontalAlignment="Stretch"
+                  Margin="0 0 0 8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Height="32"
+                      HorizontalAlignment="Stretch"
+                      Margin="0 0 0 8">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Left">
+                        <Button Name="Delete"
+                                Width="90"
+                                Margin="4 0 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="14"
+                                           Height="14"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{StaticResource appbar_delete}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="4 0 0 0">DELETE</TextBlock>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="Merge"
+                                Width="90"
+                                Margin="4 0 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="14"
+                                           Height="14"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{StaticResource appbar_deeplink_round}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="4 0 0 0">MERGE</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <Button Name="ShowCurrent"
+                            Visibility="{Binding IsLatest, Converter={StaticResource booleanToVisibilityInverse}}"
+                            Width="120"
+                            HorizontalAlignment="Right"
+                            Margin="4 0 0 0">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       Fill="{DynamicResource BlackBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_leaderboard}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibilityInverse}}"
+                                       VerticalAlignment="Center"
+                                       Margin="4 0 0 0">SHOW LATEST</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+                <Grid Height="32"
+                      Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Left">
+                        <Button Name="ToggleScreenshot"
+                                Width="90"
+                                Margin="4 0 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="14"
+                                           Height="14"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{StaticResource appbar_camera}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibilityInverse}}"
+                                           VerticalAlignment="Center"
+                                           Margin="4 0 0 0">SHOW</TextBlock>
+                                <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibility}}"
+                                           VerticalAlignment="Center"
+                                           Margin="4 0 0 0">HIDE</TextBlock>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="AddGame"
+                                Width="90"
+                                Margin="4 0 0 0">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="14"
+                                           Height="14"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{StaticResource appbar_add}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="4 0 0 0">ADD GAME</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right">
+                        <Button Name="Save"
+                                Margin="4 0 0 0"
+                                Width="120">
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="14"
+                                           Height="14"
+                                           Fill="{DynamicResource BlackBrush}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Fill"
+                                                     Visual="{StaticResource appbar_save}" />
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                                <TextBlock VerticalAlignment="Center"
+                                           Margin="4 0 0 0">SAVE</TextBlock>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <ScrollViewer Grid.Row="2"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel Grid.IsSharedSizeScope="True"
+                            Orientation="Vertical"
+                            Margin="0 0 0 0">
+                    <HeaderedContentControl x:Name="theservers"
+                                            Header="Server:"
+                                            Tag="{Binding ElementName=Servers}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <ComboBox Name="Servers"
+                                  DisplayMemberPath="Name"
+                                  SelectedItem="{Binding SelectedServer}"></ComboBox>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="starttime"
+                                            Header="Start time:"
+                                            Tag="{Binding ElementName=Started}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <xctk:DateTimePicker Name="Started"
+                                                 Value="{Binding Started}"
+                                                 Format="Custom"
+                                                 FormatString="g"
+                                                 TimeFormat="Custom"
+                                                 TimeFormatString="t"
+                                                 ShowButtonSpinner="False"
+                                                 Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                            <Button Name="SetStartTime"
+                                    Content="Now"
+                                    Grid.Column="1"
+                                    Margin="4 0 0 0"></Button>
+                        </Grid>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="endtime"
+                                            Header="End time:"
+                                            Tag="{Binding ElementName=Ended}"
+                                            Style="{StaticResource hccFormStyle}"
+                                            Visibility="{Binding IsEnded, Converter={StaticResource booleanToVisibility}}">
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <xctk:DateTimePicker Name="Ended"
+                                                 Value="{Binding Ended}"
+                                                 Format="Custom"
+                                                 FormatString="g"
+                                                 TimeFormat="Custom"
+                                                 TimeFormatString="t"
+                                                 ShowButtonSpinner="False"
+                                                 Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                            <Button Name="SetEndTime"
+                                    Content="Now"
+                                    Grid.Column="1"
+                                    Margin="4 0 0 0"></Button>
+                        </Grid>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="hero"
+                                            Header="Your hero:"
+                                            Tag="{Binding ElementName=Heroes}"
+                                            Style="{StaticResource hccFormStyle2}">
+                        <ListBox Name="Heroes"
+                                 ItemsSource="{Binding Heroes, Mode=OneWay}"
+                                 SelectedItem="{Binding Hero}"
+                                 SelectionMode="Single"
+                                 Grid.Column="1"
+                                 Style="{StaticResource heroListBox}"></ListBox>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="wins"
+                                            Header="Wins:"
+                                            Tag="{Binding ElementName=Wins}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <controls1:NumericUpDown Name="Wins"
+                                                     Grid.Column="0"
+                                                     HorizontalAlignment="Stretch"
+                                                     HorizontalContentAlignment="Right"
+                                                     Value="{Binding Wins, Mode=TwoWay}"
+                                                     InterceptMouseWheel="True"
+                                                     TextAlignment="Right"
+                                                     InterceptArrowKeys="True"
+                                                     TrackMouseWheelWhenMouseOver="True"
+                                                     Speedup="False"
+                                                     Minimum="0"
+                                                     VerticalAlignment="Center"
+                                                     Maximum="12" />
+                            <Label Target="{Binding ElementName=Losses}"
+                                   Content="Losses:"
+                                   Grid.Column="1"></Label>
+                            <controls1:NumericUpDown Name="Losses"
+                                                     Grid.Column="2"
+                                                     VerticalAlignment="Center"
+                                                     VerticalContentAlignment="Center"
+                                                     HorizontalAlignment="Stretch"
+                                                     HorizontalContentAlignment="Right"
+                                                     Value="{Binding Losses, Mode=TwoWay}"
+                                                     InterceptMouseWheel="True"
+                                                     TextAlignment="Right"
+                                                     InterceptArrowKeys="True"
+                                                     TrackMouseWheelWhenMouseOver="True"
+                                                     Speedup="False"
+                                                     Minimum="0"
+                                                     Maximum="3" />
+                        </Grid>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="retired"
+                                            Header="Retired?"
+                                            Tag="{Binding ElementName=Retired}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="Retired"></CheckBox>
+                            <Label Target="{Binding ElementName=IsEnded}"
+                                   Content="Ended?"
+                                   Grid.Column="1"></Label>
+                            <CheckBox Name="IsEnded"
+                                      IsChecked="{Binding IsEnded, Mode=TwoWay}"
+                                      Grid.Column="2"
+                                      IsEnabled="False"></CheckBox>
+                        </Grid>
+                    </HeaderedContentControl>
+                    <Separator Margin="0 4 0 8" />
+                    <HeaderedContentControl x:Name="rewards"
+                                            Header="Gold:"
+                                            Tag="{Binding ElementName=RewardGold}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <!--<TextBox Name="RewardGold"
+                                 HorizontalContentAlignment="Right">
+                            <i:Interaction.Behaviors>
+                                <behaviors:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
+                                                                      MaxLength="3"
+                                                                      EmptyValue="0" />
+                            </i:Interaction.Behaviors>
+                        </TextBox>-->
+                            <controls1:NumericUpDown HorizontalContentAlignment="Right"
+                                                     Minimum="0"
+                                                     Name="RewardGold"
+                                                     Value="{Binding RewardGold}"
+                                                     Grid.Column="0"
+                                                     InterceptMouseWheel="True"
+                                                     TextAlignment="Right"
+                                                     InterceptArrowKeys="True"
+                                                     TrackMouseWheelWhenMouseOver="True"
+                                                     Speedup="False"
+                                                     Interval="5"></controls1:NumericUpDown>
+                            <Label Target="{Binding ElementName=RewardDust}"
+                                   Content="Dust:"
+                                   Grid.Column="1"></Label>
+                            <controls1:NumericUpDown HorizontalContentAlignment="Right"
+                                                     Value="{Binding RewardDust}"
+                                                     Minimum="0"
+                                                     Name="RewardDust"
+                                                     Grid.Column="2"
+                                                     TextAlignment="Right"
+                                                     InterceptMouseWheel="True"
+                                                     Speedup="False"
+                                                     TrackMouseWheelWhenMouseOver="True"
+                                                     InterceptArrowKeys="True"
+                                                     Interval="5"></controls1:NumericUpDown>
+                            <!--<TextBox Name="RewardDust"
+                                 Grid.Column="2"
+                                 HorizontalContentAlignment="Right">
+                            <i:Interaction.Behaviors>
+                                <behaviors:TextBoxInputRegExBehaviour RegularExpression="^\d+$"
+                                                                      MaxLength="3"
+                                                                      EmptyValue="0" />
+                            </i:Interaction.Behaviors>
+                        </TextBox>-->
+                        </Grid>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="rewardspacks"
+                                            Header="Packs:"
+                                            Tag="{Binding ElementName=RewardPacks}"
+                                            Style="{StaticResource hccFormStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="80"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <controls1:NumericUpDown Name="RewardPacks"
+                                                     Grid.Column="0"
+                                                     VerticalAlignment="Center"
+                                                     VerticalContentAlignment="Center"
+                                                     HorizontalAlignment="Stretch"
+                                                     Value="{Binding RewardPacks, Mode=TwoWay}"
+                                                     TextAlignment="Right"
+                                                     Minimum="1"
+                                                     Maximum="5" />
+                        </Grid>
+                    </HeaderedContentControl>
+                    <HeaderedContentControl x:Name="notes"
+                                            Header="Notes:"
+                                            Tag="{Binding ElementName=Notes}"
+                                            Style="{StaticResource hccFormStyle2}">
+                        <TextBox Name="Notes"
+                                 MaxLength="4000"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 Height="100"></TextBox>
+                    </HeaderedContentControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

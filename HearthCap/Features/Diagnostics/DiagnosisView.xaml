@@ -1,0 +1,138 @@
+﻿<UserControl x:Class="HearthCap.Features.Diagnostics.DiagnosisView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:diagnostics="clr-namespace:HearthCap.Features.Diagnostics"
+             xmlns:controls="clr-namespace:HearthCap.UI.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="400"
+             d:DesignWidth="600"
+             d:DataContext="{d:DesignInstance Type=diagnostics:DiagnosisViewModel, IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="400" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="33*"></RowDefinition>
+                <RowDefinition Height="34*"></RowDefinition>
+                <RowDefinition Height="33*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image x:Name="Screenshot"
+                   Source="{Binding Screenshot}"
+                   Margin="0"
+                   Grid.Column="0"
+                   Grid.Row="0" />
+            <ListView Name="LogMessages"
+                      controls:ListViewBehavior.ScrollOnNewItem="True"
+                      Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Level}"></TextBlock>
+                            <TextBlock Text=":"></TextBlock>
+                            <TextBlock Text="{Binding Message}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView Name="EngineEvents"
+                      controls:ListViewBehavior.ScrollOnNewItem="True"
+                      Grid.Row="2">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Level}"></TextBlock>
+                            <TextBlock Text=":"></TextBlock>
+                            <TextBlock Text="{Binding Message}"></TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <!--<imageCropper:UcImageCropper x:Name="UcImageCropper" Margin="0" />-->
+        <ListView Grid.Column="1"
+                  HorizontalAlignment="Stretch"
+                  Margin="10,10,0,0"
+                  VerticalAlignment="Stretch"
+                  Grid.Row="0"
+                  Name="FoundCards">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name"
+                                    DisplayMemberBinding="{Binding BestMatch.Card.name}" />
+                    <GridViewColumn Header="Tried">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=Region.Image, Converter={StaticResource imageConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Found">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=BestMatch.Card.imageResource, Converter={StaticResource imageConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Hamming"
+                                    DisplayMemberBinding="{Binding BestMatch.HammingDistance}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <WrapPanel HorizontalAlignment="Left"
+                   Grid.Column="0"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   VerticalAlignment="Top">
+            <Button Name="CreateScreenshot"
+                    Content="Take screenshot"
+                    HorizontalAlignment="Left"
+                    Width="75" />
+            <Button Name="StartRecognition"
+                    Content="Find cards"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="75" />
+            <Button Name="StartEngine"
+                    Content="Start engine"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="75" />
+            <Button Name="StopEngine"
+                    Content="Stop engine"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Width="75" />
+            <TextBox TextWrapping="Wrap"
+                     Text="10"
+                     Width="40"
+                     Name="HammingThreshold" />
+            <TextBox TextWrapping="Wrap"
+                     Text="90"
+                     Width="40"
+                     Name="CardDistance" />
+        </WrapPanel>
+        <TextBlock x:Name="Notification"
+                   HorizontalAlignment="Stretch"
+                   Height="22"
+                   TextWrapping="Wrap"
+                   Text=""
+                   VerticalAlignment="Stretch"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Grid.Row="2" />
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,22 @@
+﻿<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:HearthCap.UI.Converters"
+             xmlns:startUp="clr-namespace:HearthCap.StartUp"
+             xmlns:converters1="http://metro.mahapps.com/winfx/xaml/shared"
+             x:Class="HearthCap.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="/Resources/Theme.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    <startUp:AppBootstrapper x:Key="bootstrapper" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>            
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

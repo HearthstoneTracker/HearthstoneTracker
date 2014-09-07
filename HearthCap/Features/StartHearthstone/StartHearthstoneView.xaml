@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="HearthCap.Features.StartHearthstone.StartHearthstoneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:startHearthstone="clr-namespace:HearthCap.Features.StartHearthstone"
+             d:DataContext="{d:DesignInstance Type=startHearthstone:StartHearthstoneViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Button Margin="0"
+                cal:Message.Attach="StartHearthstone"
+                Style="{StaticResource ToolbarButton}">
+            <StackPanel Orientation="Horizontal">
+                <Rectangle Width="20"
+                           Height="20"
+                           Fill="{DynamicResource BlackBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_crown}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <TextBlock FontSize="16" Margin="4 0 0 0">Start Battle.net</TextBlock>
+            </StackPanel>
+            <Button.ToolTip>
+                <TextBlock>Start Hearthstone.</TextBlock>
+            </Button.ToolTip>
+        </Button>
+        <Rectangle Width="1"
+                   Fill="{DynamicResource GrayBrush3}"
+                   Margin="4 4 4 4"></Rectangle>
+    </StackPanel>
+</UserControl>

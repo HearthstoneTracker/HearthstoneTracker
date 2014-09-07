@@ -1,0 +1,141 @@
+﻿<UserControl x:Class="HearthCap.Features.ArenaSessions.Statistics.FilteredStatsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="1000"
+             d:DesignWidth="300"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:model="clr-namespace:HearthCap.Features.ArenaSessions.Statistics"
+             xmlns:metroChart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             d:DataContext="{d:DesignInstance Type=model:FilteredStatsViewModel, IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Charts.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Label">
+                <Setter Property="FontFamily"
+                        Value="Segoe UI" />
+                <Setter Property="FontSize"
+                        Value="16" />
+                <Setter Property="Opacity"
+                        Value="0.75" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer Padding="10 0 10 0"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <Label>Win/loss ratio:</Label>
+                <metroChart:RadialGaugeChart ChartTitle="Wins / Losses"
+                                             ChartSubTitle="Total wins &amp; losses"
+                                             FontSize="16"
+                                             Margin="0"
+                                             Background="Transparent"
+                                             ToolTipFormat="{}{0} ({1}%)"
+                                             HorizontalAlignment="Center"
+                                             VerticalContentAlignment="Top"
+                                             VerticalAlignment="Top"
+                                             ChartTitleVisibility="Collapsed"
+                                             ChartLegendVisibility="Visible">
+                    <metroChart:RadialGaugeChart.Series>
+                        <metroChart:ChartSeries SeriesTitle="Wins vs. Losses"
+                                                DisplayMember="Category"
+                                                ValueMember="Number"
+                                                FontSize="12"
+                                                VerticalAlignment="Top"
+                                                VerticalContentAlignment="Top"
+                                                ItemsSource="{Binding Path=WinsAndLosses}">
+                        </metroChart:ChartSeries>
+                    </metroChart:RadialGaugeChart.Series>
+                </metroChart:RadialGaugeChart>
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <Label>Arena wins:</Label>
+                <metroChart:ClusteredColumnChart ChartTitle=""
+                                                 HorizontalAlignment="Stretch"
+                                                 ChartSubTitle=""
+                                                 ChartTitleVisibility="Collapsed"
+                                                 ChartLegendVisibility="Visible">
+                    <metroChart:ClusteredColumnChart.Series>
+                        <metroChart:ChartSeries SeriesTitle="#Wins"
+                                                DisplayMember="Category"
+                                                ValueMember="Number"
+                                                FontSize="12"
+                                                VerticalAlignment="Top"
+                                                VerticalContentAlignment="Top"
+                                                ItemsSource="{Binding Path=WinRatios}" />
+                    </metroChart:ClusteredColumnChart.Series>
+                </metroChart:ClusteredColumnChart>
+            </StackPanel>
+            <StackPanel Grid.Row="2">
+            </StackPanel>
+            <StackPanel Grid.Row="3">
+                <Label>Heroes played:</Label>
+                <metroChart:PieChart ChartTitle="Heroes played"
+                                     Background="Transparent"
+                                     ToolTipFormat="{}{0} ({1}%)"
+                                     VerticalAlignment="Stretch"
+                                     VerticalContentAlignment="Stretch"
+                                     HorizontalAlignment="Stretch"
+                                     HorizontalContentAlignment="Stretch"
+                                     ChartTitleVisibility="Collapsed"
+                                     ChartLegendVisibility="Visible">
+                    <metroChart:PieChart.Series>
+                        <metroChart:ChartSeries SeriesTitle="Heroes"
+                                                DisplayMember="Category"
+                                                ValueMember="Number"
+                                                BrushMember="Brush"
+                                                ItemsSource="{Binding Path=HeroesPlayed}" />
+                    </metroChart:PieChart.Series>
+                </metroChart:PieChart>
+            </StackPanel>
+            <StackPanel Grid.Row="4">
+                <Label>Opponent heroes:</Label>
+                <metroChart:PieChart ChartTitle="Opponent heroes"
+                                     Background="Transparent"
+                                     ToolTipFormat="{}{0} ({1}%)"
+                                     VerticalAlignment="Stretch"
+                                     VerticalContentAlignment="Stretch"
+                                     HorizontalAlignment="Stretch"
+                                     HorizontalContentAlignment="Stretch"
+                                     ChartTitleVisibility="Collapsed"
+                                     ChartLegendVisibility="Visible">
+                    <metroChart:PieChart.Series>
+                        <metroChart:ChartSeries SeriesTitle="Heroes"
+                                                DisplayMember="Category"
+                                                ValueMember="Number"
+                                                BrushMember="Brush"
+                                                ItemsSource="{Binding Path=OpponentHeroesPlayed}" />
+                    </metroChart:PieChart.Series>
+                </metroChart:PieChart>
+            </StackPanel>
+            <!--<metroChart:StackedBar100Chart Margin="0 10 0 0"
+                                           Grid.Row="2"
+                                           Height="120"
+                                           Style="{StaticResource ChartStyleFixedSize}"
+                                           ChartTitle="Heroes played"
+                                           ChartTitleVisibility="Collapsed"
+                                           ChartLegendVisibility="Visible">
+                <metroChart:StackedBar100Chart.Series>
+                    <metroChart:ChartSeries SeriesTitle="Heroes"
+                                            DisplayMember="Category"
+                                            ValueMember="Number"
+                                            ItemsSource="{Binding Path=HeroesPlayed}" />
+                </metroChart:StackedBar100Chart.Series>
+            </metroChart:StackedBar100Chart>-->
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,86 @@
+﻿<tb:TaskbarIcon x:Class="HearthCap.Shell.TrayIcon.TrayIconView"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:tb="http://www.hardcodet.net/taskbar"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:trayIcon="clr-namespace:HearthCap.Shell.TrayIcon"
+                xmlns:cal="http://www.caliburnproject.org"
+                xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+                mc:Ignorable="d"
+                d:DataContext="{d:DesignInstance Type=trayIcon:TrayIconViewModel, IsDesignTimeCreatable=False}"
+                d:DesignHeight="300"
+                d:DesignWidth="300"
+                IconSource="/Resources/hearthstone_icon16.ico"
+                ToolTipText="HearthstoneTracker.com"
+                Visibility="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}"
+                LeftClickCommand="{Binding LeftClickCommand}"
+                DoubleClickCommand="{Binding DoubleClickCommand}">
+    <tb:TaskbarIcon.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Visit HearthstoneTracker.com"
+                      Cursor="Hand"
+                      cal:Message.Attach="[Event Click] = [Action VisitWebsite]">
+                <MenuItem.Icon>
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_information_circle}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Quit" cal:Message.Attach="[Event Click] = [Action Quit]">
+                <MenuItem.Icon>
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_close}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Tray notifications">
+                <MenuItem.Icon>
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_chat}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </MenuItem.Icon>
+                <MenuItem Header="Game-mode/deck change"
+                          IsCheckable="True"
+                          IsChecked="{Binding BalloonSettings.GameMode}"></MenuItem>
+                <MenuItem Header="Game starts/ends"
+                          IsCheckable="True"
+                          IsChecked="{Binding BalloonSettings.GameStartEnd}"></MenuItem>
+                <MenuItem Header="Every game turn"
+                          IsCheckable="True"
+                          IsChecked="{Binding BalloonSettings.GameTurns}"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Show"
+                      cal:Message.Attach="[Event Click] = [Action RestoreWindow]">
+                <MenuItem.Icon>
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_graph_bar}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </tb:TaskbarIcon.ContextMenu>
+</tb:TaskbarIcon>

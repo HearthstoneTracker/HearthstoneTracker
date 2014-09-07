@@ -1,0 +1,205 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors">
+    <Style TargetType="{x:Type xctk:DateTimePicker}">
+        <Setter Property="Background"
+                Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="Foreground"
+                Value="{DynamicResource BlackBrush}" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Right" />
+        <Setter Property="TextAlignment"
+                Value="Right" />
+        <Setter Property="TimeWatermarkTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <ContentControl Content="{Binding}"
+                                    Foreground="{DynamicResource BlackBrush}"
+                                    Focusable="False"
+                                    Margin="0,0,3,0" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="WatermarkTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <ContentControl Content="{Binding}"
+                                    Foreground="{DynamicResource BlackBrush}"
+                                    Focusable="False"
+                                    Margin="0,0,3,0" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:DateTimePicker}">
+                    <Border>
+                        <Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <xctk:ButtonSpinner x:Name="PART_Spinner"
+                                                    AllowSpin="{TemplateBinding AllowSpin}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Background="{TemplateBinding Background}"
+                                                    IsTabStop="False"
+                                                    Foreground="{DynamicResource BlackBrush}"
+                                                    ShowButtonSpinner="False">
+                                    <xctk:WatermarkTextBox x:Name="PART_TextBox"
+                                                           AcceptsReturn="False"
+                                                           BorderThickness="0"
+                                                           Background="Transparent"
+                                                           Foreground="{TemplateBinding Foreground}"
+                                                           FontWeight="{TemplateBinding FontWeight}"
+                                                           FontStyle="{TemplateBinding FontStyle}"
+                                                           FontStretch="{TemplateBinding FontStretch}"
+                                                           FontSize="{TemplateBinding FontSize}"
+                                                           FontFamily="{TemplateBinding FontFamily}"
+                                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                           IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           MinWidth="20"
+                                                           Padding="0"
+                                                           TextAlignment="{TemplateBinding TextAlignment}"
+                                                           TextWrapping="NoWrap"
+                                                           Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           TabIndex="{TemplateBinding TabIndex}"
+                                                           WatermarkTemplate="{TemplateBinding WatermarkTemplate}"
+                                                           Watermark="{TemplateBinding Watermark}" />
+                                </xctk:ButtonSpinner>
+                                <ToggleButton x:Name="_calendarToggleButton"
+                                              Background="White"
+                                              Grid.Column="1"
+                                              Focusable="False"
+                                              IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ToggleButton.IsHitTestVisible>
+                                        <Binding Path="IsOpen"
+                                                 RelativeSource="{RelativeSource TemplatedParent}">
+                                            <Binding.Converter>
+                                                <xctk:InverseBoolConverter />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </ToggleButton.IsHitTestVisible>
+                                    <ToggleButton.IsEnabled>
+                                        <Binding Path="IsReadOnly"
+                                                 RelativeSource="{RelativeSource TemplatedParent}">
+                                            <Binding.Converter>
+                                                <xctk:InverseBoolConverter />
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </ToggleButton.IsEnabled>
+                                    <ToggleButton.Style>
+                                        <Style TargetType="{x:Type ToggleButton}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                        <Grid SnapsToDevicePixels="True">
+                                                            <xctk:ButtonChrome x:Name="ToggleButtonChrome"
+                                                                               CornerRadius="0,2.75,2.75,0"
+                                                                               InnerCornerRadius="0,1.75,1.75,0"
+                                                                               RenderMouseOver="{TemplateBinding IsMouseOver}"
+                                                                               RenderPressed="{TemplateBinding IsPressed}"
+                                                                               RenderChecked="{Binding IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type xctk:DateTimePicker}}}"
+                                                                               RenderEnabled="{Binding IsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type xctk:DateTimePicker}}}">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                                      Content="{TemplateBinding Content}"
+                                                                                      ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                                                      HorizontalAlignment="Stretch"
+                                                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                                      VerticalAlignment="Stretch" />
+                                                                    <Grid x:Name="arrowGlyph"
+                                                                          Grid.Column="1"
+                                                                          IsHitTestVisible="False"
+                                                                          Margin="5">
+                                                                        <Path x:Name="Arrow"
+                                                                              Data="M0,1C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1z"
+                                                                              Fill="Black"
+                                                                              Height="4"
+                                                                              Width="7" />
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </xctk:ButtonChrome>
+                                                        </Grid>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsEnabled"
+                                                                     Value="False">
+                                                                <Setter Property="Fill"
+                                                                        TargetName="Arrow"
+                                                                        Value="#FFAFAFAF" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ToggleButton.Style>
+                                </ToggleButton>
+                            </Grid>
+                            <Popup x:Name="PART_Popup"
+                                   IsOpen="{Binding IsChecked, ElementName=_calendarToggleButton}"
+                                   StaysOpen="False">
+                                <Border BorderThickness="1"
+                                        Padding="3">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush EndPoint="0.5,1"
+                                                             StartPoint="0.5,0">
+                                            <GradientStop Color="#FFA3AEB9"
+                                                          Offset="0" />
+                                            <GradientStop Color="#FF8399A9"
+                                                          Offset="0.375" />
+                                            <GradientStop Color="#FF718597"
+                                                          Offset="0.375" />
+                                            <GradientStop Color="#FF617584"
+                                                          Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0,1"
+                                                             StartPoint="0,0">
+                                            <GradientStop Color="White"
+                                                          Offset="0" />
+                                            <GradientStop Color="#FFE8EBED"
+                                                          Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <StackPanel>
+                                        <Calendar x:Name="PART_Calendar"
+                                                  BorderThickness="0"
+                                                  DisplayDate="2014-01-04" />
+                                        <xctk:TimePicker x:Name="PART_TimeUpDown"
+                                                         ShowButtonSpinner="False"
+                                                         Background="{DynamicResource WhiteBrush}"
+                                                         Foreground="{DynamicResource BlackBrush}"
+                                                         FormatString="{TemplateBinding TimeFormatString}"
+                                                         Format="{TemplateBinding TimeFormat}"
+                                                         Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"
+                                                         WatermarkTemplate="{TemplateBinding TimeWatermarkTemplate}"
+                                                         Watermark="{TemplateBinding TimeWatermark}" />
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="xctk:TimePicker">
+        <Setter Property="Foreground"
+                Value="{DynamicResource BlackBrush}"></Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,280 @@
+﻿<UserControl x:Class="HearthCap.Features.Games.CurrentGame.CurrentGameFlyoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:currentGame="clr-namespace:HearthCap.Features.Games.CurrentGame"
+             xmlns:metroChart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             Width="320"
+             d:DesignHeight="800"
+             d:DataContext="{d:DesignInstance Type=currentGame:CurrentGameFlyoutViewModel, IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+                <ResourceDictionary Source="/Resources/Charts.xaml" />
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="14" />
+                <Setter Property="Margin"
+                        Value="4 2 6 0" />
+                <Setter Property="Padding"
+                        Value="0 0 0 0" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize"
+                        Value="14" />
+                <Setter Property="Margin"
+                        Value="0 2 6 0" />
+                <Setter Property="Padding"
+                        Value="0 0 0 0" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="8 8 0 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="0 0 8 0">
+            <StackPanel Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical">
+                <Label HorizontalAlignment="Left"
+                       FontSize="16"
+                       Margin="0 -8 0 0"
+                       Content="Detected a running game"
+                       Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibility}}"
+                       Foreground="Green"></Label>
+                <Label HorizontalAlignment="Left"
+                       Margin="0 -8 0 0"
+                       FontSize="14"
+                       Content="You are not in a game"
+                       Foreground="Red"
+                       Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibilityInverse}}"></Label>
+                <Button Margin="16 6 16 0"
+                        Name="AddNewGame"
+                        Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibilityInverse}}">
+                    <Label HorizontalAlignment="Right"
+                           FontSize="14"
+                           Content="Click here to manually add a game"
+                           Foreground="{DynamicResource BlackBrush}"
+                           Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibilityInverse}}"></Label>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0 10 0 0"
+                        Height="32"
+                        Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibility}}"
+                        IsEnabled="{Binding Busy.IsBusy, Converter={StaticResource invertBoolean}}">
+                <Button Name="StopGame"
+                        Content="Stop &amp; Discard"
+                        Margin="4 0 0 0"
+                        ToolTipService.ShowDuration="8000">
+                    <Button.ToolTip>
+                        <Border>
+                            <TextBlock>Note: use only if you are sure the current game ended.</TextBlock>
+                        </Border>
+                    </Button.ToolTip>
+                </Button>
+                <Button Name="SaveNewGame"
+                        Content="Stop &amp; Save as new"
+                        Margin="4 0 0 0"
+                        ToolTipService.ShowDuration="8000">
+                    <Button.ToolTip>
+                        <Border>
+                            <TextBlock>Note: use only if you are sure the current game ended,<LineBreak />
+                                        else you end up with duplicate games.</TextBlock>
+                        </Border>
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="0 10 0 0"
+                      Visibility="{Binding IsRunning, Converter={StaticResource booleanToVisibility}}">
+            <StackPanel Grid.IsSharedSizeScope="True"
+                        Margin="0 0 8 0"
+                        Orientation="Vertical">
+                <Grid Height="56">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
+                           Grid.Column="0"
+                           HorizontalAlignment="Center"
+                           Stretch="Uniform"
+                           Margin="2"></Image>
+                    <TextBlock VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               Grid.Column="1"
+                               HorizontalAlignment="Center">VS</TextBlock>
+                    <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
+                           HorizontalAlignment="Center"
+                           Stretch="Uniform"
+                           Grid.Column="2"
+                           Margin="2"></Image>
+                    <StackPanel Grid.Column="3"
+                                Orientation="Vertical"
+                                Grid.IsSharedSizeScope="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"
+                                                  SharedSizeGroup="Label"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label>Game mode:</Label>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding GameMode}"></TextBlock>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"
+                                                  SharedSizeGroup="Label"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label>Round:</Label>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Turns, StringFormat='{}#{0}'}"></TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                <Grid Margin="0 8 0 0">
+                    <ComboBox Name="DateRange"
+                              Style="{StaticResource DateComboBox}"
+                              HorizontalAlignment="Stretch"
+                              Width="{x:Static system:Double.NaN}"
+                              DataContext="{Binding DateFilter}">
+                        <ComboBoxItem IsSelected="True"
+                                      Style="{StaticResource DateComboBoxItem}"
+                                      Content="do not remove1"
+                                      DataContext="{Binding}"></ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+                <StackPanel Margin="32 16 32 0">
+                    <StackPanel>
+                        <Label>
+                            <Label.Content>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} vs {1} (%):">
+                                            <Binding Path="Hero.ClassName"></Binding>
+                                            <Binding Path="OpponentHero.ClassName"></Binding>
+                                        </MultiBinding>
+                                    </TextBlock.Text></TextBlock>
+                            </Label.Content>
+                        </Label>
+                        <metroChart:RadialGaugeChart ChartTitle="Wins / Losses"
+                                                     ChartSubTitle="Total wins &amp; losses"
+                                                     FontSize="16"
+                                                     Margin="0"
+                                                     ToolTipFormat="{}{0} ({1}%)"
+                                                     Background="Transparent"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalContentAlignment="Top"
+                                                     VerticalAlignment="Top"
+                                                     ChartTitleVisibility="Collapsed"
+                                                     ChartLegendVisibility="Visible">
+                            <metroChart:RadialGaugeChart.Series>
+                                <metroChart:ChartSeries SeriesTitle="Wins vs. Losses"
+                                                        DisplayMember="Category"
+                                                        ValueMember="Number"
+                                                        FontSize="12"
+                                                        VerticalAlignment="Top"
+                                                        VerticalContentAlignment="Top"
+                                                        ItemsSource="{Binding Path=WinLossRatio}"></metroChart:ChartSeries>
+                            </metroChart:RadialGaugeChart.Series>
+                        </metroChart:RadialGaugeChart>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label>
+                            <Label.Content>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} vs Any (%):">
+                                            <Binding Path="Hero.ClassName"></Binding>
+                                        </MultiBinding>
+                                    </TextBlock.Text></TextBlock>
+                            </Label.Content>
+                        </Label>
+                        <metroChart:RadialGaugeChart ChartTitle="Wins / Losses"
+                                                     ChartSubTitle="Total wins &amp; losses"
+                                                     FontSize="16"
+                                                     Margin="0"
+                                                     ToolTipFormat="{}{0} ({1}%)"
+                                                     Background="Transparent"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalContentAlignment="Top"
+                                                     VerticalAlignment="Top"
+                                                     ChartTitleVisibility="Collapsed"
+                                                     ChartLegendVisibility="Visible">
+                            <metroChart:RadialGaugeChart.Series>
+                                <metroChart:ChartSeries SeriesTitle="Wins vs. Losses"
+                                                        DisplayMember="Category"
+                                                        ValueMember="Number"
+                                                        FontSize="12"
+                                                        VerticalAlignment="Top"
+                                                        VerticalContentAlignment="Top"
+                                                        ItemsSource="{Binding Path=WinLossRatioHero}"></metroChart:ChartSeries>
+                            </metroChart:RadialGaugeChart.Series>
+                        </metroChart:RadialGaugeChart>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label>
+                            <Label.Content>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}Any vs {0} (%):">
+                                            <Binding Path="OpponentHero.ClassName"></Binding>
+                                        </MultiBinding>
+                                    </TextBlock.Text></TextBlock>
+                            </Label.Content>
+                        </Label>
+                        <metroChart:RadialGaugeChart ChartTitle="Wins / Losses"
+                                                     ChartSubTitle="Total wins &amp; losses"
+                                                     FontSize="16"
+                                                     Margin="0"
+                                                     ToolTipFormat="{}{0} ({1}%)"
+                                                     Background="Transparent"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalContentAlignment="Top"
+                                                     VerticalAlignment="Top"
+                                                     ChartTitleVisibility="Collapsed"
+                                                     ChartLegendVisibility="Visible">
+                            <metroChart:RadialGaugeChart.Series>
+                                <metroChart:ChartSeries SeriesTitle="Wins vs. Losses"
+                                                        DisplayMember="Category"
+                                                        ValueMember="Number"
+                                                        FontSize="12"
+                                                        VerticalAlignment="Top"
+                                                        VerticalContentAlignment="Top"
+                                                        ItemsSource="{Binding Path=WinLossRatioOpponentHero}"></metroChart:ChartSeries>
+                            </metroChart:RadialGaugeChart.Series>
+                        </metroChart:RadialGaugeChart>
+                    </StackPanel>
+                </StackPanel>
+                <HeaderedContentControl x:Name="thenotes"
+                                        Header="Notes:"
+                                        Tag="{Binding ElementName=Notes}"
+                                        Style="{StaticResource hccFormStyle2}">
+                    <TextBox Name="Notes"
+                             MaxLength="4000"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             Height="100"></TextBox>
+                </HeaderedContentControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

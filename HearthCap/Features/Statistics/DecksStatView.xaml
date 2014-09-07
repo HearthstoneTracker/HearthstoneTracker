@@ -1,0 +1,762 @@
+﻿<UserControl x:Class="HearthCap.Features.Statistics.DecksStatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:statistics="clr-namespace:HearthCap.Features.Statistics"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=statistics:DecksStatViewModel, IsDesignTimeCreatable=False}"
+             HorizontalAlignment="Stretch"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <Grid>
+        <controls:ProgressRing Width="100"
+                               Height="100"
+                               IsActive="{Binding Busy.IsBusy, Mode=OneWay}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+        <ScrollViewer VerticalScrollBarVisibility="Disabled"
+                      HorizontalScrollBarVisibility="Auto">
+            <Grid Grid.IsSharedSizeScope="True"
+                  HorizontalAlignment="Stretch"
+                  Visibility="{Binding Busy.IsBusy, Converter={StaticResource booleanToVisibilityInverse}}"
+                  Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Column="0"
+                      Grid.Row="0"
+                      HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="14"></ColumnDefinition>
+                        <!--<ColumnDefinition Width="{Binding Source={x:Static SystemParameters.VerticalScrollBarWidth}}"></ColumnDefinition>-->
+                    </Grid.ColumnDefinitions>
+                    <Grid Margin="0 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="FirstColumn"
+                                              MinWidth="70"></ColumnDefinition>
+                            <ColumnDefinition Width="1"
+                                              MaxWidth="1"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1"
+                                           MaxHeight="1"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Path Stroke="{DynamicResource GrayBrush1}"
+                              StrokeThickness="1"
+                              Stretch="Fill"
+                              Grid.Column="0"
+                              Grid.RowSpan="2"
+                              Grid.ColumnSpan="2"
+                              Margin="10"
+                              Grid.Row="0">
+                            <Path.Data>
+                                <LineGeometry StartPoint="0,0"
+                                              EndPoint="1,1"></LineGeometry>
+                            </Path.Data>
+                        </Path>
+                        <Grid Grid.Column="0"
+                              Grid.Row="0"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Left"
+                              Margin="4 0 0 8">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <TextBlock Text="Deck"
+                                           FontSize="11" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="0"
+                              Grid.Row="0"
+                              Margin="0 8 4 0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Right">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <TextBlock Text="Opp."
+                                           FontSize="11" />
+                            </StackPanel>
+                        </Grid>
+                        <Rectangle Stroke="{DynamicResource GrayBrush1}"
+                                   Fill="Transparent"
+                                   Grid.Column="1"
+                                   Grid.Row="0"
+                                   Grid.RowSpan="2" />
+                        <Rectangle Stroke="{DynamicResource GrayBrush1}"
+                                   Fill="Transparent"
+                                   Grid.Column="0"
+                                   Grid.Row="1" />
+                    </Grid>
+                    <Grid Grid.Row="0"
+                          Column="1"
+                          Margin="0 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                            <ColumnDefinition Width="1"
+                                              MaxWidth="1"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="1"
+                                           MaxHeight="1"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                   Fill="Transparent"
+                                   Grid.Column="1"
+                                   Grid.Row="0"
+                                   Grid.RowSpan="2" />
+                        <Rectangle Stroke="{DynamicResource GrayBrush1}"
+                                   Fill="Transparent"
+                                   Grid.Column="0"
+                                   Grid.Row="1" />
+                    </Grid>
+                    <ItemsControl Grid.Row="0"
+                                  Grid.Column="2"
+                                  HorizontalAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch"
+                                  ItemsSource="{Binding Heroes}"
+                                  Margin="0 0 0 0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1"
+                                             HorizontalAlignment="Stretch"
+                                             VerticalAlignment="Stretch"></UniformGrid>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch"
+                                      Margin="0 0 0 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="64"></ColumnDefinition>
+                                        <ColumnDefinition MinWidth="1"
+                                                          MaxWidth="1"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="1"
+                                                       MaxHeight="1"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Visibility="{Binding Key, Converter={StaticResource nullToVisible}}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center">
+                                        Total:</TextBlock>
+                                    <Image Grid.Row="0"
+                                           Grid.Column="0"
+                                           Source="{Binding Key, Converter={StaticResource heroKeyToImage}}"
+                                           Visibility="{Binding Key, Converter={StaticResource nullToCollapsed}}"
+                                           HorizontalAlignment="Center"
+                                           Height="48"
+                                           Width="48"
+                                           Margin="6" />
+                                    <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                               Fill="Transparent"
+                                               Grid.Column="1"
+                                               Grid.Row="0"
+                                               MinWidth="1"
+                                               Grid.RowSpan="2"></Rectangle>
+                                    <Rectangle Stroke="{DynamicResource GrayBrush1}"
+                                               Fill="Transparent"
+                                               Grid.ColumnSpan="2"
+                                               MinHeight="1"
+                                               Grid.Column="0"
+                                               Grid.Row="1"></Rectangle>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding DeckStats}"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Grid.Row="1">
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <ScrollViewer Name="ScrollViewer"
+                                          VerticalScrollBarVisibility="Visible"
+                                          Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Background="Transparent"
+                                  Margin="0 0 0 0"
+                                  HorizontalAlignment="Stretch">
+                                <!--<Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="LightGray"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Background" Value="Transparent"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>-->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="FirstColumn"></ColumnDefinition>
+                                    <ColumnDefinition MinWidth="1"
+                                                      MaxWidth="1"></ColumnDefinition>
+                                    <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                                    <ColumnDefinition MinWidth="1"
+                                                      MaxWidth="1"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition MinHeight="1"
+                                                   MaxHeight="1"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="Label">
+                                        <Setter Property="FontSize"
+                                                Value="12"></Setter>
+                                        <Setter Property="FontWeight"
+                                                Value="SemiBold"></Setter>
+                                        <Setter Property="Margin"
+                                                Value="0 4 0 4"></Setter>
+                                        <Setter Property="Padding"
+                                                Value="8 0 10 0"></Setter>
+                                    </Style>
+                                </Grid.Resources>
+                                <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                           Fill="Transparent"
+                                           Grid.Column="0"
+                                           MinHeight="1"
+                                           MaxHeight="1"
+                                           VerticalAlignment="Stretch"
+                                           Grid.Row="1"
+                                           Grid.ColumnSpan="4" />
+                                <StackPanel Orientation="Horizontal"
+                                            Grid.Row="0"
+                                            Height="61"
+                                            Grid.Column="0"
+                                            Margin="0 0 4 0">
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontWeight="Bold">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1}):">
+                                                <Binding Path="Key.Name"></Binding>
+                                                <Binding Path="Key.Server"></Binding>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                                <Rectangle Stroke="{DynamicResource GrayBrush1}"
+                                           Fill="Transparent"
+                                           Grid.Column="1"
+                                           Grid.Row="0"
+                                           MinWidth="1"
+                                           MaxWidth="1"
+                                           Grid.RowSpan="2" />
+                                <StackPanel Orientation="Vertical"
+                                            VerticalAlignment="Top"
+                                            Grid.Row="0"
+                                            Grid.Column="2"
+                                            Margin="0 0 0 0">
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWins, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Total win/loss:"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWinRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Total win/loss (%):"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWinsCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="W/L with coin:"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWinRatioCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="W/L with coin (%):"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWinsNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="W/L without Coin:"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowWinRatioNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="W/L without Coin (%):"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowPlayedVsRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Played against (%):"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowTotalGamesByCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="1"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Total (coin/no coin):"></Label>
+                                        <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                   Fill="Transparent"
+                                                   Height="1"
+                                                   Grid.Row="1"
+                                                   HorizontalAlignment="Stretch" />
+                                    </Grid>
+                                    <Grid Visibility="{Binding Path=DataContext.ShowTotalGames, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Label Content="Total games:"></Label>
+                                    </Grid>
+                                </StackPanel>
+                                <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                           Fill="Transparent"
+                                           Grid.Column="3"
+                                           Grid.Row="0"
+                                           MinWidth="1"
+                                           MaxWidth="1"
+                                           Grid.RowSpan="2" />
+                                <ItemsControl Grid.Row="0"
+                                              Grid.RowSpan="2"
+                                              Grid.Column="4"
+                                              ItemsSource="{Binding Value}"
+                                              HorizontalAlignment="Stretch"
+                                              HorizontalContentAlignment="Stretch"
+                                              VerticalAlignment="Stretch">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Rows="1"
+                                                         HorizontalAlignment="Stretch"
+                                                         VerticalAlignment="Stretch" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0 0 0 0"
+                                                  HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"
+                                                                      MinWidth="64" />
+                                                    <ColumnDefinition Width="1"
+                                                                      MaxWidth="1"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"></RowDefinition>
+                                                    <RowDefinition Height="1"
+                                                                   MaxHeight="1"></RowDefinition>
+                                                </Grid.RowDefinitions>
+                                                <Grid Margin="0 0 0 0"
+                                                      HorizontalAlignment="Stretch">
+                                                    <Grid.Resources>
+                                                        <Style TargetType="TextBlock"
+                                                               x:Key="BaseTextStyle">
+                                                            <Setter Property="FontSize"
+                                                                    Value="12"></Setter>
+                                                            <Setter Property="Margin"
+                                                                    Value="0 4 0 0"></Setter>
+                                                            <Setter Property="Padding"
+                                                                    Value="0 0 8 4"></Setter>
+                                                            <Setter Property="Foreground"
+                                                                    Value="{DynamicResource BlackBrush}" />
+                                                        </Style>
+                                                        <Style x:Key="PositiveStyle"
+                                                               BasedOn="{StaticResource BaseTextStyle}"
+                                                               TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=40, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="DarkOrange"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=25, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="Red"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=75, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="ForestGreen"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                        <Style x:Key="NegativeStyle"
+                                                               BasedOn="{StaticResource BaseTextStyle}"
+                                                               TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=60, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="DarkOrange"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=75, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="Red"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=25, RelativeSource={RelativeSource Self}}"
+                                                                             Value="True">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="ForestGreen"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                        <Style TargetType="TextBlock"
+                                                               BasedOn="{StaticResource BaseTextStyle}"></Style>
+                                                    </Grid.Resources>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <StackPanel.Resources>
+                                                            <Style TargetType="Grid">
+                                                                <Setter Property="Margin"
+                                                                        Value="8 0 0 0"></Setter>                                                                
+                                                            </Style>
+                                                            <Style TargetType="Rectangle">
+                                                                <Setter Property="Margin"
+                                                                        Value="-8 0 0 0"></Setter>
+                                                            </Style>
+                                                        </StackPanel.Resources>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWins, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding Wins}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1" />
+                                                            <TextBlock Text="{Binding Losses, StringFormat={}{0}}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWinRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WinRate, StringFormat={}{0}%}"
+                                                                       Tag="{Binding WinRate}"
+                                                                       Style="{StaticResource PositiveStyle}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1" />
+                                                            <TextBlock Text="{Binding LossRate, StringFormat={}{0}%}"
+                                                                       Tag="{Binding LossRate}"
+                                                                       Style="{StaticResource NegativeStyle}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWinsCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WinsCoin, StringFormat={}{0}}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1" />
+                                                            <TextBlock Text="{Binding LossesCoin, StringFormat={}{0}}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWinRatioCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WinRateCoin, StringFormat={}{0}%}"
+                                                                       Tag="{Binding WinRateCoin}"
+                                                                       Style="{StaticResource PositiveStyle}"/>
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1" />
+                                                            <TextBlock Text="{Binding LossRateCoin, StringFormat={}{0}%}"
+                                                                       Tag="{Binding LossRateCoin}"
+                                                                       Style="{StaticResource NegativeStyle}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWinsNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WinsNoCoin, StringFormat={}{0}}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1" />
+                                                            <TextBlock Text="{Binding LossesNoCoin, StringFormat={}{0}}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowWinRatioNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WinRateNoCoin, StringFormat={}{0}%}"
+                                                                       Tag="{Binding WinRateNoCoin}"
+                                                                       Style="{StaticResource PositiveStyle}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1"></TextBlock>
+                                                            <TextBlock Text="{Binding LossRateNoCoin, StringFormat={}{0}%}"
+                                                                       Tag="{Binding LossRateNoCoin}"
+                                                                       Style="{StaticResource NegativeStyle}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowPlayedVsRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition SharedSizeGroup="Stat"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding PlayedVsRatio, StringFormat={}{0}%}" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="2"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowTotalGamesByCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="1"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding TotalCoin, StringFormat={}{0}}" />
+                                                            <TextBlock Text=" / "
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="1"></TextBlock>
+                                                            <TextBlock Text="{Binding TotalNoCoin, StringFormat={}{0}}"
+                                                                       Grid.Row="0"
+                                                                       Grid.Column="2" />
+                                                            <Rectangle Stroke="{DynamicResource GrayBrush9}"
+                                                                       Fill="Transparent"
+                                                                       Height="1"
+                                                                       Grid.Column="0"
+                                                                       Grid.Row="1"
+                                                                       Grid.ColumnSpan="3"
+                                                                       HorizontalAlignment="Stretch" />
+                                                        </Grid>
+                                                        <Grid Visibility="{Binding Path=DataContext.ShowTotalGames, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="*"></RowDefinition>
+                                                            </Grid.RowDefinitions>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding TotalGames, StringFormat={}{0}}"></TextBlock>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <!--<Path Stroke="DarkGray"
+                                              StrokeThickness="1"
+                                              Stretch="Fill"
+                                              Grid.Column="0"
+                                              Grid.RowSpan="2"
+                                              Grid.ColumnSpan="2"
+                                              Margin="-1 -1 0 0"
+                                              Grid.Row="0">
+                                            <Path.Data>
+                                                <LineGeometry StartPoint="1,0"
+                                                              EndPoint="0,1"></LineGeometry>
+                                            </Path.Data>
+                                        </Path>
+                                        <Grid Grid.Column="0"
+                                              Grid.Row="0"
+                                              VerticalAlignment="Top"
+                                              HorizontalAlignment="Left"
+                                              Width="26"
+                                              Margin="2 4 0 0">
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding Path=WinRateCoin}"
+                                                           FontSize="11" />
+                                                <TextBlock Text="%"
+                                                           VerticalAlignment="Bottom"
+                                                           FontSize="10" />
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid Grid.Column="0"
+                                              Grid.Row="0"
+                                              Margin="18 0 0 4"
+                                              Width="26"
+                                              VerticalAlignment="Bottom"
+                                              HorizontalAlignment="Left">
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding Path=WinRateNoCoin}"
+                                                           FontSize="11" />
+                                                <TextBlock Text="%"
+                                                           VerticalAlignment="Bottom"
+                                                           FontSize="10" />
+                                            </StackPanel>
+                                        </Grid>-->
+                                                <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                                           Fill="Transparent"
+                                                           Grid.Column="1"
+                                                           Grid.Row="0"
+                                                           Grid.RowSpan="2" />
+                                                <Rectangle Stroke="{DynamicResource GrayBrush5}"
+                                                           Fill="Transparent"
+                                                           Grid.Column="0"
+                                                           Grid.Row="1" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="HearthCap.Features.Charts.ImprovementChartsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             xmlns:oxy="http://oxyplot.codeplex.com"
+             HorizontalAlignment="Stretch"
+             HorizontalContentAlignment="Stretch"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <Grid VerticalAlignment="Stretch">
+        <oxy:Plot Title="Win ratio"
+                  Width="600"
+                  Model="{Binding PlotModel}"
+                  VerticalAlignment="Stretch">
+            <!--<oxy:Plot.Axes>
+                <oxy:LinearAxis Position="Left" />
+                <oxy:DateTimeAxis Position="Bottom" Angle="45" IntervalType="Weeks" MinorIntervalType="Days" />
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding WinrateDataPoints}"
+                                MarkerType="Circle"
+                                DataFieldX="Date"
+                                DataFieldY="Value"></oxy:LineSeries>
+            </oxy:Plot.Series>-->
+        </oxy:Plot>
+    </Grid>
+</UserControl>

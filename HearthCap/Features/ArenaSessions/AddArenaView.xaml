@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="HearthCap.Features.ArenaSessions.AddArenaView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:model="clr-namespace:HearthCap.Features.ArenaSessions"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:controls1="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             Width="320"
+             d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance Type=model:AddArenaViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="True">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />-->
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="16"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    HorizontalAlignment="Right"
+                    Margin="0 0 0 8"
+                    Height="32">
+            <Button Name="Save"
+                    Width="120"
+                    HorizontalAlignment="Right"
+                    Margin="4 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_add}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock VerticalAlignment="Center"
+                               Margin="4 0 0 0">SAVE AS NEW</TextBlock>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <ScrollViewer Grid.Row="2"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical"
+                        Margin="0 0 0 0">
+                <HeaderedContentControl x:Name="theservers"
+                                        Header="Server:"
+                                        Tag="{Binding ElementName=Servers}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <ComboBox Name="Servers"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedServer}"></ComboBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="starttime"
+                                        Header="Start time:"
+                                        Tag="{Binding ElementName=Started}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <xctk:DateTimePicker Name="Started"
+                                             Value="{Binding Started}"
+                                             Format="Custom"
+                                             FormatString="g"
+                                             TimeFormat="Custom"
+                                             TimeFormatString="t"
+                                             ShowButtonSpinner="False"
+                                             Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                        <Button Name="SetStartTime"
+                                Content="Now"
+                                Grid.Column="1"
+                                Margin="4 0 0 0"></Button>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="hero"
+                                        Header="Your hero:"
+                                        Tag="{Binding ElementName=Heroes}"
+                                        Style="{StaticResource hccFormStyle2}">
+                    <ListBox Name="Heroes"
+                             ItemsSource="{Binding Heroes, Mode=OneWay}"
+                             SelectedItem="{Binding Hero}"
+                             SelectionMode="Single"
+                             Grid.Column="1"
+                             Style="{StaticResource heroListBox}">
+                    </ListBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="wins"
+                                        Header="Wins:"
+                                        Tag="{Binding ElementName=Wins}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="80"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <controls1:NumericUpDown Name="Wins"
+                                                 Grid.Column="0"
+                                                 HorizontalAlignment="Stretch"
+                                                 Value="{Binding Wins, Mode=TwoWay}"
+                                                 TextAlignment="Right"
+                                                 Minimum="0"
+                                                 VerticalAlignment="Center"
+                                                 Maximum="12"
+                                                 IsReadOnly="True" />
+                        <Label Target="{Binding ElementName=Losses}"
+                               Content="Losses:"
+                               Grid.Column="1"></Label>
+                        <controls1:NumericUpDown Name="Losses"
+                                                 Grid.Column="2"
+                                                 VerticalAlignment="Center"
+                                                 VerticalContentAlignment="Center"
+                                                 HorizontalAlignment="Stretch"
+                                                 Value="{Binding Losses, Mode=TwoWay}"
+                                                 TextAlignment="Right"
+                                                 Minimum="0"
+                                                 Maximum="3"
+                                                 IsReadOnly="True" />
+                    </Grid>
+                </HeaderedContentControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

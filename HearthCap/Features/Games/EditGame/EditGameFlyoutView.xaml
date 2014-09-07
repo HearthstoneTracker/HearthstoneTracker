@@ -1,0 +1,319 @@
+﻿<UserControl x:Class="HearthCap.Features.Games.EditGame.EditGameFlyoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:editGame="clr-namespace:HearthCap.Features.Games.EditGame"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:data="clr-namespace:HearthCap.Data;assembly=HearthCap.Data"
+             mc:Ignorable="d"
+             Width="325"
+             d:DesignHeight="600"
+             d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Type=editGame:EditGameFlyoutViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />-->
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="16"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Height="32"
+              Visibility="{Binding LastGameId, Converter={StaticResource nullToCollapsed}}">
+            <Button Name="Delete"
+                    Width="90"
+                    HorizontalAlignment="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Right|Left'}"
+                    Margin="4 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="14"
+                               Height="14"
+                               Fill="{DynamicResource BlackBrush}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill"
+                                         Visual="{StaticResource appbar_delete}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock VerticalAlignment="Center"
+                               Margin="4 0 0 0">DELETE</TextBlock>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <Grid Margin="0 8 0 8"
+              Height="32"
+              Grid.Row="1"
+              IsEnabled="{Binding Busy.IsBusy, Converter={StaticResource invertBoolean}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="0">
+                <Button Name="SaveAsNew"
+                        Width="120"
+                        IsEnabled="{Binding CanSave}"
+                        Margin="4 0 0 0">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="14"
+                                   Height="14"
+                                   Fill="{DynamicResource BlackBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{StaticResource appbar_add}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <TextBlock VerticalAlignment="Center"
+                                   Margin="4 0 0 0">SAVE AS NEW</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
+                <Button Name="Save"
+                        Width="120"
+                        Visibility="{Binding LastGameId, Converter={StaticResource nullToCollapsed}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Width="14"
+                                   Height="14"
+                                   Fill="{DynamicResource BlackBrush}">
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Fill"
+                                             Visual="{StaticResource appbar_save}" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <TextBlock VerticalAlignment="Center"
+                                   Margin="4 0 0 0">SAVE</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <ScrollViewer Grid.Row="2"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Grid.IsSharedSizeScope="True"
+                        Orientation="Vertical"
+                        Margin="0 0 0 0">
+                <Border BorderBrush="{DynamicResource BlackBrush}"
+                        BorderThickness="1"
+                        Padding="4"
+                        Margin="2 2 2 4"
+                        Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}"
+                        CornerRadius="4">
+                    <TextBlock TextWrapping="Wrap"
+                               FontSize="13">
+                        To create a new arena game, select an arena, then click 'Add arena game' in the toolbar.</TextBlock>
+                </Border>
+                <HeaderedContentControl x:Name="theservers"
+                                        Header="Server:"
+                                        Tag="{Binding ElementName=Servers}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <ComboBox Name="Servers"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedServer}"></ComboBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="gamemode"
+                                        Header="Game mode:"
+                                        Tag="{Binding ElementName=GameModes}"
+                                        Style="{StaticResource hccFormStyle}"
+                                        Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}">
+                    <ComboBox Name="GameModes"
+                              SelectedItem="{Binding GameMode}"></ComboBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="deck"
+                                        Header="Deck:"
+                                        Tag="{Binding ElementName=Decks}"
+                                        Style="{StaticResource hccFormStyle}"
+                                        Visibility="{Binding GameMode, Converter={StaticResource valueToCollapsed}, ConverterParameter={x:Static data:GameMode.Arena}}">
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox Name="Decks"
+                                  IsEditable="True"
+                                  IsTextSearchEnabled="True"
+                                  IsTextSearchCaseSensitive="False"
+                                  StaysOpenOnEdit="True"
+                                  TextSearch.TextPath="Name"
+                                  DisplayMemberPath="NameAndSlot"
+                                  SelectedItem="{Binding SelectedDeck}">
+                            <!--<ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="IsEnabled"
+                                            Value="{Binding Deleted, Converter={StaticResource invertBoolean}}" />
+                                </Style>
+                            </ComboBox.ItemContainerStyle>-->
+                        </ComboBox>
+                        <Button Name="ViewDeck"
+                                Grid.Column="1"
+                                Width="36"
+                                Margin="4 0 0 0">
+                            <Rectangle Width="14"
+                                       HorizontalAlignment="Center"
+                                       Height="14"
+                                       Fill="{DynamicResource BlackBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_camera}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </Grid>
+                </HeaderedContentControl>
+                <StackPanel Visibility="{Binding LastGameId, Converter={StaticResource nullToCollapsed}}">
+                    <HeaderedContentControl x:Name="assignarena"
+                                            Header="Arena:"
+                                            Tag="{Binding ElementName=ViewArena}"
+                                            Style="{StaticResource hccFormStyle}"
+                                            Visibility="{Binding GameMode, Converter={StaticResource valueToVisible}, ConverterParameter={x:Static data:GameMode.Arena}}">
+                        <StackPanel>
+                            <Button cal:Message.Attach="AssignToArena"
+                                    Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}"
+                                    Content="Assign to last arena"></Button>
+                            <Button Name="ViewArena"
+                                    Visibility="{Binding ArenaSession, Converter={StaticResource nullToCollapsed}}"
+                                    Content="View arena"></Button>
+                        </StackPanel>
+                    </HeaderedContentControl>
+                </StackPanel>
+                <HeaderedContentControl x:Name="starttime"
+                                        Header="Start time:"
+                                        Tag="{Binding ElementName=StartTime}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <xctk:DateTimePicker Name="StartTime"
+                                             Value="{Binding StartTime}"
+                                             Format="Custom"
+                                             FormatString="g"
+                                             TimeFormat="Custom"
+                                             TimeFormatString="t"
+                                             ShowButtonSpinner="False"
+                                             Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                        <Button Name="SetStartTime"
+                                Content="Now"
+                                Grid.Column="1"
+                                Margin="4 0 0 0"></Button>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="endtime"
+                                        Header="End time:"
+                                        Tag="{Binding ElementName=EndTime}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <xctk:DateTimePicker Name="EndTime"
+                                             Value="{Binding EndTime}"
+                                             Format="Custom"
+                                             FormatString="g"
+                                             TimeFormat="Custom"
+                                             TimeFormatString="t"
+                                             ShowButtonSpinner="False"
+                                             Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                        <Button Name="SetEndTime"
+                                Content="Now"
+                                Grid.Column="1"
+                                Margin="4 0 0 0"></Button>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="hero"
+                                        Header="Your hero:"
+                                        Tag="{Binding ElementName=Heroes}"
+                                        Style="{StaticResource hccFormStyle2}"
+                                        Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}">
+                    <ListBox Name="Heroes"
+                             ItemsSource="{Binding Heroes, Mode=OneWay}"
+                             SelectedItem="{Binding Hero}"
+                             SelectionMode="Single"
+                             Background="Transparent"
+                             Grid.Column="1"
+                             Style="{StaticResource heroListBox}"></ListBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="opphero"
+                                        Header="Opponent hero:"
+                                        Tag="{Binding ElementName=OpponentHeroes}"
+                                        Style="{StaticResource hccFormStyle2}">
+                    <ListBox Name="OpponentHeroes"
+                             ItemsSource="{Binding Heroes, Mode=OneWay}"
+                             SelectedItem="{Binding OpponentHero}"
+                             SelectionMode="Single"
+                             Grid.Column="1"
+                             Style="{StaticResource heroListBox}"></ListBox>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="gofirst"
+                                        Header="Went first?"
+                                        Tag="{Binding ElementName=GoFirst}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Name="GoFirst"
+                                  Grid.Column="0"></CheckBox>
+                        <Label Target="{Binding ElementName=Turns}"
+                               Content="Turns:"
+                               Grid.Column="1"></Label>
+                        <metro:NumericUpDown Name="Turns"
+                                             Grid.Column="2"
+                                             HorizontalAlignment="Stretch"
+                                             Value="{Binding Turns}"
+                                             TextAlignment="Right"
+                                             Minimum="0" />
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="victory"
+                                        Header="Victory?"
+                                        Tag="{Binding ElementName=Victory}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Name="Victory"></CheckBox>
+                        <Label Target="{Binding ElementName=Conceded}"
+                               Content="Conceded?"
+                               Grid.Column="1"></Label>
+                        <CheckBox Name="Conceded"
+                                  Grid.Column="2"></CheckBox>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="notes"
+                                        Header="Notes:"
+                                        Tag="{Binding ElementName=Notes}"
+                                        Style="{StaticResource hccFormStyle2}">
+                    <TextBox Name="Notes"
+                             MaxLength="4000"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             Height="100"></TextBox>
+                </HeaderedContentControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="HearthCap.Features.WebApi.WebApiSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:webApi="clr-namespace:HearthCap.Features.WebApi"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=webApi:WebApiSettingsViewModel, IsDesignTimeCreatable=False}"
+             MinWidth="350"
+             Width="350"
+             d:DesignHeight="600"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer Margin="0 0 4 0"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="4">
+            <!--<HeaderedContentControl x:Name="addnewapi"
+                                    Header="Add new provider:"
+                                    Tag="{Binding ElementName=AvailableProviders}"
+                                    Style="{StaticResource hccFormStyle2}">
+                <HeaderedContentControl.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize"
+                                Value="16"></Setter>
+                    </Style>
+                </HeaderedContentControl.Resources>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Name="AvailableProviders"
+                              SelectedItem="{Binding SelectedAvailableProvider}"
+                              DisplayMemberPath="Name"
+                              Grid.Column="0"></ComboBox>
+                    <Button Name="AddProvider"
+                            Content="Add"
+                            Margin="4 0 0 0"
+                            Grid.Column="1"></Button>
+                </Grid>
+            </HeaderedContentControl>-->
+            <HeaderedContentControl x:Name="currentproviders"
+                                    Header="Available providers:"
+                                    Tag="{Binding ElementName=Providers}"
+                                    Style="{StaticResource hccFormStyle2}">
+                <HeaderedContentControl.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize"
+                                Value="16"></Setter>
+                    </Style>
+                </HeaderedContentControl.Resources>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <ListView Name="Providers"
+                              SelectedItem="{Binding SelectedProvider}"
+                              DisplayMemberPath="ProviderName"
+                              behaviors:GridViewColumnResize.Enabled="True">
+                        <ListView.View>
+                            <GridView d:DataContext="{d:DesignInstance Type=webApi:WebApiProviderDescriptor, IsDesignTimeCreatable=False}">
+                                <GridView.Columns>
+                                    <behaviors:FixedWidthColumn Header=""
+                                                                FixedWidth="32"
+                                                                Width="32"
+                                                                behaviors:GridViewColumnResize.Width="32">
+                                        <behaviors:FixedWidthColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsEnabled}"
+                                                          IsEnabled="False"></CheckBox>
+                                            </DataTemplate>
+                                        </behaviors:FixedWidthColumn.CellTemplate>
+                                    </behaviors:FixedWidthColumn>
+                                    <GridViewColumn Header="Name"
+                                                    DisplayMemberBinding="{Binding ProviderName}"
+                                                    behaviors:GridViewColumnResize.Width="*"></GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </HeaderedContentControl>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0"
+                       FontSize="16">Settings:</Label>
+                <ContentControl Name="ActiveItem"
+                                Grid.Row="1"
+                                Margin="6 0 0 0"></ContentControl>
+            </Grid>
+            <Grid Margin="0 8 0 0"
+                  Visibility="{Binding IsDebug, Converter={StaticResource booleanToVisibility}}">
+                <WrapPanel>
+                    <Button Name="GameStarted"
+                            Content="GameStarted"></Button>
+                    <Button Name="GameEnded"
+                            Content="GameEnded"></Button>
+                    <Button Name="ArenaStarted"
+                            Content="ArenaStarted"></Button>
+                    <Button Name="ArenaEnded"
+                            Content="ArenaEnded"></Button>
+                </WrapPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="HearthCap.Features.Servers.ChooseServerDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:servers="clr-namespace:HearthCap.Features.Servers"
+             mc:Ignorable="d"
+             d:DesignWidth="300"
+             Width="300"
+             d:DataContext="{d:DesignInstance Type=servers:ChooseServerDialogViewModel, IsDesignTimeCreatable=False}">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <TextBlock TextWrapping="Wrap">
+                Choose which server to set on your existing games and arenas.
+            </TextBlock>
+            <TextBlock TextWrapping="Wrap" Margin="0 4 0 0">
+                This will also be the default (you can change default server in the menu).</TextBlock>
+        </StackPanel>
+        <Grid Grid.Row="2"
+              Margin="0 8 0 8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ComboBox Name="Servers"
+                      DisplayMemberPath="Name"
+                      Grid.Column="0"
+                      Margin="0 0 8 0"
+                      SelectedItem="{Binding SelectedServer}"></ComboBox>
+            <Button Width="100"
+                    Content="_Save &amp; Close"
+                    Name="SaveClose"
+                    Grid.Column="1"
+                    cal:Message.Attach="SaveClose"></Button>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,96 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                    xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors">
+    <Style TargetType="xctk:IntegerUpDown"
+           x:Key="UpDownMetroStyle">
+        <Setter Property="ContextMenu"
+                Value="{DynamicResource TextBoxMetroContextMenu}" />
+        <Setter Property="metro:TextboxHelper.IsMonitoring"
+                Value="True" />
+        <Setter Property="metro:ControlsHelper.ButtonWidth"
+                Value="22" />
+        <!--<Setter Property="SelectionBrush"
+                Value="{DynamicResource HighlightBrush}" />-->
+        <Setter Property="FontFamily"
+                Value="{DynamicResource ContentFontFamily}" />
+        <Setter Property="FontSize"
+                Value="{DynamicResource ContentFontSize}" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="MinHeight"
+                Value="26" />
+        <Setter Property="Background"
+                Value="{DynamicResource ControlBackgroundBrush}" />
+        <Setter Property="Foreground"
+                Value="{DynamicResource TextBrush}" />
+        <Setter Property="Padding"
+                Value="0" />
+        <Setter Property="BorderBrush"
+                Value="{DynamicResource TextBoxBorderBrush}" />
+        <Setter Property="metro:TextboxHelper.FocusBorderBrush"
+                Value="{DynamicResource TextBoxFocusBorderBrush}" />
+        <Setter Property="metro:TextboxHelper.MouseOverBorderBrush"
+                Value="{DynamicResource TextBoxMouseOverBorderBrush}" />
+        <!-- change SnapsToDevicePixels to True to view a better border and validation error -->
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="Validation.ErrorTemplate"
+                Value="{DynamicResource ValidationErrorTemplate}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type xctk:IntegerUpDown}">
+                    <xctk:ButtonSpinner x:Name="PART_Spinner"
+                                        AllowSpin="{Binding AllowSpin, RelativeSource={RelativeSource TemplatedParent}}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Background="{TemplateBinding Background}"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        IsTabStop="False"
+                                        ShowButtonSpinner="{Binding ShowButtonSpinner, RelativeSource={RelativeSource TemplatedParent}}">
+                        <xctk:WatermarkTextBox x:Name="PART_TextBox"
+                                               AcceptsReturn="False"
+                                               BorderThickness="0"
+                                               Background="{TemplateBinding Background}"
+                                               ContextMenu="{TemplateBinding ContextMenu}"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               FontWeight="{TemplateBinding FontWeight}"
+                                               FontStyle="{TemplateBinding FontStyle}"
+                                               FontStretch="{TemplateBinding FontStretch}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               FontFamily="{TemplateBinding FontFamily}"
+                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+                                               MinWidth="20"
+                                               Padding="{TemplateBinding Padding}"
+                                               SelectAllOnGotFocus="{Binding SelectAllOnGotFocus, RelativeSource={RelativeSource TemplatedParent}}"
+                                               TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}"
+                                               TextWrapping="NoWrap"
+                                               TabIndex="{TemplateBinding TabIndex}"
+                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                               WatermarkTemplate="{Binding WatermarkTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Watermark="{Binding Watermark, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </xctk:ButtonSpinner>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled"
+                                 Value="False">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsFocused"
+                                 Value="True">
+                            <Setter Property="FocusManager.FocusedElement"
+                                    TargetName="PART_TextBox"
+                                    Value="{Binding ElementName=PART_TextBox}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="xctk:IntegerUpDown"
+           BasedOn="{StaticResource UpDownMetroStyle}" />
+</ResourceDictionary>

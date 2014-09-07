@@ -1,0 +1,125 @@
+﻿<UserControl x:Class="HearthCap.Features.Diagnostics.LogFlyout.LogFlyoutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:model="clr-namespace:HearthCap.Features.Diagnostics.LogFlyout"
+             xmlns:diagnostics="clr-namespace:HearthCap.Features.Diagnostics"
+             xmlns:controls="clr-namespace:HearthCap.UI.Controls"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             MinWidth="500"
+             MaxWidth="500"
+             d:DataContext="{d:DesignInstance Type=model:LogFlyoutViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="True">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+                <!--<ResourceDictionary Source="/MahApps.Metro;component/Styles/Colors.xaml" />-->
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="LogItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Visibility"
+                        Value="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}"></Setter>
+            </Style>
+            <model:LogStyleSelector x:Key="LogStyleSelector">
+                <model:LogStyleSelector.FatalStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="Black"></Setter>
+                        <Setter Property="Background"
+                                Value="Red"></Setter>
+                    </Style>
+                </model:LogStyleSelector.FatalStyle>
+                <model:LogStyleSelector.ErrorStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="Red"></Setter>
+                    </Style>
+                </model:LogStyleSelector.ErrorStyle>
+                <model:LogStyleSelector.WarnStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="DarkOrange"></Setter>
+                    </Style>
+                </model:LogStyleSelector.WarnStyle>
+                <model:LogStyleSelector.InfoStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="Black"></Setter>
+                    </Style>
+                </model:LogStyleSelector.InfoStyle>
+                <model:LogStyleSelector.DebugStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="Gray"></Setter>
+                    </Style>
+                </model:LogStyleSelector.DebugStyle>
+                <model:LogStyleSelector.TraceStyle>
+                    <Style TargetType="ListBoxItem"
+                           BasedOn="{StaticResource LogItemStyle}">
+                        <Setter Property="Foreground"
+                                Value="LightGray"></Setter>
+                    </Style>
+                </model:LogStyleSelector.TraceStyle>
+            </model:LogStyleSelector>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal"
+                        Margin="4">
+                <CheckBox Name="DiagEnabled"
+                          Visibility="{Binding DiagVisible, Converter={StaticResource booleanToVisibility}}"
+                          Content="Diag"></CheckBox>
+                <CheckBox Name="DebugEnabled"
+                          Content="Debug"></CheckBox>
+                <CheckBox Name="WarnEnabled"
+                          Content="Warnings"></CheckBox>
+                <CheckBox Name="InfoEnabled"
+                          Content="Info"></CheckBox>
+                <CheckBox Name="ErrorEnabled"
+                          Content="Errors"></CheckBox>
+            </StackPanel>
+            <ListView Background="White"
+                      Name="LogMessages"
+                      Grid.Row="1"
+                      Margin="4"
+                      SelectionMode="Extended"
+                      behaviors:ListBoxBehaviour.AutoCopy="True"
+                      ItemContainerStyleSelector="{StaticResource LogStyleSelector}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Name="Message"
+                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
+                                       Background="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
+                                       FontStyle="{Binding FontStyle, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
+                                       FontWeight="{Binding FontWeight, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
+                                       Text="{Binding Message}"
+                                       Visibility="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}">
+                            </TextBlock>
+                            <!--<TextBlock Text="{Binding Date, StringFormat=T}"></TextBlock>
+                            <TextBlock Text=" ("></TextBlock>
+                            <TextBlock Text="{Binding Level}"></TextBlock>
+                            <TextBlock Text="): "></TextBlock>
+                            <TextBlock Text="{Binding Message}"></TextBlock>-->
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>

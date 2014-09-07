@@ -1,0 +1,356 @@
+﻿<UserControl x:Class="HearthCap.Features.Games.LatestGames.LatestGamesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="600"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:latestGames="clr-namespace:HearthCap.Features.Games.LatestGames"
+             xmlns:metroChart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             xmlns:models="clr-namespace:HearthCap.Features.Games.Models"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             xmlns:dragDrop="clr-namespace:HearthCap.UI.Behaviors.DragDrop"
+             d:DataContext="{d:DesignInstance Type=latestGames:LatestGamesViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel Orientation="Horizontal"
+                   Grid.Row="0"
+                   VerticalAlignment="Center"
+                   Margin="4">
+            <StackPanel Margin="0 0 8 0"
+                        Orientation="Vertical">
+                <Label Target="{Binding ElementName=DateRange}">Date (from - to):</Label>
+                <ComboBox Name="DateRange"
+                          Style="{StaticResource DateComboBox}"
+                          DataContext="{Binding DateFilter}">
+                    <ComboBoxItem IsSelected="True"
+                                  Style="{StaticResource DateComboBoxItem}"
+                                  Content="do not remove1"
+                                  DataContext="{Binding}"></ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Servers}">Server:</Label>
+                <ComboBox Name="Servers"
+                          VerticalAlignment="Stretch"
+                          DisplayMemberPath="Name"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterServer}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Heroes}">Hero:</Label>
+                <ComboBox Name="Heroes"
+                          VerticalAlignment="Stretch"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterHero}"
+                          Style="{StaticResource heroCombobox}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Heroes}">Opponent:</Label>
+                <ComboBox Name="OpponentHeroes"
+                          ItemsSource="{Binding Heroes}"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterOpponentHero}"
+                          Style="{StaticResource heroCombobox}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
+                <ComboBox ItemsSource="{Binding GameModes}"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Decks}">Deck:</Label>
+                <ComboBox Name="Decks"
+                          Background="{DynamicResource WhiteBrush}"
+                          DisplayMemberPath="NameAndServer"
+                          SelectedItem="{Binding FilterDeck}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Search}">Search:</Label>
+                <TextBox Name="Search"
+                         Height="32"
+                         Width="100"
+                         VerticalContentAlignment="Center">
+                    <i:Interaction.Triggers>
+                        <behaviors:InputBindingTrigger>
+                            <behaviors:InputBindingTrigger.InputBinding>
+                                <KeyBinding Key="Enter" />
+                            </behaviors:InputBindingTrigger.InputBinding>
+                            <cal:ActionMessage MethodName="RefreshData" />
+                        </behaviors:InputBindingTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
+            <Button Width="36"
+                    Height="36"
+                    Margin="0"
+                    VerticalAlignment="Bottom"
+                    cal:Message.Attach="RefreshData"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Cursor="Hand">
+                <Rectangle Width="16"
+                           Height="16"
+                           Fill="{DynamicResource BlackBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_magnify}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+        <Grid Grid.Row="1"
+              Margin="6 6 6 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="300"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <DataGrid ItemsSource="{Binding GameResultsCV}"
+                      SelectionMode="Extended"
+                      SelectedItem="{Binding SelectedGame}"
+                      behaviors:MultiSelectorBehaviours.SynchronizedSelectedItems="{Binding SelectedGames}"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      Grid.RowSpan="2"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      AreRowDetailsFrozen="False"
+                      CanUserSortColumns="True"
+                      FrozenColumnCount="2"
+                      VerticalScrollBarVisibility="Visible"
+                      behaviors:SelectingItemAttachedProperty.SelectingItem="{Binding SelectedGame}"
+                      CanUserResizeColumns="False"
+                      CanUserDeleteRows="False"
+                      CanUserReorderColumns="False"
+                      Template="{StaticResource DataGridTemplate}"
+                      CanUserResizeRows="False"
+                      d:DataContext="{d:DesignInstance Type=models:GameResultModel}"
+                      Style="{StaticResource MetroDataGrid}"
+                      cal:Message.Attach="[Event Sorting] = [Action Sorting($eventArgs)]">
+                <i:Interaction.Triggers>
+                    <behaviors:RoutedEventTrigger RoutedEvent="ScrollViewer.ScrollChanged">
+                        <cal:ActionMessage MethodName="ScrollChanged">
+                            <cal:Parameter Value="$eventargs" />
+                        </cal:ActionMessage>
+                    </behaviors:RoutedEventTrigger>
+                    <behaviors:InputBindingTrigger>
+                        <behaviors:InputBindingTrigger.InputBinding>
+                            <KeyBinding Key="Delete" />
+                        </behaviors:InputBindingTrigger.InputBinding>
+                        <cal:ActionMessage MethodName="DeleteSelectedGames" />
+                    </behaviors:InputBindingTrigger>
+                </i:Interaction.Triggers>
+                <!--<DataGrid.Resources>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource BlackBrush}" />
+                            <Setter Property="SnapsToDevicePixels"
+                                    Value="True" />
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Left" />
+                            <Setter Property="VerticalContentAlignment"
+                                    Value="Center" />
+                            <Setter Property="Padding"
+                                    Value="4 2 4 2" />
+                            <Setter Property="BorderThickness"
+                                    Value="0,1,.25,0" />
+                            <Setter Property="BorderBrush"
+                                    Value="{DynamicResource BlackBrush}" />
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock TextBlock.FontWeight="SemiBold"
+                                                   Text="{Binding Converter={StaticResource ToUpperConverter}}" />
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.Resources>-->
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="You"
+                                            SortMemberPath="Hero.Key"
+                                            CellStyle="{StaticResource HeroCell}"
+                                            CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
+                                       Height="32"
+                                       Width="32"
+                                       Margin="2"></Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="VS"
+                                            SortMemberPath="OpponentHero.Key"
+                                            CellStyle="{StaticResource HeroCell}"
+                                            CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
+                                       Height="32"
+                                       Width="32"
+                                       Margin="2"></Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Mode"
+                                        CellStyle="{StaticResource MetroDataGridCell}"
+                                        Binding="{Binding GameMode, Converter={StaticResource enumNameConverter}}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Started"
+                                        CellStyle="{StaticResource MetroDataGridCell}"
+                                        SortDirection="Descending"
+                                        Binding="{Binding Started, StringFormat=g}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Duration"
+                                        CanUserSort="False"
+                                        Binding="{Binding Duration, StringFormat={}{0} min.}"></DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Result"
+                                            SortMemberPath="Victory">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
+                                            Margin="4 0 0 0">
+                                    <TextBlock Text="Win"
+                                               Foreground="ForestGreen"
+                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                    <TextBlock Text="Loss"
+                                               Foreground="Red"
+                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                    <TextBlock Foreground="Red"
+                                               Visibility="{Binding Conceded, Converter={StaticResource booleanToVisibility}}"
+                                               Text=" (c)"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Deck"
+                                        Binding="{Binding Deck.Name}"></DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Start"
+                                            SortMemberPath="GoFirst">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="4 0 0 0">
+                                    <TextBlock Text="First"
+                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                    <TextBlock Text="Second"
+                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Turns"
+                                        Binding="{Binding Turns}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Server"
+                                        Binding="{Binding Server}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Notes"
+                                        CanUserSort="False"
+                                        Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <controls:ProgressRing IsActive="{Binding Busy.IsBusy, Mode=OneWay}"
+                                   HorizontalAlignment="Center"
+                                   Width="100"
+                                   Height="100"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Grid.RowSpan="2"
+                                   VerticalAlignment="Center" />
+            <Grid Grid.Row="2"
+                  Margin="0 4 0 0"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Margin"
+                                Value="4 0 4 0"></Setter>
+                        <Setter Property="Padding"
+                                Value="0"></Setter>
+                        <Setter Property="FontSize"
+                                Value="14"></Setter>
+                        <Setter Property="VerticalAlignment"
+                                Value="Center"></Setter>
+                        <Setter Property="FontWeight"
+                                Value="SemiBold"></Setter>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize"
+                                Value="13"></Setter>
+                        <Setter Property="VerticalAlignment"
+                                Value="Center"></Setter>
+                    </Style>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Fill"
+                                Value="{DynamicResource GrayBrush3}"></Setter>
+                        <Setter Property="Margin"
+                                Value="8 4 4 2"></Setter>
+                        <Setter Property="Width"
+                                Value="1"></Setter>
+                    </Style>
+                </Grid.Resources>
+                <Border BorderBrush="{DynamicResource GrayBrush2}"
+                        Grid.Row="0"
+                        BorderThickness="0 1 0 0"
+                        Height="24">
+                    <StackPanel Orientation="Horizontal">
+                        <Label>Games:</Label>
+                        <TextBlock Text="{Binding Totals.Games}"></TextBlock>
+                        <Rectangle></Rectangle>
+                        <Label>Won:</Label>
+                        <TextBlock Text="{Binding Totals.Won}"></TextBlock>
+                        <Rectangle></Rectangle>
+                        <Label>Lost:</Label>
+                        <TextBlock Text="{Binding Totals.Lost}"></TextBlock>
+                        <Rectangle></Rectangle>
+                        <Label>Played:</Label>
+                        <TextBlock Text="{Binding Totals.Hours}"></TextBlock>
+                        <TextBlock Text="h. "></TextBlock>
+                        <TextBlock Text="{Binding Totals.Minutes}"></TextBlock>
+                        <TextBlock Text="m. "></TextBlock>
+                        <Rectangle Fill="{DynamicResource GrayBrush1}"></Rectangle>
+                        <Label>Total tracked:</Label>
+                        <TextBlock Text="{Binding Totals.TotalGames}"></TextBlock>
+                        <Rectangle></Rectangle>
+                        <Label>Total played:</Label>
+                        <TextBlock Text="{Binding Totals.TotalHours}"></TextBlock>
+                        <TextBlock Text="h. "></TextBlock>
+                        <TextBlock Text="{Binding Totals.TotalMinutes}"></TextBlock>
+                        <TextBlock Text="m. "></TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <ContentControl Name="CurrentStats"
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            cal:View.Model="{Binding CurrentStats}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"></ContentControl>
+        </Grid>
+    </Grid>
+</UserControl>

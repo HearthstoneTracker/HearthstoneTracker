@@ -1,0 +1,87 @@
+Explanation of the HearthstoneTracker 'generic' Web Api:
+
+Authentication:
+
+The api uses HMAC authentication, which means it works with an 'apikey' and a 'secretkey'.
+
+- Api key: is a static key (never changes) which uniquely identified the consumer of the api. This can be the username for example.
+  The api key is sent over the wire in plain text in the header 'X-ApiAuth-ApiKey' (more on that later).
+  
+- Secret key: this is a private key only shared between the client and the server. This key should NEVER be sent or received over the wire.
+
+On the server, every apikey has a corresponding secretkey. The secret key can be a random string, the salted/hashed password of the user. This does not really matter, as long as it is never shared or sent over the wire in plain text.
+
+For example, you can keep a database table looking like this: [username, hashedpassword] or [username, hashedpassword, secretkey].
+Note that when using the users password to keep the secretkey, the secretkey will change when the user changes its password. Depending on the situation this may be wanted or unwanted.
+
+To authenticate a message, the client generates a hash based on the secretkey + http headers + md5(content).
+This hash together with the public api key is send as a regular http message.
+
+An example of how such an http message looks like is:
+
+---
+POST http://localhost./webapi/gameended HTTP/1.1
+X-ApiAuth-ApiKey: GameForFree
+Date: Mon, 03 Feb 2014 16:12:11 GMT
+Authorization: ApiAuth CevXJKL6m+mTbAXSNIEvvVFno/jG3XtLORWNndsYM6I=
+Content-Type: application/json; charset=utf-8
+Content-MD5: ziIWMWH9NxNNX3EPc6vlHQ==
+Host: localhost.
+Content-Length: 292
+Expect: 100-continue
+
+{"StartTime":"2014-02-03T17:10:11.3239084+01:00","EndTime":"2014-02-03T17:12:11.3239084+01:00","Victory":true,"GoFirst":true,"Hero":"mage","OpponentHero":"warrior","GameMode":4,"Turns":17,"Conceded":false,"Deck":"1","Date":"2014-02-03T17:12:11.3239084+01:00","Message":"Detected end of game"}
+---
+
+Explanation:
+
+- 'X-ApiAuth-ApiKey:' this is the public api key. In this case we are using a regular username
+- 'Authorization: ApiAuth QYwtwudfOPJRTRx5CtOtNmBBoQvs9BHOy87DG+d3mhE=' this is the generated hash.
+- 'Content-MD5: zCsSRmVfoNdqhvpMyG/1rg==' this is the md5 hash of the content (body) of the http request
+- All other headers are regular http headers added by the http library / client in use.
+
+Note that we do not use the full body content in the hmac hash, but instead generate a cheap md5 hash of the body content.
+
+The content for the HMAC hash is generated as follows:
+
+HTTP METHOD\n + Content-MD5\n + Date\n + ApiKey\n + Request URI
+
+In our http request example that would be: POST\nziIWMWH9NxNNX3EPc6vlHQ==\n02/03/2014 16:12:11\nGameForFree\n/webapi/gameended
+
+Note that the date ('Date' header) is converted to UTC format.
+
+Now we have the content to generate a HMAC hash for. In our api we make use of the HMAC SHA256 algorithm, which is then converted to a base64 string.
+
+In pseudo code it looks like: BASE64( HMACSHA256( secretKey, content ) )
+
+For reference, this is the code in C# we use to generate the hash:
+
+	public string Signature(string secret, string value)
+	{
+		var secretBytes = Encoding.UTF8.GetBytes(secret);
+		var valueBytes = Encoding.UTF8.GetBytes(value);
+		string signature;
+
+		using (var hmac = new HMACSHA256(secretBytes))
+		{
+			var hash = hmac.ComputeHash(valueBytes);
+			signature = Convert.ToBase64String(hash);
+		}
+		return signature;
+	}
+
+Now we have all the data (api key, md5 of the body content and the hmac hash) to build our http request.
+
+Server side:
+
+To authenticate a http request on the server, the exact same process must be used:
+
+- Read the 'X-ApiAuth-ApiKey' header (containing the apikey/username).
+- Create your own MD5 hash of the http body content.
+- Compare your MD5 hash against the 'Content-MD5' header in the request. If they do not match: fail
+- Using your database table, get the secretkey for this user
+- read the 'Content-MD5' and 'Date' from the http headers.
+- Generate the hmac hash using the exact same procedure (HTTP METHOD\n + Content-MD5\n + Date\n + ApiKey\n + Request URI)
+- compare the content of the 'Authorization' header (everything after 'ApiAuth') with your own generated hash.
+- If they match, the request is valid.
+- If they do not match, return a '401 Unauthorized' http response, so the client can take appropriate actions.

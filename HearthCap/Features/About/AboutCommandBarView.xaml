@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="HearthCap.Features.About.AboutCommandBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:about="clr-namespace:HearthCap.Features.About"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=about:AboutCommandBarViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False">
+    <UserControl.Resources>
+        <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+    </UserControl.Resources>
+    <Button cal:Message.Attach="ToggleAbout"
+            Cursor="Hand">
+        <StackPanel Orientation="Horizontal">
+            <Rectangle Width="20"
+                       Height="20"
+                       Fill="{DynamicResource WhiteBrush}">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Stretch="Fill"
+                                 Visual="{StaticResource appbar_information_circle}" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+            <TextBlock Foreground="White"
+                       FontSize="16"
+                       Margin="4 0 0 0"
+                       FontWeight="SemiBold">About</TextBlock>
+        </StackPanel>
+    </Button>
+</UserControl>

@@ -1,0 +1,267 @@
+﻿<UserControl x:Class="HearthCap.Features.Decks.DeckSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:decks="clr-namespace:HearthCap.Features.Decks"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             xmlns:webApi="clr-namespace:HearthCap.Features.WebApi"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:controls="clr-namespace:HearthCap.UI.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=decks:DeckSettingsViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="600"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='280|Auto'}"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|280'}"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Margin="8 0 8 0"
+              Width="280"
+              Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='1|0'}"
+              Visibility="{Binding SelectedDeck, Converter={StaticResource nullToCollapsed}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Margin="0 4 0 0"
+                  Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Margin="4 0 4 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Button Width="32"
+                                HorizontalAlignment="Right"
+                                Height="32"
+                                Margin="0"
+                                VerticalAlignment="Bottom"
+                                cal:Message.Attach="Cancel"
+                                Style="{DynamicResource MetroCircleButtonStyle}"
+                                Cursor="Hand">
+                            <Rectangle Width="12"
+                                       Height="12"
+                                       Fill="{DynamicResource BlackBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_close}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                        <Label HorizontalAlignment="Left"
+                               FontSize="16">Edit deck:</Label>
+                    </Grid>
+                    <StackPanel Grid.Row="1"
+                                Grid.IsSharedSizeScope="True">
+                        <HeaderedContentControl Header="Name:"
+                                                Tag="{Binding ElementName=DeckName}"
+                                                Style="{StaticResource hccFormStyle}">
+                            <TextBox Name="DeckName"></TextBox>
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Slot:"
+                                                Tag="{Binding ElementName=Slots}"
+                                                Style="{StaticResource hccFormStyle}">
+                            <ComboBox Name="Slots"
+                                      SelectedItem="{Binding DeckSlot}"></ComboBox>
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Notes:"
+                                                Tag="{Binding ElementName=DeckNotes}"
+                                                Style="{StaticResource hccFormStyle2}">
+                            <TextBox Name="DeckNotes"
+                                     Text="{Binding DeckNotes, UpdateSourceTrigger=PropertyChanged}"
+                                     TextWrapping="Wrap"
+                                     Height="50"
+                                     AcceptsReturn="True"></TextBox>
+                        </HeaderedContentControl>
+                        <Grid Margin="4 4 4 4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Left">
+                                    <Button Width="100"
+                                            Margin="0 4 0 0"
+                                            Visibility="{Binding CanDeleteDeck, Converter={StaticResource booleanToVisibility}}"
+                                            Name="DeleteDeck">Delete</Button>
+                                    <Button Width="100"
+                                            Margin="0 4 0 0"
+                                            Visibility="{Binding SelectedDeck.Deleted, Converter={StaticResource booleanToVisibility}}"
+                                            Name="UndeleteDeck">Undelete</Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Right">
+                                    <Button Width="100"
+                                            HorizontalAlignment="Right"
+                                            Name="UpdateDeck">Save</Button>
+                                    <Button Width="100"
+                                            Margin="0 8 0 0"
+                                            HorizontalAlignment="Right"
+                                            Name="SaveAsNewDeck">Save as new</Button>
+                                </StackPanel>
+                            </Grid>
+                            <!--<StackPanel Margin="0 8 0 0"
+                                        Grid.Row="2"
+                                        HorizontalAlignment="Center"
+                                        Orientation="Vertical">
+                                <TextBlock TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           FontSize="12">
+                                    Click 'take screenshot', then go to your deck in Hearthstone.
+                                    Or go to your deck in Hearthstone, then click 'take screenshot'.
+                                    A screenshot will be taken when any deck is detected.</TextBlock>
+                            </StackPanel>-->
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1"
+                  UseLayoutRounding="True"
+                  Margin="0 6 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            Margin="0 0 0 0"
+                            HorizontalAlignment="Center">
+                    <Button Visibility="{Binding CanTakeScreenshot, Converter={StaticResource booleanToVisibility}}"
+                            Margin="0 0 0 0"
+                            Name="TakeScreenshot">Take screenshot</Button>
+                    <Button Visibility="{Binding CanTakeScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
+                            Margin="0 0 0 0"
+                            Name="CancelTakeScreenshot">Wait.. (Click to cancel)</Button>
+                    <Button Width="100"
+                            Margin="6 0 0 0"
+                            Visibility="{Binding DeckScreenshot, Converter={StaticResource nullToCollapsed}}"
+                            Name="SaveScreenshotToDisk">Save to disk</Button>
+                </StackPanel>
+                <ScrollViewer Grid.Row="1"
+                              Visibility="{Binding DeckScreenshot, Converter={StaticResource nullToCollapsed}}"
+                              Margin="0 6 0 0"
+                              HorizontalScrollBarVisibility="Disabled"
+                              UseLayoutRounding="True"
+                              SnapsToDevicePixels="True"
+                              VerticalScrollBarVisibility="Auto">
+                    <Image x:Name="Screenshot"
+                           IsHitTestVisible="False"
+                           UseLayoutRounding="True"
+                           SnapsToDevicePixels="True"
+                           Stretch="Uniform"
+                           StretchDirection="DownOnly"
+                           RenderOptions.BitmapScalingMode="Fant"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Source="{Binding DeckScreenshot}" />
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+        <Grid Margin="4"
+              Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='0|1'}"
+              Grid.IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <HeaderedContentControl Header="Server:"
+                                    Grid.Row="0"
+                                    Tag="{Binding ElementName=Servers}"
+                                    Style="{StaticResource hccFormStyle}">
+                <ComboBox Name="Servers"
+                          ItemsSource="{Binding Servers}"
+                          SelectedItem="{Binding SelectedServer}"
+                          DisplayMemberPath="Name"></ComboBox>
+            </HeaderedContentControl>
+            <!--<ItemsControl Name="AvailableDecks"
+                          Grid.Row="3"
+                          Margin="4 8 0 0"
+                          ItemsSource="{Binding AvailableDecks}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <HeaderedContentControl Header="{Binding SlotLabel}"
+                                                Tag="{Binding ElementName=Decks}"
+                                                Style="{StaticResource hccFormStyle}">
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox Name="Decks"
+                                          ItemsSource="{Binding AvailableDecks}"
+                                          SelectedItem="{Binding SelectedDeck}"
+                                          DisplayMemberPath="Name"></ComboBox>
+                                <Button Margin="4 0 0 0"
+                                        Grid.Column="1"
+                                        cal:Message.Attach="RemoveFromSlot($dataContext)">clear</Button>
+                            </Grid>
+                        </HeaderedContentControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>-->
+            <Grid Grid.Row="1"
+                  Margin="4 10 0 0">
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            Margin="0 0 0 0">
+                    <Button Width="100"
+                            Name="AddDeck">Add new deck</Button>
+                    <CheckBox IsChecked="{Binding ShowHiddenDecks}"
+                              Margin="6 0 0 0">Show deleted decks</CheckBox>
+                </StackPanel>
+            </Grid>
+            <ListView Name="Decks"
+                      SelectedItem="{Binding SelectedDeck}"
+                      IsSynchronizedWithCurrentItem="True"
+                      DisplayMemberPath="Name"
+                      VerticalAlignment="Stretch"
+                      Grid.Row="2"
+                      Margin="4 4 4 0"
+                      behaviors:GridViewColumnResize.Enabled="True"
+                      behaviors:SelectingItemAttachedProperty.SelectingItem="{Binding SelectedDeck}">
+                <ListView.View>
+                    <GridView d:DataContext="{d:DesignInstance Type=webApi:WebApiProviderDescriptor, IsDesignTimeCreatable=False}">
+                        <GridView.Columns>
+                            <behaviors:FixedWidthColumn Header="Slot"
+                                                        FixedWidth="38"
+                                                        Width="38"
+                                                        DisplayMemberBinding="{Binding Key}"
+                                                        behaviors:GridViewColumnResize.Width="32"></behaviors:FixedWidthColumn>
+                            <GridViewColumn Header="Name"
+                                            DisplayMemberBinding="{Binding Name}"
+                                            behaviors:GridViewColumnResize.Width="*"></GridViewColumn>
+                            <GridViewColumn Header="Del.?"
+                                            behaviors:GridViewColumnResize.Width="40">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock Visibility="{Binding Deleted, Converter={StaticResource booleanToVisibility}}">Yes</TextBlock>
+                                            <!--<TextBlock Visibility="{Binding Deleted, Converter={StaticResource booleanToVisibilityInverse}}">No</TextBlock>-->
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</UserControl>

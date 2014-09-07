@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="HearthCap.Shell.Notifications.Notification.Info"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d"
+             d:DesignHeight="24"
+             d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button cal:Message.Attach="Close"
+                Grid.Column="0"
+                Margin="2"
+                Height="20"
+                Width="20"
+                Style="{DynamicResource MetroWindowButtonStyle}">
+            <Path Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z"
+                  SnapsToDevicePixels="True"
+                  Fill="{DynamicResource WhiteBrush}" />
+        </Button>
+        <StackPanel Grid.Column="1"
+                    Margin="2">
+            <TextBlock Text="{Binding Notification.Message}"
+                       FontSize="15"
+                       Foreground="{DynamicResource WhiteBrush}"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

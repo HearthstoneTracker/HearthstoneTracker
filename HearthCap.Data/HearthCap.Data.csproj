@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE8E519E-B0AF-4605-8076-37D59651A775}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HearthCap.Data</RootNamespace>
+    <AssemblyName>HearthCap.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.1\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArenaDeckImage.cs" />
+    <Compile Include="ArenaSession.cs" />
+    <Compile Include="DateTimeConvention.cs" />
+    <Compile Include="Deck.cs" />
+    <Compile Include="DeckImage.cs" />
+    <Compile Include="DeletedArenaSession.cs" />
+    <Compile Include="DeletedGameResult.cs" />
+    <Compile Include="EagerLoadExtensions.cs" />
+    <Compile Include="GameMode.cs" />
+    <Compile Include="IEntityWithId.cs" />
+    <Compile Include="Initializer.cs" />
+    <Compile Include="HearthStatsDbContext.cs" />
+    <Compile Include="GameResult.cs" />
+    <Compile Include="Hero.cs" />
+    <Compile Include="IRepository.cs" />
+    <Compile Include="Migrations\201401080225106_initial.cs" />
+    <Compile Include="Migrations\201401080225106_initial.Designer.cs">
+      <DependentUpon>201401080225106_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201401241936465_TextFiles.cs" />
+    <Compile Include="Migrations\201401241936465_TextFiles.Designer.cs">
+      <DependentUpon>201401241936465_TextFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201401281924334_CascadeDelete.cs" />
+    <Compile Include="Migrations\201401281924334_CascadeDelete.Designer.cs">
+      <DependentUpon>201401281924334_CascadeDelete.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402061539285_arena_notes.cs" />
+    <Compile Include="Migrations\201402061539285_arena_notes.Designer.cs">
+      <DependentUpon>201402061539285_arena_notes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402141821595_indexe.cs" />
+    <Compile Include="Migrations\201402141821595_indexe.Designer.cs">
+      <DependentUpon>201402141821595_indexe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402201707482_servers.cs" />
+    <Compile Include="Migrations\201402201707482_servers.Designer.cs">
+      <DependentUpon>201402201707482_servers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402280405179_decks.cs" />
+    <Compile Include="Migrations\201402280405179_decks.Designer.cs">
+      <DependentUpon>201402280405179_decks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201402282130204_deckserver.cs" />
+    <Compile Include="Migrations\201402282130204_deckserver.Designer.cs">
+      <DependentUpon>201402282130204_deckserver.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201403091821350_deletedgames.cs" />
+    <Compile Include="Migrations\201403091821350_deletedgames.Designer.cs">
+      <DependentUpon>201403091821350_deletedgames.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201403091843393_created_timestamp.cs" />
+    <Compile Include="Migrations\201403091843393_created_timestamp.Designer.cs">
+      <DependentUpon>201403091843393_created_timestamp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201403120039256_deckimages.cs" />
+    <Compile Include="Migrations\201403120039256_deckimages.Designer.cs">
+      <DependentUpon>201403120039256_deckimages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201403120247059_decknotes.cs" />
+    <Compile Include="Migrations\201403120247059_decknotes.Designer.cs">
+      <DependentUpon>201403120247059_decknotes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201403132323202_arenadeckimages.cs" />
+    <Compile Include="Migrations\201403132323202_arenadeckimages.Designer.cs">
+      <DependentUpon>201403132323202_arenadeckimages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201408251353484_themename.cs" />
+    <Compile Include="Migrations\201408251353484_themename.Designer.cs">
+      <DependentUpon>201408251353484_themename.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsItem.cs" />
+    <Compile Include="TextFileTemplate.cs" />
+    <Compile Include="ThemeConfiguration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201401080225106_initial.resx">
+      <DependentUpon>201401080225106_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201401241936465_TextFiles.resx">
+      <DependentUpon>201401241936465_TextFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201401281924334_CascadeDelete.resx">
+      <DependentUpon>201401281924334_CascadeDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402061539285_arena_notes.resx">
+      <DependentUpon>201402061539285_arena_notes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402141821595_indexe.resx">
+      <DependentUpon>201402141821595_indexe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402201707482_servers.resx">
+      <DependentUpon>201402201707482_servers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402280405179_decks.resx">
+      <DependentUpon>201402280405179_decks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201402282130204_deckserver.resx">
+      <DependentUpon>201402282130204_deckserver.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403091821350_deletedgames.resx">
+      <DependentUpon>201403091821350_deletedgames.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403091843393_created_timestamp.resx">
+      <DependentUpon>201403091843393_created_timestamp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403120039256_deckimages.resx">
+      <DependentUpon>201403120039256_deckimages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403120247059_decknotes.resx">
+      <DependentUpon>201403120247059_decknotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201403132323202_arenadeckimages.resx">
+      <DependentUpon>201403132323202_arenadeckimages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408251353484_themename.resx">
+      <DependentUpon>201408251353484_themename.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

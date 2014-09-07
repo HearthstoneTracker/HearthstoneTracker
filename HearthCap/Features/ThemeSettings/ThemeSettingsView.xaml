@@ -1,0 +1,190 @@
+﻿<UserControl x:Class="HearthCap.Features.ThemeSettings.ThemeSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:themeSettings="clr-namespace:HearthCap.Features.ThemeSettings"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=themeSettings:ThemeSettingsViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="True"
+             d:DesignHeight="400"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <!--<Style x:Key="RedGlowItemContainer"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border CornerRadius="8"
+                                BorderBrush="{DynamicResource BlackBrush}"
+                                BorderThickness="3"
+                                x:Name="IconBorder"
+                                Margin="8,4,8,4">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="true">
+                                <Setter TargetName="IconBorder"
+                                        Property="BitmapEffect">
+                                    <Setter.Value>
+                                        <OuterGlowBitmapEffect GlowColor="Red"
+                                                               GlowSize="5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
+    </UserControl.Resources>
+    <Grid Name="root"
+          Margin="4">
+        <StackPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl x:Name="theme"
+                                    Header="Theme:"
+                                    Tag="{Binding ElementName=Theme}"
+                                    Style="{StaticResource hccFormStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <ListBox Name="Theme"
+                             SelectionMode="Single"
+                             Background="Transparent">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" 
+                                           IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBoxItem IsSelected="{Binding IsThemeLight}">
+                            <Grid Margin="0 4 4 0"
+                                  HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Content" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical">
+                                    <Ellipse Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="Black"
+                                             Fill="White" />
+                                    <Label HorizontalAlignment="Center" Content="Light"></Label>
+                                </StackPanel>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem IsSelected="{Binding IsThemeDark}">
+                            <Grid Margin="0 4 4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Content" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Center">
+                                    <Ellipse Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="White"
+                                             Fill="Black" />
+                                    <Label HorizontalAlignment="Center" Content="Dark"></Label>
+                                </StackPanel>
+                            </Grid>
+                        </ListBoxItem>
+                    </ListBox>
+                </StackPanel>
+            </HeaderedContentControl>
+            <HeaderedContentControl x:Name="flyouttheme"
+                                    Header="Flyouts:"
+                                    Tag="{Binding ElementName=Theme}"
+                                    Style="{StaticResource hccFormStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <ListBox Name="FlyoutTheme"
+                             SelectionMode="Single"
+                             Style="{StaticResource MetroListBox}"
+                             Background="Transparent">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"
+                                           IsItemsHost="True" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBoxItem IsSelected="{Binding IsFlyoutThemeLight}"
+                                     Style="{StaticResource MetroListBoxItem}">
+                            <Grid Margin="0 4 4 0"
+                                  HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Content" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical">
+                                    <Ellipse Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="Black"
+                                             Fill="White" />
+                                    <Label HorizontalAlignment="Center"
+                                           Content="Light"></Label>
+                                </StackPanel>
+                            </Grid>
+                        </ListBoxItem>
+                        <ListBoxItem IsSelected="{Binding IsFlyoutThemeDark}"
+                                     Style="{StaticResource MetroListBoxItem}">
+                            <Grid Margin="0 4 4 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Content" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Center">
+                                    <Ellipse Width="16"
+                                             Height="16"
+                                             StrokeThickness="1"
+                                             Stroke="White"
+                                             Fill="Black" />
+                                    <Label HorizontalAlignment="Center"
+                                           Content="Dark"></Label>
+                                </StackPanel>
+                            </Grid>
+                        </ListBoxItem>
+                    </ListBox>
+                </StackPanel>
+            </HeaderedContentControl>
+            <HeaderedContentControl x:Name="accent"
+                                    Header="Accent:"
+                                    Tag="{Binding ElementName=AccentColors}"
+                                    Style="{StaticResource hccFormStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                <ListBox Name="AccentColors"
+                         ItemsSource="{Binding AccentColors, Mode=OneWay}"
+                         SelectedItem="{Binding ActiveAccent}"
+                         SelectionMode="Single"
+                         Background="Transparent">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}"
+                                       IsItemsHost="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0 4 4 0"
+                                  HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Content" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Center">
+                                    <Ellipse Width="16"
+                                             Height="16"
+                                             Margin="2"
+                                             HorizontalAlignment="Center"
+                                             Fill="{Binding ColorBrush}" />
+                                    <TextBlock HorizontalAlignment="Center"
+                                               Text="{Binding Path=Name}" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </HeaderedContentControl>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="HearthCap.Features.Support.SupportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:support="clr-namespace:HearthCap.Features.Support"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=support:SupportViewModel, IsDesignTimeCreatable=False}"
+             MinHeight="300"
+             MinWidth="350"
+             MaxWidth="350">
+    <!--<UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="Black"></Setter>
+        </Style>
+    </UserControl.Resources>-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Margin="0 0 8 0">
+            <StackPanel Orientation="Vertical">
+                <HeaderedContentControl x:Name="theemail"
+                                        Header="Your e-mail address:"
+                                        Tag="{Binding ElementName=Email}"
+                                        Style="{StaticResource hccFormStyle2Big}">
+                    <Grid VerticalAlignment="Center"
+                          HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBox Name="Email"
+                                 Text="{Binding Email, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Stretch"></TextBox>
+                        <StackPanel Orientation="Horizontal"
+                                    Grid.Row="1">
+                            <TextBlock FontWeight="Bold"
+                                       Text="Note: "></TextBlock>
+                            <TextBlock>if you want updates, use a real e-mail address.</TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="thesubject"
+                                        Header="Subject:"
+                                        Tag="{Binding ElementName=Subject}"
+                                        Style="{StaticResource hccFormStyle2Big}">
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBox Name="Subject"></TextBox>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="themessage"
+                                        Header="Message:"
+                                        Tag="{Binding ElementName=Message}"
+                                        Style="{StaticResource hccFormStyle2Big}">
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <TextBox Name="Message"
+                                 Text="{Binding Message, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 Height="200"></TextBox>
+                    </Grid>
+                </HeaderedContentControl>
+                <HeaderedContentControl x:Name="attachemail"
+                                        Header=""
+                                        Tag="{Binding ElementName=AttachLog}"
+                                        Style="{StaticResource hccFormStyle}">
+                    <StackPanel VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                        <CheckBox Name="AttachLog">attach most recent logfile.</CheckBox>
+                    </StackPanel>
+                </HeaderedContentControl>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid HorizontalAlignment="Stretch"
+                  Margin="4">
+                <StackPanel HorizontalAlignment="Left">
+                    <Button Name="Cancel"
+                            Width="100">Cancel</Button>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                    <Button Name="Send"
+                            Width="100">Send</Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

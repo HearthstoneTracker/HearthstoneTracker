@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="HearthCap.Features.Status.StatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="Margin"
+                    Value="12" />
+            <Setter Property="Padding"
+                    Value="12" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="14" />
+            <Setter Property="FontWeight"
+                    Value="SemiBold" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Height="20">
+        <StackPanel Orientation="Horizontal"
+                    Opacity=".75"
+                    Margin="0 2 0 0"
+                    VerticalAlignment="Stretch">
+            <TextBlock Foreground="ForestGreen"
+                       Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}">Hearthstone is running</TextBlock>
+            <TextBlock Foreground="Red"
+                       Visibility="{Binding WindowMinimized, Converter={StaticResource booleanToVisibility}}">Hearthstone is running, window not visible</TextBlock>
+            <TextBlock Foreground="Red"
+                       Visibility="{Binding WindowLost, Converter={StaticResource booleanToVisibility}}">Hearthstone not running</TextBlock>
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}">
+                <Rectangle Width="1"
+                           Margin="6 2 6 0"
+                           Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding IsUnknownGameMode, Converter={StaticResource booleanToVisibility}}">
+                    <TextBlock Foreground="{DynamicResource BlackBrush}">Game mode:</TextBlock>
+                    <TextBlock Foreground="ForestGreen"
+                               Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}"
+                               Margin="4 0 0 0">Menu</TextBlock>
+                    <TextBlock Foreground="Red"
+                               Visibility="{Binding WindowMinimized, Converter={StaticResource booleanToVisibility}}"
+                               Margin="4 0 0 0">Unknown</TextBlock>
+                    <TextBlock Foreground="Red"
+                               Visibility="{Binding WindowLost, Converter={StaticResource booleanToVisibility}}"
+                               Margin="4 0 0 0">Unknown</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding IsUnknownGameMode, Converter={StaticResource booleanToVisibilityInverse}}">
+                    <TextBlock Foreground="{DynamicResource BlackBrush}">Game mode:</TextBlock>
+                    <TextBlock Foreground="ForestGreen"
+                               Margin="4 0 0 0"
+                               Text="{Binding GameMode}"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding ShowDeck, Converter={StaticResource booleanToVisibility}}">
+                <Rectangle Width="1"
+                           Margin="6 2 6 0"
+                           Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                <TextBlock Visibility="{Binding IsUnknownDeck, Converter={StaticResource booleanToVisibility}}"
+                           Foreground="Red">No deck detected</TextBlock>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding IsUnknownDeck, Converter={StaticResource booleanToVisibilityInverse}}">
+                    <TextBlock Foreground="{DynamicResource BlackBrush}">Deck:</TextBlock>
+                    <TextBlock Margin="4 0 0 0"
+                               Foreground="ForestGreen"
+                               Text="{Binding Deck}"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding IsInGame, Converter={StaticResource booleanToVisibility}}">
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding Hero, Converter={StaticResource nullToCollapsed}}">
+                    <Rectangle Width="1"
+                               Margin="6 2 6 0"
+                               Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                    <TextBlock Foreground="{DynamicResource BlackBrush}">Playing as:</TextBlock>
+                    <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
+                           Stretch="Uniform"
+                           Height="22"
+                           Margin="4 0 0 0"></Image>
+                    <!--<TextBlock Margin="4 0 0 0"
+                               Foreground="{DynamicResource BlackBrush}"
+                               Text="{Binding Hero.ClassName}"></TextBlock>-->
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Visibility="{Binding OpponentHero, Converter={StaticResource nullToCollapsed}}">
+                    <TextBlock Margin="4 0 0 0"
+                               Foreground="{DynamicResource BlackBrush}">vs</TextBlock>
+                    <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
+                           Stretch="Uniform"
+                           Height="22"
+                           Margin="4 0 0 0"></Image>
+                    <!--<TextBlock Margin="4 0 0 0"
+                               Foreground="{DynamicResource BlackBrush}"
+                               Text="{Binding OpponentHero.ClassName}"></TextBlock>-->
+                </StackPanel>
+                <TextBlock Foreground="{DynamicResource BlackBrush}"
+                           Margin="4 0 0 0"
+                           Text="{Binding Turns, StringFormat='{}turn #{0},'}"></TextBlock>
+                <TextBlock Visibility="{Binding MyTurn, Converter={StaticResource booleanToVisibility}}"
+                           Margin="4 0 0 0"
+                           Foreground="{DynamicResource BlackBrush}">your turn</TextBlock>
+                <TextBlock Visibility="{Binding MyTurn, Converter={StaticResource booleanToVisibilityInverse}}"
+                           Margin="4 0 0 0"
+                           Foreground="{DynamicResource BlackBrush}">enemy turn</TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

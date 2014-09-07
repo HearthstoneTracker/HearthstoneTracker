@@ -1,0 +1,169 @@
+﻿<UserControl x:Class="HearthCap.Features.Statistics.StatisticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:statistics="clr-namespace:HearthCap.Features.Statistics"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=statistics:StatisticsViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="400"
+             d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel Grid.Row="0"
+                   Orientation="Horizontal"
+                   VerticalAlignment="Center"
+                   Margin="4"
+                   IsEnabled="{Binding Busy.IsBusy, Converter={StaticResource invertBoolean}}">
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=FilterTypes}">Type:</Label>
+                <ComboBox Name="FilterTypes"
+                          DisplayMemberPath="Value"
+                          SelectedItem="{Binding SelectedFilterType}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0"
+                        Orientation="Vertical">
+                <Label Target="{Binding ElementName=DateRange}">Date (from - to):</Label>
+                <ComboBox Name="DateRange"
+                          Style="{StaticResource DateComboBox}"
+                          DataContext="{Binding DateFilter}">
+                    <ComboBoxItem IsSelected="True"
+                                  Style="{StaticResource DateComboBoxItem}"
+                                  Content="do not remove1"
+                                  DataContext="{Binding}"></ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Servers}">Server:</Label>
+                <ComboBox Name="Servers"
+                          VerticalAlignment="Stretch"
+                          DisplayMemberPath="Name"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterServer}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
+                <ComboBox ItemsSource="{Binding GameModes}"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Search}">Search:</Label>
+                <TextBox Name="Search"
+                         Height="32"
+                         VerticalContentAlignment="Center"
+                         Width="100">
+                    <i:Interaction.Triggers>
+                        <behaviors:InputBindingTrigger>
+                            <behaviors:InputBindingTrigger.InputBinding>
+                                <KeyBinding Key="Enter" />
+                            </behaviors:InputBindingTrigger.InputBinding>
+                            <cal:ActionMessage MethodName="RefreshData" />
+                        </behaviors:InputBindingTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
+            <Button Width="36"
+                    Height="36"
+                    Margin="0"
+                    VerticalAlignment="Bottom"
+                    cal:Message.Attach="RefreshData"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Cursor="Hand">
+                <Rectangle Width="16"
+                           Height="16"
+                           Fill="{DynamicResource BlackBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_magnify}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="1"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0"
+                  Margin="8 4 8 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource AccentColorBrush}"
+                       Content="Show statistics:"></Label>
+                <Grid Grid.Row="1"
+                      Margin="8 4 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWins}">Win/Loss: Total</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWinRatio}">Win/Loss: Total (%)</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWinsCoin}">Win/Loss: Coin</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWinRatioCoin}">Win/Loss: Coin (%)</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWinsNoCoin}">Win/Loss: No coin</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowWinRatioNoCoin}">Win/Loss: No coin (%)</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowPlayedVsRatio}">Played against (%)</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowTotalGamesByCoin}">Total (coin/no coin)</CheckBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 2 0 0">
+                            <CheckBox IsChecked="{Binding ActiveItem.ShowTotalGames}">Total games</CheckBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <!--<Rectangle Grid.Column="1"
+                       Fill="{DynamicResource GrayBrush2}"
+                       VerticalAlignment="Stretch"></Rectangle>-->
+            <ContentControl Name="ActiveItem"
+                            Grid.Column="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"></ContentControl>
+        </Grid>
+    </Grid>
+</UserControl>

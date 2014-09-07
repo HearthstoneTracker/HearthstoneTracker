@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="HearthCap.Features.BalloonSettings.BalloonSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:model="clr-namespace:HearthCap.Features.EngineSettings"
+             xmlns:balloonSettings="clr-namespace:HearthCap.Features.BalloonSettings"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=balloonSettings:BalloonSettingsViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="True"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="RedGlowItemContainer"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border CornerRadius="8"
+                                BorderBrush="{DynamicResource BlackBrush}"
+                                BorderThickness="3"
+                                x:Name="IconBorder"
+                                Margin="8,4,8,4">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="true">
+                                <Setter TargetName="IconBorder"
+                                        Property="BitmapEffect">
+                                    <Setter.Value>
+                                        <OuterGlowBitmapEffect GlowColor="Red"
+                                                               GlowSize="5" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl x:Name="startupminimized"
+                                    Header="Start minimized?"
+                                    Tag="{Binding ElementName=StartMinimized}"
+                                    Style="{StaticResource hccFormStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                <StackPanel VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <CheckBox Name="StartMinimized"
+                              IsChecked="{Binding UserPreferences.StartMinimized}"></CheckBox>
+                </StackPanel>
+            </HeaderedContentControl>
+            <HeaderedContentControl x:Name="minimizesetting"
+                                    Header="Minimize to tray:"
+                                    Tag="{Binding ElementName=MinimizeToTray}"
+                                    Style="{StaticResource hccFormStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                <StackPanel VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <CheckBox Name="MinimizeToTray"
+                              IsChecked="{Binding MinimizeToTray}"></CheckBox>                    
+                </StackPanel>
+            </HeaderedContentControl>
+            <HeaderedContentControl x:Name="balloonsetting"
+                                    Header="Show tray balloons:"
+                                    Tag="{Binding ElementName=ShowBalloons}"
+                                    Style="{StaticResource hccFormStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                <StackPanel Orientation="Vertical"
+                            VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0 4 0 0">
+                        <CheckBox Name="ShowBalloons"
+                                  IsChecked="{Binding BalloonSettings.GameMode}"></CheckBox>
+                        <TextBlock Margin="4 0 0 0">Game-mode/deck change</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0 4 0 0">
+                        <CheckBox Name="ShowBalloons2"
+                                  IsChecked="{Binding BalloonSettings.GameStartEnd}"></CheckBox>
+                        <TextBlock Margin="4 0 0 0">When game starts/ends</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0 4 0 0">
+                        <CheckBox Name="ShowBalloons3"
+                                  IsChecked="{Binding BalloonSettings.GameTurns}"></CheckBox>
+                        <TextBlock Margin="4 0 0 0">On every game turn</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </HeaderedContentControl>
+        </StackPanel>
+    </Grid>
+</UserControl>

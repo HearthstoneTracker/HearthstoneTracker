@@ -1,0 +1,200 @@
+﻿<UserControl x:Class="HearthCap.Features.Charts.ChartsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:behaviors="clr-namespace:HearthCap.UI.Behaviors"
+             xmlns:metroChart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:data="clr-namespace:HearthCap.Data;assembly=HearthCap.Data"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:charts="clr-namespace:HearthCap.Features.Charts"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="900"
+             d:DataContext="{d:DesignInstance Type=charts:ChartsViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="False">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Charts.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel Orientation="Horizontal"
+                   Grid.Row="0"
+                   VerticalAlignment="Center"
+                   Margin="4">
+            <StackPanel Margin="0 0 8 0"
+                        Orientation="Vertical">
+                <Label Target="{Binding ElementName=DateRange}">Date (from - to):</Label>
+                <ComboBox Name="DateRange"
+                          Style="{StaticResource DateComboBox}"
+                          DataContext="{Binding DateFilter}">
+                    <ComboBoxItem IsSelected="True"
+                                  Style="{StaticResource DateComboBoxItem}"
+                                  Content="do not remove1"
+                                  DataContext="{Binding}"></ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Servers}">Server:</Label>
+                <ComboBox Name="Servers"
+                          VerticalAlignment="Stretch"
+                          DisplayMemberPath="Name"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterServer}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Heroes}">Hero:</Label>
+                <ComboBox Name="Heroes"
+                          VerticalAlignment="Stretch"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterHero}"
+                          Style="{StaticResource heroCombobox}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Heroes}">Opponent:</Label>
+                <ComboBox Name="OpponentHeroes"
+                          ItemsSource="{Binding Heroes}"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterOpponentHero}"
+                          Style="{StaticResource heroCombobox}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
+                <ComboBox ItemsSource="{Binding GameModes}"
+                          Background="{DynamicResource WhiteBrush}"
+                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Decks}">Deck:</Label>
+                <ComboBox Name="Decks"
+                          Background="{DynamicResource WhiteBrush}"
+                          DisplayMemberPath="NameAndServer"
+                          SelectedItem="{Binding FilterDeck}"></ComboBox>
+            </StackPanel>
+            <StackPanel Margin="0 0 8 0">
+                <Label Target="{Binding ElementName=Search}">Search:</Label>
+                <TextBox Name="Search"
+                         Height="32"
+                         VerticalContentAlignment="Center"
+                         Width="100">
+                    <i:Interaction.Triggers>
+                        <behaviors:InputBindingTrigger>
+                            <behaviors:InputBindingTrigger.InputBinding>
+                                <KeyBinding Key="Enter" />
+                            </behaviors:InputBindingTrigger.InputBinding>
+                            <cal:ActionMessage MethodName="RefreshData" />
+                        </behaviors:InputBindingTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+            </StackPanel>
+            <Button Width="36"
+                    Height="36"
+                    Margin="0"
+                    VerticalAlignment="Bottom"
+                    cal:Message.Attach="RefreshData"
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    Cursor="Hand">
+                <Rectangle Width="16"
+                           Height="16"
+                           Fill="{DynamicResource BlackBrush}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill"
+                                     Visual="{StaticResource appbar_magnify}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+        </WrapPanel>
+        <Grid Grid.Row="1"
+              Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <controls:MetroTabControl Name="Items"
+                                      Grid.Column="0"
+                                      Margin="0">
+                <controls:MetroTabControl.ContentTemplate>
+                    <DataTemplate></DataTemplate>
+                </controls:MetroTabControl.ContentTemplate>
+            </controls:MetroTabControl>
+            <WrapPanel Grid.Column="1"
+                       Margin="0 6 16 0"
+                       HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal"
+                            Height="32">
+                    <Button Margin="0"
+                            cal:Message.Attach="SaveToDisk"
+                            Style="{DynamicResource ToolbarButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="18"
+                                       Height="18"
+                                       Fill="{DynamicResource BlackBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_save}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock FontSize="16"
+                                       Margin="4 0 0 0">Save to disk</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button Margin="8 0 0 0"
+                            cal:Message.Attach="SaveToClipboard"
+                            Style="{DynamicResource ToolbarButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="18"
+                                       Height="18"
+                                       Fill="{DynamicResource BlackBrush}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill"
+                                                 Visual="{StaticResource appbar_clipboard}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock FontSize="16"
+                                       Margin="4 0 0 0">Copy to clipboard</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </WrapPanel>
+        </Grid>
+        <Grid Grid.Row="2"
+              Margin="6 0 6 0">
+            <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                          VerticalScrollBarVisibility="Auto">
+                <Grid Name="ChartsContainer"
+                      Background="{DynamicResource WhiteBrush}"
+                      HorizontalAlignment="Left">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ContentControl Name="ActiveItem"
+                                        Grid.Row="0"
+                                        Margin="0 0 0 0"></ContentControl>
+                        <TextBlock FontSize="14"
+                                   Grid.Row="1"
+                                   Name="GeneratedBy"
+                                   HorizontalAlignment="Right"
+                                   Opacity="0.50"
+                                   Visibility="Collapsed">
+                            Generated by HearthstoneTracker.com</TextBlock>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

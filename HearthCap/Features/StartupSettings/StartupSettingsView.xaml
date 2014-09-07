@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="HearthCap.Features.StartupSettings.StartupSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:startupSettings="clr-namespace:HearthCap.Features.StartupSettings"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=startupSettings:StartupSettingsViewModel, IsDesignTimeCreatable=False}"
+             cal:Bind.AtDesignTime="True"
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl x:Name="startonlog"
+                                    Header=""
+                                    Tag="{Binding ElementName=StartOnLogon}"
+                                    Style="{StaticResource hccFormStyle}"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <CheckBox Name="StartOnLogon"
+                              IsChecked="{Binding UserPreferences.StartOnLogon}"></CheckBox>
+                    <TextBlock Margin="4 0 0 0">Start with windows? (it will start minimized)</TextBlock>
+                </StackPanel>
+            </HeaderedContentControl>
+        </StackPanel>
+    </Grid>
+</UserControl>
