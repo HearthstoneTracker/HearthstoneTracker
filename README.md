@@ -1,8 +1,8 @@
-[![Stories in Ready](//badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=backlog&title=Backlog)](http://waffle.io/hearthstonetracker/hearthstonetracker)
-[![Stories in Ready](//badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=ready&title=Ready)](http://waffle.io/hearthstonetracker/hearthstonetracker)
-[![Stories in Ready](//badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=done&title=Done)](http://waffle.io/hearthstonetracker/hearthstonetracker)
-[![Build status](//ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master)](https://ci.appveyor.com/project/remcoros/hearthstonetracker/branch/master)
-[![Gitter chat](//badges.gitter.im/HearthstoneTracker/HearthstoneTracker.png)](https://gitter.im/HearthstoneTracker/HearthstoneTracker)
+[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=backlog&title=Backlog)](http://waffle.io/hearthstonetracker/hearthstonetracker)
+[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=ready&title=Ready)](http://waffle.io/hearthstonetracker/hearthstonetracker)
+[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=done&title=Done)](http://waffle.io/hearthstonetracker/hearthstonetracker)
+[![Build status](https://ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master)](https://ci.appveyor.com/project/remcoros/hearthstonetracker/branch/master)
+[![Gitter chat](https://badges.gitter.im/HearthstoneTracker/HearthstoneTracker.png)](https://gitter.im/HearthstoneTracker/HearthstoneTracker)
 
 Hearthstone Tracker 
 =========
@@ -26,7 +26,7 @@ Features
 
 Support
 ----
-For general questions and/or user support, visit our subreddit at [![HearthstoneTracker subreddit](//www.reddit.com/static/spreddit5.gif)/r/hearthstonetracker](http://reddit.com/r/hearthstonetracker)
+For general questions and/or user support, visit our subreddit at [![HearthstoneTracker subreddit](https://www.reddit.com/static/spreddit5.gif)/r/hearthstonetracker](http://reddit.com/r/hearthstonetracker)
 
 New feature suggestions can be submitted and voted on at [hearthstonetracker.uservoice.com](http://hearthstonetracker.uservoice.com)
 
