@@ -895,6 +895,7 @@
     <Resource Include="Resources\hearthstone_icon.ico" />
     <Resource Include="Resources\Bulb.ico" />
     <Resource Include="Resources\hearthstone_icon16.ico" />
+    <Resource Include="costura32\placeholder.txt" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -987,7 +988,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"</PreBuildEvent>
+    <PreBuildEvent>if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
+xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
