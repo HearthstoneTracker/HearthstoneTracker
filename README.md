@@ -44,9 +44,13 @@ Most 3rd party libraries are managed using NuGet. All other dependencies (except
 Contributing
 ----
 
-Send a pull request.
+ - Suggest new features and report bugs
+ - Fork the repository and send a pull request
+ - [Donate a few bucks via Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=C9622EYVGXT48)
 
 License
 ----
 
 The MIT License (MIT)
+
+[![Analytics](https://ga-beacon.appspot.com/UA-46945463-7/HearthstoneTracker/README?pixel)](https://github.com/igrigorik/ga-beacon)
