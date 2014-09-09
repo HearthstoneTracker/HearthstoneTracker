@@ -1063,8 +1063,7 @@ xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"</Po
     <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
     <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="packages/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
     <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
-    <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />
-    <Exec Command="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(SolutionDir)\installer\HearthstoneTracker.nsi&quot;" />
+    <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />    
   </Target>
   <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
     <ItemGroup>

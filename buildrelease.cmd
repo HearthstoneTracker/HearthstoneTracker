@@ -8,5 +8,3 @@ set msbuildparams=/p:SolutionDir="%~dp0\" /p:Configuration=Release /t:ReBuild /n
 
 rmdir /s /q .\HearthCap\bin\Release
 %msbuild% %project% %msbuildparams%
-
-pause

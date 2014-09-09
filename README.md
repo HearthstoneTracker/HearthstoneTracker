@@ -1,6 +1,3 @@
-[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=backlog&title=Backlog)](http://waffle.io/hearthstonetracker/hearthstonetracker)
-[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=ready&title=Ready)](http://waffle.io/hearthstonetracker/hearthstonetracker)
-[![Stories in Ready](https://badge.waffle.io/hearthstonetracker/hearthstonetracker.svg?label=done&title=Done)](http://waffle.io/hearthstonetracker/hearthstonetracker)
 [![Build status](https://ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master)](https://ci.appveyor.com/project/remcoros/hearthstonetracker/branch/master)
 [![Gitter chat](https://badges.gitter.im/HearthstoneTracker/HearthstoneTracker.png)](https://gitter.im/HearthstoneTracker/HearthstoneTracker)
 
@@ -37,7 +34,7 @@ Development
 ----
 This is the main source-code repository of Hearthstone Tracker. Other related projects can be found on [github.com/hearthstonetracker](https://github.com/hearthstonetracker).
 
-Primary languages used are C# / XAML. Hearthstone Tracker is built using .NET 4.5 using Visual Studio 2013. If installing the Windows Desktop version of Visual Studio an install of the Web version of Visual Studio (for needed binaries) is required.
+Primary languages used are C# / XAML. Hearthstone Tracker is built using .NET 4.5 using Visual Studio 2013 Standard. If you use 'Visual Studio for Desktop', also install 'Visual Studio for Web' (for needed binaries).
 
 Most 3rd party libraries are managed using NuGet. All other dependencies (except the NSIS installer binaries) are included in the repository. Make sure you have the latest version of NuGet installed!
 
