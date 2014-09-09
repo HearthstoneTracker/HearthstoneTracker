@@ -37,7 +37,7 @@ Development
 ----
 This is the main source-code repository of Hearthstone Tracker. Other related projects can be found on [github.com/hearthstonetracker](https://github.com/hearthstonetracker).
 
-Hearthstone Tracker is build using .NET 4.5 using Visual Studio 2013. Primary languages used are C# / XAML.
+Primary languages used are C# / XAML. Hearthstone Tracker is built using .NET 4.5 using Visual Studio 2013. If installing the Windows Desktop version of Visual Studio an install of the Web version of Visual Studio (for needed binaries) is required.
 
 Most 3rd party libraries are managed using NuGet. All other dependencies (except the NSIS installer binaries) are included in the repository. Make sure you have the latest version of NuGet installed!
 
