@@ -28,7 +28,7 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 HearthCap/publish/*
 HearthCap/HearthCap_TemporaryKey.pfx
-HearthCap/costura32/HearthCapLoader.dll
+HearthCap/costura32/*.dll
 HearthCap/Properties/CommonAssemblyInfo.cs
 packages/*
 !/lib/**
