@@ -995,7 +995,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
-xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"</PreBuildEvent>
+if not exist "$(ProjectDir)\costura64" md "$(ProjectDir)\costura64"
+xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"
+</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
@@ -1004,12 +1006,13 @@ if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
 xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"
 
 xcopy /s /y "$(SolutionDir)lib\Mono\System.Runtime.*.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook32.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook32Svc.exe" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64Svc.exe" "$(TargetDir)"
 xcopy /s /y "$(SolutionDir)lib\D3DX9_43.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"</PostBuildEvent>
+xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook32.dll" "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad32.dll" "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64.dll" "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad64.dll" "$(TargetDir)"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
@@ -1063,7 +1066,7 @@ xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"</Po
     <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
     <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="packages/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
     <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
-    <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />    
+    <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />
   </Target>
   <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
     <ItemGroup>
@@ -1071,6 +1074,8 @@ xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"</Po
       <ExcludedCosturaFiles Include="**\EasyHook.dll" />
       <ExcludedCosturaFiles Include="**\EasyHook32.dll" />
       <ExcludedCosturaFiles Include="**\EasyHook64.dll" />
+      <ExcludedCosturaFiles Include="**\EasyLoad32.dll" />
+      <ExcludedCosturaFiles Include="**\EasyLoad64.dll" />
       <ExcludedCosturaFiles Include="**\HearthCap.Updater.exe" />
       <ExcludedCosturaFiles Include="**\HearthCapLogger.dll" />
       <ExcludedCosturaFiles Include="**\HearthCap.Logger.Interface.dll" />

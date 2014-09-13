@@ -65,17 +65,13 @@
 
             try
             {
-                var location = typeof(CaptureInterface).Assembly.Location;
-                if (String.IsNullOrEmpty(location))
-                {
-                    var dllName = typeof(CaptureInterface).Assembly.GetName().Name + ".dll";
-                    location = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
-                }
+                var dllName = typeof(CaptureInterface).Assembly.GetName().Name + ".dll";
+                var location = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllName);
 
                 // Inject DLL into target process
                 RemoteHooking.Inject(
                     process.Id,
-                    InjectionOptions.Default,
+                    InjectionOptions.NoService | InjectionOptions.DoNotRequireStrongName,
                     location,
                     //"Capture.dll", // 32-bit version (the same because AnyCPU) could use different assembly that links to 32-bit C++ helper dll
                     location,
