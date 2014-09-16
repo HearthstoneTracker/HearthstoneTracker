@@ -38,6 +38,12 @@ Primary languages used are C# / XAML. Hearthstone Tracker is built using .NET 4.
 
 Most 3rd party libraries are managed using NuGet. All other dependencies (except the NSIS installer binaries) are included in the repository. Make sure you have the latest version of NuGet installed!
 
+The wiki contains some basic information on how to get started with the source:
+
+ - [Getting Started](https://github.com/HearthstoneTracker/HearthstoneTracker/wiki/Getting-Started) 
+ - [Frameworks and architecture](https://github.com/HearthstoneTracker/HearthstoneTracker/wiki/Frameworks-and-architecture)
+
+
 Contributing
 ----
 
