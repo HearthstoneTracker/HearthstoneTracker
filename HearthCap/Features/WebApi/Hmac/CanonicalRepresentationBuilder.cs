@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CanonicalRepresentationBuilder.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The canonical representation builder.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.WebApi.Hmac
 {
     using System;
@@ -5,6 +14,9 @@ namespace HearthCap.Features.WebApi.Hmac
     using System.Linq;
     using System.Net.Http;
 
+    /// <summary>
+    /// The canonical representation builder.
+    /// </summary>
     public class CanonicalRepresentationBuilder : IBuildMessageRepresentation
     {
         /// <summary>
@@ -15,7 +27,12 @@ namespace HearthCap.Features.WebApi.Hmac
         /// ApiKey\n +
         /// Request URI
         /// </summary>
-        /// <returns></returns>
+        /// <param name="requestMessage">
+        /// The request Message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         public string BuildRequestRepresentation(HttpRequestMessage requestMessage)
         {
             bool valid = this.IsRequestValid(requestMessage);
@@ -28,29 +45,41 @@ namespace HearthCap.Features.WebApi.Hmac
             {
                 return null;
             }
+
             DateTime date = requestMessage.Headers.Date.Value.UtcDateTime;
 
-            string md5 = requestMessage.Content == null ||
-                         requestMessage.Content.Headers.ContentMD5 == null ? ""
+            string md5 = requestMessage.Content == null || requestMessage.Content.Headers.ContentMD5 == null
+                             ? string.Empty
                              : Convert.ToBase64String(requestMessage.Content.Headers.ContentMD5);
 
             string httpMethod = requestMessage.Method.Method;
-            //string contentType = requestMessage.Content.Headers.ContentType.MediaType;
+
+            // string contentType = requestMessage.Content.Headers.ContentType.MediaType;
             if (!requestMessage.Headers.Contains(Configuration.ApiKeyHeader))
             {
                 return null;
             }
+
             string username = requestMessage.Headers.GetValues(Configuration.ApiKeyHeader).First();
             string uri = requestMessage.RequestUri.AbsolutePath.ToLower();
+
             // you may need to add more headers if thats required for security reasons
-            string representation = String.Join("\n", httpMethod, md5, date.ToString(CultureInfo.InvariantCulture), username, uri);
+            string representation = string.Join("\n", httpMethod, md5, date.ToString(CultureInfo.InvariantCulture), username, uri);
             return representation;
         }
 
+        /// <summary>
+        /// The is request valid.
+        /// </summary>
+        /// <param name="requestMessage">
+        /// The request message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool IsRequestValid(HttpRequestMessage requestMessage)
         {
-            //for simplicity I am omitting headers check (all required headers should be present)
-
+            // for simplicity I am omitting headers check (all required headers should be present)
             return true;
         }
     }

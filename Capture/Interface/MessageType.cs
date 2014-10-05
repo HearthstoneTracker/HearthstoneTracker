@@ -1,15 +1,42 @@
-﻿namespace Capture.Interface
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MessageType.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The message type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Capture.Interface
 {
+    /// <summary>
+    /// The message type.
+    /// </summary>
     public enum MessageType
     {
-        Debug,
+        /// <summary>
+        /// The debug.
+        /// </summary>
+        Debug, 
 
-        Information,
+        /// <summary>
+        /// The information.
+        /// </summary>
+        Information, 
 
-        Warning,
+        /// <summary>
+        /// The warning.
+        /// </summary>
+        Warning, 
 
-        Error,
+        /// <summary>
+        /// The error.
+        /// </summary>
+        Error, 
 
+        /// <summary>
+        /// The trace.
+        /// </summary>
         Trace
     }
 }

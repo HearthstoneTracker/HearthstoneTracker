@@ -1,20 +1,53 @@
-﻿namespace HearthCap.Data
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TextFileTemplate.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The text file template.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Data
 {
     using System;
 
+    /// <summary>
+    /// The text file template.
+    /// </summary>
     public class TextFileTemplate : IEntityWithId<Guid>
     {
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
         public Guid Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the filename.
+        /// </summary>
         public string Filename { get; set; }
 
+        /// <summary>
+        /// Gets or sets the template.
+        /// </summary>
         public string Template { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextFileTemplate"/> class.
+        /// </summary>
         public TextFileTemplate()
         {
-            Id = Guid.NewGuid();
+            this.Id = Guid.NewGuid();
         }
 
+        /// <summary>
+        /// The equals.
+        /// </summary>
+        /// <param name="other">
+        /// The other.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         protected bool Equals(TextFileTemplate other)
         {
             return this.Id.Equals(other.Id);
@@ -26,22 +59,27 @@
         /// <returns>
         /// true if the specified object  is equal to the current object; otherwise, false.
         /// </returns>
-        /// <param name="obj">The object to compare with the current object. </param>
+        /// <param name="obj">
+        /// The object to compare with the current object. 
+        /// </param>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
             {
                 return false;
             }
+
             if (ReferenceEquals(this, obj))
             {
                 return true;
             }
+
             if (obj.GetType() != this.GetType())
             {
                 return false;
             }
-            return Equals((TextFileTemplate)obj);
+
+            return this.Equals((TextFileTemplate)obj);
         }
 
         /// <summary>

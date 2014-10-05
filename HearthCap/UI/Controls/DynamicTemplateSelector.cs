@@ -1,4 +1,13 @@
-﻿namespace HearthCap.UI.Controls
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DynamicTemplateSelector.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Provides a means to specify DataTemplates to be selected from within WPF code
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.UI.Controls
 {
     using System;
     using System.Collections.Generic;
@@ -19,20 +28,19 @@
         /// a control's TemplateSelector is set to an instance of <see cref="DynamicTemplateSelector"/>
         /// </remarks>
         public static readonly DependencyProperty TemplatesProperty =
-            DependencyProperty.RegisterAttached("Templates", typeof(TemplateCollection), typeof(DynamicTemplateSelector),
+            DependencyProperty.RegisterAttached("Templates", typeof(TemplateCollection), typeof(DynamicTemplateSelector), 
             new FrameworkPropertyMetadata(new TemplateCollection(), FrameworkPropertyMetadataOptions.Inherits));
-
-        public DynamicTemplateSelector()
-            : base()
-        {
-        }
 
         /// <summary>
         /// Gets the value of the <paramref name="element"/>'s attached <see cref="TemplatesProperty"/>
         /// </summary>
-        /// <param name="element">The <see cref="UIElement"/> who's attached template's property you wish to retrieve</param>
-        /// <returns>The templates used by the givem <paramref name="element"/>
-        /// when using the <see cref="DynamicTemplateSelector"/></returns>
+        /// <param name="element">
+        /// The <see cref="UIElement"/> who's attached template's property you wish to retrieve
+        /// </param>
+        /// <returns>
+        /// The templates used by the givem <paramref name="element"/>
+        /// when using the <see cref="DynamicTemplateSelector"/>
+        /// </returns>
         public static TemplateCollection GetTemplates(UIElement element)
         {
             return element.GetValue(TemplatesProperty) as TemplateCollection;
@@ -41,8 +49,12 @@
         /// <summary>
         /// Sets the value of the <paramref name="element"/>'s attached <see cref="TemplatesProperty"/>
         /// </summary>
-        /// <param name="element">The element to set the property on</param>
-        /// <param name="collection">The collection of <see cref="Template"/>s to apply to this element</param>
+        /// <param name="element">
+        /// The element to set the property on
+        /// </param>
+        /// <param name="collection">
+        /// The collection of <see cref="Template"/>s to apply to this element
+        /// </param>
         public static void SetTemplates(UIElement element, TemplateCollection collection)
         {
             element.SetValue(TemplatesProperty, collection);
@@ -51,36 +63,42 @@
         /// <summary>
         /// Overriden base method to allow the selection of the correct DataTemplate
         /// </summary>
-        /// <param name="item">The item for which the template should be retrieved</param>
-        /// <param name="container">The object containing the current item</param>
-        /// <returns>The <see cref="DataTemplate"/> to use when rendering the <paramref name="item"/></returns>
+        /// <param name="item">
+        /// The item for which the template should be retrieved
+        /// </param>
+        /// <param name="container">
+        /// The object containing the current item
+        /// </param>
+        /// <returns>
+        /// The <see cref="DataTemplate"/> to use when rendering the <paramref name="item"/>
+        /// </returns>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            //This should ensure that the item we are getting is in fact capable of holding our property
-            //before we attempt to retrieve it.
+            // This should ensure that the item we are getting is in fact capable of holding our property
+            // before we attempt to retrieve it.
             if (!(container is UIElement))
                 return base.SelectTemplate(item, container);
 
-            //First, we gather all the templates associated with the current control through our dependency property
+            // First, we gather all the templates associated with the current control through our dependency property
             TemplateCollection templates = GetTemplates(container as UIElement);
             if (templates == null || templates.Count == 0)
             {
                 return base.SelectTemplate(item, container);
             }
 
-            //Then we go through them checking if any of them match our criteria
+            // Then we go through them checking if any of them match our criteria
             foreach (var template in templates)
             {
-                //In this case, we are checking whether the type of the item
-                //is the same as the type supported by our DataTemplate
+                // In this case, we are checking whether the type of the item
+                // is the same as the type supported by our DataTemplate
                 if (template.Value.IsInstanceOfType(item))
                 {
-                    //And if it is, then we return that DataTemplate
+                    // And if it is, then we return that DataTemplate
                     return template.DataTemplate;
                 }
             }
 
-            //If all else fails, then we go back to using the default DataTemplate
+            // If all else fails, then we go back to using the default DataTemplate
             return base.SelectTemplate(item, container);
         }
     }
@@ -118,11 +136,11 @@
         /// <summary>
         /// Gets or Sets the value used to match this <see cref="DataTemplate"/> to an item
         /// </summary>
-        public Type Value { get { return (Type)GetValue(ValueProperty); } set { SetValue(ValueProperty, value); } }
+        public Type Value { get { return (Type)this.GetValue(ValueProperty); } set { this.SetValue(ValueProperty, value); } }
 
         /// <summary>
         /// Gets or Sets the <see cref="DataTemplate"/> used to render items matching the <see cref="Value"/>
         /// </summary>
-        public DataTemplate DataTemplate { get { return (DataTemplate)GetValue(DataTemplateProperty); } set { SetValue(DataTemplateProperty, value); } }
+        public DataTemplate DataTemplate { get { return (DataTemplate)this.GetValue(DataTemplateProperty); } set { this.SetValue(DataTemplateProperty, value); } }
     }
 }

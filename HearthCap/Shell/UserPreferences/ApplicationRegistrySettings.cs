@@ -1,35 +1,56 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ApplicationRegistrySettings.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The application registry settings.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Shell.UserPreferences
 {
-    using System;
-
+    /// <summary>
+    /// The application registry settings.
+    /// </summary>
     public class ApplicationRegistrySettings : RegistrySettings
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationRegistrySettings"/> class.
+        /// </summary>
         public ApplicationRegistrySettings()
             : base(@"Software\HearthstoneTracker")
         {
         }
 
+        /// <summary>
+        /// Gets or sets the default server.
+        /// </summary>
         public string DefaultServer
         {
             get
             {
-                return GetOrCreate("DefaultServer", String.Empty);
+                return this.GetOrCreate("DefaultServer", string.Empty);
             }
+
             set
             {
-                SetValue("DefaultServer", value);
+                this.SetValue("DefaultServer", value);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the servers.
+        /// </summary>
         public string Servers
         {
             get
             {
-                return GetOrCreate("Servers", "EU|NA|Asia|CN");
+                return this.GetOrCreate("Servers", "EU|NA|Asia|CN");
             }
+
             set
             {
-                SetValue("Servers", value);
+                this.SetValue("Servers", value);
             }
         }
     }

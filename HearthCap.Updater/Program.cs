@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Updater
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The program.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Updater
 {
     using System;
     using System.IO;
@@ -8,8 +17,17 @@
     using NLog.Config;
     using NLog.Targets;
 
+    /// <summary>
+    /// The program.
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// The main.
+        /// </summary>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         static void Main(string[] args)
         {
             if (args.Length <= 0)

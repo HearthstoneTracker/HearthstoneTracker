@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Features.ArenaSessions
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CurrentSessionFlyoutViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The current session flyout view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.ArenaSessions
 {
     using System;
     using System.ComponentModel;
@@ -14,7 +23,6 @@
     using Caliburn.Micro;
     using Caliburn.Micro.Recipes.Filters;
 
-    using HearthCap.Core.GameCapture;
     using HearthCap.Core.GameCapture.HS;
     using HearthCap.Core.GameCapture.HS.Commands;
     using HearthCap.Core.GameCapture.HS.Events;
@@ -34,103 +42,229 @@
 
     using NLog;
 
+    using LogManager = NLog.LogManager;
+
+    /// <summary>
+    /// The current session flyout view model.
+    /// </summary>
     [Export(typeof(IFlyout))]
     [Export(typeof(CurrentSessionFlyoutViewModel))]
-    public class CurrentSessionFlyoutViewModel : FlyoutViewModel,
-                                                 IPartImportsSatisfiedNotification,
-                                                 IHandleWithTask<ArenaHeroDetected>,
-                                                 IHandle<GameModeChanged>,
-                                                 IHandle<ArenaDrafting>,
-                                                 IHandle<ArenaSessionUpdated>,
-                                                 IHandleWithTask<ArenaDeckScreenshotTaken>,
-                                                 IHandle<ArenaWinsDetected>,
-                                                 IHandle<ArenaLossesDetected>,
+    public class CurrentSessionFlyoutViewModel : FlyoutViewModel, 
+                                                 IPartImportsSatisfiedNotification, 
+                                                 IHandleWithTask<ArenaHeroDetected>, 
+                                                 IHandle<GameModeChanged>, 
+                                                 IHandle<ArenaDrafting>, 
+                                                 IHandle<ArenaSessionUpdated>, 
+                                                 IHandleWithTask<ArenaDeckScreenshotTaken>, 
+                                                 IHandle<ArenaWinsDetected>, 
+                                                 IHandle<ArenaLossesDetected>, 
                                                  IHandle<SelectedGameChanged>
     {
         #region Static Fields
 
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private Logger Log = LogManager.GetCurrentClassLogger();
 
         #endregion
 
         #region Fields
+
+        /// <summary>
+        /// The servers.
+        /// </summary>
         private readonly BindableServerCollection servers = BindableServerCollection.Instance;
 
+        /// <summary>
+        /// The selected server.
+        /// </summary>
         private ServerItemModel selectedServer;
 
+        /// <summary>
+        /// The arena repository.
+        /// </summary>
         private readonly IRepository<ArenaSession> arenaRepository;
 
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The game manager.
+        /// </summary>
         private readonly GameManager gameManager;
 
+        /// <summary>
+        /// The hero repository.
+        /// </summary>
         private readonly IRepository<Hero> heroRepository;
 
+        /// <summary>
+        /// The ended.
+        /// </summary>
         private DateTime? ended;
 
+        /// <summary>
+        /// The hero.
+        /// </summary>
         private Hero hero;
 
+        /// <summary>
+        /// The heroes.
+        /// </summary>
         private BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
+        /// <summary>
+        /// The is ended.
+        /// </summary>
         private bool isEnded;
 
+        /// <summary>
+        /// The last is open.
+        /// </summary>
         private bool lastIsOpen;
 
+        /// <summary>
+        /// The latest arena session.
+        /// </summary>
         private ArenaSessionModel latestArenaSession;
 
+        /// <summary>
+        /// The losses.
+        /// </summary>
         private int losses;
 
+        /// <summary>
+        /// The new arena lock.
+        /// </summary>
         private AsyncLock newArenaLock = new AsyncLock();
 
+        /// <summary>
+        /// The retired.
+        /// </summary>
         private bool retired;
 
+        /// <summary>
+        /// The selected arena session.
+        /// </summary>
         private ArenaSessionModel selectedArenaSession;
 
+        /// <summary>
+        /// The started.
+        /// </summary>
         private DateTime started;
 
+        /// <summary>
+        /// The wins.
+        /// </summary>
         private int wins;
 
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
 
+        /// <summary>
+        /// The reward gold.
+        /// </summary>
         private int rewardGold;
 
+        /// <summary>
+        /// The reward dust.
+        /// </summary>
         private int rewardDust;
 
+        /// <summary>
+        /// The reward packs.
+        /// </summary>
         private int rewardPacks;
 
+        /// <summary>
+        /// The notes.
+        /// </summary>
         private string notes;
 
+        /// <summary>
+        /// The arena id for screenshot.
+        /// </summary>
         private Guid arenaIdForScreenshot;
 
+        /// <summary>
+        /// The deck screenshot 1.
+        /// </summary>
         private BitmapImage deckScreenshot1;
 
+        /// <summary>
+        /// The deck screenshot 2.
+        /// </summary>
         private BitmapImage deckScreenshot2;
 
+        /// <summary>
+        /// The is second screenshot.
+        /// </summary>
         private bool isSecondScreenshot;
 
+        /// <summary>
+        /// The can take screenshot.
+        /// </summary>
         private bool canTakeScreenshot;
 
+        /// <summary>
+        /// The taking screenshot.
+        /// </summary>
         private bool takingScreenshot;
 
+        /// <summary>
+        /// The show screenshot column.
+        /// </summary>
         private bool showScreenshotColumn;
 
+        /// <summary>
+        /// The handling arena detect.
+        /// </summary>
         private bool handlingArenaDetect;
 
+        /// <summary>
+        /// The detected hero.
+        /// </summary>
         private string detectedHero;
 
+        /// <summary>
+        /// The detected wins.
+        /// </summary>
         private int detectedWins = -1;
 
+        /// <summary>
+        /// The detected losses.
+        /// </summary>
         private int detectedLosses = -1;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CurrentSessionFlyoutViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="arenaRepository">
+        /// The arena repository.
+        /// </param>
+        /// <param name="heroRepository">
+        /// The hero repository.
+        /// </param>
+        /// <param name="gameManager">
+        /// The game manager.
+        /// </param>
         [ImportingConstructor]
         public CurrentSessionFlyoutViewModel(
-            IEventAggregator events,
-            IRepository<ArenaSession> arenaRepository,
-            IRepository<Hero> heroRepository,
+            IEventAggregator events, 
+            IRepository<ArenaSession> arenaRepository, 
+            IRepository<Hero> heroRepository, 
             GameManager gameManager)
         {
             this.events = events;
@@ -138,7 +272,7 @@
             this.heroRepository = heroRepository;
             this.gameManager = gameManager;
             this.Name = "arenasession";
-            SetPosition(Position.Right);
+            this.SetPosition(Position.Right);
             this.events.Subscribe(this);
             this.PropertyChanged += this.OnPropertyChanged;
             this.lastIsOpen = this.IsOpen;
@@ -148,288 +282,376 @@
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets or sets the global data.
+        /// </summary>
         [Import]
         public GlobalData GlobalData { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether show screenshot column.
+        /// </summary>
         public bool ShowScreenshotColumn
         {
             get
             {
                 return this.showScreenshotColumn;
             }
+
             set
             {
                 if (value.Equals(this.showScreenshotColumn))
                 {
                     return;
                 }
+
                 this.showScreenshotColumn = value;
                 this.NotifyOfPropertyChange(() => this.ShowScreenshotColumn);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected server.
+        /// </summary>
         public ServerItemModel SelectedServer
         {
             get
             {
                 return this.selectedServer;
             }
+
             set
             {
                 if (Equals(value, this.selectedServer))
                 {
                     return;
                 }
+
                 this.selectedServer = value;
                 this.NotifyOfPropertyChange(() => this.SelectedServer);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the reward gold.
+        /// </summary>
         public int RewardGold
         {
             get
             {
                 return this.rewardGold;
             }
+
             set
             {
                 if (value == this.rewardGold)
                 {
                     return;
                 }
+
                 this.rewardGold = value;
                 this.NotifyOfPropertyChange(() => this.RewardGold);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the reward dust.
+        /// </summary>
         public int RewardDust
         {
             get
             {
                 return this.rewardDust;
             }
+
             set
             {
                 if (value == this.rewardDust)
                 {
                     return;
                 }
+
                 this.rewardDust = value;
                 this.NotifyOfPropertyChange(() => this.RewardDust);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the reward packs.
+        /// </summary>
         public int RewardPacks
         {
             get
             {
                 return this.rewardPacks;
             }
+
             set
             {
                 if (value == this.rewardPacks)
                 {
                     return;
                 }
+
                 this.rewardPacks = value;
                 this.NotifyOfPropertyChange(() => this.RewardPacks);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the notes.
+        /// </summary>
         public string Notes
         {
             get
             {
                 return this.notes;
             }
+
             set
             {
                 if (value == this.notes)
                 {
                     return;
                 }
+
                 this.notes = value;
                 this.NotifyOfPropertyChange(() => this.Notes);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the ended.
+        /// </summary>
         public DateTime? Ended
         {
             get
             {
                 return this.ended;
             }
+
             set
             {
                 if (value.Equals(this.ended))
                 {
                     return;
                 }
+
                 this.ended = value;
                 this.NotifyOfPropertyChange(() => this.Ended);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the hero.
+        /// </summary>
         public Hero Hero
         {
             get
             {
                 return this.hero;
             }
+
             set
             {
                 if (Equals(value, this.hero))
                 {
                     return;
                 }
+
                 this.hero = value;
                 this.NotifyOfPropertyChange(() => this.Hero);
             }
         }
 
+        /// <summary>
+        /// Gets the heroes.
+        /// </summary>
         public IObservableCollection<Hero> Heroes
         {
             get
             {
-                return heroes;
+                return this.heroes;
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether is ended.
+        /// </summary>
         public bool IsEnded
         {
             get
             {
                 return this.isEnded;
             }
+
             set
             {
                 if (value.Equals(this.isEnded))
                 {
                     return;
                 }
+
                 this.isEnded = value;
                 this.NotifyOfPropertyChange(() => this.IsEnded);
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether is latest.
+        /// </summary>
         public bool IsLatest
         {
             get
             {
-                if (SelectedArenaSession == null || LatestArenaSession == null) return false;
+                if (this.SelectedArenaSession == null || this.LatestArenaSession == null) return false;
 
                 return Equals(this.SelectedArenaSession.Id, this.LatestArenaSession.Id);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the latest arena session.
+        /// </summary>
         public ArenaSessionModel LatestArenaSession
         {
             get
             {
                 return this.latestArenaSession;
             }
+
             set
             {
                 if (Equals(value, this.latestArenaSession))
                 {
                     return;
                 }
+
                 this.latestArenaSession = value;
                 this.NotifyOfPropertyChange(() => this.LatestArenaSession);
                 this.NotifyOfPropertyChange(() => this.IsLatest);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the losses.
+        /// </summary>
         public int Losses
         {
             get
             {
                 return this.losses;
             }
+
             set
             {
                 if (value == this.losses)
                 {
                     return;
                 }
+
                 this.losses = value;
                 this.NotifyOfPropertyChange(() => this.Losses);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether retired.
+        /// </summary>
         public bool Retired
         {
             get
             {
                 return this.retired;
             }
+
             set
             {
                 if (value.Equals(this.retired))
                 {
                     return;
                 }
+
                 this.retired = value;
                 this.NotifyOfPropertyChange(() => this.Retired);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected arena session.
+        /// </summary>
         public ArenaSessionModel SelectedArenaSession
         {
             get
             {
                 return this.selectedArenaSession;
             }
+
             set
             {
                 if (ReferenceEquals(value, this.selectedArenaSession))
                 {
                     return;
                 }
+
                 this.selectedArenaSession = value;
-                //if (value != null)
-                //{
-                //    this.InitViewModel(value);
-                //}
+
+                // if (value != null)
+                // {
+                // this.InitViewModel(value);
+                // }
                 this.NotifyOfPropertyChange(() => this.SelectedArenaSession);
                 this.NotifyOfPropertyChange(() => this.IsLatest);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the started.
+        /// </summary>
         public DateTime Started
         {
             get
             {
                 return this.started;
             }
+
             set
             {
                 if (value.Equals(this.started))
                 {
                     return;
                 }
+
                 this.started = value;
                 this.NotifyOfPropertyChange(() => this.Started);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the wins.
+        /// </summary>
         public int Wins
         {
             get
             {
                 return this.wins;
             }
+
             set
             {
                 if (value == this.wins)
                 {
                     return;
                 }
+
                 this.wins = value;
                 this.NotifyOfPropertyChange(() => this.Wins);
             }
         }
 
+        /// <summary>
+        /// Gets the servers.
+        /// </summary>
         public BindableServerCollection Servers
         {
             get
@@ -438,12 +660,16 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the deck screenshot 1.
+        /// </summary>
         public BitmapImage DeckScreenshot1
         {
             get
             {
                 return this.deckScreenshot1;
             }
+
             set
             {
                 this.deckScreenshot1 = value;
@@ -451,12 +677,16 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the deck screenshot 2.
+        /// </summary>
         public BitmapImage DeckScreenshot2
         {
             get
             {
                 return this.deckScreenshot2;
             }
+
             set
             {
                 this.deckScreenshot2 = value;
@@ -464,35 +694,45 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether can take screenshot.
+        /// </summary>
         public bool CanTakeScreenshot
         {
             get
             {
                 return this.canTakeScreenshot;
             }
+
             set
             {
                 if (value.Equals(this.canTakeScreenshot))
                 {
                     return;
                 }
+
                 this.canTakeScreenshot = value;
                 this.NotifyOfPropertyChange(() => this.CanTakeScreenshot);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether taking screenshot.
+        /// </summary>
         public bool TakingScreenshot
         {
             get
             {
                 return this.takingScreenshot;
             }
+
             set
             {
                 if (value.Equals(this.takingScreenshot))
                 {
                     return;
                 }
+
                 this.takingScreenshot = value;
                 this.NotifyOfPropertyChange(() => this.TakingScreenshot);
             }
@@ -502,49 +742,64 @@
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// The add game.
+        /// </summary>
         public void AddGame()
         {
             // this.IsOpen = false;
-            events.PublishOnCurrentThread(new CreateNewGame() { ArenaSession = this.SelectedArenaSession });
+            this.events.PublishOnCurrentThread(new CreateNewGame { ArenaSession = this.SelectedArenaSession });
         }
 
+        /// <summary>
+        /// The delete.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task Delete()
         {
-            if (SelectedArenaSession == null)
+            if (this.SelectedArenaSession == null)
             {
                 return;
             }
 
             if (MessageBox.Show("Delete this arena?", "Delete this arena?", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                await gameManager.DeleteArenaSession(this.SelectedArenaSession.Id);
-                events.PublishOnBackgroundThread(new SendNotification("Arena successfully deleted."));
-                LoadLatest();
+                await this.gameManager.DeleteArenaSession(this.SelectedArenaSession.Id);
+                this.events.PublishOnBackgroundThread(new SendNotification("Arena successfully deleted."));
+                this.LoadLatest();
             }
         }
 
+        /// <summary>
+        /// The cancel take screenshot.
+        /// </summary>
         public void CancelTakeScreenshot()
         {
-            isSecondScreenshot = false;
-            CanTakeScreenshot = true;
-            TakingScreenshot = false;
+            this.isSecondScreenshot = false;
+            this.CanTakeScreenshot = true;
+            this.TakingScreenshot = false;
         }
 
+        /// <summary>
+        /// The save screenshot to disk.
+        /// </summary>
         public void SaveScreenshotToDisk()
         {
-            if (SelectedArenaSession == null || SelectedArenaSession.Image1 == null)
+            if (this.SelectedArenaSession == null || this.SelectedArenaSession.Image1 == null)
                 return;
 
             var defaultFilename = "arena.png";
             var dialog = new CommonSaveFileDialog
             {
-                OverwritePrompt = true,
-                DefaultExtension = ".png",
-                DefaultFileName = defaultFilename,
-                EnsureValidNames = true,
-                Title = "Save deck screenshot",
-                AllowPropertyEditing = false,
-                RestoreDirectory = true,
+                OverwritePrompt = true, 
+                DefaultExtension = ".png", 
+                DefaultFileName = defaultFilename, 
+                EnsureValidNames = true, 
+                Title = "Save deck screenshot", 
+                AllowPropertyEditing = false, 
+                RestoreDirectory = true, 
                 Filters =
                                      {
                                          new CommonFileDialogFilter("PNG", ".png")
@@ -554,14 +809,14 @@
             {
                 Bitmap image1 = null;
                 Bitmap image2 = null;
-                using (var ms = new MemoryStream(SelectedArenaSession.Image1.Image))
+                using (var ms = new MemoryStream(this.SelectedArenaSession.Image1.Image))
                 {
                     image1 = new Bitmap(new Bitmap(ms));
                 }
 
-                if (SelectedArenaSession.Image2 != null)
+                if (this.SelectedArenaSession.Image2 != null)
                 {
-                    using (var ms = new MemoryStream(SelectedArenaSession.Image2.Image))
+                    using (var ms = new MemoryStream(this.SelectedArenaSession.Image2.Image))
                     {
                         image2 = new Bitmap(new Bitmap(ms));
                     }
@@ -580,92 +835,113 @@
                         g.DrawImage(image1, 0, 0);
                         g.DrawImage(image2, image1.Width, 0);
                     }
+
                     target.Save(filename, ImageFormat.Png);
                 }
             }
         }
 
+        /// <summary>
+        /// The take first screenshot.
+        /// </summary>
         public void TakeFirstScreenshot()
         {
-            this.arenaIdForScreenshot = SelectedArenaSession.Id;
+            this.arenaIdForScreenshot = this.SelectedArenaSession.Id;
             this.isSecondScreenshot = false;
-            CanTakeScreenshot = false;
-            TakingScreenshot = true;
+            this.CanTakeScreenshot = false;
+            this.TakingScreenshot = true;
             this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
         }
 
+        /// <summary>
+        /// The take second screenshot.
+        /// </summary>
         public void TakeSecondScreenshot()
         {
-            this.arenaIdForScreenshot = SelectedArenaSession.Id;
+            this.arenaIdForScreenshot = this.SelectedArenaSession.Id;
             this.isSecondScreenshot = true;
-            CanTakeScreenshot = false;
-            TakingScreenshot = true;
+            this.CanTakeScreenshot = false;
+            this.TakingScreenshot = true;
             this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
         }
 
+        /// <summary>
+        /// The toggle screenshot.
+        /// </summary>
         public void ToggleScreenshot()
         {
-            ShowScreenshotColumn = !ShowScreenshotColumn;
+            this.ShowScreenshotColumn = !this.ShowScreenshotColumn;
         }
 
+        /// <summary>
+        /// The merge.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task Merge()
         {
             if (MessageBox.Show(
-                "Delete this arena and move all games to the previous arena?",
-                "Merge arenas?",
-                MessageBoxButton.YesNo,
+                "Delete this arena and move all games to the previous arena?", 
+                "Merge arenas?", 
+                MessageBoxButton.YesNo, 
                 MessageBoxImage.Question) != MessageBoxResult.Yes)
             {
                 return;
             }
 
-            var previousArena = arenaRepository.Query(a => a.Where(x => x.StartDate < SelectedArenaSession.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
+            var previousArena = this.arenaRepository.Query(a => a.Where(x => x.StartDate < this.SelectedArenaSession.StartDate).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
             if (previousArena == null)
             {
                 MessageBox.Show("No previous arena found", "Not found", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (previousArena.Hero.Id != SelectedArenaSession.Hero.Id)
+            if (previousArena.Hero.Id != this.SelectedArenaSession.Hero.Id)
             {
-                MessageBox.Show(string.Format("Cannot merge because previous arena hero is not a {0}.", SelectedArenaSession.Hero.ClassName), "Cannot merge", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format("Cannot merge because previous arena hero is not a {0}.", this.SelectedArenaSession.Hero.ClassName), "Cannot merge", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            await gameManager.MergeArenas(SelectedArenaSession, previousArena);
-            previousArena = arenaRepository.Query(a => a.FirstOrDefault(x => x.Id == previousArena.Id).ToModel());
+            await this.gameManager.MergeArenas(this.SelectedArenaSession, previousArena);
+            previousArena = this.arenaRepository.Query(a => a.FirstOrDefault(x => x.Id == previousArena.Id).ToModel());
 
-            Load(previousArena);
+            this.Load(previousArena);
         }
+
         /// <summary>
         /// Handle the message with a Task.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         /// <returns>
         /// The Task that represents the operation.
         /// </returns>
         public async Task Handle(ArenaHeroDetected message)
         {
-            EnsureInitialized();
+            this.EnsureInitialized();
             this.detectedHero = message.Hero;
 
-            if (String.IsNullOrEmpty(detectedHero))
+            if (string.IsNullOrEmpty(this.detectedHero))
             {
-                Log.Debug("Detected hero is null or empty, ignoring.");
+                this.Log.Debug("Detected hero is null or empty, ignoring.");
                 return;
             }
 
-            if (!handlingArenaDetect)
+            if (!this.handlingArenaDetect)
             {
-                handlingArenaDetect = true;
-                await Task.Delay(500).ContinueWith(async t => await HandleArenaDetect());
+                this.handlingArenaDetect = true;
+                await Task.Delay(500).ContinueWith(async t => await this.HandleArenaDetect());
             }
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaWinsDetected message)
         {
             this.detectedWins = message.Wins;
@@ -674,29 +950,37 @@
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaLossesDetected message)
         {
             this.detectedLosses = message.Losses;
         }
 
+        /// <summary>
+        /// The handle arena detect.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         private async Task HandleArenaDetect()
         {
             if (!GlobalLocks.NewArenaLock.Wait(1000))
             {
-                Log.Debug("Waited for NewArenaLock lock");
+                this.Log.Debug("Waited for NewArenaLock lock");
                 GlobalLocks.NewArenaLock.Wait();
             }
 
             // arena session is always the latest session in the db.
             var serverName = BindableServerCollection.Instance.DefaultName;
-            var latestArena = arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
+            var latestArena = this.arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
 
             try
             {
                 if (latestArena == null)
                 {
-                    latestArena = await TryCreateArenaSession(detectedHero);
+                    latestArena = await this.TryCreateArenaSession(this.detectedHero);
                     return;
                 }
 
@@ -706,78 +990,79 @@
                     var diff = DateTime.Now.Subtract(latestArena.EndDate.Value);
                     if (diff < TimeSpan.FromMinutes(5))
                     {
-                        Log.Debug("Latest arena is ended (and ended less then 5 minutes ago). Ignoring...");
+                        this.Log.Debug("Latest arena is ended (and ended less then 5 minutes ago). Ignoring...");
                         return;
-                        //Log.Debug("Latest arena is ended (and started more then 5 minutes ago). Creating new arena");
-                        //latestArena = await TryCreateArenaSession(detectedHero);
-                        //return;
+
+                        // Log.Debug("Latest arena is ended (and started more then 5 minutes ago). Creating new arena");
+                        // latestArena = await TryCreateArenaSession(detectedHero);
+                        // return;
                     }
                 }
 
                 // new arena started because new hero
-                if (detectedHero != latestArena.Hero.Key)
+                if (this.detectedHero != latestArena.Hero.Key)
                 {
-                    Log.Debug("detectedHero ({0}) != latestArena.Hero.Key ({1}), starting new arena.", detectedHero, latestArena.Hero.Key);
+                    this.Log.Debug("detectedHero ({0}) != latestArena.Hero.Key ({1}), starting new arena.", this.detectedHero, latestArena.Hero.Key);
                     if (!latestArena.IsEnded)
                     {
-                        Log.Debug("Retiring, previous arena.");
+                        this.Log.Debug("Retiring, previous arena.");
+
                         // retired
-                        await Retire(latestArena);
+                        await this.Retire(latestArena);
                     }
 
-                    latestArena = await TryCreateArenaSession(detectedHero);
+                    latestArena = await this.TryCreateArenaSession(this.detectedHero);
                     return;
                 }
 
                 // check if we need to correct last game
                 if (latestArena.IsEnded)
                 {
-                    if (detectedLosses >= 0 && detectedLosses < 3)
+                    if (this.detectedLosses >= 0 && this.detectedLosses < 3)
                     {
                         // last game was not a loss
-                        Log.Debug("Correcting last game to be a win, because arena was ended, but losses is {0}.", detectedLosses);
+                        this.Log.Debug("Correcting last game to be a win, because arena was ended, but losses is {0}.", this.detectedLosses);
                         var lastgame = latestArena.Games.OrderByDescending(x => x.Started).FirstOrDefault();
                         if (lastgame != null)
                         {
                             lastgame.Victory = true;
-                            await gameManager.UpdateGame(lastgame);
+                            await this.gameManager.UpdateGame(lastgame);
                             return;
                         }
                     }
                 }
 
                 // doesn't work very well.
-                //if ((detectedLosses >= 0 && detectedLosses < latestArena.Losses) ||
-                //    (detectedWins >= 0 && detectedWins < latestArena.Wins))
-                //{
-                //    Log.Debug(
-                //        "Detected wins/losses ({0}/{1}) smaller then last ({2}/{3}). Starting new arena.",
-                //        detectedWins,
-                //        detectedLosses,
-                //        latestArena.Wins,
-                //        latestArena.Losses);
-                //    latestArena = await TryCreateArenaSession(detectedHero);
-                //    return;
-                //}
-
+                // if ((detectedLosses >= 0 && detectedLosses < latestArena.Losses) ||
+                // (detectedWins >= 0 && detectedWins < latestArena.Wins))
+                // {
+                // Log.Debug(
+                // "Detected wins/losses ({0}/{1}) smaller then last ({2}/{3}). Starting new arena.",
+                // detectedWins,
+                // detectedLosses,
+                // latestArena.Wins,
+                // latestArena.Losses);
+                // latestArena = await TryCreateArenaSession(detectedHero);
+                // return;
+                // }
             }
             finally
             {
                 this.LatestArenaSession = latestArena;
-                detectedHero = null;
-                detectedWins = -1;
-                detectedLosses = -1;
-                handlingArenaDetect = false;
+                this.detectedHero = null;
+                this.detectedWins = -1;
+                this.detectedLosses = -1;
+                this.handlingArenaDetect = false;
                 if (latestArena != null)
                 {
-                    Load(latestArena);
+                    this.Load(latestArena);
 
                     if (latestArena.Image1 == null)
                     {
                         // add screenshot async
                         this.arenaIdForScreenshot = latestArena.Id;
-                        TakingScreenshot = true;
-                        CanTakeScreenshot = false;
+                        this.TakingScreenshot = true;
+                        this.CanTakeScreenshot = false;
                         Task.Delay(1000).ContinueWith(t => this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot()));
                     }
                 }
@@ -787,85 +1072,112 @@
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameModeChanged message)
         {
             if (message.GameMode == GameMode.Arena)
             {
-                LoadLatest();
+                this.LoadLatest();
             }
 
-            CanTakeScreenshot = message.GameMode == GameMode.Arena;
+            this.CanTakeScreenshot = message.GameMode == GameMode.Arena;
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaSessionUpdated message)
         {
             if (this.SelectedArenaSession == null) return;
 
             if (message.ArenaSessionId == this.SelectedArenaSession.Id)
             {
-                var updatedArena = arenaRepository.FirstOrDefault(x => x.Id == message.ArenaSessionId);
-                SelectedArenaSession.MapFrom(updatedArena);
-                InitViewModel(SelectedArenaSession);
+                var updatedArena = this.arenaRepository.FirstOrDefault(x => x.Id == message.ArenaSessionId);
+                this.SelectedArenaSession.MapFrom(updatedArena);
+                this.InitViewModel(this.SelectedArenaSession);
             }
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaDrafting message)
         {
         }
 
+        /// <summary>
+        /// The load.
+        /// </summary>
+        /// <param name="arenaSessionModel">
+        /// The arena session model.
+        /// </param>
         public void Load(ArenaSessionModel arenaSessionModel)
         {
             if (arenaSessionModel == null)
                 return;
 
-            SelectedArenaSession = arenaSessionModel;
-            InitLatest();
-            InitViewModel(SelectedArenaSession);
-            if (IsOpen)
+            this.SelectedArenaSession = arenaSessionModel;
+            this.InitLatest();
+            this.InitViewModel(this.SelectedArenaSession);
+            if (this.IsOpen)
             {
-                IsOpen = false;
+                this.IsOpen = false;
             }
-            IsOpen = true;
+
+            this.IsOpen = true;
             this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, arenaSessionModel.Id));
         }
 
+        /// <summary>
+        /// The can save.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool CanSave()
         {
-            return Hero != null && SelectedServer != null;
+            return this.Hero != null && this.SelectedServer != null;
         }
 
+        /// <summary>
+        /// The save.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         [Dependencies("Hero", "SelectedServer")]
         public async Task Save()
         {
-            if (SelectedArenaSession == null)
+            if (this.SelectedArenaSession == null)
             {
                 return;
             }
 
-            var arena = SelectedArenaSession;
+            var arena = this.SelectedArenaSession;
             bool changeGameHeroes = false;
-            if (arena.Hero != null && Hero.Id != arena.Hero.Id)
+            if (arena.Hero != null && this.Hero.Id != arena.Hero.Id)
             {
                 if (MessageBox.Show(
-                    "Changing arena hero, will change the hero for all games in this arena.\nAre you sure you want to save?",
-                    "Change arena hero?",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question,
+                    "Changing arena hero, will change the hero for all games in this arena.\nAre you sure you want to save?", 
+                    "Change arena hero?", 
+                    MessageBoxButton.YesNo, 
+                    MessageBoxImage.Question, 
                     MessageBoxResult.Yes) == MessageBoxResult.No)
                 {
                     return;
                 }
+
                 changeGameHeroes = true;
             }
+
             arena.Hero = this.Hero;
             arena.StartDate = this.Started;
             arena.EndDate = this.Ended;
@@ -876,20 +1188,21 @@
             arena.RewardGold = this.RewardGold;
             arena.RewardPacks = this.RewardPacks;
             arena.Notes = this.Notes;
-            arena.Server = SelectedServer.Name;
+            arena.Server = this.SelectedServer.Name;
 
-            await gameManager.UpdateArenaSession(SelectedArenaSession);
+            await this.gameManager.UpdateArenaSession(this.SelectedArenaSession);
             if (changeGameHeroes)
             {
-                foreach (var game in SelectedArenaSession.Games)
+                foreach (var game in this.SelectedArenaSession.Games)
                 {
-                    game.Hero = Hero;
-                    await gameManager.UpdateGame(game);
+                    game.Hero = this.Hero;
+                    await this.gameManager.UpdateGame(game);
                 }
             }
-            InitLatest();
-            InitViewModel(SelectedArenaSession);
-            events.PublishOnBackgroundThread(new SendNotification("Arena successfully saved."));
+
+            this.InitLatest();
+            this.InitViewModel(this.SelectedArenaSession);
+            this.events.PublishOnBackgroundThread(new SendNotification("Arena successfully saved."));
         }
 
         /// <summary>The set end time.</summary>
@@ -904,9 +1217,15 @@
             this.Started = DateTime.Now;
         }
 
+        /// <summary>
+        /// The show current.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task ShowCurrent()
         {
-            LoadLatest();
+            this.LoadLatest();
         }
 
 
@@ -915,16 +1234,18 @@
         /// </summary>
         public void OnImportsSatisfied()
         {
-            EnsureInitialized();
+            this.EnsureInitialized();
         }
 
-
+        /// <summary>
+        /// The load latest.
+        /// </summary>
         public void LoadLatest()
         {
-            InitLatest();
-            if (LatestArenaSession != null)
+            this.InitLatest();
+            if (this.LatestArenaSession != null)
             {
-                Load(LatestArenaSession);
+                this.Load(this.LatestArenaSession);
             }
         }
 
@@ -939,6 +1260,12 @@
         {
         }
 
+        /// <summary>
+        /// The init view model.
+        /// </summary>
+        /// <param name="arenaSession">
+        /// The arena session.
+        /// </param>
         private void InitViewModel(ArenaSessionModel arenaSession)
         {
             this.Started = arenaSession.StartDate;
@@ -952,7 +1279,7 @@
             this.RewardGold = arenaSession.RewardGold;
             this.RewardPacks = arenaSession.RewardPacks;
             this.Notes = arenaSession.Notes;
-            this.SelectedServer = servers.FirstOrDefault(x => x.Name == arenaSession.Server);
+            this.SelectedServer = this.servers.FirstOrDefault(x => x.Name == arenaSession.Server);
 
             this.DeckScreenshot1 = null;
             this.DeckScreenshot2 = null;
@@ -966,13 +1293,13 @@
                 this.DeckScreenshot2 = CreateBitmapImage(arenaSession.Image2.Image);
             }
 
-            NotifyOfPropertyChange(() => IsLatest);
+            this.NotifyOfPropertyChange(() => this.IsLatest);
 
-            if (IsLatest && !IsEnded)
+            if (this.IsLatest && !this.IsEnded)
             {
                 this.Header = this.DisplayName = "Running Arena:";
             }
-            else if (IsLatest)
+            else if (this.IsLatest)
             {
                 this.Header = this.DisplayName = "Last Arena:";
             }
@@ -982,28 +1309,40 @@
             }
         }
 
+        /// <summary>
+        /// The ensure initialized.
+        /// </summary>
         private void EnsureInitialized()
         {
-            if (initialized) return;
-            initialized = true;
+            if (this.initialized) return;
+            this.initialized = true;
 
             var data = this.GlobalData.Get();
             this.heroes.Clear();
             this.heroes.AddRange(data.Heroes);
-            InitLatest();
+            this.InitLatest();
         }
 
+        /// <summary>
+        /// The init latest.
+        /// </summary>
         private void InitLatest()
         {
             // arena session is always the latest session in the db.
             var serverName = BindableServerCollection.Instance.DefaultName;
-            var session = arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
+            var session = this.arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
             this.LatestArenaSession = session;
         }
 
-        /// <summary>The on property changed.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The args.</param>
+        /// <summary>
+        /// The on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
@@ -1013,47 +1352,65 @@
                     {
                         this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, null));
                     }
-                    //if (IsOpen)
-                    //{
-                    //    OnSelectedArenaChanged();
-                    //}
 
+                    // if (IsOpen)
+                    // {
+                    // OnSelectedArenaChanged();
+                    // }
                     this.lastIsOpen = this.IsOpen;
                     break;
             }
         }
 
-        //private void OnSelectedArenaChanged()
-        //{
-        //    if (!PauseNotify.IsPaused(this))
-        //    {
-        //        this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, this.SelectedArenaSession != null ? this.SelectedArenaSession.Id : (Guid?)null));
-        //    }
-        //}
+        // private void OnSelectedArenaChanged()
+        // {
+        // if (!PauseNotify.IsPaused(this))
+        // {
+        // this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, this.SelectedArenaSession != null ? this.SelectedArenaSession.Id : (Guid?)null));
+        // }
+        // }
 
+        /// <summary>
+        /// The retire.
+        /// </summary>
+        /// <param name="arenaSession">
+        /// The arena session.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         private async Task Retire(ArenaSessionModel arenaSession)
         {
-            await gameManager.Retire(arenaSession);
+            await this.gameManager.Retire(arenaSession);
         }
 
+        /// <summary>
+        /// The try create arena session.
+        /// </summary>
+        /// <param name="detectedHero">
+        /// The detected hero.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         private async Task<ArenaSessionModel> TryCreateArenaSession(string detectedHero)
         {
             if (detectedHero == null)
             {
-                Log.Warn("TryCreateArenaSession called without hero");
+                this.Log.Warn("TryCreateArenaSession called without hero");
                 return null;
             }
 
-            using (await newArenaLock.LockAsync())
+            using (await this.newArenaLock.LockAsync())
             {
                 var arena = new ArenaSessionModel
                                 {
-                                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
+                                    Hero = await this.heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero), 
                                 };
-                arena = await gameManager.AddArenaSession(arena);
+                arena = await this.gameManager.AddArenaSession(arena);
 
                 // for web api
-                events.PublishOnBackgroundThread(new ArenaSessionStarted(arena.StartDate, arena.Hero.Key, arena.Wins, arena.Losses));
+                this.events.PublishOnBackgroundThread(new ArenaSessionStarted(arena.StartDate, arena.Hero.Key, arena.Wins, arena.Losses));
                 return arena;
             }
         }
@@ -1063,23 +1420,30 @@
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task Handle(ArenaDeckScreenshotTaken message)
         {
             try
             {
-                var arena = arenaRepository.Query(x => x.FirstOrDefault(a => a.Id == arenaIdForScreenshot));
+                var arena = this.arenaRepository.Query(x => x.FirstOrDefault(a => a.Id == this.arenaIdForScreenshot));
                 if (arena == null)
                 {
                     return;
                 }
+
                 ArenaDeckImage arenaImage;
-                if (!isSecondScreenshot)
+                if (!this.isSecondScreenshot)
                 {
                     if (arena.Image1 == null)
                     {
                         arena.Image1 = new ArenaDeckImage();
                     }
+
                     arenaImage = arena.Image1;
                 }
                 else
@@ -1088,6 +1452,7 @@
                     {
                         arena.Image2 = new ArenaDeckImage();
                     }
+
                     arenaImage = arena.Image2;
                 }
 
@@ -1098,25 +1463,34 @@
                     arenaImage.Image = ms.ToArray();
                 }
 
-                await gameManager.UpdateArenaSession(arena.ToModel());
-                if (!isSecondScreenshot)
+                await this.gameManager.UpdateArenaSession(arena.ToModel());
+                if (!this.isSecondScreenshot)
                 {
-                    DeckScreenshot1 = CreateBitmapImage(message.Image);
+                    this.DeckScreenshot1 = CreateBitmapImage(message.Image);
                 }
                 else
                 {
-                    DeckScreenshot2 = CreateBitmapImage(message.Image);
+                    this.DeckScreenshot2 = CreateBitmapImage(message.Image);
                 }
             }
             finally
             {
                 message.Image.Dispose();
-                CanTakeScreenshot = true;
-                TakingScreenshot = false;
-                isSecondScreenshot = false;
+                this.CanTakeScreenshot = true;
+                this.TakingScreenshot = false;
+                this.isSecondScreenshot = false;
             }
         }
 
+        /// <summary>
+        /// The create bitmap image.
+        /// </summary>
+        /// <param name="image">
+        /// The image.
+        /// </param>
+        /// <returns>
+        /// The <see cref="BitmapImage"/>.
+        /// </returns>
         private BitmapImage CreateBitmapImage(byte[] image)
         {
             var ms = new MemoryStream(image);
@@ -1130,6 +1504,15 @@
             return bi;
         }
 
+        /// <summary>
+        /// The create bitmap image.
+        /// </summary>
+        /// <param name="image">
+        /// The image.
+        /// </param>
+        /// <returns>
+        /// The <see cref="BitmapImage"/>.
+        /// </returns>
         private BitmapImage CreateBitmapImage(Bitmap image)
         {
             var ms = new MemoryStream();
@@ -1148,7 +1531,9 @@
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(SelectedGameChanged message)
         {
 
@@ -1156,7 +1541,7 @@
             {
                 if (message.Game.ArenaSession == null)
                 {
-                    IsOpen = false;
+                    this.IsOpen = false;
                     return;
                 }
             }

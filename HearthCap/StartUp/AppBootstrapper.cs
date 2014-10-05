@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AppBootstrapper.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The app bootstrapper.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.StartUp
 {
     using System;
@@ -5,10 +14,10 @@ namespace HearthCap.StartUp
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
     using System.ComponentModel.Composition.Primitives;
-    using System.Configuration;
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Markup;
@@ -25,19 +34,37 @@ namespace HearthCap.StartUp
 
     using Configuration = HearthCap.Data.Migrations.Configuration;
 
+    /// <summary>
+    /// The app bootstrapper.
+    /// </summary>
     public class AppBootstrapper : BootstrapperBase, IDisposable
     {
+        /// <summary>
+        /// The application data directory.
+        /// </summary>
         private string applicationDataDirectory;
 
+        /// <summary>
+        /// The container.
+        /// </summary>
         private static CompositionContainer container;
 
+        /// <summary>
+        /// The log manager.
+        /// </summary>
         private IAppLogManager logManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppBootstrapper"/> class.
+        /// </summary>
         public AppBootstrapper()
         {
-            Initialize();
+            this.Initialize();
         }
 
+        /// <summary>
+        /// Gets the container.
+        /// </summary>
         public static CompositionContainer Container
         {
             get
@@ -46,6 +73,9 @@ namespace HearthCap.StartUp
             }
         }
 
+        /// <summary>
+        /// The dispose.
+        /// </summary>
         public void Dispose()
         {
             if (Container != null)
@@ -60,21 +90,25 @@ namespace HearthCap.StartUp
             }
         }
 
+        /// <summary>
+        /// The configure.
+        /// </summary>
         protected override void Configure()
         {
-            InitializeApplicationDataDirectory();
+            this.InitializeApplicationDataDirectory();
 
             FrameworkElement.LanguageProperty.OverrideMetadata(
-                typeof(FrameworkElement),
+                typeof(FrameworkElement), 
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             // var aggregateCatalog = new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)));
-            var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
-                                                            {
-                                                                new AssemblyCatalog(this.GetType().Assembly), 
-                                                                new AssemblyCatalog(typeof(AutoCaptureEngine).Assembly), 
-                                                                new AssemblyCatalog(typeof(IRepository<>).Assembly), 
-                                                            });
+            var aggregateCatalog =
+                new AggregateCatalog(
+                    new ComposablePartCatalog[]
+                        {
+                            new AssemblyCatalog(this.GetType().Assembly), new AssemblyCatalog(typeof(AutoCaptureEngine).Assembly), 
+                            new AssemblyCatalog(typeof(IRepository<>).Assembly) 
+                        });
             container = new CompositionContainer(aggregateCatalog);
             var batch = new CompositionBatch();
             batch.AddExportedValue(container);
@@ -85,9 +119,9 @@ namespace HearthCap.StartUp
 
             // batch.AddExportedValue<IWindowManager>(new AppWindowManager());
             // batch.AddExportedValue(MessageBus.Current);
-
             var compose = container.GetExportedValue<CompositionBuilder>();
             compose.Compose(batch);
+
             // var composeTasks = this.GetAllInstances<ICompositionTask>();
             // composeTasks.Apply(s => s.Compose(batch));
             container.Compose(batch);
@@ -98,17 +132,22 @@ namespace HearthCap.StartUp
             container.GetExportedValue<IAppLogManager>().Initialize(logPath);
             container.GetExportedValue<CrashManager>().WireUp();
 
-            this.Application.Activated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
-            this.Application.Deactivated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
+            this.Application.Activated +=
+                (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
+            this.Application.Deactivated +=
+                (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
         }
 
+        /// <summary>
+        /// The initialize application data directory.
+        /// </summary>
         private void InitializeApplicationDataDirectory()
         {
             string appFolderName;
             using (var reg = new DataDirectorySettings())
             {
                 appFolderName = reg.DataDirectory;
-                if (String.IsNullOrEmpty(reg.DataDirectory) || !Directory.Exists(reg.DataDirectory))
+                if (string.IsNullOrEmpty(reg.DataDirectory) || !Directory.Exists(reg.DataDirectory))
                 {
                     appFolderName = "HearthstoneTracker";
                     appFolderName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), appFolderName);
@@ -116,6 +155,7 @@ namespace HearthCap.StartUp
                     {
                         Directory.CreateDirectory(appFolderName);
                     }
+
                     reg.DataDirectory = appFolderName;
                 }
             }
@@ -130,19 +170,50 @@ namespace HearthCap.StartUp
             AppDomain.CurrentDomain.SetData("DataDirectory", appFolderName);
         }
 
+        /// <summary>
+        /// The get all instances.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IEnumerable"/>.
+        /// </returns>
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
             return container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
         }
 
+        /// <summary>
+        /// The get all instances.
+        /// </summary>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="IEnumerable"/>.
+        /// </returns>
         protected IEnumerable<T> GetAllInstances<T>()
         {
             return container.GetExportedValues<T>();
         }
 
+        /// <summary>
+        /// The get instance.
+        /// </summary>
+        /// <param name="serviceType">
+        /// The service type.
+        /// </param>
+        /// <param name="key">
+        /// The key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// </exception>
         protected override object GetInstance(Type serviceType, string key)
         {
-            var str = String.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
+            var str = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
             var obj = container.GetExportedValues<object>(str).FirstOrDefault<object>();
             if (obj == null)
             {
@@ -154,33 +225,52 @@ namespace HearthCap.StartUp
             return obj;
         }
 
+        /// <summary>
+        /// The build up.
+        /// </summary>
+        /// <param name="instance">
+        /// The instance.
+        /// </param>
         protected override void BuildUp(object instance)
         {
             container.SatisfyImportsOnce(instance);
         }
 
+        /// <summary>
+        /// The on startup.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            var currentUICult = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-            var currentCult = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+            var currentUICult = Thread.CurrentThread.CurrentUICulture.Name;
+            var currentCult = Thread.CurrentThread.CurrentCulture.Name;
 
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(currentUICult);
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(currentCult);
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(currentUICult);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(currentCult);
 
-            InitializeDatabase();
+            this.InitializeDatabase();
 
             var startupTasks = this.GetAllInstances(typeof(IStartupTask)).Cast<IStartupTask>();
             startupTasks.Apply(s => s.Run());
 
             // var userSettings = (UserPreferences)GetInstance(typeof(UserPreferences), null);
-            var trayIcon = (TrayIconViewModel)GetInstance(typeof(TrayIconViewModel), null);
-            var windowManager = (CustomWindowManager)GetInstance(typeof(CustomWindowManager), null);
+            var trayIcon = (TrayIconViewModel)this.GetInstance(typeof(TrayIconViewModel), null);
+            var windowManager = (CustomWindowManager)this.GetInstance(typeof(CustomWindowManager), null);
             var start = windowManager.MainWindow<StartupViewModel>();
             start.Show();
             start.Hide();
+
             // DisplayRootViewFor<StartupViewModel>();
         }
 
+        /// <summary>
+        /// The initialize database.
+        /// </summary>
         private void InitializeDatabase()
         {
             // Only seed when needed
@@ -191,6 +281,7 @@ namespace HearthCap.StartUp
             {
                 int.TryParse(File.ReadAllText(seedFile), out currentSeed);
             }
+
             if (currentSeed < Configuration.SeedVersion)
             {
                 using (var context = new HearthStatsDbContext())
@@ -213,20 +304,38 @@ namespace HearthCap.StartUp
         }
     }
 
+    /// <summary>
+    /// The composition builder.
+    /// </summary>
     [Export(typeof(CompositionBuilder))]
     public class CompositionBuilder
     {
+        /// <summary>
+        /// The tasks.
+        /// </summary>
         private readonly IEnumerable<ICompositionTask> tasks;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompositionBuilder"/> class.
+        /// </summary>
+        /// <param name="tasks">
+        /// The tasks.
+        /// </param>
         [ImportingConstructor]
         public CompositionBuilder([ImportMany]IEnumerable<ICompositionTask> tasks)
         {
             this.tasks = tasks;
         }
 
+        /// <summary>
+        /// The compose.
+        /// </summary>
+        /// <param name="batch">
+        /// The batch.
+        /// </param>
         public void Compose(CompositionBatch batch)
         {
-            tasks.Apply(s => s.Compose(batch));
+            this.tasks.Apply(s => s.Compose(batch));
         }
     }
 }

@@ -1,10 +1,18 @@
-﻿namespace HearthCap.Features.Games.Statistics
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="FilteredStatsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The filtered stats view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.Games.Statistics
 {
     using System;
     using System.ComponentModel.Composition;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Threading.Tasks;
 
     using Caliburn.Micro;
 
@@ -13,110 +21,217 @@
     using HearthCap.Features.Games.LatestGames;
     using HearthCap.Util;
 
+    /// <summary>
+    /// The filtered stats view model.
+    /// </summary>
     [Export(typeof(FilteredStatsViewModel))]
     public class FilteredStatsViewModel : Screen
     {
+        /// <summary>
+        /// The db context.
+        /// </summary>
         private readonly Func<HearthStatsDbContext> dbContext;
 
+        /// <summary>
+        /// The parent view model.
+        /// </summary>
         private readonly LatestGamesViewModel parentViewModel;
 
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
+
+        /// <summary>
+        /// The wins and losses.
+        /// </summary>
         private readonly BindableCollection<StatModel> winsAndLosses = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The wins.
+        /// </summary>
         private readonly BindableCollection<StatModel> wins = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The losses.
+        /// </summary>
         private readonly BindableCollection<StatModel> losses = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The heroes played.
+        /// </summary>
         private readonly BindableCollection<StatModel> heroesPlayed = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The opponent heroes played.
+        /// </summary>
         private readonly BindableCollection<StatModel> opponentHeroesPlayed = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The heroes.
+        /// </summary>
         private readonly BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
+        /// <summary>
+        /// The with coin.
+        /// </summary>
         private readonly BindableCollection<StatModel> withCoin = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The without coin.
+        /// </summary>
         private readonly BindableCollection<StatModel> withoutCoin = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The refreshing.
+        /// </summary>
         private bool refreshing;
 
+        /// <summary>
+        /// The today ratio win.
+        /// </summary>
         private decimal todayRatioWin;
 
+        /// <summary>
+        /// The today ratio loss.
+        /// </summary>
         private decimal todayRatioLoss;
 
+        /// <summary>
+        /// The this week ratio win.
+        /// </summary>
         private decimal thisWeekRatioWin;
 
+        /// <summary>
+        /// The this week ratio loss.
+        /// </summary>
         private decimal thisWeekRatioLoss;
 
+        /// <summary>
+        /// The this month ratio win.
+        /// </summary>
         private decimal thisMonthRatioWin;
 
+        /// <summary>
+        /// The this month ratio loss.
+        /// </summary>
         private decimal thisMonthRatioLoss;
 
+        /// <summary>
+        /// The last 7 days ratio win.
+        /// </summary>
         private decimal last7DaysRatioWin;
 
+        /// <summary>
+        /// The last 7 days ratio loss.
+        /// </summary>
         private decimal last7DaysRatioLoss;
 
+        /// <summary>
+        /// The last 30 days ratio win.
+        /// </summary>
         private decimal last30DaysRatioWin;
 
+        /// <summary>
+        /// The last 30 days ratio loss.
+        /// </summary>
         private decimal last30DaysRatioLoss;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredStatsViewModel"/> class.
+        /// </summary>
+        /// <param name="dbContext">
+        /// The db context.
+        /// </param>
         [ImportingConstructor]
         public FilteredStatsViewModel(Func<HearthStatsDbContext> dbContext)
         {
             this.dbContext = dbContext;
             if (Execute.InDesignMode)
             {
-                AddDesignModeData();
+                this.AddDesignModeData();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the global data.
+        /// </summary>
         [Import]
         protected GlobalData GlobalData { get; set; }
 
+        /// <summary>
+        /// Gets or sets the latest games view model.
+        /// </summary>
         [Import]
         protected LatestGamesViewModel LatestGamesViewModel { get; set; }
 
+        /// <summary>
+        /// The add design mode data.
+        /// </summary>
         private void AddDesignModeData()
         {
             this.WinsAndLosses.Add(new StatModel("Wins", 30));
             this.WinsAndLosses.Add(new StatModel("Losses", 70));
         }
 
+        /// <summary>
+        /// Gets the wins and losses.
+        /// </summary>
         public BindableCollection<StatModel> WinsAndLosses
         {
             get
             {
-                return winsAndLosses;
+                return this.winsAndLosses;
             }
         }
 
+        /// <summary>
+        /// Gets the wins.
+        /// </summary>
         public BindableCollection<StatModel> Wins
         {
             get
             {
-                return wins;
+                return this.wins;
             }
         }
 
+        /// <summary>
+        /// Gets the losses.
+        /// </summary>
         public BindableCollection<StatModel> Losses
         {
             get
             {
-                return losses;
+                return this.losses;
             }
         }
 
+        /// <summary>
+        /// Gets the with coin.
+        /// </summary>
         public BindableCollection<StatModel> WithCoin
         {
             get
             {
-                return withCoin;
+                return this.withCoin;
             }
         }
 
+        /// <summary>
+        /// Gets the without coin.
+        /// </summary>
         public BindableCollection<StatModel> WithoutCoin
         {
             get
             {
-                return withoutCoin;
+                return this.withoutCoin;
             }
         }
 
+        /// <summary>
+        /// Gets the heroes played.
+        /// </summary>
         public BindableCollection<StatModel> HeroesPlayed
         {
             get
@@ -125,6 +240,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the opponent heroes played.
+        /// </summary>
         public BindableCollection<StatModel> OpponentHeroesPlayed
         {
             get
@@ -133,254 +251,333 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the today ratio win.
+        /// </summary>
         public decimal TodayRatioWin
         {
             get
             {
                 return this.todayRatioWin;
             }
+
             set
             {
                 if (value == this.todayRatioWin)
                 {
                     return;
                 }
+
                 this.todayRatioWin = value;
                 this.NotifyOfPropertyChange(() => this.TodayRatio);
                 this.NotifyOfPropertyChange(() => this.TodayRatioWin);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the today ratio loss.
+        /// </summary>
         public decimal TodayRatioLoss
         {
             get
             {
                 return this.todayRatioLoss;
             }
+
             set
             {
                 if (value == this.todayRatioLoss)
                 {
                     return;
                 }
+
                 this.todayRatioLoss = value;
                 this.NotifyOfPropertyChange(() => this.TodayRatio);
                 this.NotifyOfPropertyChange(() => this.TodayRatioLoss);
             }
         }
 
+        /// <summary>
+        /// Gets the today ratio.
+        /// </summary>
         public decimal TodayRatio
         {
             get
             {
-                if (TodayRatioLoss == 0) return 0;
-                return Math.Round(TodayRatioWin / TodayRatioLoss, 3);
+                if (this.TodayRatioLoss == 0) return 0;
+                return Math.Round(this.TodayRatioWin / this.TodayRatioLoss, 3);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the this week ratio win.
+        /// </summary>
         public decimal ThisWeekRatioWin
         {
             get
             {
                 return this.thisWeekRatioWin;
             }
+
             set
             {
                 if (value == this.thisWeekRatioWin)
                 {
                     return;
                 }
+
                 this.thisWeekRatioWin = value;
                 this.NotifyOfPropertyChange(() => this.ThisWeekRatioWin);
                 this.NotifyOfPropertyChange(() => this.ThisWeekRatio);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the this week ratio loss.
+        /// </summary>
         public decimal ThisWeekRatioLoss
         {
             get
             {
                 return this.thisWeekRatioLoss;
             }
+
             set
             {
                 if (value == this.thisWeekRatioLoss)
                 {
                     return;
                 }
+
                 this.thisWeekRatioLoss = value;
                 this.NotifyOfPropertyChange(() => this.ThisWeekRatioLoss);
                 this.NotifyOfPropertyChange(() => this.ThisWeekRatio);
             }
         }
 
+        /// <summary>
+        /// Gets the this week ratio.
+        /// </summary>
         public decimal ThisWeekRatio
         {
             get
             {
-                if (ThisWeekRatioLoss == 0) return 0;
-                return Math.Round(ThisWeekRatioWin / ThisWeekRatioLoss, 3);
+                if (this.ThisWeekRatioLoss == 0) return 0;
+                return Math.Round(this.ThisWeekRatioWin / this.ThisWeekRatioLoss, 3);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the this month ratio win.
+        /// </summary>
         public decimal ThisMonthRatioWin
         {
             get
             {
                 return this.thisMonthRatioWin;
             }
+
             set
             {
                 if (value == this.thisMonthRatioWin)
                 {
                     return;
                 }
+
                 this.thisMonthRatioWin = value;
                 this.NotifyOfPropertyChange(() => this.ThisMonthRatioWin);
                 this.NotifyOfPropertyChange(() => this.ThisMonthRatio);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the this month ratio loss.
+        /// </summary>
         public decimal ThisMonthRatioLoss
         {
             get
             {
                 return this.thisMonthRatioLoss;
             }
+
             set
             {
                 if (value == this.thisMonthRatioLoss)
                 {
                     return;
                 }
+
                 this.thisMonthRatioLoss = value;
                 this.NotifyOfPropertyChange(() => this.ThisMonthRatioLoss);
                 this.NotifyOfPropertyChange(() => this.ThisMonthRatio);
             }
         }
 
+        /// <summary>
+        /// Gets the this month ratio.
+        /// </summary>
         public decimal ThisMonthRatio
         {
             get
             {
-                if (ThisMonthRatioLoss == 0) return 0;
-                return Math.Round(ThisMonthRatioWin / ThisMonthRatioLoss, 3);
+                if (this.ThisMonthRatioLoss == 0) return 0;
+                return Math.Round(this.ThisMonthRatioWin / this.ThisMonthRatioLoss, 3);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the last 7 days ratio win.
+        /// </summary>
         public decimal Last7DaysRatioWin
         {
             get
             {
                 return this.last7DaysRatioWin;
             }
+
             set
             {
                 if (value == this.last7DaysRatioWin)
                 {
                     return;
                 }
+
                 this.last7DaysRatioWin = value;
                 this.NotifyOfPropertyChange(() => this.Last7DaysRatioWin);
                 this.NotifyOfPropertyChange(() => this.Last7DaysRatio);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the last 7 days ratio loss.
+        /// </summary>
         public decimal Last7DaysRatioLoss
         {
             get
             {
                 return this.last7DaysRatioLoss;
             }
+
             set
             {
                 if (value == this.last7DaysRatioLoss)
                 {
                     return;
                 }
+
                 this.last7DaysRatioLoss = value;
                 this.NotifyOfPropertyChange(() => this.Last7DaysRatioLoss);
                 this.NotifyOfPropertyChange(() => this.Last7DaysRatio);
             }
         }
 
+        /// <summary>
+        /// Gets the last 7 days ratio.
+        /// </summary>
         public decimal Last7DaysRatio
         {
             get
             {
-                if (Last7DaysRatioLoss == 0) return 0;
-                return Math.Round(Last7DaysRatioWin / Last7DaysRatioLoss, 3);
+                if (this.Last7DaysRatioLoss == 0) return 0;
+                return Math.Round(this.Last7DaysRatioWin / this.Last7DaysRatioLoss, 3);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the last 30 days ratio win.
+        /// </summary>
         public decimal Last30DaysRatioWin
         {
             get
             {
                 return this.last30DaysRatioWin;
             }
+
             set
             {
                 if (value == this.last30DaysRatioWin)
                 {
                     return;
                 }
+
                 this.last30DaysRatioWin = value;
                 this.NotifyOfPropertyChange(() => this.Last30DaysRatioWin);
                 this.NotifyOfPropertyChange(() => this.Last30DaysRatio);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the last 30 days ratio loss.
+        /// </summary>
         public decimal Last30DaysRatioLoss
         {
             get
             {
                 return this.last30DaysRatioLoss;
             }
+
             set
             {
                 if (value == this.last30DaysRatioLoss)
                 {
                     return;
                 }
+
                 this.last30DaysRatioLoss = value;
                 this.NotifyOfPropertyChange(() => this.Last30DaysRatioLoss);
                 this.NotifyOfPropertyChange(() => this.Last30DaysRatio);
             }
         }
 
+        /// <summary>
+        /// Gets the last 30 days ratio.
+        /// </summary>
         public decimal Last30DaysRatio
         {
             get
             {
-                if (Last30DaysRatioLoss == 0) return 0;
-                return Math.Round(Last30DaysRatioWin / Last30DaysRatioLoss, 3);
+                if (this.Last30DaysRatioLoss == 0) return 0;
+                return Math.Round(this.Last30DaysRatioWin / this.Last30DaysRatioLoss, 3);
             }
         }
 
+        /// <summary>
+        /// The refresh from.
+        /// </summary>
+        /// <param name="contextFactory">
+        /// The context factory.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         public void RefreshFrom(Func<HearthStatsDbContext> contextFactory, Expression<Func<GameResult, bool>> filter)
         {
-            if (refreshing) return;
-            refreshing = true;
-            if (!initialized)
+            if (this.refreshing) return;
+            this.refreshing = true;
+            if (!this.initialized)
             {
-                InitializeData();
-                initialized = true;
+                this.InitializeData();
+                this.initialized = true;
             }
             
-            //Task.WaitAll(
-            //    Task.Run(() => CalculateWinsAndLosses(contextFactory(), filter)),
-            //    Task.Run(() => CalculateHeroesPlayed(contextFactory(), filter)),
-            //    Task.Run(() => CalculateRatios(contextFactory()))
-            //    );
+            // Task.WaitAll(
+            // Task.Run(() => CalculateWinsAndLosses(contextFactory(), filter)),
+            // Task.Run(() => CalculateHeroesPlayed(contextFactory(), filter)),
+            // Task.Run(() => CalculateRatios(contextFactory()))
+            // );
+            this.CalculateWinsAndLosses(contextFactory(), filter);
+            this.CalculateHeroesPlayed(contextFactory(), filter);
+            this.CalculateRatios(contextFactory());
 
-            CalculateWinsAndLosses(contextFactory(), filter);
-            CalculateHeroesPlayed(contextFactory(), filter);
-            CalculateRatios(contextFactory());
-
-            refreshing = false;
+            this.refreshing = false;
         }
 
+        /// <summary>
+        /// The calculate ratios.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
         private void CalculateRatios(HearthStatsDbContext context)
         {
             var now = DateTime.Now;
@@ -392,39 +589,39 @@
 
             if (numGames > 0)
             {
-                TodayRatioWin = Math.Round((numWon / numGames) * 100, 0);
-                TodayRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
+                this.TodayRatioWin = Math.Round((numWon / numGames) * 100, 0);
+                this.TodayRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
             }
             else
             {
-                TodayRatioWin = 0;
-                TodayRatioLoss = 0;
+                this.TodayRatioWin = 0;
+                this.TodayRatioLoss = 0;
             }
 
             start = now.StartOfWeek(DayOfWeek.Monday);
             this.GetStatsSince(context, start, out numGames, out numWon, out numLoss);
             if (numGames > 0)
             {
-                ThisWeekRatioWin = Math.Round((numWon / numGames) * 100, 0);
-                ThisWeekRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
+                this.ThisWeekRatioWin = Math.Round((numWon / numGames) * 100, 0);
+                this.ThisWeekRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
             }
             else
             {
-                ThisWeekRatioWin = 0;
-                ThisWeekRatioLoss = 0;
+                this.ThisWeekRatioWin = 0;
+                this.ThisWeekRatioLoss = 0;
             }
 
             start = new DateTime(now.Year, now.Month, 1, 0, 0, 0);
             this.GetStatsSince(context, start, out numGames, out numWon, out numLoss);
             if (numGames > 0)
             {
-                ThisMonthRatioWin = Math.Round((numWon / numGames) * 100, 0);
-                ThisMonthRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
+                this.ThisMonthRatioWin = Math.Round((numWon / numGames) * 100, 0);
+                this.ThisMonthRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
             }
             else
             {
-                ThisMonthRatioWin = 0;
-                ThisMonthRatioLoss = 0;
+                this.ThisMonthRatioWin = 0;
+                this.ThisMonthRatioLoss = 0;
             }
 
             start = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
@@ -432,13 +629,13 @@
             this.GetStatsSince(context, start, out numGames, out numWon, out numLoss);
             if (numGames > 0)
             {
-                Last7DaysRatioWin = Math.Round((numWon / numGames) * 100, 0);
-                Last7DaysRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
+                this.Last7DaysRatioWin = Math.Round((numWon / numGames) * 100, 0);
+                this.Last7DaysRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
             }
             else
             {
-                Last7DaysRatioWin = 0;
-                Last7DaysRatioLoss = 0;
+                this.Last7DaysRatioWin = 0;
+                this.Last7DaysRatioLoss = 0;
             }
 
             start = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
@@ -446,30 +643,48 @@
             this.GetStatsSince(context, start, out numGames, out numWon, out numLoss);
             if (numGames > 0)
             {
-                Last30DaysRatioWin = Math.Round((numWon / numGames) * 100, 0);
-                Last30DaysRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
+                this.Last30DaysRatioWin = Math.Round((numWon / numGames) * 100, 0);
+                this.Last30DaysRatioLoss = Math.Round((numLoss / numGames) * 100, 0);
             }
             else
             {
-                Last30DaysRatioWin = 0;
-                Last30DaysRatioLoss = 0;
+                this.Last30DaysRatioWin = 0;
+                this.Last30DaysRatioLoss = 0;
             }
 
         }
 
+        /// <summary>
+        /// The get stats since.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="start">
+        /// The start.
+        /// </param>
+        /// <param name="numGames">
+        /// The num games.
+        /// </param>
+        /// <param name="numWon">
+        /// The num won.
+        /// </param>
+        /// <param name="numLoss">
+        /// The num loss.
+        /// </param>
         private void GetStatsSince(HearthStatsDbContext context, DateTime start, out decimal numGames, out decimal numWon, out decimal numLoss)
         {
             GameMode gameMode;
             bool filterGameMode = Enum.TryParse(this.LatestGamesViewModel.FilterGameMode, out gameMode);
             Guid heroId = Guid.Empty;
-            bool filterHero = LatestGamesViewModel.FilterHero != null && !String.IsNullOrEmpty(LatestGamesViewModel.FilterHero.Key);
-            if (filterHero) heroId = LatestGamesViewModel.FilterHero.Id;
+            bool filterHero = this.LatestGamesViewModel.FilterHero != null && !string.IsNullOrEmpty(this.LatestGamesViewModel.FilterHero.Key);
+            if (filterHero) heroId = this.LatestGamesViewModel.FilterHero.Id;
             Guid oppHeroId = Guid.Empty;
-            bool filterOppHero = LatestGamesViewModel.FilterOpponentHero != null && !String.IsNullOrEmpty(LatestGamesViewModel.FilterOpponentHero.Key);
-            if (filterOppHero) oppHeroId = LatestGamesViewModel.FilterOpponentHero.Id;
+            bool filterOppHero = this.LatestGamesViewModel.FilterOpponentHero != null && !string.IsNullOrEmpty(this.LatestGamesViewModel.FilterOpponentHero.Key);
+            if (filterOppHero) oppHeroId = this.LatestGamesViewModel.FilterOpponentHero.Id;
             Guid deckId = Guid.Empty;
-            bool filterDeck = LatestGamesViewModel.FilterDeck != null && !String.IsNullOrEmpty(this.LatestGamesViewModel.FilterDeck.Key);
-            if (filterDeck) deckId = LatestGamesViewModel.FilterDeck.Id;
+            bool filterDeck = this.LatestGamesViewModel.FilterDeck != null && !string.IsNullOrEmpty(this.LatestGamesViewModel.FilterDeck.Key);
+            if (filterDeck) deckId = this.LatestGamesViewModel.FilterDeck.Id;
 
             numGames = context.Games.Count(
                 x => x.Started > start
@@ -491,6 +706,9 @@
                      && (!filterDeck || (filterDeck && x.Deck.Id == deckId)));
         }
 
+        /// <summary>
+        /// The initialize data.
+        /// </summary>
         private void InitializeData()
         {
             var data = this.GlobalData.Get();
@@ -498,6 +716,15 @@
             this.heroes.AddRange(data.Heroes);
         }
 
+        /// <summary>
+        /// The calculate heroes played.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateHeroesPlayed(HearthStatsDbContext context, Expression<Func<GameResult, bool>> filter)
         {
             var games = context.Games;
@@ -513,8 +740,8 @@
                 .Select(
                     x => new
                              {
-                                 x.Key,
-                                 x.Key.ClassName,
+                                 x.Key, 
+                                 x.Key.ClassName, 
                                  Count = x.Count()
                              }).ToList();
 
@@ -525,8 +752,8 @@
                 .Select(
                     x => new
                              {
-                                 x.Key,
-                                 x.Key.ClassName,
+                                 x.Key, 
+                                 x.Key.ClassName, 
                                  Count = x.Count()
                              }).ToList();
 
@@ -539,22 +766,33 @@
                     this.heroesPlayed.Add(new StatModel(string.Format("{0}: {1}", hero.ClassName, hero.Count), (float)hero.Count / total * 100, hero.Key.GetBrush()));
                 }
             }
+
             this.heroesPlayed.IsNotifying = true;
             this.heroesPlayed.Refresh();
 
             this.opponentHeroesPlayed.IsNotifying = false;
             foreach (var hero in oppheroestats)
             {
-                //count = games.Where(filter).Count(x => x.OpponentHero != null && x.OpponentHero.Key == hero.Key);
+                // count = games.Where(filter).Count(x => x.OpponentHero != null && x.OpponentHero.Key == hero.Key);
                 if (hero.Count > 0)
                 {
                     this.opponentHeroesPlayed.Add(new StatModel(string.Format("{0}: {1}", hero.ClassName, hero.Count), (float)hero.Count / total * 100, hero.Key.GetBrush()));
                 }
             }
+
             this.opponentHeroesPlayed.IsNotifying = true;
             this.opponentHeroesPlayed.Refresh();
         }
 
+        /// <summary>
+        /// The calculate wins and losses.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateWinsAndLosses(HearthStatsDbContext context, Expression<Func<GameResult, bool>> filter)
         {
             var games = context.Games;

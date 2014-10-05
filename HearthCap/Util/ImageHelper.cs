@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ImageHelper.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The image helper.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Util
 {
     using System;
@@ -7,8 +16,20 @@ namespace HearthCap.Util
     using System.Windows.Interop;
     using System.Windows.Media.Imaging;
 
+    /// <summary>
+    /// The image helper.
+    /// </summary>
     public static class ImageHelper
     {
+        /// <summary>
+        /// The bitmap image 2 bitmap.
+        /// </summary>
+        /// <param name="bitmapImage">
+        /// The bitmap image.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Bitmap"/>.
+        /// </returns>
         public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
             using (var outStream = new MemoryStream())
@@ -21,6 +42,17 @@ namespace HearthCap.Util
             }
         }
 
+        /// <summary>
+        /// The bitmap 2 bitmap source.
+        /// </summary>
+        /// <param name="bmp">
+        /// The bmp.
+        /// </param>
+        /// <returns>
+        /// The <see cref="BitmapSource"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
         public static BitmapSource Bitmap2BitmapSource(Bitmap bmp)
         {
             if (bmp == null)
@@ -29,9 +61,9 @@ namespace HearthCap.Util
             }
             
             var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
-                bmp.GetHbitmap(),
-                IntPtr.Zero,
-                Int32Rect.Empty,
+                bmp.GetHbitmap(), 
+                IntPtr.Zero, 
+                Int32Rect.Empty, 
                 BitmapSizeOptions.FromEmptyOptions());
             return bitmapSource;
         }

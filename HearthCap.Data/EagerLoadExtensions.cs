@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Data
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EagerLoadExtensions.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The eager load extensions.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Data
 {
     using System;
     using System.Collections.Generic;
@@ -6,10 +15,25 @@
     using System.Linq;
     using System.Reflection;
 
+    /// <summary>
+    /// The eager load extensions.
+    /// </summary>
     public static class EagerLoadExtensions
     {
+        /// <summary>
+        /// The method infos.
+        /// </summary>
         private static IDictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
 
+        /// <summary>
+        /// The query.
+        /// </summary>
+        /// <param name="set">
+        /// The set.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IQueryable"/>.
+        /// </returns>
         public static IQueryable<GameResult> Query(this DbSet<GameResult> set)
         {
             return set
@@ -22,6 +46,15 @@
                 .Include(x => x.Deck);
         }
 
+        /// <summary>
+        /// The query.
+        /// </summary>
+        /// <param name="set">
+        /// The set.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IQueryable"/>.
+        /// </returns>
         public static IQueryable<ArenaSession> Query(this DbSet<ArenaSession> set)
         {
             return set
@@ -34,12 +67,32 @@
                 .Include(x => x.Games.Select(g => g.OpponentHero));
         }
 
+        /// <summary>
+        /// The query.
+        /// </summary>
+        /// <param name="set">
+        /// The set.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IQueryable"/>.
+        /// </returns>
         public static IQueryable<Deck> Query(this DbSet<Deck> set)
         {
             return set
                 .Include(x => x.Image);
         }
 
+        /// <summary>
+        /// The query.
+        /// </summary>
+        /// <param name="set">
+        /// The set.
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="IQueryable"/>.
+        /// </returns>
         public static IQueryable<T> Query<T>(this DbSet<T> set) where T : class
         {
             MethodInfo methodInfo;
@@ -51,10 +104,10 @@
             {
                 var argumentType = typeof(DbSet<>).MakeGenericType(typeof(T));
                 methodInfo = typeof(EagerLoadExtensions).GetMethod(
-                    "Query",
-                    BindingFlags.Public | BindingFlags.Static,
-                    null,
-                    new[] { argumentType },
+                    "Query", 
+                    BindingFlags.Public | BindingFlags.Static, 
+                    null, 
+                    new[] { argumentType }, 
                     null);
 
                 if (methodInfo != null)

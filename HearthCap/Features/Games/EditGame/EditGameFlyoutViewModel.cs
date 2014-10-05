@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EditGameFlyoutViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The edit game flyout view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.Games.EditGame
 {
     using System;
@@ -7,12 +16,10 @@ namespace HearthCap.Features.Games.EditGame
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
 
     using Caliburn.Micro;
     using Caliburn.Micro.Recipes.Filters;
 
-    using HearthCap.Core.GameCapture;
     using HearthCap.Data;
     using HearthCap.Features.ArenaSessions;
     using HearthCap.Features.Core;
@@ -31,14 +38,13 @@ namespace HearthCap.Features.Games.EditGame
     /// <summary>The edit game flyout view model.</summary>
     [Export(typeof(IFlyout))]
     [Export(typeof(EditGameFlyoutViewModel))]
-    public class EditGameFlyoutViewModel :
-        FlyoutViewModel,
-        IHandle<SelectedGameChanged>,
-        IHandle<CreateNewGame>,
-        IHandle<GameResultAdded>,
-        IHandle<GameResultUpdated>,
-        // IHandle<DecksUpdated>,
-        IHandle<DeckUpdated>
+    public class EditGameFlyoutViewModel : FlyoutViewModel, 
+                                           IHandle<SelectedGameChanged>, 
+                                           IHandle<CreateNewGame>, 
+                                           IHandle<GameResultAdded>, 
+                                           IHandle<GameResultUpdated>, 
+                                           // IHandle<DecksUpdated>,
+                                           IHandle<DeckUpdated>
     {
         #region Constants
 
@@ -60,8 +66,14 @@ namespace HearthCap.Features.Games.EditGame
         /// <summary>The events.</summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The arena repository.
+        /// </summary>
         private readonly IRepository<ArenaSession> arenaRepository;
 
+        /// <summary>
+        /// The game repository.
+        /// </summary>
         private readonly IRepository<GameResult> gameRepository;
 
         /// <summary>The deck key.</summary>
@@ -109,39 +121,83 @@ namespace HearthCap.Features.Games.EditGame
         /// <summary>The victory.</summary>
         private bool victory;
 
+        /// <summary>
+        /// The decks.
+        /// </summary>
         private BindableCollection<DeckModel> decks = new BindableCollection<DeckModel>();
 
+        /// <summary>
+        /// The selected deck.
+        /// </summary>
         private DeckModel selectedDeck;
 
+        /// <summary>
+        /// The deck manager.
+        /// </summary>
         private IDeckManager deckManager;
 
+        /// <summary>
+        /// The game manager.
+        /// </summary>
         private readonly GameManager gameManager;
 
+        /// <summary>
+        /// The arena session.
+        /// </summary>
         private ArenaSessionModel arenaSession;
 
+        /// <summary>
+        /// The conceded.
+        /// </summary>
         private bool conceded;
 
+        /// <summary>
+        /// The servers.
+        /// </summary>
         private readonly BindableServerCollection servers = BindableServerCollection.Instance;
 
+        /// <summary>
+        /// The selected server.
+        /// </summary>
         private ServerItemModel selectedServer;
 
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
 
         #endregion
 
         #region Constructors and Destructors
 
-        /// <summary>Initializes a new instance of the <see cref="EditGameFlyoutViewModel"/> class.</summary>
-        /// <param name="dialogManager">The dialog manager.</param>
-        /// <param name="events">The events.</param>
-        /// <param name="captureEngine">The capture engine.</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditGameFlyoutViewModel"/> class.
+        /// </summary>
+        /// <param name="dialogManager">
+        /// The dialog manager.
+        /// </param>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="arenaRepository">
+        /// The arena Repository.
+        /// </param>
+        /// <param name="gameRepository">
+        /// The game Repository.
+        /// </param>
+        /// <param name="deckManager">
+        /// The deck Manager.
+        /// </param>
+        /// <param name="gameManager">
+        /// The game Manager.
+        /// </param>
         [ImportingConstructor]
         public EditGameFlyoutViewModel(
-            IDialogManager dialogManager,
-            IEventAggregator events,
-            IRepository<ArenaSession> arenaRepository,
-            IRepository<GameResult> gameRepository,
-            IDeckManager deckManager,
+            IDialogManager dialogManager, 
+            IEventAggregator events, 
+            IRepository<ArenaSession> arenaRepository, 
+            IRepository<GameResult> gameRepository, 
+            IDeckManager deckManager, 
             GameManager gameManager)
         {
             this.dialogManager = dialogManager;
@@ -152,7 +208,7 @@ namespace HearthCap.Features.Games.EditGame
             this.gameManager = gameManager;
             this.Name = Flyouts.EditGame;
             this.Header = displayName_new;
-            SetPosition(Position.Right);
+            this.SetPosition(Position.Right);
             this.heroes = new BindableCollection<Hero>();
             events.Subscribe(this);
 
@@ -163,21 +219,27 @@ namespace HearthCap.Features.Games.EditGame
             this.lastIsOpen = this.IsOpen;
 
             // yeah lol :p
-            gameModes.Remove(GameMode.Arena);
-            selectedServer = servers.Default;
-            Busy = new BusyWatcher();
+            this.gameModes.Remove(GameMode.Arena);
+            this.selectedServer = this.servers.Default;
+            this.Busy = new BusyWatcher();
         }
 
         #endregion
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets or sets the arena view model.
+        /// </summary>
         [Import]
         public CurrentSessionFlyoutViewModel ArenaViewModel { get; set; }
 
         /// <summary>Gets or sets the busy.</summary>
         public IBusyWatcher Busy { get; set; }
 
+        /// <summary>
+        /// Gets the decks.
+        /// </summary>
         public IObservableCollection<DeckModel> Decks
         {
             get
@@ -202,55 +264,68 @@ namespace HearthCap.Features.Games.EditGame
             {
                 return this.Hero != null &&
                     this.OpponentHero != null &&
-                    SelectedServer != null &&
-                    (ArenaSession != null || ArenaSession == null && SelectedDeck != null);
+                    this.SelectedServer != null &&
+                    (this.ArenaSession != null || this.ArenaSession == null && this.SelectedDeck != null);
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether can save as new.
+        /// </summary>
         public bool CanSaveAsNew
         {
             get
             {
-                return (LastGameId == null ||
-                       (SelectedGame != null && SelectedGame.ArenaSession == null) ||
-                       (SelectedGame != null &&
-                        SelectedGame.ArenaSession != null &&
-                        !SelectedGame.ArenaSession.IsEnded));
+                return this.LastGameId == null ||
+                       (this.SelectedGame != null && this.SelectedGame.ArenaSession == null) ||
+                       (this.SelectedGame != null &&
+                        this.SelectedGame.ArenaSession != null &&
+                        !this.SelectedGame.ArenaSession.IsEnded);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected server.
+        /// </summary>
         public ServerItemModel SelectedServer
         {
             get
             {
                 return this.selectedServer;
             }
+
             set
             {
                 if (Equals(value, this.selectedServer))
                 {
                     return;
                 }
+
                 this.selectedServer = value;
-                RefreshDecks();
+                this.RefreshDecks();
                 this.NotifyOfPropertyChange(() => this.SelectedServer);
                 this.NotifyOfPropertyChange(() => this.CanSave);
                 this.NotifyOfPropertyChange(() => this.CanSaveAsNew);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected deck.
+        /// </summary>
         public DeckModel SelectedDeck
         {
             get
             {
                 return this.selectedDeck;
             }
+
             set
             {
                 if (Equals(value, this.selectedDeck))
                 {
                     return;
                 }
+
                 this.selectedDeck = value;
                 this.NotifyOfPropertyChange(() => this.SelectedDeck);
                 this.NotifyOfPropertyChange(() => this.CanSave);
@@ -380,8 +455,8 @@ namespace HearthCap.Features.Games.EditGame
 
                 this.lastGameId = value;
                 this.NotifyOfPropertyChange(() => this.LastGameId);
-                this.NotifyOfPropertyChange(() => CanSave);
-                this.NotifyOfPropertyChange(() => CanSaveAsNew);
+                this.NotifyOfPropertyChange(() => this.CanSave);
+                this.NotifyOfPropertyChange(() => this.CanSaveAsNew);
             }
         }
 
@@ -509,18 +584,23 @@ namespace HearthCap.Features.Games.EditGame
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether conceded.
+        /// </summary>
         public bool Conceded
         {
             get
             {
                 return this.conceded;
             }
+
             set
             {
                 if (value.Equals(this.conceded))
                 {
                     return;
                 }
+
                 this.conceded = value;
                 this.NotifyOfPropertyChange(() => this.Conceded);
             }
@@ -530,26 +610,39 @@ namespace HearthCap.Features.Games.EditGame
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// The view arena.
+        /// </summary>
         public void ViewArena()
         {
-            if (ArenaSession == null) return;
-            ArenaViewModel.Load(ArenaSession);
+            if (this.ArenaSession == null) return;
+            this.ArenaViewModel.Load(this.ArenaSession);
         }
 
+        /// <summary>
+        /// The assign to arena.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task AssignToArena()
         {
-            var latestArena = await arenaRepository.QueryAsync(x => x.OrderByDescending(e => e.StartDate).FirstOrDefaultAsync());
+            var latestArena = await this.arenaRepository.QueryAsync(x => x.OrderByDescending(e => e.StartDate).FirstOrDefaultAsync());
             if (latestArena == null)
             {
                 return;
             }
 
-            await gameManager.AssignGameToArena(this.SelectedGame, latestArena.ToModel());
-            LoadGameResult(SelectedGame);
+            await this.gameManager.AssignGameToArena(this.SelectedGame, latestArena.ToModel());
+            this.LoadGameResult(this.SelectedGame);
         }
 
-        /// <summary>Handles the message.</summary>
-        /// <param name="message">The message.</param>
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(SelectedGameChanged message)
         {
             if (message.Source == this)
@@ -567,8 +660,12 @@ namespace HearthCap.Features.Games.EditGame
             this.Load(game);
         }
 
-        /// <summary>Handles the message.</summary>
-        /// <param name="message">The message.</param>
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(CreateNewGame message)
         {
             this.events.PublishOnUIThread(new SelectedGameChanged(this, null));
@@ -587,23 +684,31 @@ namespace HearthCap.Features.Games.EditGame
                 });
         }
 
+        /// <summary>
+        /// Gets or sets the arena session.
+        /// </summary>
         public ArenaSessionModel ArenaSession
         {
             get
             {
                 return this.arenaSession;
             }
+
             set
             {
                 if (Equals(value, this.arenaSession))
                 {
                     return;
                 }
+
                 this.arenaSession = value;
                 this.NotifyOfPropertyChange(() => this.ArenaSession);
             }
         }
 
+        /// <summary>
+        /// Gets the servers.
+        /// </summary>
         public BindableServerCollection Servers
         {
             get
@@ -641,28 +746,28 @@ namespace HearthCap.Features.Games.EditGame
                 else
                 {
                     // gameResult = (await gameRepository.FirstOrDefaultAsync(x => x.Id == this.LastGameId)).ToModel();
-                    gameResult = SelectedGame;
+                    gameResult = this.SelectedGame;
                 }
 
                 this.SetGameResult(gameResult);
 
                 if (this.ArenaSession != null)
                 {
-                    gameResult.ArenaSession = ArenaSession;
+                    gameResult.ArenaSession = this.ArenaSession;
                 }
 
                 if (added)
                 {
-                    await gameManager.AddGame(gameResult);
+                    await this.gameManager.AddGame(gameResult);
                 }
                 else
                 {
-                    await gameManager.UpdateGame(gameResult);
+                    await this.gameManager.UpdateGame(gameResult);
                 }
 
-                events.PublishOnBackgroundThread(new SendNotification("Game successfully saved."));
+                this.events.PublishOnBackgroundThread(new SendNotification("Game successfully saved."));
                 this.LastGameId = gameResult.Id;
-                LoadGameResult(gameResult);
+                this.LoadGameResult(gameResult);
             }
         }
 
@@ -677,28 +782,41 @@ namespace HearthCap.Features.Games.EditGame
             await this.Save();
         }
 
+        /// <summary>
+        /// The delete.
+        /// </summary>
         public async void Delete()
         {
             if (MessageBox.Show("Delete this game?", "Are you sure?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
             }
-            IsOpen = false;
-            await DeleteAsync();
-            events.PublishOnBackgroundThread(new SendNotification("Game successfully deleted."));
+
+            this.IsOpen = false;
+            await this.DeleteAsync();
+            this.events.PublishOnBackgroundThread(new SendNotification("Game successfully deleted."));
         }
 
+        /// <summary>
+        /// The delete async.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         private async Task DeleteAsync()
         {
-            if (SelectedGame == null) return;
+            if (this.SelectedGame == null) return;
 
-            await gameManager.DeleteGame(SelectedGame.Id);
-            Clear();
+            await this.gameManager.DeleteGame(this.SelectedGame.Id);
+            this.Clear();
         }
 
+        /// <summary>
+        /// The view deck.
+        /// </summary>
         public void ViewDeck()
         {
-            events.PublishOnBackgroundThread(new SelectDeck(SelectedDeck));
+            this.events.PublishOnBackgroundThread(new SelectDeck(this.SelectedDeck));
         }
 
         /// <summary>The set end time.</summary>
@@ -737,7 +855,7 @@ namespace HearthCap.Features.Games.EditGame
             this.Turns = 1;
             this.ArenaSession = null;
             this.Conceded = false;
-            SelectedServer = servers.Default;
+            this.SelectedServer = this.servers.Default;
 
             if (this.decks.Count > 0)
             {
@@ -745,41 +863,52 @@ namespace HearthCap.Features.Games.EditGame
             }
         }
 
-        /// <summary>The load data.</summary>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <summary>
+        /// The load data.
+        /// </summary>
         private void EnsureInitialized()
         {
-            if (initialized) return;
-            initialized = true;
+            if (this.initialized) return;
+            this.initialized = true;
             var data = this.GlobalData.Get();
             this.heroes.Clear();
             this.heroes.AddRange(data.Heroes);
-            RefreshDecks();
+            this.RefreshDecks();
         }
 
+        /// <summary>
+        /// The refresh decks.
+        /// </summary>
         private void RefreshDecks()
         {
-            if (SelectedServer == null || String.IsNullOrEmpty(SelectedServer.Name))
+            if (this.SelectedServer == null || string.IsNullOrEmpty(this.SelectedServer.Name))
             {
                 return;
             }
-            var current = SelectedDeck;
-            var decks = deckManager.GetDecks(SelectedServer.Name).Select(x => x.ToModel());
+
+            var current = this.SelectedDeck;
+            var decks = this.deckManager.GetDecks(this.SelectedServer.Name).Select(x => x.ToModel());
             this.decks.Clear();
             this.decks.AddRange(decks);
             if (current != null)
             {
-                SelectedDeck = Decks.FirstOrDefault(x => x.Id == current.Id);
+                this.SelectedDeck = this.Decks.FirstOrDefault(x => x.Id == current.Id);
             }
             else
             {
-                SelectedDeck = Decks.FirstOrDefault();
+                this.SelectedDeck = this.Decks.FirstOrDefault();
             }
         }
 
+        /// <summary>
+        /// The load game result.
+        /// </summary>
+        /// <param name="game">
+        /// The game.
+        /// </param>
         private void LoadGameResult(GameResultModel game)
         {
-            EnsureInitialized();
+            this.EnsureInitialized();
             this.SelectedGame = game;
             this.Hero = game.Hero;
             this.OpponentHero = game.OpponentHero;
@@ -788,39 +917,47 @@ namespace HearthCap.Features.Games.EditGame
             this.Victory = game.Victory;
             this.GoFirst = game.GoFirst;
             this.GameMode = game.GameMode;
+
             // force notify even if not changed
-            NotifyOfPropertyChange(() => GameMode);
+            this.NotifyOfPropertyChange(() => this.GameMode);
             this.Notes = game.Notes;
             this.Turns = game.Turns;
             this.ArenaSession = game.ArenaSession;
             this.LastGameId = game.Id;
             this.Conceded = game.Conceded;
-            this.SelectedServer = servers.FirstOrDefault(x => x.Name == game.Server);
+            this.SelectedServer = this.servers.FirstOrDefault(x => x.Name == game.Server);
 
             if (game.Deck != null)
             {
-                if (game.Deck.Deleted && Decks.All(x => x.Id != game.Deck.Id))
+                if (game.Deck.Deleted && this.Decks.All(x => x.Id != game.Deck.Id))
                 {
                     var model = game.Deck.ToModel();
                     model.Name += " (deleted)";
-                    Decks.Insert(0, model);
+                    this.Decks.Insert(0, model);
                 }
 
-                this.SelectedDeck = Decks.FirstOrDefault(x => x.Id == game.Deck.Id);
+                this.SelectedDeck = this.Decks.FirstOrDefault(x => x.Id == game.Deck.Id);
             }
 
             this.NotifyOfPropertyChange(() => this.CanSaveAsNew);
-            //Execute.OnUIThread(
-            //    () =>
-            //    {
-            //        var v = (UIElement)this.GetView();
-            //        Panel.SetZIndex(v, 10);
-            //    });
+
+            // Execute.OnUIThread(
+            // () =>
+            // {
+            // var v = (UIElement)this.GetView();
+            // Panel.SetZIndex(v, 10);
+            // });
         }
 
-        /// <summary>The on property changed.</summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The args.</param>
+        /// <summary>
+        /// The on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
@@ -847,16 +984,20 @@ namespace HearthCap.Features.Games.EditGame
             }
         }
 
-        /// <summary>The set game result.</summary>
-        /// <param name="context">The context.</param>
-        /// <param name="game">The game.</param>
+        /// <summary>
+        /// The set game result.
+        /// </summary>
+        /// <param name="game">
+        /// The game.
+        /// </param>
         private void SetGameResult(GameResultModel game)
         {
             game.GameMode = this.GameMode;
             if (this.SelectedDeck != null)
             {
-                game.Deck = deckManager.GetDeckById(this.SelectedDeck.Id);
+                game.Deck = this.deckManager.GetDeckById(this.SelectedDeck.Id);
             }
+
             game.GameMode = this.GameMode;
             game.GoFirst = this.GoFirst;
             game.Hero = this.Hero;
@@ -876,7 +1017,9 @@ namespace HearthCap.Features.Games.EditGame
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameResultAdded message)
         {
             if (message.Source == this)
@@ -884,37 +1027,48 @@ namespace HearthCap.Features.Games.EditGame
                 return;
             }
 
-            LoadGameResult(message.GameResult);
+            this.LoadGameResult(message.GameResult);
         }
 
+        /// <summary>
+        /// The load.
+        /// </summary>
+        /// <param name="gameResultModel">
+        /// The game result model.
+        /// </param>
         public void Load(GameResultModel gameResultModel)
         {
-            LoadGameResult(gameResultModel);
-            //if (IsOpen)
-            //{
-            //    IsOpen = false;
-            //}
-            IsOpen = true;
+            this.LoadGameResult(gameResultModel);
+
+            // if (IsOpen)
+            // {
+            // IsOpen = false;
+            // }
+            this.IsOpen = true;
             this.events.PublishOnUIThread(new SelectedGameChanged(this, gameResultModel));
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameResultUpdated message)
         {
             if (message.GameResultId == this.LastGameId)
             {
-                var newgame = gameRepository.FirstOrDefault(x => x.Id == message.GameResultId);
-                LoadGameResult(newgame.ToModel());
+                var newgame = this.gameRepository.FirstOrDefault(x => x.Id == message.GameResultId);
+                this.LoadGameResult(newgame.ToModel());
             }
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(DeckUpdated message)
         {
             if (message.Deck == null)
@@ -930,21 +1084,21 @@ namespace HearthCap.Features.Games.EditGame
             }
         }
 
-        /// <summary>
-        /// Handles the message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        //public void Handle(DecksUpdated message)
-        //{
-        //    if (SelectedServer != null && SelectedServer.Name == message.Server)
-        //    {
-        //        var oldSelected = SelectedDeck;
-        //        RefreshDecks();
-        //        if (oldSelected != null)
-        //        {
-        //            SelectedDeck = Decks.FirstOrDefault(x => x.Id == oldSelected.Id);
-        //        }
-        //    }
-        //}
+        // <summary>
+        // Handles the message.
+        // </summary>
+        // <param name="message">The message.</param>
+        // public void Handle(DecksUpdated message)
+        // {
+        // if (SelectedServer != null && SelectedServer.Name == message.Server)
+        // {
+        // var oldSelected = SelectedDeck;
+        // RefreshDecks();
+        // if (oldSelected != null)
+        // {
+        // SelectedDeck = Decks.FirstOrDefault(x => x.Id == oldSelected.Id);
+        // }
+        // }
+        // }
     }
 }

@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Features.StartHearthstone
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StartHearthstoneViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The start hearthstone view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.StartHearthstone
 {
     using System;
     using System.ComponentModel.Composition;
@@ -12,17 +21,25 @@
 
     using Microsoft.Win32;
     using Microsoft.WindowsAPICodePack.Dialogs;
-    using Microsoft.WindowsAPICodePack.Dialogs.Controls;
 
+    /// <summary>
+    /// The start hearthstone view model.
+    /// </summary>
     [Export(typeof(ICommandBarItem))]
     public class StartHearthstoneViewModel : CommandBarItemViewModel
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartHearthstoneViewModel"/> class.
+        /// </summary>
         [ImportingConstructor]
         public StartHearthstoneViewModel()
         {
             this.Order = -3;
         }
 
+        /// <summary>
+        /// The start hearthstone.
+        /// </summary>
         public void StartHearthstone()
         {
             try
@@ -30,11 +47,11 @@
                 var wnd = HearthstoneHelper.GetHearthstoneWindow();
                 if (wnd != IntPtr.Zero) return;
 
-                var hsLocation = String.Empty;
+                var hsLocation = string.Empty;
                 using (var settings = new HearthstoneRegistrySettings())
                 {
                     hsLocation = settings.BattleNetLocation;
-                    if (String.IsNullOrEmpty(hsLocation) || !File.Exists(hsLocation))
+                    if (string.IsNullOrEmpty(hsLocation) || !File.Exists(hsLocation))
                     {
                         // try default
                         var def = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Battle.net");
@@ -45,7 +62,7 @@
                         }
                         else
                         {
-                            if (AskHearthstoneLocation(out hsLocation))
+                            if (this.AskHearthstoneLocation(out hsLocation))
                             {
                                 settings.BattleNetLocation = hsLocation;
                             }
@@ -69,21 +86,30 @@
             }
         }
 
+        /// <summary>
+        /// The ask hearthstone location.
+        /// </summary>
+        /// <param name="hsLocation">
+        /// The hs location.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool AskHearthstoneLocation(out string hsLocation)
         {
-            hsLocation = String.Empty;
+            hsLocation = string.Empty;
             var dialog = new CommonOpenFileDialog
                              {
-                                 EnsurePathExists = true,
-                                 EnsureFileExists = true,
-                                 DefaultDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Battle.net"),
-                                 InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Battle.net"),
-                                 Multiselect = false,
-                                 EnsureValidNames = true,
-                                 Title = "Find Battle.net location",
-                                 IsFolderPicker = true,
-                                 AllowNonFileSystemItems = false,
-                                 AllowPropertyEditing = false,
+                                 EnsurePathExists = true, 
+                                 EnsureFileExists = true, 
+                                 DefaultDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Battle.net"), 
+                                 InitialDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Battle.net"), 
+                                 Multiselect = false, 
+                                 EnsureValidNames = true, 
+                                 Title = "Find Battle.net location", 
+                                 IsFolderPicker = true, 
+                                 AllowNonFileSystemItems = false, 
+                                 AllowPropertyEditing = false, 
                                  RestoreDirectory = true
                              };
 
@@ -101,6 +127,7 @@
                     hsLocation = launcher;
                     return true;
                 }
+
                 var msg = MessageBox.Show("Could not find 'Battle.net Launcher.exe'. Try again?", "Battle.net launcher not found.", MessageBoxButton.YesNo);
                 if (msg == MessageBoxResult.No)
                 {
@@ -112,22 +139,32 @@
         }
     }
 
+    /// <summary>
+    /// The hearthstone registry settings.
+    /// </summary>
     public class HearthstoneRegistrySettings : RegistrySettings
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HearthstoneRegistrySettings"/> class.
+        /// </summary>
         public HearthstoneRegistrySettings()
             : base(@"Software\HearthstoneTracker")
         {
         }
 
+        /// <summary>
+        /// Gets or sets the battle net location.
+        /// </summary>
         public string BattleNetLocation
         {
             get
             {
-                return GetOrCreate("BattleNetLocation", String.Empty);
+                return this.GetOrCreate("BattleNetLocation", string.Empty);
             }
+
             set
             {
-                SetValue("BattleNetLocation", value, RegistryValueKind.String);
+                this.SetValue("BattleNetLocation", value, RegistryValueKind.String);
             }
         }
     }

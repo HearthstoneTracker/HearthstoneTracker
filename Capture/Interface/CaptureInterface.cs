@@ -1,31 +1,72 @@
-﻿namespace Capture.Interface
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CaptureInterface.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The message received event.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace Capture.Interface
 {
     using System;
     using System.Drawing;
     using System.Threading;
 
+    /// <summary>
+    /// The message received event.
+    /// </summary>
+    /// <param name="message">
+    /// The message.
+    /// </param>
     [Serializable]
     public delegate void MessageReceivedEvent(MessageReceivedEventArgs message);
 
+    /// <summary>
+    /// The disconnected event.
+    /// </summary>
     [Serializable]
     public delegate void DisconnectedEvent();
 
+    /// <summary>
+    /// The screenshot requested event.
+    /// </summary>
+    /// <param name="request">
+    /// The request.
+    /// </param>
     [Serializable]
     public delegate void ScreenshotRequestedEvent(ScreenshotRequest request);
 
+    /// <summary>
+    /// The capture interface.
+    /// </summary>
     [Serializable]
     public class CaptureInterface : MarshalByRefObject
     {
         #region Fields
 
-        private Action<Screenshot> _completeScreenshot = null;
+        /// <summary>
+        /// The _complete screenshot.
+        /// </summary>
+        private Action<Screenshot> _completeScreenshot;
 
+        /// <summary>
+        /// The _disposed.
+        /// </summary>
         private bool _disposed;
 
+        /// <summary>
+        /// The _lock.
+        /// </summary>
         private object _lock = new object();
 
-        private Guid? _requestId = null;
+        /// <summary>
+        /// The _request id.
+        /// </summary>
+        private Guid? _requestId;
 
+        /// <summary>
+        /// The _wait.
+        /// </summary>
         private ManualResetEvent _wait = new ManualResetEvent(false);
 
         #endregion
@@ -60,6 +101,21 @@
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// The begin get screenshot.
+        /// </summary>
+        /// <param name="region">
+        /// The region.
+        /// </param>
+        /// <param name="timeout">
+        /// The timeout.
+        /// </param>
+        /// <param name="callback">
+        /// The callback.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IAsyncResult"/>.
+        /// </returns>
         public IAsyncResult BeginGetScreenshot(Rectangle region, TimeSpan timeout, AsyncCallback callback = null)
         {
             Func<Rectangle, TimeSpan, Screenshot> getScreenshot = this.GetScreenshot;
@@ -75,6 +131,15 @@
             this.SafeInvokeDisconnected();
         }
 
+        /// <summary>
+        /// The end get screenshot.
+        /// </summary>
+        /// <param name="result">
+        /// The result.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Screenshot"/>.
+        /// </returns>
         public Screenshot EndGetScreenshot(IAsyncResult result)
         {
             Func<Rectangle, TimeSpan, Screenshot> getScreenshot = result.AsyncState as Func<Rectangle, TimeSpan, Screenshot>;
@@ -91,6 +156,9 @@
         /// <summary>
         /// Get a fullscreen screenshot with the default timeout of 2 seconds
         /// </summary>
+        /// <returns>
+        /// The <see cref="Screenshot"/>.
+        /// </returns>
         public Screenshot GetScreenshot()
         {
             return this.GetScreenshot(Rectangle.Empty, new TimeSpan(0, 0, 2));
@@ -99,8 +167,15 @@
         /// <summary>
         /// Get a screenshot of the specified region
         /// </summary>
-        /// <param name="region">the region to capture (x=0,y=0 is top left corner)</param>
-        /// <param name="timeout">maximum time to wait for the screenshot</param>
+        /// <param name="region">
+        /// the region to capture (x=0,y=0 is top left corner)
+        /// </param>
+        /// <param name="timeout">
+        /// maximum time to wait for the screenshot
+        /// </param>
+        /// <returns>
+        /// The <see cref="Screenshot"/>.
+        /// </returns>
         public Screenshot GetScreenshot(Rectangle region, TimeSpan timeout)
         {
             lock (this._lock)
@@ -111,7 +186,7 @@
 
                 this.SafeInvokeScreenshotRequested(new ScreenshotRequest(this._requestId.Value, region));
 
-                this._completeScreenshot = (sc) =>
+                this._completeScreenshot = sc =>
                     {
                         try
                         {
@@ -120,6 +195,7 @@
                         catch
                         {
                         }
+
                         this._wait.Set();
                     };
 
@@ -132,23 +208,44 @@
         /// <summary>
         /// Send a message to all handlers of <see cref="CaptureInterface.RemoteMessage"/>.
         /// </summary>
-        /// <param name="messageType"></param>
-        /// <param name="format"></param>
-        /// <param name="args"></param>
+        /// <param name="messageType">
+        /// </param>
+        /// <param name="format">
+        /// </param>
+        /// <param name="args">
+        /// </param>
         public void Message(MessageType messageType, string format, params object[] args)
         {
-            this.Message(messageType, String.Format(format, args));
+            this.Message(messageType, string.Format(format, args));
         }
 
+        /// <summary>
+        /// The message.
+        /// </summary>
+        /// <param name="messageType">
+        /// The message type.
+        /// </param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Message(MessageType messageType, string message)
         {
             this.SafeInvokeMessageRecevied(new MessageReceivedEventArgs(messageType, message));
         }
 
+        /// <summary>
+        /// The ping.
+        /// </summary>
         public void Ping()
         {
         }
 
+        /// <summary>
+        /// The send screenshot response.
+        /// </summary>
+        /// <param name="screenshot">
+        /// The screenshot.
+        /// </param>
         public void SendScreenshotResponse(Screenshot screenshot)
         {
             if (this._requestId != null && screenshot != null && screenshot.RequestId == this._requestId.Value)
@@ -164,11 +261,14 @@
 
         #region Methods
 
+        /// <summary>
+        /// The safe invoke disconnected.
+        /// </summary>
         private void SafeInvokeDisconnected()
         {
             if (this.Disconnected == null)
             {
-                return; //No Listeners
+                return; // No Listeners
             }
 
             DisconnectedEvent listener = null;
@@ -183,18 +283,24 @@
                 }
                 catch (Exception)
                 {
-                    //Could not reach the destination, so remove it
-                    //from the list
+                    // Could not reach the destination, so remove it
+                    // from the list
                     this.Disconnected -= listener;
                 }
             }
         }
 
+        /// <summary>
+        /// The safe invoke message recevied.
+        /// </summary>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void SafeInvokeMessageRecevied(MessageReceivedEventArgs eventArgs)
         {
             if (this.RemoteMessage == null)
             {
-                return; //No Listeners
+                return; // No Listeners
             }
 
             MessageReceivedEvent listener = null;
@@ -209,18 +315,24 @@
                 }
                 catch (Exception)
                 {
-                    //Could not reach the destination, so remove it
-                    //from the list
+                    // Could not reach the destination, so remove it
+                    // from the list
                     this.RemoteMessage -= listener;
                 }
             }
         }
 
+        /// <summary>
+        /// The safe invoke screenshot requested.
+        /// </summary>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void SafeInvokeScreenshotRequested(ScreenshotRequest eventArgs)
         {
             if (this.ScreenshotRequested == null)
             {
-                return; //No Listeners
+                return; // No Listeners
             }
 
             ScreenshotRequestedEvent listener = null;
@@ -235,8 +347,8 @@
                 }
                 catch (Exception)
                 {
-                    //Could not reach the destination, so remove it
-                    //from the list
+                    // Could not reach the destination, so remove it
+                    // from the list
                     this.ScreenshotRequested -= listener;
                 }
             }

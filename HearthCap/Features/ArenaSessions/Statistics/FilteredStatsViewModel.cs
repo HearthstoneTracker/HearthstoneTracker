@@ -1,46 +1,86 @@
-﻿namespace HearthCap.Features.ArenaSessions.Statistics
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="FilteredStatsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The filtered stats view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.ArenaSessions.Statistics
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.Composition;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Threading.Tasks;
 
     using Caliburn.Micro;
 
     using HearthCap.Data;
     using HearthCap.Features.Core;
-    using HearthCap.Features.Games.Models;
 
+    /// <summary>
+    /// The filtered stats view model.
+    /// </summary>
     [Export(typeof(FilteredStatsViewModel))]
     public class FilteredStatsViewModel : Screen
     {
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
+
+        /// <summary>
+        /// The wins and losses.
+        /// </summary>
         private readonly BindableCollection<StatModel> winsAndLosses = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The heroes played.
+        /// </summary>
         private readonly BindableCollection<StatModel> heroesPlayed = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The heroes.
+        /// </summary>
         private readonly BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
+        /// <summary>
+        /// The win ratios.
+        /// </summary>
         private BindableCollection<StatModel> winRatios = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The refreshing.
+        /// </summary>
         private bool refreshing;
 
+        /// <summary>
+        /// The opponent heroes played.
+        /// </summary>
         private readonly BindableCollection<StatModel> opponentHeroesPlayed = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FilteredStatsViewModel"/> class.
+        /// </summary>
         [ImportingConstructor]
         public FilteredStatsViewModel()
         {
             if (Execute.InDesignMode)
             {
-                AddDesignModeData();
+                this.AddDesignModeData();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the global data.
+        /// </summary>
         [Import]
         protected GlobalData GlobalData { get; set; }
 
+        /// <summary>
+        /// The add design mode data.
+        /// </summary>
         private void AddDesignModeData()
         {
             this.WinsAndLosses.Add(new StatModel("Wins", 30));
@@ -51,14 +91,20 @@
             this.WinRatios.Add(new StatModel("12", 3));
         }
 
+        /// <summary>
+        /// Gets the wins and losses.
+        /// </summary>
         public BindableCollection<StatModel> WinsAndLosses
         {
             get
             {
-                return winsAndLosses;
+                return this.winsAndLosses;
             }
         }
 
+        /// <summary>
+        /// Gets the heroes played.
+        /// </summary>
         public BindableCollection<StatModel> HeroesPlayed
         {
             get
@@ -67,6 +113,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the opponent heroes played.
+        /// </summary>
         public BindableCollection<StatModel> OpponentHeroesPlayed
         {
             get
@@ -75,6 +124,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the win ratios.
+        /// </summary>
         public BindableCollection<StatModel> WinRatios
         {
             get
@@ -83,36 +135,54 @@
             }
         }
 
+        /// <summary>
+        /// The refresh from.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         public void RefreshFrom(Func<HearthStatsDbContext> context, Expression<Func<ArenaSession, bool>> filter)
         {
-            if (refreshing) return;
-            refreshing = true;
+            if (this.refreshing) return;
+            this.refreshing = true;
 
-            if (!initialized)
+            if (!this.initialized)
             {
-                InitializeData();
-                initialized = true;
+                this.InitializeData();
+                this.initialized = true;
             }
 
-            //Task.WaitAll(
-            //    Task.Run(() => CalculateWinsAndLosses(context(), filter)),
-            //    Task.Run(() => CalculateWinRatios(context(), filter)),
-            //    Task.Run(() => CalculateHeroesPlayed(context(), filter)),
-            //    Task.Run(() => CalculateOppHeroesPlayed(context(), filter))
-            //    ); 
-
-            CalculateWinsAndLosses(context(), filter);
-            CalculateWinRatios(context(), filter);
-            CalculateWinRatios(context(), filter);
-            CalculateHeroesPlayed(context(), filter);
-            CalculateOppHeroesPlayed(context(), filter);
+            // Task.WaitAll(
+            // Task.Run(() => CalculateWinsAndLosses(context(), filter)),
+            // Task.Run(() => CalculateWinRatios(context(), filter)),
+            // Task.Run(() => CalculateHeroesPlayed(context(), filter)),
+            // Task.Run(() => CalculateOppHeroesPlayed(context(), filter))
+            // ); 
+            this.CalculateWinsAndLosses(context(), filter);
+            this.CalculateWinRatios(context(), filter);
+            this.CalculateWinRatios(context(), filter);
+            this.CalculateHeroesPlayed(context(), filter);
+            this.CalculateOppHeroesPlayed(context(), filter);
             
-            refreshing = false;
+            this.refreshing = false;
         }
 
+        /// <summary>
+        /// The calculate win ratios.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateWinRatios(HearthStatsDbContext context, Expression<Func<ArenaSession, bool>> filter)
         {
             var arenas = context.ArenaSessions.Where(filter);
+
             // float total = results.Sum(a => a.Games.Count);
             float wins2 = arenas.Count(a => a.Wins <= 2);
             float wins3 = arenas.Count(a => a.Wins == 3);
@@ -120,17 +190,20 @@
             float wins7 = arenas.Count(a => a.Wins >= 7 && a.Wins <= 11);
             float wins12 = arenas.Count(a => a.Wins == 12);
 
-            WinRatios.IsNotifying = false;
-            WinRatios.Clear();
-            WinRatios.Add(new StatModel("0-2", wins2));
-            WinRatios.Add(new StatModel("3", wins3));
-            WinRatios.Add(new StatModel("4-6", wins4));
-            WinRatios.Add(new StatModel("7-11", wins7));
-            WinRatios.Add(new StatModel("12", wins12));
-            WinRatios.IsNotifying = true;
-            WinRatios.Refresh();
+            this.WinRatios.IsNotifying = false;
+            this.WinRatios.Clear();
+            this.WinRatios.Add(new StatModel("0-2", wins2));
+            this.WinRatios.Add(new StatModel("3", wins3));
+            this.WinRatios.Add(new StatModel("4-6", wins4));
+            this.WinRatios.Add(new StatModel("7-11", wins7));
+            this.WinRatios.Add(new StatModel("12", wins12));
+            this.WinRatios.IsNotifying = true;
+            this.WinRatios.Refresh();
         }
 
+        /// <summary>
+        /// The initialize data.
+        /// </summary>
         private void InitializeData()
         {
             var data = this.GlobalData.Get();
@@ -138,6 +211,15 @@
             this.heroes.AddRange(data.Heroes);
         }
 
+        /// <summary>
+        /// The calculate opp heroes played.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateOppHeroesPlayed(HearthStatsDbContext context, Expression<Func<ArenaSession, bool>> filter)
         {
             var arenas = context.ArenaSessions.Where(filter);
@@ -148,6 +230,7 @@
             {
                 return;
             }
+
             int gamesCount = context.Games.Count(x => arenas.Contains(x.ArenaSession));
 
             var oppheroestats = context.Games
@@ -156,8 +239,8 @@
                 .Where(x => x.Any()).Select(
                     x => new
                     {
-                        x.Key,
-                        x.Key.ClassName,
+                        x.Key, 
+                        x.Key.ClassName, 
                         Count = x.Count()
                     }).ToList();
             foreach (var hero in oppheroestats)
@@ -167,10 +250,20 @@
                     this.opponentHeroesPlayed.Add(new StatModel(string.Format("{0}: {1}", hero.ClassName, hero.Count), (float)hero.Count / gamesCount * 100, hero.Key.GetBrush()));
                 }
             }
+
             this.opponentHeroesPlayed.IsNotifying = true;
             this.opponentHeroesPlayed.Refresh();
         }
 
+        /// <summary>
+        /// The calculate heroes played.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateHeroesPlayed(HearthStatsDbContext context, Expression<Func<ArenaSession, bool>> filter)
         {
             var arenas = context.ArenaSessions.Where(filter);
@@ -186,8 +279,8 @@
             var heroestats = arenas.GroupBy(x => x.Hero).Where(x => x.Any()).Select(
                 x => new
                          {
-                             x.Key,
-                             x.Key.ClassName,
+                             x.Key, 
+                             x.Key.ClassName, 
                              Count = x.Count()
                          }).ToList();
 
@@ -203,6 +296,15 @@
             this.heroesPlayed.Refresh();
         }
 
+        /// <summary>
+        /// The calculate wins and losses.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="filter">
+        /// The filter.
+        /// </param>
         private void CalculateWinsAndLosses(HearthStatsDbContext context, Expression<Func<ArenaSession, bool>> filter)
         {
             var arenas = context.ArenaSessions.Where(filter);

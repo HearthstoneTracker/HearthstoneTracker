@@ -1,29 +1,67 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HeroExtensions.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The hero extensions.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.Core
 {
-    using System;
     using System.Windows.Media;
 
     using HearthCap.Data;
 
     using Color = System.Drawing.Color;
 
+    /// <summary>
+    /// The hero extensions.
+    /// </summary>
     public static class HeroExtensions
     {
+        /// <summary>
+        /// The get brush.
+        /// </summary>
+        /// <param name="hero">
+        /// The hero.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Brush"/>.
+        /// </returns>
         public static Brush GetBrush(this Hero hero)
         {
             return GetBrush(hero != null ? hero.Key : null);
         }
 
+        /// <summary>
+        /// The get color.
+        /// </summary>
+        /// <param name="hero">
+        /// The hero.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Color"/>.
+        /// </returns>
         public static Color GetColor(this Hero hero)
         {
             return GetColor(hero != null ? hero.Key : null);
         }
 
+        /// <summary>
+        /// The get color.
+        /// </summary>
+        /// <param name="heroKey">
+        /// The hero key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Color"/>.
+        /// </returns>
         public static Color GetColor(string heroKey)
         {
             // http://www.wowwiki.com/Class_colors
             Color color;
-            if (String.IsNullOrEmpty(heroKey))
+            if (string.IsNullOrEmpty(heroKey))
             {
                 color = Color.Black;
             }
@@ -73,6 +111,15 @@ namespace HearthCap.Features.Core
             return color;
         }
 
+        /// <summary>
+        /// The get brush.
+        /// </summary>
+        /// <param name="heroKey">
+        /// The hero key.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Brush"/>.
+        /// </returns>
         public static Brush GetBrush(string heroKey)
         {
             var color = GetColor(heroKey);

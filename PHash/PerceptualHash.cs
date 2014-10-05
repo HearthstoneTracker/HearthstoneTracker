@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PerceptualHash.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Generate and match perceptual hashes from images.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace PHash
 {
     using System.Collections.Generic;
@@ -7,10 +16,18 @@ namespace PHash
     /// <summary>Generate and match perceptual hashes from images.</summary>
     public abstract class PerceptualHash : IPerceptualHash
     {
-        /// <summary>Calculates the hamming distance between two hashes.</summary>
-        /// <param name="a">First hash.</param>
-        /// <param name="b">Second hash.</param>
-        /// <returns>The <see cref="int"/>.</returns>
+        /// <summary>
+        /// Calculates the hamming distance between two hashes.
+        /// </summary>
+        /// <param name="hash1">
+        /// The hash 1.
+        /// </param>
+        /// <param name="hash2">
+        /// The hash 2.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         public static int HammingDistance(ulong hash1, ulong hash2)
         {
             ulong x = hash1 ^ hash2;
@@ -24,10 +41,18 @@ namespace PHash
             return (int)((x * h01) >> 56);
         }
 
-        /// <summary>Find best matching hash in a given set.</summary>
-        /// <param name="hash">The hash to compare.</param>
-        /// <param name="set">Set of hashes to match against.</param>
-        /// <returns>The <see cref="CompareResult"/>.</returns>
+        /// <summary>
+        /// Find best matching hash in a given set.
+        /// </summary>
+        /// <param name="hash">
+        /// The hash to compare.
+        /// </param>
+        /// <param name="set">
+        /// Set of hashes to match against.
+        /// </param>
+        /// <returns>
+        /// The <see cref="CompareResult"/>.
+        /// </returns>
         public static CompareResult FindBest(ulong hash, IList<ulong> set)
         {
             int minIndex = -1;
@@ -45,11 +70,21 @@ namespace PHash
             return new CompareResult(minIndex, minDist);
         }
 
-        /// <summary>Find n best matches.</summary>
-        /// <param name="n">Number of matches to return</param>
-        /// <param name="hash">The hash to compare.</param>
-        /// <param name="set">Set of hashes to match against.</param>
-        /// <returns>Returns <see cref="IEnumerable{T}"/> of <see cref="CompareResult"/> with n best matches</returns>
+        /// <summary>
+        /// Find n best matches.
+        /// </summary>
+        /// <param name="n">
+        /// Number of matches to return
+        /// </param>
+        /// <param name="hash">
+        /// The hash to compare.
+        /// </param>
+        /// <param name="set">
+        /// Set of hashes to match against.
+        /// </param>
+        /// <returns>
+        /// Returns <see cref="IEnumerable{T}"/> of <see cref="CompareResult"/> with n best matches
+        /// </returns>
         public static IEnumerable<CompareResult> FindNBest(int n, ulong hash, IList<ulong> set)
         {
             if (n == 1)
@@ -89,11 +124,26 @@ namespace PHash
             return nbestObjects;
         }
 
-        /// <summary>Create hash from a <see cref="Bitmap"/>.</summary>
-        /// <param name="image">Bitmap to create a hash from.</param>
-        /// <returns>The hash of type <see cref="ulong"/>.</returns>
+        /// <summary>
+        /// Create hash from a <see cref="Bitmap"/>.
+        /// </summary>
+        /// <param name="image">
+        /// Bitmap to create a hash from.
+        /// </param>
+        /// <returns>
+        /// The hash of type <see cref="ulong"/>.
+        /// </returns>
         public abstract ulong Create(BitmapData image);
 
+        /// <summary>
+        /// The create.
+        /// </summary>
+        /// <param name="image">
+        /// The image.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ulong"/>.
+        /// </returns>
         public virtual ulong Create(Bitmap image)
         {
             var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, image.PixelFormat);
@@ -105,9 +155,15 @@ namespace PHash
         /// <summary>Hash compare result.</summary>
         public class CompareResult
         {
-            /// <summary>Initializes a new instance of the <see cref="CompareResult"/> class.</summary>
-            /// <param name="index">The index.</param>
-            /// <param name="distance">The distance.</param>
+            /// <summary>
+            /// Initializes a new instance of the <see cref="CompareResult"/> class.
+            /// </summary>
+            /// <param name="index">
+            /// The index.
+            /// </param>
+            /// <param name="distance">
+            /// The distance.
+            /// </param>
             public CompareResult(int index, int distance)
             {
                 this.Index = index;

@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Core.Util
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ImageUtils.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The image utils.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Core.Util
 {
     using System;
     using System.Collections.Generic;
@@ -8,8 +17,20 @@
     using System.Runtime.InteropServices;
     using System.Security.Cryptography;
 
+    /// <summary>
+    /// The image utils.
+    /// </summary>
     public static class ImageUtils
     {
+        /// <summary>
+        /// The is all black.
+        /// </summary>
+        /// <param name="img">
+        /// The img.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public unsafe static bool IsAllBlack(this Bitmap img)
         {
             bool allblack = true;
@@ -19,7 +40,7 @@
                 var bytes = (byte*)data.Scan0;
                 for (int i = 0; i < data.Height * data.Stride; i++)
                 {
-                    allblack = (bytes[i] == 0 || bytes[i] == 255);
+                    allblack = bytes[i] == 0 || bytes[i] == 255;
                     if (!allblack)
                     {
                         break;
@@ -34,9 +55,36 @@
             return allblack;
         }
 
+        /// <summary>
+        /// The memcmp.
+        /// </summary>
+        /// <param name="b1">
+        /// The b 1.
+        /// </param>
+        /// <param name="b2">
+        /// The b 2.
+        /// </param>
+        /// <param name="count">
+        /// The count.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         [DllImport("msvcrt.dll")]
         private static extern int memcmp(IntPtr b1, IntPtr b2, long count);
 
+        /// <summary>
+        /// The compare mem cmp.
+        /// </summary>
+        /// <param name="b1">
+        /// The b 1.
+        /// </param>
+        /// <param name="b2">
+        /// The b 2.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool CompareMemCmp(Bitmap b1, Bitmap b2)
         {
             if ((b1 == null) != (b2 == null)) return false;
@@ -62,6 +110,18 @@
             }
         }
 
+        /// <summary>
+        /// The are equal.
+        /// </summary>
+        /// <param name="imageA">
+        /// The image a.
+        /// </param>
+        /// <param name="imageB">
+        /// The image b.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public unsafe static bool AreEqual(Bitmap imageA, Bitmap imageB)
         {
             if (imageA.Width != imageB.Width) return false;
@@ -87,9 +147,29 @@
 
             return result;
         }
+
+        /// <summary>
+        /// The ic.
+        /// </summary>
         private static ImageConverter ic = new ImageConverter();
+
+        /// <summary>
+        /// The sha.
+        /// </summary>
         private static SHA512Managed sha = new SHA512Managed();
 
+        /// <summary>
+        /// The are equal hash.
+        /// </summary>
+        /// <param name="imageA">
+        /// The image a.
+        /// </param>
+        /// <param name="imageB">
+        /// The image b.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool AreEqualHash(Bitmap imageA, Bitmap imageB)
         {
             if (imageA.Width != imageB.Width) return false;
@@ -100,11 +180,11 @@
             btImage1 = (byte[])ic.ConvertTo(imageA, btImage1.GetType());
             btImage2 = (byte[])ic.ConvertTo(imageB, btImage2.GetType());
 
-            //Compute a hash for each image
+            // Compute a hash for each image
             byte[] hash1 = sha.ComputeHash(btImage1);
             byte[] hash2 = sha.ComputeHash(btImage2);
 
-            //Compare the hash values
+            // Compare the hash values
             for (int i = 0; i < hash1.Length && i < hash2.Length; i++)
             {
                 if (hash1[i] != hash2[i])
@@ -116,11 +196,23 @@
             return true;
         }
 
+        /// <summary>
+        /// The are equal.
+        /// </summary>
+        /// <param name="imageA">
+        /// The image a.
+        /// </param>
+        /// <param name="imageB">
+        /// The image b.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool AreEqual(byte[] imageA, byte[] imageB)
         {
             if (imageA.Length != imageB.Length) return false;
 
-            //Compare the hash values
+            // Compare the hash values
             for (int i = 0; i < imageA.Length && i < imageB.Length; i++)
             {
                 if (imageA[i] != imageB[i])
@@ -132,9 +224,21 @@
             return true;
         }
 
+        /// <summary>
+        /// The are equal.
+        /// </summary>
+        /// <param name="imageA">
+        /// The image a.
+        /// </param>
+        /// <param name="imageB">
+        /// The image b.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static unsafe bool AreEqual(byte[] imageA, BitmapData imageB)
         {
-            //Compare the hash values
+            // Compare the hash values
             var imageBlen = imageB.Height * imageB.Stride;
             var imageBdata = (byte*)imageB.Scan0;
             for (int i = 0; i < imageA.Length && i < imageBlen; i++)
@@ -148,6 +252,15 @@
             return true;
         }
 
+        /// <summary>
+        /// The get hash.
+        /// </summary>
+        /// <param name="img">
+        /// The img.
+        /// </param>
+        /// <returns>
+        /// The <see cref="byte[]"/>.
+        /// </returns>
         public static byte[] GetHash(this Bitmap img)
         {
             var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), ImageLockMode.ReadOnly, img.PixelFormat);
@@ -157,6 +270,15 @@
             return sha.ComputeHash(bytes);
         }
 
+        /// <summary>
+        /// The get bytes.
+        /// </summary>
+        /// <param name="img">
+        /// The img.
+        /// </param>
+        /// <returns>
+        /// The <see cref="byte[]"/>.
+        /// </returns>
         public static byte[] GetBytes(this Bitmap img)
         {
             var data = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), ImageLockMode.ReadOnly, img.PixelFormat);
@@ -166,6 +288,15 @@
             return bytes;
         }
 
+        /// <summary>
+        /// The get bytes.
+        /// </summary>
+        /// <param name="bitmapData">
+        /// The bitmap data.
+        /// </param>
+        /// <returns>
+        /// The <see cref="byte[]"/>.
+        /// </returns>
         public static byte[] GetBytes(this BitmapData bitmapData)
         {
             var bytes = new byte[bitmapData.Height * bitmapData.Stride];
@@ -173,12 +304,26 @@
             return bytes;
         }
 
+        /// <summary>
+        /// The get dominant color.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Color"/>.
+        /// </returns>
+        /// <exception cref="ApplicationException">
+        /// </exception>
         public static Color GetDominantColor(this BitmapData bitmap)
         {
             if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
-                && bitmap.PixelFormat != PixelFormat.Format32bppRgb) throw new ApplicationException("expected 32bit image");
-            // var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                && bitmap.PixelFormat != PixelFormat.Format32bppRgb)
+            {
+                throw new ApplicationException("expected 32bit image");
+            }
 
+            // var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             var stride = bitmap.Stride;
             var scan0 = bitmap.Scan0;
             var totals = new long[] { 0, 0, 0 };
@@ -189,15 +334,19 @@
             {
                 var p = (byte*)(void*)scan0;
                 for (var y = 0; y < height; y++)
+                {
                     for (var x = 0; x < width; x++)
+                    {
                         for (var color = 0; color < 3; color++)
                         {
                             var idx = (y * stride) + x * 4 + color;
                             totals[color] += p[idx];
                         }
+                    }
+                }
             }
-            // bitmap.UnlockBits(bitmapData);
 
+            // bitmap.UnlockBits(bitmapData);
             var avgB = (int)(totals[0] / (width * height));
             var avgG = (int)(totals[1] / (width * height));
             var avgR = (int)(totals[2] / (width * height));
@@ -205,6 +354,15 @@
             return Color.FromArgb(avgR, avgG, avgB);
         }
 
+        /// <summary>
+        /// The get dominant color.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Color"/>.
+        /// </returns>
         public static Color GetDominantColor(this Bitmap bitmap)
         {
             var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -213,6 +371,20 @@
             return result;
         }
 
+        /// <summary>
+        /// The is mostly.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <param name="mostly">
+        /// The mostly.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// </exception>
         public static bool IsMostly(this Bitmap bitmap, Mostly mostly)
         {
             var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
@@ -227,6 +399,7 @@
                     case Mostly.Green:
                         return IsMostlyGreen(data);
                 }
+
                 throw new ArgumentException("Unknown color channel: " + mostly, "mostly");
             }
             finally
@@ -235,6 +408,20 @@
             }
         }
 
+        /// <summary>
+        /// The is mostly.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <param name="mostly">
+        /// The mostly.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// </exception>
         public static bool IsMostly(this BitmapData bitmap, Mostly mostly)
         {
             switch (mostly)
@@ -246,27 +433,66 @@
                 case Mostly.Green:
                     return IsMostlyGreen(bitmap);
             }
+
             throw new ArgumentException("Unknown color channel: " + mostly, "mostly");
         }
 
+        /// <summary>
+        /// The is mostly red.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool IsMostlyRed(this BitmapData bitmap)
         {
             var c = bitmap.GetDominantColor();
             return c.R > c.B && c.R > c.G;
         }
 
+        /// <summary>
+        /// The is mostly blue.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool IsMostlyBlue(this BitmapData bitmap)
         {
             var c = bitmap.GetDominantColor();
             return c.B > c.R && c.B > c.G;
         }
 
+        /// <summary>
+        /// The is mostly green.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public static bool IsMostlyGreen(this BitmapData bitmap)
         {
             var c = bitmap.GetDominantColor();
             return c.G > c.R && c.G > c.B;
         }
 
+        /// <summary>
+        /// The get dominant color slow.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Color"/>.
+        /// </returns>
+        /// <exception cref="ApplicationException">
+        /// </exception>
         public static Color GetDominantColorSlow(this Bitmap bitmap)
         {
             if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
@@ -279,8 +505,8 @@
             var height = bitmap.Height;
             var stride = bitmapData.Stride;
             const int alphaThershold = 10;
-            UInt64 pixelCount = 0;
-            UInt64 avgAlpha = 0;
+            ulong pixelCount = 0;
+            ulong avgAlpha = 0;
 
             unsafe
             {
@@ -295,7 +521,7 @@
                         byte a1 = pixels[index + 3];
 
                         if (a1 <= alphaThershold)
-                            continue; //ignore
+                            continue; // ignore
 
                         pixelCount++;
                         avgAlpha += a1;
@@ -317,7 +543,7 @@
                                     byte a2 = pixels[index2 + 3];
 
                                     if (a2 <= alphaThershold)
-                                        continue; //ignore
+                                        continue; // ignore
 
                                     dist += Math.Sqrt(Math.Pow(r2 - r1, 2) +
                                                       Math.Pow(g2 - g1, 2) +
@@ -330,45 +556,99 @@
                     }
             }
 
-            //clamp alpha
+            // clamp alpha
             avgAlpha = avgAlpha / pixelCount;
             if (avgAlpha >= (255 - alphaThershold))
                 avgAlpha = 255;
 
-            //take weighted average of top 2% of colors         
+            // take weighted average of top 2% of colors         
             var clrs =
                 (from entry in colorDist orderby entry.Value ascending select new { Color = entry.Key, Dist = 1.0 / Math.Max(1, entry.Value) }).ToList
                     ().Take(Math.Max(1, (int)(colorDist.Count * 0.02))).ToList();
 
             double sumDist = clrs.Sum(x => x.Dist);
-            var result = Color.FromArgb((byte)avgAlpha,
-                                          (byte)(clrs.Sum(x => x.Color.R * x.Dist) / sumDist),
-                                          (byte)(clrs.Sum(x => x.Color.G * x.Dist) / sumDist),
+            var result = Color.FromArgb((byte)avgAlpha, 
+                                          (byte)(clrs.Sum(x => x.Color.R * x.Dist) / sumDist), 
+                                          (byte)(clrs.Sum(x => x.Color.G * x.Dist) / sumDist), 
                                           (byte)(clrs.Sum(x => x.Color.B * x.Dist) / sumDist));
 
             return result;
         }
     }
 
+    /// <summary>
+    /// The bitmap lock extensions.
+    /// </summary>
     public static class BitmapLockExtensions
     {
+        /// <summary>
+        /// The lock.
+        /// </summary>
+        /// <param name="bitmap">
+        /// The bitmap.
+        /// </param>
+        /// <param name="rect">
+        /// The rect.
+        /// </param>
+        /// <param name="pixelFormat">
+        /// The pixel format.
+        /// </param>
+        /// <param name="imageLockMode">
+        /// The image lock mode.
+        /// </param>
+        /// <returns>
+        /// The <see cref="BitmapDataReleaser"/>.
+        /// </returns>
         public static BitmapDataReleaser Lock(this Bitmap bitmap, Rectangle rect, PixelFormat pixelFormat, ImageLockMode imageLockMode = ImageLockMode.ReadOnly)
         {
             return new BitmapDataReleaser(bitmap, rect, pixelFormat, imageLockMode);
         }
 
+        /// <summary>
+        /// The bitmap data releaser.
+        /// </summary>
         public class BitmapDataReleaser : IDisposable
         {
+            /// <summary>
+            /// Gets the bitmap.
+            /// </summary>
             public Bitmap Bitmap { get; private set; }
 
+            /// <summary>
+            /// Gets the rectangle.
+            /// </summary>
             public Rectangle Rectangle { get; private set; }
 
+            /// <summary>
+            /// Gets the pixel format.
+            /// </summary>
             public PixelFormat PixelFormat { get; private set; }
 
+            /// <summary>
+            /// Gets the image lock mode.
+            /// </summary>
             public ImageLockMode ImageLockMode { get; private set; }
 
+            /// <summary>
+            /// Gets the data.
+            /// </summary>
             public BitmapData Data { get; private set; }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BitmapDataReleaser"/> class.
+            /// </summary>
+            /// <param name="bitmap">
+            /// The bitmap.
+            /// </param>
+            /// <param name="rectangle">
+            /// The rectangle.
+            /// </param>
+            /// <param name="pixelFormat">
+            /// The pixel format.
+            /// </param>
+            /// <param name="imageLockMode">
+            /// The image lock mode.
+            /// </param>
             public BitmapDataReleaser(Bitmap bitmap, Rectangle rectangle, PixelFormat? pixelFormat = null, ImageLockMode imageLockMode = ImageLockMode.ReadOnly)
             {
                 this.Bitmap = bitmap;
@@ -376,7 +656,7 @@
                 this.PixelFormat = pixelFormat ?? bitmap.PixelFormat;
                 this.ImageLockMode = imageLockMode;
 
-                this.Data = bitmap.LockBits(Rectangle, ImageLockMode, PixelFormat);
+                this.Data = bitmap.LockBits(this.Rectangle, this.ImageLockMode, this.PixelFormat);
             }
 
             /// <summary>
@@ -384,7 +664,7 @@
             /// </summary>
             public void Dispose()
             {
-                Bitmap.UnlockBits(Data);
+                this.Bitmap.UnlockBits(this.Data);
             }
         }
     }

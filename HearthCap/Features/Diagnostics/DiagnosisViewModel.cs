@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DiagnosisViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The diagnosis view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.Diagnostics
 {
     using System;
@@ -17,47 +26,99 @@ namespace HearthCap.Features.Diagnostics
     using HearthCap.Shell.Tabs;
 
     // [Export(typeof(ITab))]
-    public class DiagnosisViewModel : TabViewModel,
-        IHandle<GameEvent>,
-        IHandle<GameModeChanged>,
-        IHandle<DeckDetected>,
-        IHandle<LogEvent>,
+    /// <summary>
+    /// The diagnosis view model.
+    /// </summary>
+    public class DiagnosisViewModel : TabViewModel, 
+        IHandle<GameEvent>, 
+        IHandle<GameModeChanged>, 
+        IHandle<DeckDetected>, 
+        IHandle<LogEvent>, 
         IHandle<WindowCaptured>
     {
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The capture engine.
+        /// </summary>
         private readonly ICaptureEngine captureEngine;
 
+        /// <summary>
+        /// The screenshot bitmap.
+        /// </summary>
         private Bitmap screenshotBitmap;
 
+        /// <summary>
+        /// The screenshot.
+        /// </summary>
         private BitmapImage screenshot;
 
+        /// <summary>
+        /// The notification.
+        /// </summary>
         private string notification;
 
+        /// <summary>
+        /// The hamming threshold.
+        /// </summary>
         private int hammingThreshold = 10;
 
+        /// <summary>
+        /// The card distance.
+        /// </summary>
         private int cardDistance = 90;
 
+        /// <summary>
+        /// The log messages.
+        /// </summary>
         private BindableCollection<LogMessageModel> logMessages;
 
+        /// <summary>
+        /// The engine events.
+        /// </summary>
         private BindableCollection<LogMessageModel> engineEvents;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiagnosisViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="captureEngine">
+        /// The capture engine.
+        /// </param>
         [ImportingConstructor]
         public DiagnosisViewModel(
-            IEventAggregator events,
+            IEventAggregator events, 
             ICaptureEngine captureEngine)
         {
             this.events = events;
             this.captureEngine = captureEngine;
             this.DisplayName = "Diag";
-            Order = 1000;
+            this.Order = 1000;
 
             this.engineEvents = new BindableCollection<LogMessageModel>();
             this.logMessages = new BindableCollection<LogMessageModel>();
+
             // CaptureEngineLogger.Hook(LogAction);
             events.Subscribe(this);
         }
 
+        /// <summary>
+        /// The log action.
+        /// </summary>
+        /// <param name="s">
+        /// The s.
+        /// </param>
+        /// <param name="logLevel">
+        /// The log level.
+        /// </param>
+        /// <param name="arg3">
+        /// The arg 3.
+        /// </param>
         private void LogAction(string s, LogLevel logLevel, object arg3)
         {
             if (this.logMessages.Count > 500)
@@ -70,12 +131,16 @@ namespace HearthCap.Features.Diagnostics
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the notification.
+        /// </summary>
         public string Notification
         {
             get
             {
                 return this.notification;
             }
+
             set
             {
                 this.notification = value;
@@ -83,12 +148,16 @@ namespace HearthCap.Features.Diagnostics
             }
         }
 
+        /// <summary>
+        /// Gets or sets the hamming threshold.
+        /// </summary>
         public int HammingThreshold
         {
             get
             {
                 return this.hammingThreshold;
             }
+
             set
             {
                 this.hammingThreshold = value;
@@ -96,12 +165,16 @@ namespace HearthCap.Features.Diagnostics
             }
         }
 
+        /// <summary>
+        /// Gets or sets the screenshot.
+        /// </summary>
         public BitmapImage Screenshot
         {
             get
             {
                 return this.screenshot;
             }
+
             set
             {
                 this.screenshot = value;
@@ -109,12 +182,16 @@ namespace HearthCap.Features.Diagnostics
             }
         }
 
+        /// <summary>
+        /// Gets or sets the card distance.
+        /// </summary>
         public int CardDistance
         {
             get
             {
                 return this.cardDistance;
             }
+
             set
             {
                 this.cardDistance = value;
@@ -122,6 +199,9 @@ namespace HearthCap.Features.Diagnostics
             }
         }
 
+        /// <summary>
+        /// Gets the log messages.
+        /// </summary>
         public IObservableCollection<LogMessageModel> LogMessages
         {
             get
@@ -130,6 +210,9 @@ namespace HearthCap.Features.Diagnostics
             }
         }
 
+        /// <summary>
+        /// Gets the engine events.
+        /// </summary>
         public IObservableCollection<LogMessageModel> EngineEvents
         {
             get
@@ -140,6 +223,9 @@ namespace HearthCap.Features.Diagnostics
 
         #endregion
 
+        /// <summary>
+        /// The create screen shot.
+        /// </summary>
         public void CreateScreenShot()
         {
             var wnd = HearthstoneHelper.GetHearthstoneWindow();
@@ -165,6 +251,9 @@ namespace HearthCap.Features.Diagnostics
             // this.hearthstoneWindowImage.Dispose();                
         }
 
+        /// <summary>
+        /// The start recognition.
+        /// </summary>
         public void StartRecognition()
         {
             /*
@@ -193,30 +282,39 @@ namespace HearthCap.Features.Diagnostics
             */
         }
 
+        /// <summary>
+        /// The start engine.
+        /// </summary>
         public void StartEngine()
         {
-            captureEngine.StartAsync();
+            this.captureEngine.StartAsync();
         }
 
+        /// <summary>
+        /// The stop engine.
+        /// </summary>
         public void StopEngine()
         {
-            captureEngine.Stop();
+            this.captureEngine.Stop();
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameModeChanged message)
         {
             Execute.OnUIThread(
                 () =>
                 {
-                    if (engineEvents.Count > 1000)
+                    if (this.engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
+                        this.engineEvents.Clear();
                     }
-                    EngineEvents.Add(message.ToMessageModel(String.Format("Game mode from '{0}' to '{1}'", message.OldGameMode, message.GameMode)));
+
+                    this.EngineEvents.Add(message.ToMessageModel(string.Format("Game mode from '{0}' to '{1}'", message.OldGameMode, message.GameMode)));
                 });
         }
 
@@ -224,7 +322,9 @@ namespace HearthCap.Features.Diagnostics
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(LogEvent message)
         {
             Execute.OnUIThread(
@@ -232,11 +332,12 @@ namespace HearthCap.Features.Diagnostics
                 {
                     if (!(message is WindowCaptured))
                     {
-                        if (engineEvents.Count > 1000)
+                        if (this.engineEvents.Count > 1000)
                         {
-                            engineEvents.Clear();
+                            this.engineEvents.Clear();
                         }
-                        EngineEvents.Add(message.ToMessageModel());
+
+                        this.EngineEvents.Add(message.ToMessageModel());
                     }
                 });
         }
@@ -244,7 +345,9 @@ namespace HearthCap.Features.Diagnostics
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(WindowCaptured message)
         {
             Execute.OnUIThread(
@@ -267,36 +370,40 @@ namespace HearthCap.Features.Diagnostics
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(DeckDetected message)
         {
             Execute.OnUIThread(
                 () =>
                 {
-                    if (engineEvents.Count > 1000)
+                    if (this.engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
+                        this.engineEvents.Clear();
                     }
 
-                    EngineEvents.Add(message.ToMessageModel(String.Format("Deck detected: {0}", message.Key)));
+                    this.EngineEvents.Add(message.ToMessageModel(string.Format("Deck detected: {0}", message.Key)));
                 });
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameEvent message)
         {
             Execute.OnUIThread(
                 () =>
                 {
-                    if (engineEvents.Count > 1000)
+                    if (this.engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
+                        this.engineEvents.Clear();
                     }
 
-                    EngineEvents.Add(message.ToMessageModel("Generic event: " + message.GetType().Name));
+                    this.EngineEvents.Add(message.ToMessageModel("Generic event: " + message.GetType().Name));
                 });
         }
     }

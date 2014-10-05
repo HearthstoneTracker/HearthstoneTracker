@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Features.Charts
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ChartsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The charts view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.Charts
 {
     using System;
     using System.Collections.Generic;
@@ -21,7 +30,6 @@
     using HearthCap.Features.Decks;
     using HearthCap.Features.Decks.ModelMappers;
     using HearthCap.Features.Games.Models;
-    using HearthCap.Features.Games.Statistics;
     using HearthCap.Framework;
     using HearthCap.Shell.Notifications;
     using HearthCap.Shell.Tabs;
@@ -31,57 +39,135 @@
 
     using Action = System.Action;
 
+    /// <summary>
+    /// The charts view model.
+    /// </summary>
     [Export(typeof(ITab))]
-    public class ChartsViewModel : Conductor<IChartTab>.Collection.OneActive, ITab,
-        // IHandle<DecksUpdated>,
-        IHandle<DeckUpdated>
+    public class ChartsViewModel : Conductor<IChartTab>.Collection.OneActive, 
+                                   ITab, 
+                                   // IHandle<DecksUpdated>,
+                                   IHandle<DeckUpdated>
     {
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The db context.
+        /// </summary>
         private readonly Func<HearthStatsDbContext> dbContext;
 
+        /// <summary>
+        /// The game repository.
+        /// </summary>
         private readonly IRepository<GameResult> gameRepository;
 
+        /// <summary>
+        /// The arena repository.
+        /// </summary>
         private readonly IRepository<ArenaSession> arenaRepository;
 
+        /// <summary>
+        /// The deck manager.
+        /// </summary>
         private readonly IDeckManager deckManager;
 
-        private readonly DateFilter dateFilter = new DateFilter()
-                                                     {
+        /// <summary>
+        /// The date filter.
+        /// </summary>
+        private readonly DateFilter dateFilter = new DateFilter {
                                                          ShowAllTime = true
                                                      };
 
+        /// <summary>
+        /// The filter server.
+        /// </summary>
         private ServerItemModel filterServer;
 
+        /// <summary>
+        /// The game modes.
+        /// </summary>
         private readonly GameModesStringCollection gameModes = new GameModesStringCollection(true);
 
+        /// <summary>
+        /// The filter game mode.
+        /// </summary>
         private string filterGameMode;
 
+        /// <summary>
+        /// The filter deck.
+        /// </summary>
         private DeckModel filterDeck;
 
+        /// <summary>
+        /// The filter hero.
+        /// </summary>
         private Hero filterHero;
 
+        /// <summary>
+        /// The filter opponent hero.
+        /// </summary>
         private Hero filterOpponentHero;
 
+        /// <summary>
+        /// The heroes.
+        /// </summary>
         private BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
+        /// <summary>
+        /// The servers.
+        /// </summary>
         private IObservableCollection<ServerItemModel> servers = new BindableCollection<ServerItemModel>(BindableServerCollection.Instance);
 
+        /// <summary>
+        /// The decks.
+        /// </summary>
         private readonly BindableCollection<DeckModel> decks = new BindableCollection<DeckModel>();
 
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
 
+        /// <summary>
+        /// The need refresh.
+        /// </summary>
         private bool needRefresh;
 
+        /// <summary>
+        /// The search.
+        /// </summary>
         private string search;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChartsViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="dbContext">
+        /// The db context.
+        /// </param>
+        /// <param name="gameRepository">
+        /// The game repository.
+        /// </param>
+        /// <param name="arenaRepository">
+        /// The arena repository.
+        /// </param>
+        /// <param name="deckManager">
+        /// The deck manager.
+        /// </param>
+        /// <param name="chartTabs">
+        /// The chart tabs.
+        /// </param>
         [ImportingConstructor]
         public ChartsViewModel(
-            IEventAggregator events,
-            Func<HearthStatsDbContext> dbContext,
-            IRepository<GameResult> gameRepository,
-            IRepository<ArenaSession> arenaRepository,
-            IDeckManager deckManager,
+            IEventAggregator events, 
+            Func<HearthStatsDbContext> dbContext, 
+            IRepository<GameResult> gameRepository, 
+            IRepository<ArenaSession> arenaRepository, 
+            IDeckManager deckManager, 
             [ImportMany]IEnumerable<IChartTab> chartTabs)
         {
             this.events = events;
@@ -92,21 +178,30 @@
             this.Order = 4;
             this.DisplayName = "Charts";
             this.Busy = new BusyWatcher();
-            this.servers.Insert(0, new ServerItemModel(""));
+            this.servers.Insert(0, new ServerItemModel(string.Empty));
 
-            Items.AddRange(chartTabs.OrderBy(x => x.Order));
-            ActivateItem(Items.FirstOrDefault());
+            this.Items.AddRange(chartTabs.OrderBy(x => x.Order));
+            this.ActivateItem(this.Items.FirstOrDefault());
 
             this.dateFilter.From = DateTime.Now.AddMonths(-1).SetToBeginOfDay();
             this.dateFilter.DateChanged += this.DateFilterOnPropertyChanged;
             this.PropertyChanged += this.OnPropertyChanged;
         }
 
+        /// <summary>
+        /// Gets or sets the order.
+        /// </summary>
         public int Order { get; set; }
 
+        /// <summary>
+        /// Gets or sets the global data.
+        /// </summary>
         [Import]
         public GlobalData GlobalData { get; set; }
 
+        /// <summary>
+        /// Gets the date filter.
+        /// </summary>
         public DateFilter DateFilter
         {
             get
@@ -115,8 +210,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the busy.
+        /// </summary>
         public IBusyWatcher Busy { get; set; }
 
+        /// <summary>
+        /// Gets the heroes.
+        /// </summary>
         public IObservableCollection<Hero> Heroes
         {
             get
@@ -125,6 +226,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the servers.
+        /// </summary>
         public IObservableCollection<ServerItemModel> Servers
         {
             get
@@ -133,58 +237,76 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter hero.
+        /// </summary>
         public Hero FilterHero
         {
             get
             {
                 return this.filterHero;
             }
+
             set
             {
                 if (Equals(value, this.filterHero))
                 {
                     return;
                 }
+
                 this.filterHero = value;
                 this.NotifyOfPropertyChange(() => this.FilterHero);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter opponent hero.
+        /// </summary>
         public Hero FilterOpponentHero
         {
             get
             {
                 return this.filterOpponentHero;
             }
+
             set
             {
                 if (Equals(value, this.filterOpponentHero))
                 {
                     return;
                 }
+
                 this.filterOpponentHero = value;
                 this.NotifyOfPropertyChange(() => this.FilterOpponentHero);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter server.
+        /// </summary>
         public ServerItemModel FilterServer
         {
             get
             {
                 return this.filterServer;
             }
+
             set
             {
                 if (Equals(value, this.filterServer))
                 {
                     return;
                 }
+
                 this.filterServer = value;
                 this.RefreshDecks();
                 this.NotifyOfPropertyChange(() => this.FilterServer);
             }
         }
 
+        /// <summary>
+        /// Gets the decks.
+        /// </summary>
         public IObservableCollection<DeckModel> Decks
         {
             get
@@ -193,6 +315,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the game modes.
+        /// </summary>
         public GameModesStringCollection GameModes
         {
             get
@@ -201,68 +326,86 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter game mode.
+        /// </summary>
         public string FilterGameMode
         {
             get
             {
                 return this.filterGameMode;
             }
+
             set
             {
                 if (value == this.filterGameMode)
                 {
                     return;
                 }
+
                 this.filterGameMode = value;
                 this.NotifyOfPropertyChange(() => this.FilterGameMode);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the search.
+        /// </summary>
         public string Search
         {
             get
             {
                 return this.search;
             }
+
             set
             {
                 if (value == this.search)
                 {
                     return;
                 }
+
                 this.search = value;
                 this.NotifyOfPropertyChange(() => this.Search);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter deck.
+        /// </summary>
         public DeckModel FilterDeck
         {
             get
             {
                 return this.filterDeck;
             }
+
             set
             {
                 if (Equals(value, this.filterDeck))
                 {
                     return;
                 }
+
                 this.filterDeck = value;
                 this.NotifyOfPropertyChange(() => this.FilterDeck);
             }
         }
 
+        /// <summary>
+        /// The save to disk.
+        /// </summary>
         public void SaveToDisk()
         {
             var dialog = new CommonSaveFileDialog
                              {
-                                 OverwritePrompt = true,
-                                 DefaultExtension = ".png",
-                                 DefaultFileName = "Untitled.png",
-                                 EnsureValidNames = true,
-                                 Title = "Save statistics charts",
-                                 AllowPropertyEditing = false,
-                                 RestoreDirectory = true,
+                                 OverwritePrompt = true, 
+                                 DefaultExtension = ".png", 
+                                 DefaultFileName = "Untitled.png", 
+                                 EnsureValidNames = true, 
+                                 Title = "Save statistics charts", 
+                                 AllowPropertyEditing = false, 
+                                 RestoreDirectory = true, 
                                  Filters =
                                      {
                                          new CommonFileDialogFilter("PNG", ".png")
@@ -281,12 +424,16 @@
                         encoder.Frames.Add(BitmapFrame.Create(img));
                         encoder.Save(stream);
                     }
+
                     this.events.PublishOnBackgroundThread(new SendNotification("Screenshot saved as: " + filename, 3000));
                     Clipboard.SetImage(img);
                 }
             }
         }
 
+        /// <summary>
+        /// The save to clipboard.
+        /// </summary>
         public void SaveToClipboard()
         {
             var img = this.CreateScreenshot();
@@ -297,6 +444,12 @@
             }
         }
 
+        /// <summary>
+        /// The create screenshot.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="BitmapSource"/>.
+        /// </returns>
         private BitmapSource CreateScreenshot()
         {
             var view = (FrameworkElement)this.GetView();
@@ -309,16 +462,17 @@
                 Rect bounds = VisualTreeHelper.GetDescendantBounds(charts);
                 var img = CaptureScreen(charts, 192, 192);
                 var resized = new TransformedBitmap(
-                    img,
+                    img, 
                     new ScaleTransform(
-                        bounds.Width / img.PixelWidth,
-                        bounds.Height / img.PixelHeight,
-                        0,
+                        bounds.Width / img.PixelWidth, 
+                        bounds.Height / img.PixelHeight, 
+                        0, 
                         0));
                 gennedby.Visibility = Visibility.Collapsed;
                 charts.UpdateLayout();
                 return resized;
             }
+
             return null;
         }
 
@@ -330,14 +484,25 @@
             Tracker.TrackPageViewAsync("Statistics (charts)", "Statistics_Charts");
         }
 
+        /// <summary>
+        /// The on view loaded.
+        /// </summary>
+        /// <param name="view">
+        /// The view.
+        /// </param>
         protected override async void OnViewLoaded(object view)
         {
-            if (this.initialized) return;
+            if (this.initialized)
+            {
+                return;
+            }
+
             this.initialized = true;
             var data = this.GlobalData.Get();
             this.heroes.IsNotifying = false;
+
             // empty hero for 'all'
-            this.heroes.Add(new Hero(""));
+            this.heroes.Add(new Hero(string.Empty));
             this.heroes.AddRange(data.Heroes.OrderBy(x => x.Name));
             this.heroes.IsNotifying = true;
             this.heroes.Refresh();
@@ -345,9 +510,12 @@
             this.RefreshDecks();
         }
 
+        /// <summary>
+        /// The refresh decks.
+        /// </summary>
         private void RefreshDecks()
         {
-            if (this.FilterServer != null && !String.IsNullOrEmpty(this.FilterServer.Name))
+            if (this.FilterServer != null && !string.IsNullOrEmpty(this.FilterServer.Name))
             {
                 var decks = this.deckManager.GetDecks(this.FilterServer.Name).Select(x => x.ToModel());
                 this.decks.Clear();
@@ -371,17 +539,32 @@
             }
         }
 
+        /// <summary>
+        /// The date filter on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void DateFilterOnPropertyChanged(object sender, EventArgs eventArgs)
         {
             this.RefreshData();
         }
 
+        /// <summary>
+        /// The refresh data.
+        /// </summary>
         public void RefreshData()
         {
             this.needRefresh = true;
             this.RefreshDataCore();
         }
 
+        /// <summary>
+        /// The refresh data core.
+        /// </summary>
         private void RefreshDataCore()
         {
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
@@ -395,28 +578,35 @@
                     Task.Run(
                         () =>
                         {
-                            ActiveItem.RefreshData(expr, expr2);
+                            this.ActiveItem.RefreshData(expr, expr2);
                             ticket.Dispose();
                         });
                 }
             }), DispatcherPriority.ContextIdle);
         }
 
+        /// <summary>
+        /// The get games filter expression.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Expression"/>.
+        /// </returns>
         private Expression<Func<GameResult, bool>> GetGamesFilterExpression()
         {
-            var query = PredicateBuilder.True<GameResult>(); ;
+            var query = PredicateBuilder.True<GameResult>(); 
             if (this.dateFilter.From != null)
             {
                 var filterFromDate = this.dateFilter.From.Value.SetToBeginOfDay();
                 query = query.And(x => x.Started >= filterFromDate);
             }
+
             if (this.dateFilter.To != null)
             {
                 var filterToDate = this.dateFilter.To.Value.SetToEndOfDay();
                 query = query.And(x => x.Started <= filterToDate);
             }
 
-            if (this.FilterServer != null && !String.IsNullOrEmpty(this.FilterServer.Name))
+            if (this.FilterServer != null && !string.IsNullOrEmpty(this.FilterServer.Name))
             {
                 var serverName = this.FilterServer.Name;
                 query = query.And(x => x.Server == serverName);
@@ -436,19 +626,19 @@
                 query = query.And(x => x.Deck.Id == this.FilterDeck.Id);
             }
 
-            if (this.FilterHero != null && !String.IsNullOrEmpty(this.FilterHero.Key))
+            if (this.FilterHero != null && !string.IsNullOrEmpty(this.FilterHero.Key))
             {
                 query = query.And(x => x.Hero.Id == this.FilterHero.Id);
             }
 
-            if (this.FilterOpponentHero != null && !String.IsNullOrEmpty(this.FilterOpponentHero.Key))
+            if (this.FilterOpponentHero != null && !string.IsNullOrEmpty(this.FilterOpponentHero.Key))
             {
                 query = query.And(x => x.OpponentHero.Id == this.FilterOpponentHero.Id);
             }
 
-            if (!String.IsNullOrEmpty(Search))
+            if (!string.IsNullOrEmpty(this.Search))
             {
-                var s = Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var s = this.Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var keyword in s)
                 {
                     string keyword1 = keyword;
@@ -463,34 +653,41 @@
             return query;
         }
 
+        /// <summary>
+        /// The get arenas filter expression.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Expression"/>.
+        /// </returns>
         private Expression<Func<ArenaSession, bool>> GetArenasFilterExpression()
         {
-            var query = PredicateBuilder.True<ArenaSession>(); ;
+            var query = PredicateBuilder.True<ArenaSession>(); 
             if (this.dateFilter.From != null)
             {
                 var filterFromDate = this.dateFilter.From.Value.SetToBeginOfDay();
                 query = query.And(x => x.StartDate >= filterFromDate);
             }
+
             if (this.dateFilter.To != null)
             {
                 var filterToDate = this.dateFilter.To.Value.SetToEndOfDay();
                 query = query.And(x => x.EndDate <= filterToDate);
             }
 
-            if (this.FilterServer != null && !String.IsNullOrEmpty(this.FilterServer.Name))
+            if (this.FilterServer != null && !string.IsNullOrEmpty(this.FilterServer.Name))
             {
                 var serverName = this.FilterServer.Name;
                 query = query.And(x => x.Server == serverName);
             }
 
-            if (this.FilterHero != null && !String.IsNullOrEmpty(this.FilterHero.Key))
+            if (this.FilterHero != null && !string.IsNullOrEmpty(this.FilterHero.Key))
             {
                 query = query.And(x => x.Hero.Id == this.FilterHero.Id);
             }
 
-            if (!String.IsNullOrEmpty(Search))
+            if (!string.IsNullOrEmpty(this.Search))
             {
-                var s = Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                var s = this.Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var keyword in s)
                 {
                     string keyword1 = keyword;
@@ -505,6 +702,15 @@
             return query;
         }
 
+        /// <summary>
+        /// The on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
@@ -520,17 +726,33 @@
             }
         }
 
+        /// <summary>
+        /// The capture screen.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <param name="dpiX">
+        /// The dpi x.
+        /// </param>
+        /// <param name="dpiY">
+        /// The dpi y.
+        /// </param>
+        /// <returns>
+        /// The <see cref="BitmapSource"/>.
+        /// </returns>
         private static BitmapSource CaptureScreen(Visual target, double dpiX, double dpiY)
         {
             if (target == null)
             {
                 return null;
             }
+
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(bounds.Width * dpiX / 96.0),
-                                                            (int)(bounds.Height * dpiY / 96.0),
-                                                            dpiX,
-                                                            dpiY,
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)(bounds.Width * dpiX / 96.0), 
+                                                            (int)(bounds.Height * dpiY / 96.0), 
+                                                            dpiX, 
+                                                            dpiY, 
                                                             PixelFormats.Pbgra32);
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext ctx = dv.RenderOpen())
@@ -538,6 +760,7 @@
                 VisualBrush vb = new VisualBrush(target);
                 ctx.DrawRectangle(vb, null, new Rect(new Point(), bounds.Size));
             }
+
             rtb.Render(dv);
             return rtb;
         }
@@ -545,7 +768,9 @@
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(DeckUpdated message)
         {
             if (message.Deck == null)
@@ -561,13 +786,13 @@
             }
         }
 
-        /// <summary>
-        /// Handles the message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        //public void Handle(DecksUpdated message)
-        //{
-        //    this.RefreshDecks();
-        //}
+        // <summary>
+        // Handles the message.
+        // </summary>
+        // <param name="message">The message.</param>
+        // public void Handle(DecksUpdated message)
+        // {
+        // this.RefreshDecks();
+        // }
     }
 }

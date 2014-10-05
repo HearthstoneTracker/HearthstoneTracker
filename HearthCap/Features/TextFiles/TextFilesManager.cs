@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TextFilesManager.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The text files manager.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.TextFiles
 {
     using System;
@@ -5,7 +14,6 @@ namespace HearthCap.Features.TextFiles
     using System.ComponentModel.Composition;
     using System.IO;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using Caliburn.Micro;
 
@@ -15,25 +23,60 @@ namespace HearthCap.Features.TextFiles
 
     using Omu.ValueInjecter;
 
+    using LogManager = NLog.LogManager;
+
+    /// <summary>
+    /// The text files manager.
+    /// </summary>
     [Export(typeof(TextFilesManager))]
     public class TextFilesManager
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private Logger Log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The repository.
+        /// </summary>
         private readonly IRepository<TextFileTemplate> repository;
 
+        /// <summary>
+        /// The text files events listeners.
+        /// </summary>
         private readonly TextFilesEventsListener[] textFilesEventsListeners;
 
+        /// <summary>
+        /// The templates.
+        /// </summary>
         private readonly BindableCollection<TextFileModel> templates = new BindableCollection<TextFileModel>();
 
+        /// <summary>
+        /// The file lock.
+        /// </summary>
         private static readonly object fileLock = new object();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextFilesManager"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="repository">
+        /// The repository.
+        /// </param>
+        /// <param name="textFilesEventsListeners">
+        /// The text files events listeners.
+        /// </param>
         [ImportingConstructor]
         public TextFilesManager(
-            IEventAggregator events,
-            IRepository<TextFileTemplate> repository,
+            IEventAggregator events, 
+            IRepository<TextFileTemplate> repository, 
             [ImportMany] TextFilesEventsListener[] textFilesEventsListeners)
         {
             this.events = events;
@@ -49,6 +92,9 @@ namespace HearthCap.Features.TextFiles
             }
         }
 
+        /// <summary>
+        /// Gets the listeners.
+        /// </summary>
         public IEnumerable<TextFilesEventsListener> Listeners
         {
             get
@@ -57,6 +103,9 @@ namespace HearthCap.Features.TextFiles
             }
         }
 
+        /// <summary>
+        /// Gets the templates.
+        /// </summary>
         public BindableCollection<TextFileModel> Templates
         {
             get
@@ -65,9 +114,12 @@ namespace HearthCap.Features.TextFiles
             }
         }
 
+        /// <summary>
+        /// The load text templates.
+        /// </summary>
         private void LoadTextTemplates()
         {
-            var tpls = this.repository.ToList((q) => q.OrderBy(x => x.Filename));
+            var tpls = this.repository.ToList(q => q.OrderBy(x => x.Filename));
             this.templates.IsNotifying = false;
             foreach (var tpl in tpls)
             {
@@ -75,10 +127,14 @@ namespace HearthCap.Features.TextFiles
                 model.InjectFrom(tpl);
                 this.templates.Add(model);
             }
+
             this.templates.IsNotifying = true;
             this.templates.Refresh();
         }
 
+        /// <summary>
+        /// The refresh.
+        /// </summary>
         public void Refresh()
         {
             foreach (var textFileModel in this.templates)
@@ -98,6 +154,15 @@ namespace HearthCap.Features.TextFiles
             }
         }
 
+        /// <summary>
+        /// The write file.
+        /// </summary>
+        /// <param name="template">
+        /// The template.
+        /// </param>
+        /// <param name="content">
+        /// The content.
+        /// </param>
         private void WriteFile(TextFileModel template, string content)
         {
             try
@@ -114,7 +179,7 @@ namespace HearthCap.Features.TextFiles
             catch (Exception ex)
             {
                 // Fail silently :-)
-                Log.Error(ex.ToString);
+                this.Log.Error(ex.ToString);
             }
         }
     }

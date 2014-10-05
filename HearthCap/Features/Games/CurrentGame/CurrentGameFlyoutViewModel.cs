@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CurrentGameFlyoutViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The current game flyout view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.Games.CurrentGame
 {
     using System;
@@ -21,7 +30,6 @@ namespace HearthCap.Features.Games.CurrentGame
     using HearthCap.Features.Games.Statistics;
     using HearthCap.Framework;
     using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.Notifications;
     using HearthCap.Shell.TrayIcon;
     using HearthCap.Util;
 
@@ -29,23 +37,34 @@ namespace HearthCap.Features.Games.CurrentGame
 
     using NLog;
 
+    using LogManager = NLog.LogManager;
+
     /// <summary>The current game flyout view model.</summary>
     [Export(typeof(IFlyout))]
-    public class CurrentGameFlyoutViewModel : FlyoutViewModel,
-                                              IHandleWithTask<GameEnded>,
-                                              IHandle<GameStarted>,
-                                              IHandle<NewRound>,
+    public class CurrentGameFlyoutViewModel : FlyoutViewModel, 
+                                              IHandleWithTask<GameEnded>, 
+                                              IHandle<GameStarted>, 
+                                              IHandle<NewRound>, 
                                               IPartImportsSatisfiedNotification
     {
         #region Fields
 
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>The events.</summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The game repository.
+        /// </summary>
         private readonly IRepository<GameResult> gameRepository;
 
+        /// <summary>
+        /// The arena repository.
+        /// </summary>
         private readonly IRepository<ArenaSession> arenaRepository;
 
         /// <summary>The game mode.</summary>
@@ -78,39 +97,83 @@ namespace HearthCap.Features.Games.CurrentGame
         /// <summary>The turns.</summary>
         private int turns;
 
+        /// <summary>
+        /// The selected deck.
+        /// </summary>
         private DeckModel selectedDeck;
 
+        /// <summary>
+        /// The deck manager.
+        /// </summary>
         private IDeckManager deckManager;
 
+        /// <summary>
+        /// The game manager.
+        /// </summary>
         private readonly GameManager gameManager;
 
+        /// <summary>
+        /// The initialized.
+        /// </summary>
         private bool initialized;
 
+        /// <summary>
+        /// The win loss ratio.
+        /// </summary>
         private BindableCollection<StatModel> winLossRatio = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The win loss ratio hero.
+        /// </summary>
         private BindableCollection<StatModel> winLossRatioHero = new BindableCollection<StatModel>();
+
+        /// <summary>
+        /// The win loss ratio opponent hero.
+        /// </summary>
         private BindableCollection<StatModel> winLossRatioOpponentHero = new BindableCollection<StatModel>();
 
+        /// <summary>
+        /// The date filter.
+        /// </summary>
         private readonly DateFilter dateFilter = new DateFilter();
 
+        /// <summary>
+        /// The deck.
+        /// </summary>
         private Deck deck;
 
+        /// <summary>
+        /// The victory.
+        /// </summary>
         private bool victory;
 
+        /// <summary>
+        /// The stopped.
+        /// </summary>
         private DateTime stopped;
 
+        /// <summary>
+        /// The started.
+        /// </summary>
         private DateTime started;
 
+        /// <summary>
+        /// The conceded.
+        /// </summary>
         private bool conceded;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CurrentGameFlyoutViewModel"/> class.
+        /// </summary>
         public CurrentGameFlyoutViewModel()
         {
             if (Execute.InDesignMode)
             {
-                IsRunning = true;
+                this.IsRunning = true;
                 this.WinLossRatio.Add(new StatModel("Wins", 60));
                 this.WinLossRatio.Add(new StatModel("Losses", 40));
                 this.WinLossRatioHero.Add(new StatModel("Wins", 0));
@@ -120,17 +183,30 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
-        /// <summary>Initializes a new instance of the <see cref="CurrentGameFlyoutViewModel"/> class.</summary>
-        /// <param name="dialogManager">The dialog manager.</param>
-        /// <param name="events">The events.</param>
-        /// <param name="captureEngine">The capture engine.</param>
-        /// <param name="deckManager">The deck manager</param>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CurrentGameFlyoutViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="gameRepository">
+        /// The game Repository.
+        /// </param>
+        /// <param name="arenaRepository">
+        /// The arena Repository.
+        /// </param>
+        /// <param name="deckManager">
+        /// The deck manager
+        /// </param>
+        /// <param name="gameManager">
+        /// The game Manager.
+        /// </param>
         [ImportingConstructor]
         public CurrentGameFlyoutViewModel(
-            IEventAggregator events,
-            IRepository<GameResult> gameRepository,
-            IRepository<ArenaSession> arenaRepository,
-            IDeckManager deckManager,
+            IEventAggregator events, 
+            IRepository<GameResult> gameRepository, 
+            IRepository<ArenaSession> arenaRepository, 
+            IDeckManager deckManager, 
             GameManager gameManager)
         {
             this.events = events;
@@ -140,7 +216,7 @@ namespace HearthCap.Features.Games.CurrentGame
             this.gameManager = gameManager;
             this.Name = Flyouts.CurrentGame;
             this.Header = "Current Game:";
-            SetPosition(Position.Right);
+            this.SetPosition(Position.Right);
             this.heroes = new BindableCollection<Hero>();
             events.Subscribe(this);
 
@@ -148,7 +224,7 @@ namespace HearthCap.Features.Games.CurrentGame
             this.StartTime = DateTime.Now;
             this.GoFirst = true;
             this.dateFilter.From = DateTime.Now.AddMonths(-1).SetToBeginOfDay();
-            this.dateFilter.DateChanged += (sender, args) => RefreshStats();
+            this.dateFilter.DateChanged += (sender, args) => this.RefreshStats();
         }
 
         #endregion
@@ -159,14 +235,20 @@ namespace HearthCap.Features.Games.CurrentGame
         [Import]
         public IBusyWatcher Busy { get; set; }
 
+        /// <summary>
+        /// Gets the date filter.
+        /// </summary>
         public DateFilter DateFilter
         {
             get
             {
-                return dateFilter;
+                return this.dateFilter;
             }
         }
 
+        /// <summary>
+        /// Gets the win loss ratio.
+        /// </summary>
         public BindableCollection<StatModel> WinLossRatio
         {
             get
@@ -175,6 +257,9 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
+        /// <summary>
+        /// Gets the win loss ratio hero.
+        /// </summary>
         public BindableCollection<StatModel> WinLossRatioHero
         {
             get
@@ -183,6 +268,9 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
+        /// <summary>
+        /// Gets the win loss ratio opponent hero.
+        /// </summary>
         public BindableCollection<StatModel> WinLossRatioOpponentHero
         {
             get
@@ -374,6 +462,9 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether is arena.
+        /// </summary>
         public bool IsArena
         {
             get
@@ -382,86 +473,111 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
+        /// <summary>
+        /// Gets or sets the deck.
+        /// </summary>
         public Deck Deck
         {
             get
             {
                 return this.deck;
             }
+
             set
             {
                 if (Equals(value, this.deck))
                 {
                     return;
                 }
+
                 this.deck = value;
                 this.NotifyOfPropertyChange(() => this.Deck);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether victory.
+        /// </summary>
         public bool Victory
         {
             get
             {
                 return this.victory;
             }
+
             set
             {
                 if (value.Equals(this.victory))
                 {
                     return;
                 }
+
                 this.victory = value;
                 this.NotifyOfPropertyChange(() => this.Victory);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the stopped.
+        /// </summary>
         public DateTime Stopped
         {
             get
             {
                 return this.stopped;
             }
+
             set
             {
                 if (value.Equals(this.stopped))
                 {
                     return;
                 }
+
                 this.stopped = value;
                 this.NotifyOfPropertyChange(() => this.Stopped);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the started.
+        /// </summary>
         public DateTime Started
         {
             get
             {
                 return this.started;
             }
+
             set
             {
                 if (value.Equals(this.started))
                 {
                     return;
                 }
+
                 this.started = value;
                 this.NotifyOfPropertyChange(() => this.Started);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether conceded.
+        /// </summary>
         public bool Conceded
         {
             get
             {
                 return this.conceded;
             }
+
             set
             {
                 if (value.Equals(this.conceded))
                 {
                     return;
                 }
+
                 this.conceded = value;
                 this.NotifyOfPropertyChange(() => this.Conceded);
             }
@@ -471,11 +587,18 @@ namespace HearthCap.Features.Games.CurrentGame
 
         #region Public Methods and Operators
 
-        /// <summary>Handles the message.</summary>
-        /// <param name="message">The message.</param>
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task Handle(GameEnded message)
         {
-            events.PublishOnBackgroundThread(new ResetCurrentGame());
+            this.events.PublishOnBackgroundThread(new ResetCurrentGame());
 
             // TODO: do not override if manually set.
             this.GameMode = message.GameMode;
@@ -503,21 +626,27 @@ namespace HearthCap.Features.Games.CurrentGame
             this.Conceded = message.Conceded;
 
             this.GoFirst = !message.GoFirst.HasValue || message.GoFirst.Value;
-            this.Hero = Heroes.FirstOrDefault(x => x.Key == message.Hero);
-            this.OpponentHero = Heroes.FirstOrDefault(x => x.Key == message.OpponentHero);
+            this.Hero = this.Heroes.FirstOrDefault(x => x.Key == message.Hero);
+            this.OpponentHero = this.Heroes.FirstOrDefault(x => x.Key == message.OpponentHero);
             this.Started = message.StartTime;
             this.Stopped = message.EndTime;
             this.Victory = message.Victory.HasValue && message.Victory.Value;
-            this.Deck = deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Deck);
+            this.Deck = this.deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Deck);
 
-            await Save();
+            await this.Save();
         }
 
+        /// <summary>
+        /// The save.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         private async Task Save()
         {
             using (var bsy = this.Busy.GetTicket())
             {
-                var gameResult = new GameResultModel() { };
+                var gameResult = new GameResultModel { };
                 ArenaSessionModel arenasession = null;
                 bool newArena = false;
                 gameResult.GameMode = this.GameMode;
@@ -525,7 +654,7 @@ namespace HearthCap.Features.Games.CurrentGame
 
                 if (this.Deck != null)
                 {
-                    gameResult.Deck = Deck;
+                    gameResult.Deck = this.Deck;
                 }
 
                 gameResult.GoFirst = this.GoFirst;
@@ -541,22 +670,17 @@ namespace HearthCap.Features.Games.CurrentGame
                 if (gameResult.GameMode == GameMode.Arena)
                 {
                     var serverName = gameResult.Server;
-                    var latestArena = arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault());
-                    if (latestArena == null ||
-                        latestArena.IsEnded ||
-                        (gameResult.Hero != null && latestArena.Hero.Key != gameResult.Hero.Key))
+                    var latestArena =
+                        this.arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault());
+                    if (latestArena == null || latestArena.IsEnded || (gameResult.Hero != null && latestArena.Hero.Key != gameResult.Hero.Key))
                     {
-                        Log.Debug("Creating new arena.");
+                        this.Log.Debug("Creating new arena.");
                         newArena = true;
-                        arenasession = new ArenaSessionModel()
-                                           {
-                                               Hero = gameResult.Hero,
-                                               StartDate = gameResult.Started
-                                           };
+                        arenasession = new ArenaSessionModel { Hero = gameResult.Hero, StartDate = gameResult.Started };
                         try
                         {
                             GlobalLocks.NewArenaLock.Reset();
-                            await gameManager.AddArenaSession(arenasession);
+                            await this.gameManager.AddArenaSession(arenasession);
                         }
                         finally
                         {
@@ -567,8 +691,10 @@ namespace HearthCap.Features.Games.CurrentGame
                     {
                         arenasession = latestArena.ToModel();
                     }
+
                     gameResult.ArenaSession = arenasession;
                 }
+
                 await this.gameManager.AddGame(gameResult);
 
                 // for webapi
@@ -576,36 +702,39 @@ namespace HearthCap.Features.Games.CurrentGame
                 {
                     if (newArena)
                     {
-                        events.PublishOnBackgroundThread(new ArenaSessionStarted(arenasession.StartDate, arenasession.Hero.Key, arenasession.Wins, arenasession.Losses));
+                        this.events.PublishOnBackgroundThread(
+                            new ArenaSessionStarted(arenasession.StartDate, arenasession.Hero.Key, arenasession.Wins, arenasession.Losses));
                     }
                     else
                     {
                         if (arenasession.IsEnded && arenasession.EndDate.HasValue)
                         {
-                            events.PublishOnBackgroundThread(new ArenaSessionEnded(arenasession.StartDate, arenasession.EndDate.Value, arenasession.Hero.Key, arenasession.Wins, arenasession.Losses));
+                            this.events.PublishOnBackgroundThread(
+                                new ArenaSessionEnded(
+                                    arenasession.StartDate, 
+                                    arenasession.EndDate.Value, 
+                                    arenasession.Hero.Key, 
+                                    arenasession.Wins, 
+                                    arenasession.Losses));
                         }
                     }
                 }
 
                 // notifications
-                //var wonString = gameResult.Victory ? "You won!" : "You lost!";
-
+                // var wonString = gameResult.Victory ? "You won!" : "You lost!";
                 var title = "New game tracked.";
-                //var hero = gameResult.Hero != null ? gameResult.Hero.ClassName : String.Empty;
-                //var oppHero = gameResult.OpponentHero != null ? gameResult.OpponentHero.ClassName : String.Empty;
-                //var msg = string.Format("Hero: {0}, Opponent: {1}, {2}", hero, oppHero, wonString);
-                //events.PublishOnBackgroundThread(new SendNotification(String.Format("{0} {1}", title, msg)));
 
+                // var hero = gameResult.Hero != null ? gameResult.Hero.ClassName : String.Empty;
+                // var oppHero = gameResult.OpponentHero != null ? gameResult.OpponentHero.ClassName : String.Empty;
+                // var msg = string.Format("Hero: {0}, Opponent: {1}, {2}", hero, oppHero, wonString);
+                // events.PublishOnBackgroundThread(new SendNotification(String.Format("{0} {1}", title, msg)));
                 var vm = IoC.Get<GameResultBalloonViewModel>();
                 vm.SetGameResult(gameResult);
-                events.PublishOnBackgroundThread(new TrayNotification(title, vm, 10000)
-                {
-                    BalloonType = BalloonTypes.GameStartEnd
-                });
+                this.events.PublishOnBackgroundThread(new TrayNotification(title, vm, 10000) { BalloonType = BalloonTypes.GameStartEnd });
 
                 // reset
                 this.Clear();
-                IsOpen = false;
+                this.IsOpen = false;
             }
         }
 
@@ -614,17 +743,26 @@ namespace HearthCap.Features.Games.CurrentGame
         [Dependencies("Hero", "OpponentHero", "GameMode", "IsRunning")]
         public async Task SaveNewGame()
         {
-            events.PublishOnBackgroundThread(new ResetCurrentGame());
+            this.events.PublishOnBackgroundThread(new ResetCurrentGame());
             this.IsRunning = false;
             this.Stopped = DateTime.Now;
-            await Save();
+            await this.Save();
         }
 
+        /// <summary>
+        /// The can save new game.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool CanSaveNewGame()
         {
-            return Hero != null && OpponentHero != null && this.IsRunning;
+            return this.Hero != null && this.OpponentHero != null && this.IsRunning;
         }
 
+        /// <summary>
+        /// The stop game.
+        /// </summary>
         [Dependencies("IsRunning")]
         public void StopGame()
         {
@@ -633,6 +771,9 @@ namespace HearthCap.Features.Games.CurrentGame
             this.Clear();
         }
 
+        /// <summary>
+        /// The clear.
+        /// </summary>
         private void Clear()
         {
             this.IsRunning = false;
@@ -641,57 +782,64 @@ namespace HearthCap.Features.Games.CurrentGame
             this.OpponentHero = null;
             this.GoFirst = true;
             this.Turns = 1;
-            Notes = String.Empty;
-            WinLossRatio.Clear();
-            WinLossRatioHero.Clear();
-            WinLossRatioOpponentHero.Clear();
+            this.Notes = string.Empty;
+            this.WinLossRatio.Clear();
+            this.WinLossRatioHero.Clear();
+            this.WinLossRatioOpponentHero.Clear();
 
             // don't reset (e.g. just remember last deck)
-            //if (this.decks.Count > 0)
-            //{
-            //    this.SelectedDeck = this.decks.First();
-            //}
+            // if (this.decks.Count > 0)
+            // {
+            // this.SelectedDeck = this.decks.First();
+            // }
         }
 
-        /// <summary>Handles the message.</summary>
-        /// <param name="message">The message.</param>
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameStarted message)
         {
-            EnsureInitialized();
+            this.EnsureInitialized();
             this.GameMode = message.GameMode;
             this.Hero = this.Heroes.FirstOrDefault(x => x.Key == message.Hero);
             this.OpponentHero = this.Heroes.FirstOrDefault(x => x.Key == message.OpponentHero);
             this.GoFirst = message.GoFirst;
             this.StartTime = message.StartTime;
             this.IsRunning = true;
-            this.Deck = deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Deck);
+            this.Deck = this.deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Deck);
             this.events.PublishOnBackgroundThread(new ToggleFlyoutCommand(Flyouts.CurrentGame) { Show = true });
             this.events.PublishOnBackgroundThread(new ToggleFlyoutCommand(Flyouts.EditGame) { Show = false });
             var vm = IoC.Get<GameStartedBalloonViewModel>();
             vm.SetGameResult(message);
-            events.PublishOnBackgroundThread(new TrayNotification("A new game has started", vm, 10000)
+            this.events.PublishOnBackgroundThread(new TrayNotification("A new game has started", vm, 10000)
                                                  {
                                                      BalloonType = BalloonTypes.GameStartEnd
                                                  });
-            RefreshStats();
+            this.RefreshStats();
         }
 
+        /// <summary>
+        /// The refresh stats.
+        /// </summary>
         private void RefreshStats()
         {
-            var from = dateFilter.From;
+            var from = this.dateFilter.From;
             float wins;
             float losses;
             float total;
 
             this.WinLossRatio.Clear();
-            if (Hero != null && OpponentHero != null)
+            if (this.Hero != null && this.OpponentHero != null)
             {
                 wins =
-                    gameRepository.Query(
-                        x => x.Count(g => g.Started > @from && g.Victory && g.Hero.Id == Hero.Id && g.OpponentHero.Id == OpponentHero.Id));
+                    this.gameRepository.Query(
+                        x => x.Count(g => g.Started > @from && g.Victory && g.Hero.Id == this.Hero.Id && g.OpponentHero.Id == this.OpponentHero.Id));
                 losses =
-                    gameRepository.Query(
-                        x => x.Count(g => g.Started > @from && !g.Victory && g.Hero.Id == Hero.Id && g.OpponentHero.Id == OpponentHero.Id));
+                    this.gameRepository.Query(
+                        x => x.Count(g => g.Started > @from && !g.Victory && g.Hero.Id == this.Hero.Id && g.OpponentHero.Id == this.OpponentHero.Id));
                 total = wins + losses;
                 if (total > 0)
                 {
@@ -711,10 +859,10 @@ namespace HearthCap.Features.Games.CurrentGame
             }
 
             this.WinLossRatioHero.Clear();
-            if (Hero != null)
+            if (this.Hero != null)
             {
-                wins = gameRepository.Query(x => x.Count(g => g.Started > @from && g.Victory && g.Hero.Id == Hero.Id));
-                losses = gameRepository.Query(x => x.Count(g => g.Started > @from && !g.Victory && g.Hero.Id == Hero.Id));
+                wins = this.gameRepository.Query(x => x.Count(g => g.Started > @from && g.Victory && g.Hero.Id == this.Hero.Id));
+                losses = this.gameRepository.Query(x => x.Count(g => g.Started > @from && !g.Victory && g.Hero.Id == this.Hero.Id));
                 total = wins + losses;
                 if (total > 0)
                 {
@@ -734,10 +882,10 @@ namespace HearthCap.Features.Games.CurrentGame
             }
 
             this.WinLossRatioOpponentHero.Clear();
-            if (OpponentHero != null)
+            if (this.OpponentHero != null)
             {
-                wins = gameRepository.Query(x => x.Count(g => g.Started > @from && g.Victory && g.OpponentHero.Id == OpponentHero.Id));
-                losses = gameRepository.Query(x => x.Count(g => g.Started > @from && !g.Victory && g.OpponentHero.Id == OpponentHero.Id));
+                wins = this.gameRepository.Query(x => x.Count(g => g.Started > @from && g.Victory && g.OpponentHero.Id == this.OpponentHero.Id));
+                losses = this.gameRepository.Query(x => x.Count(g => g.Started > @from && !g.Victory && g.OpponentHero.Id == this.OpponentHero.Id));
                 total = wins + losses;
                 if (total > 0)
                 {
@@ -757,8 +905,12 @@ namespace HearthCap.Features.Games.CurrentGame
             }
         }
 
-        /// <summary>Handles the message.</summary>
-        /// <param name="message">The message.</param>
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(NewRound message)
         {
             this.Turns = message.Current;
@@ -773,12 +925,13 @@ namespace HearthCap.Features.Games.CurrentGame
         {
         }
 
-        /// <summary>The load data.</summary>
-        /// <returns>The <see cref="Task"/>.</returns>
+        /// <summary>
+        /// The load data.
+        /// </summary>
         private void EnsureInitialized()
         {
-            if (initialized) return;
-            initialized = true;
+            if (this.initialized) return;
+            this.initialized = true;
 
             var data = this.GlobalData.Get();
             this.heroes.Clear();
@@ -794,7 +947,7 @@ namespace HearthCap.Features.Games.CurrentGame
         /// </summary>
         public void OnImportsSatisfied()
         {
-            EnsureInitialized();
+            this.EnsureInitialized();
         }
     }
 }
