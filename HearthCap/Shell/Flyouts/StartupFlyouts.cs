@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Shell.Flyouts
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StartupFlyouts.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The startup flyouts.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Shell.Flyouts
 {
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
@@ -13,17 +22,32 @@
 
     using MahApps.Metro.Controls;
 
+    /// <summary>
+    /// The startup flyouts.
+    /// </summary>
     [Export(typeof(IStartupTask))]
     public class StartupFlyouts : IStartupTask
     {
+        /// <summary>
+        /// The service locator.
+        /// </summary>
         private readonly IServiceLocator serviceLocator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartupFlyouts"/> class.
+        /// </summary>
+        /// <param name="serviceLocator">
+        /// The service locator.
+        /// </param>
         [ImportingConstructor]
         public StartupFlyouts(IServiceLocator serviceLocator)
         {
             this.serviceLocator = serviceLocator;
         }
 
+        /// <summary>
+        /// The run.
+        /// </summary>
         public void Run()
         {
             var getNamedElements = BindingScope.GetNamedElements;

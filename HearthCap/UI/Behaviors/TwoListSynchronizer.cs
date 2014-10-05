@@ -1,4 +1,13 @@
-﻿namespace HearthCap.UI.Behaviors
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TwoListSynchronizer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   A sync behaviour for a multiselector.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.UI.Behaviors
 {
     using System;
     using System.Collections;
@@ -13,17 +22,27 @@
     /// </summary>
     public static class MultiSelectorBehaviours
     {
+        /// <summary>
+        /// The synchronized selected items.
+        /// </summary>
         public static readonly DependencyProperty SynchronizedSelectedItems = DependencyProperty.RegisterAttached(
             "SynchronizedSelectedItems", typeof(IList), typeof(MultiSelectorBehaviours), new PropertyMetadata(null, OnSynchronizedSelectedItemsChanged));
 
+        /// <summary>
+        /// The synchronization manager property.
+        /// </summary>
         private static readonly DependencyProperty SynchronizationManagerProperty = DependencyProperty.RegisterAttached(
             "SynchronizationManager", typeof(SynchronizationManager), typeof(MultiSelectorBehaviours), new PropertyMetadata(null));
 
         /// <summary>
         /// Gets the synchronized selected items.
         /// </summary>
-        /// <param name="dependencyObject">The dependency object.</param>
-        /// <returns>The list that is acting as the sync list.</returns>
+        /// <param name="dependencyObject">
+        /// The dependency object.
+        /// </param>
+        /// <returns>
+        /// The list that is acting as the sync list.
+        /// </returns>
         public static IList GetSynchronizedSelectedItems(DependencyObject dependencyObject)
         {
             return (IList)dependencyObject.GetValue(SynchronizedSelectedItems);
@@ -32,23 +51,54 @@
         /// <summary>
         /// Sets the synchronized selected items.
         /// </summary>
-        /// <param name="dependencyObject">The dependency object.</param>
-        /// <param name="value">The value to be set as synchronized items.</param>
+        /// <param name="dependencyObject">
+        /// The dependency object.
+        /// </param>
+        /// <param name="value">
+        /// The value to be set as synchronized items.
+        /// </param>
         public static void SetSynchronizedSelectedItems(DependencyObject dependencyObject, IList value)
         {
             dependencyObject.SetValue(SynchronizedSelectedItems, value);
         }
 
+        /// <summary>
+        /// The get synchronization manager.
+        /// </summary>
+        /// <param name="dependencyObject">
+        /// The dependency object.
+        /// </param>
+        /// <returns>
+        /// The <see cref="SynchronizationManager"/>.
+        /// </returns>
         private static SynchronizationManager GetSynchronizationManager(DependencyObject dependencyObject)
         {
             return (SynchronizationManager)dependencyObject.GetValue(SynchronizationManagerProperty);
         }
 
+        /// <summary>
+        /// The set synchronization manager.
+        /// </summary>
+        /// <param name="dependencyObject">
+        /// The dependency object.
+        /// </param>
+        /// <param name="value">
+        /// The value.
+        /// </param>
         private static void SetSynchronizationManager(DependencyObject dependencyObject, SynchronizationManager value)
         {
             dependencyObject.SetValue(SynchronizationManagerProperty, value);
         }
 
+        /// <summary>
+        /// The on synchronized selected items changed.
+        /// </summary>
+        /// <param name="dependencyObject">
+        /// The dependency object.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private static void OnSynchronizedSelectedItemsChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             if (e.OldValue != null)
@@ -81,16 +131,25 @@
         /// </summary>
         private class SynchronizationManager
         {
+            /// <summary>
+            /// The _multi selector.
+            /// </summary>
             private readonly Selector _multiSelector;
+
+            /// <summary>
+            /// The _synchronizer.
+            /// </summary>
             private TwoListSynchronizer _synchronizer;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="SynchronizationManager"/> class.
             /// </summary>
-            /// <param name="selector">The selector.</param>
+            /// <param name="selector">
+            /// The selector.
+            /// </param>
             internal SynchronizationManager(Selector selector)
             {
-                _multiSelector = selector;
+                this._multiSelector = selector;
             }
 
             /// <summary>
@@ -98,12 +157,12 @@
             /// </summary>
             public void StartSynchronizingList()
             {
-                IList list = GetSynchronizedSelectedItems(_multiSelector);
+                IList list = GetSynchronizedSelectedItems(this._multiSelector);
 
                 if (list != null)
                 {
-                    _synchronizer = new TwoListSynchronizer(GetSelectedItemsCollection(_multiSelector), list);
-                    _synchronizer.StartSynchronizing();
+                    this._synchronizer = new TwoListSynchronizer(GetSelectedItemsCollection(this._multiSelector), list);
+                    this._synchronizer.StartSynchronizing();
                 }
             }
 
@@ -112,9 +171,20 @@
             /// </summary>
             public void StopSynchronizing()
             {
-                _synchronizer.StopSynchronizing();
+                this._synchronizer.StopSynchronizing();
             }
 
+            /// <summary>
+            /// The get selected items collection.
+            /// </summary>
+            /// <param name="selector">
+            /// The selector.
+            /// </param>
+            /// <returns>
+            /// The <see cref="IList"/>.
+            /// </returns>
+            /// <exception cref="InvalidOperationException">
+            /// </exception>
             public static IList GetSelectedItemsCollection(Selector selector)
             {
                 if (selector is MultiSelector)
@@ -142,15 +212,23 @@
         /// <summary>
         /// Converts the specified master list item.
         /// </summary>
-        /// <param name="masterListItem">The master list item.</param>
-        /// <returns>The result of the conversion.</returns>
+        /// <param name="masterListItem">
+        /// The master list item.
+        /// </param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
         object Convert(object masterListItem);
 
         /// <summary>
         /// Converts the specified target list item.
         /// </summary>
-        /// <param name="targetListItem">The target list item.</param>
-        /// <returns>The result of the conversion.</returns>
+        /// <param name="targetListItem">
+        /// The target list item.
+        /// </param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
         object ConvertBack(object targetListItem);
     }
 
@@ -159,35 +237,72 @@
     /// </summary>
     public class TwoListSynchronizer : IWeakEventListener
     {
+        /// <summary>
+        /// The default converter.
+        /// </summary>
         private static readonly IListItemConverter DefaultConverter = new DoNothingListItemConverter();
+
+        /// <summary>
+        /// The _master list.
+        /// </summary>
         private readonly IList _masterList;
+
+        /// <summary>
+        /// The _master target converter.
+        /// </summary>
         private readonly IListItemConverter _masterTargetConverter;
+
+        /// <summary>
+        /// The _target list.
+        /// </summary>
         private readonly IList _targetList;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwoListSynchronizer"/> class.
         /// </summary>
-        /// <param name="masterList">The master list.</param>
-        /// <param name="targetList">The target list.</param>
-        /// <param name="masterTargetConverter">The master-target converter.</param>
+        /// <param name="masterList">
+        /// The master list.
+        /// </param>
+        /// <param name="targetList">
+        /// The target list.
+        /// </param>
+        /// <param name="masterTargetConverter">
+        /// The master-target converter.
+        /// </param>
         public TwoListSynchronizer(IList masterList, IList targetList, IListItemConverter masterTargetConverter)
         {
-            _masterList = masterList;
-            _targetList = targetList;
-            _masterTargetConverter = masterTargetConverter;
+            this._masterList = masterList;
+            this._targetList = targetList;
+            this._masterTargetConverter = masterTargetConverter;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TwoListSynchronizer"/> class.
         /// </summary>
-        /// <param name="masterList">The master list.</param>
-        /// <param name="targetList">The target list.</param>
+        /// <param name="masterList">
+        /// The master list.
+        /// </param>
+        /// <param name="targetList">
+        /// The target list.
+        /// </param>
         public TwoListSynchronizer(IList masterList, IList targetList)
             : this(masterList, targetList, DefaultConverter)
         {
         }
 
+        /// <summary>
+        /// The change list action.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private delegate void ChangeListAction(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter);
 
         /// <summary>
@@ -195,18 +310,18 @@
         /// </summary>
         public void StartSynchronizing()
         {
-            ListenForChangeEvents(_masterList);
-            ListenForChangeEvents(_targetList);
+            this.ListenForChangeEvents(this._masterList);
+            this.ListenForChangeEvents(this._targetList);
 
             // Update the Target list from the Master list
-            SetListValuesFromSource(_masterList, _targetList, ConvertFromMasterToTarget);
+            this.SetListValuesFromSource(this._masterList, this._targetList, this.ConvertFromMasterToTarget);
 
             // In some cases the target list might have its own view on which items should included:
             // so update the master list from the target list
             // (This is the case with a ListBox SelectedItems collection: only items from the ItemsSource can be included in SelectedItems)
-            if (!TargetAndMasterCollectionsAreEqual())
+            if (!this.TargetAndMasterCollectionsAreEqual())
             {
-                SetListValuesFromSource(_targetList, _masterList, ConvertFromTargetToMaster);
+                this.SetListValuesFromSource(this._targetList, this._masterList, this.ConvertFromTargetToMaster);
             }
         }
 
@@ -215,22 +330,28 @@
         /// </summary>
         public void StopSynchronizing()
         {
-            StopListeningForChangeEvents(_masterList);
-            StopListeningForChangeEvents(_targetList);
+            this.StopListeningForChangeEvents(this._masterList);
+            this.StopListeningForChangeEvents(this._targetList);
         }
 
         /// <summary>
         /// Receives events from the centralized event manager.
         /// </summary>
-        /// <param name="managerType">The type of the <see cref="T:System.Windows.WeakEventManager"/> calling this method.</param>
-        /// <param name="sender">Object that originated the event.</param>
-        /// <param name="e">Event data.</param>
+        /// <param name="managerType">
+        /// The type of the <see cref="T:System.Windows.WeakEventManager"/> calling this method.
+        /// </param>
+        /// <param name="sender">
+        /// Object that originated the event.
+        /// </param>
+        /// <param name="e">
+        /// Event data.
+        /// </param>
         /// <returns>
         /// true if the listener handled the event. It is considered an error by the <see cref="T:System.Windows.WeakEventManager"/> handling in WPF to register a listener for an event that the listener does not handle. Regardless, the method should return false if it receives an event that it does not recognize or handle.
         /// </returns>
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
-            HandleCollectionChanged(sender as IList, e as NotifyCollectionChangedEventArgs);
+            this.HandleCollectionChanged(sender as IList, e as NotifyCollectionChangedEventArgs);
 
             return true;
         }
@@ -238,7 +359,9 @@
         /// <summary>
         /// Listens for change events on a list.
         /// </summary>
-        /// <param name="list">The list to listen to.</param>
+        /// <param name="list">
+        /// The list to listen to.
+        /// </param>
         protected void ListenForChangeEvents(IList list)
         {
             if (list is INotifyCollectionChanged)
@@ -250,7 +373,9 @@
         /// <summary>
         /// Stops listening for change events.
         /// </summary>
-        /// <param name="list">The list to stop listening to.</param>
+        /// <param name="list">
+        /// The list to stop listening to.
+        /// </param>
         protected void StopListeningForChangeEvents(IList list)
         {
             if (list is INotifyCollectionChanged)
@@ -259,6 +384,18 @@
             }
         }
 
+        /// <summary>
+        /// The add items.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void AddItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
             int itemCount = e.NewItems.Count;
@@ -278,16 +415,43 @@
             }
         }
 
+        /// <summary>
+        /// The convert from master to target.
+        /// </summary>
+        /// <param name="masterListItem">
+        /// The master list item.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         private object ConvertFromMasterToTarget(object masterListItem)
         {
-            return _masterTargetConverter == null ? masterListItem : _masterTargetConverter.Convert(masterListItem);
+            return this._masterTargetConverter == null ? masterListItem : this._masterTargetConverter.Convert(masterListItem);
         }
 
+        /// <summary>
+        /// The convert from target to master.
+        /// </summary>
+        /// <param name="targetListItem">
+        /// The target list item.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         private object ConvertFromTargetToMaster(object targetListItem)
         {
-            return _masterTargetConverter == null ? targetListItem : _masterTargetConverter.ConvertBack(targetListItem);
+            return this._masterTargetConverter == null ? targetListItem : this._masterTargetConverter.ConvertBack(targetListItem);
         }
 
+        /// <summary>
+        /// The handle collection changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             IList sourceList = sender as IList;
@@ -295,50 +459,101 @@
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    PerformActionOnAllLists(AddItems, sourceList, e);
+                    this.PerformActionOnAllLists(this.AddItems, sourceList, e);
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    PerformActionOnAllLists(MoveItems, sourceList, e);
+                    this.PerformActionOnAllLists(this.MoveItems, sourceList, e);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    PerformActionOnAllLists(RemoveItems, sourceList, e);
+                    this.PerformActionOnAllLists(this.RemoveItems, sourceList, e);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    PerformActionOnAllLists(ReplaceItems, sourceList, e);
+                    this.PerformActionOnAllLists(this.ReplaceItems, sourceList, e);
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    UpdateListsFromSource(sender as IList);
+                    this.UpdateListsFromSource(sender as IList);
                     break;
                 default:
                     break;
             }
         }
 
+        /// <summary>
+        /// The move items.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void MoveItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
-            RemoveItems(list, e, converter);
-            AddItems(list, e, converter);
+            this.RemoveItems(list, e, converter);
+            this.AddItems(list, e, converter);
         }
 
+        /// <summary>
+        /// The perform action on all lists.
+        /// </summary>
+        /// <param name="action">
+        /// The action.
+        /// </param>
+        /// <param name="sourceList">
+        /// The source list.
+        /// </param>
+        /// <param name="collectionChangedArgs">
+        /// The collection changed args.
+        /// </param>
         private void PerformActionOnAllLists(ChangeListAction action, IList sourceList, NotifyCollectionChangedEventArgs collectionChangedArgs)
         {
-            if (sourceList == _masterList)
+            if (sourceList == this._masterList)
             {
-                PerformActionOnList(_targetList, action, collectionChangedArgs, ConvertFromMasterToTarget);
+                this.PerformActionOnList(this._targetList, action, collectionChangedArgs, this.ConvertFromMasterToTarget);
             }
             else
             {
-                PerformActionOnList(_masterList, action, collectionChangedArgs, ConvertFromTargetToMaster);
+                this.PerformActionOnList(this._masterList, action, collectionChangedArgs, this.ConvertFromTargetToMaster);
             }
         }
 
+        /// <summary>
+        /// The perform action on list.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="action">
+        /// The action.
+        /// </param>
+        /// <param name="collectionChangedArgs">
+        /// The collection changed args.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void PerformActionOnList(IList list, ChangeListAction action, NotifyCollectionChangedEventArgs collectionChangedArgs, Converter<object, object> converter)
         {
-            StopListeningForChangeEvents(list);
+            this.StopListeningForChangeEvents(list);
             action(list, collectionChangedArgs, converter);
-            ListenForChangeEvents(list);
+            this.ListenForChangeEvents(list);
         }
 
+        /// <summary>
+        /// The remove items.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void RemoveItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
             int itemCount = e.OldItems.Count;
@@ -351,15 +566,39 @@
             }
         }
 
+        /// <summary>
+        /// The replace items.
+        /// </summary>
+        /// <param name="list">
+        /// The list.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void ReplaceItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
-            RemoveItems(list, e, converter);
-            AddItems(list, e, converter);
+            this.RemoveItems(list, e, converter);
+            this.AddItems(list, e, converter);
         }
 
+        /// <summary>
+        /// The set list values from source.
+        /// </summary>
+        /// <param name="sourceList">
+        /// The source list.
+        /// </param>
+        /// <param name="targetList">
+        /// The target list.
+        /// </param>
+        /// <param name="converter">
+        /// The converter.
+        /// </param>
         private void SetListValuesFromSource(IList sourceList, IList targetList, Converter<object, object> converter)
         {
-            StopListeningForChangeEvents(targetList);
+            this.StopListeningForChangeEvents(targetList);
 
             targetList.Clear();
 
@@ -368,27 +607,35 @@
                 targetList.Add(converter(o));
             }
 
-            ListenForChangeEvents(targetList);
+            this.ListenForChangeEvents(targetList);
         }
 
+        /// <summary>
+        /// The target and master collections are equal.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool TargetAndMasterCollectionsAreEqual()
         {
-            return _masterList.Cast<object>().SequenceEqual(_targetList.Cast<object>().Select(item => ConvertFromTargetToMaster(item)));
+            return this._masterList.Cast<object>().SequenceEqual(this._targetList.Cast<object>().Select(item => this.ConvertFromTargetToMaster(item)));
         }
 
         /// <summary>
         /// Makes sure that all synchronized lists have the same values as the source list.
         /// </summary>
-        /// <param name="sourceList">The source list.</param>
+        /// <param name="sourceList">
+        /// The source list.
+        /// </param>
         private void UpdateListsFromSource(IList sourceList)
         {
-            if (sourceList == _masterList)
+            if (sourceList == this._masterList)
             {
-                SetListValuesFromSource(_masterList, _targetList, ConvertFromMasterToTarget);
+                this.SetListValuesFromSource(this._masterList, this._targetList, this.ConvertFromMasterToTarget);
             }
             else
             {
-                SetListValuesFromSource(_targetList, _masterList, ConvertFromTargetToMaster);
+                this.SetListValuesFromSource(this._targetList, this._masterList, this.ConvertFromTargetToMaster);
             }
         }
 
@@ -403,8 +650,12 @@
             /// <summary>
             /// Converts the specified master list item.
             /// </summary>
-            /// <param name="masterListItem">The master list item.</param>
-            /// <returns>The result of the conversion.</returns>
+            /// <param name="masterListItem">
+            /// The master list item.
+            /// </param>
+            /// <returns>
+            /// The result of the conversion.
+            /// </returns>
             public object Convert(object masterListItem)
             {
                 return masterListItem;
@@ -413,8 +664,12 @@
             /// <summary>
             /// Converts the specified target list item.
             /// </summary>
-            /// <param name="targetListItem">The target list item.</param>
-            /// <returns>The result of the conversion.</returns>
+            /// <param name="targetListItem">
+            /// The target list item.
+            /// </param>
+            /// <returns>
+            /// The result of the conversion.
+            /// </returns>
             public object ConvertBack(object targetListItem)
             {
                 return targetListItem;

@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Core.GameCapture
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ScanAreaImageDictionary.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The scan area image dictionary.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Core.GameCapture
 {
     using System;
     using System.Collections;
@@ -7,6 +16,9 @@
 
     using HearthCap.Core.GameCapture.HS;
 
+    /// <summary>
+    /// The scan area image dictionary.
+    /// </summary>
     public class ScanAreaImageDictionary : IDictionary<string, IDictionary<int, Tuple<Bitmap, ScanArea>>>
     {
         /// <summary>
@@ -23,7 +35,12 @@
         /// <summary>
         /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </summary>
-        /// <param name="item">The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        /// <param name="item">
+        /// The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </param>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
+        /// </exception>
         public void Add(KeyValuePair<string, IDictionary<int, Tuple<Bitmap, ScanArea>>> item)
         {
             this.items.Add(item);
@@ -44,7 +61,9 @@
         /// <returns>
         /// true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
         /// </returns>
-        /// <param name="item">The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param>
+        /// <param name="item">
+        /// The object to locate in the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </param>
         public bool Contains(KeyValuePair<string, IDictionary<int, Tuple<Bitmap, ScanArea>>> item)
         {
             return this.items.Contains(item);
@@ -53,7 +72,21 @@
         /// <summary>
         /// Copies the elements of the <see cref="T:System.Collections.Generic.ICollection`1"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
         /// </summary>
-        /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param><param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param><exception cref="T:System.ArgumentNullException"><paramref name="array"/> is null.</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="arrayIndex"/> is less than 0.</exception><exception cref="T:System.ArgumentException">The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.</exception>
+        /// <param name="array">
+        /// The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1"/>. The <see cref="T:System.Array"/> must have zero-based indexing.
+        /// </param>
+        /// <param name="arrayIndex">
+        /// The zero-based index in <paramref name="array"/> at which copying begins.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="array"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// <paramref name="arrayIndex"/> is less than 0.
+        /// </exception>
+        /// <exception cref="T:System.ArgumentException">
+        /// The number of elements in the source <see cref="T:System.Collections.Generic.ICollection`1"/> is greater than the available space from <paramref name="arrayIndex"/> to the end of the destination <paramref name="array"/>.
+        /// </exception>
         public void CopyTo(KeyValuePair<string, IDictionary<int, Tuple<Bitmap, ScanArea>>>[] array, int arrayIndex)
         {
             this.items.CopyTo(array, arrayIndex);
@@ -65,7 +98,12 @@
         /// <returns>
         /// true if <paramref name="item"/> was successfully removed from the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false. This method also returns false if <paramref name="item"/> is not found in the original <see cref="T:System.Collections.Generic.ICollection`1"/>.
         /// </returns>
-        /// <param name="item">The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.</param><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.</exception>
+        /// <param name="item">
+        /// The object to remove from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
+        /// </param>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
+        /// </exception>
         public bool Remove(KeyValuePair<string, IDictionary<int, Tuple<Bitmap, ScanArea>>> item)
         {
             return this.items.Remove(item);
@@ -105,7 +143,12 @@
         /// <returns>
         /// true if the <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the key; otherwise, false.
         /// </returns>
-        /// <param name="key">The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+        /// <param name="key">
+        /// The key to locate in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="key"/> is null.
+        /// </exception>
         public bool ContainsKey(string key)
         {
             return this.items.ContainsKey(key);
@@ -114,7 +157,21 @@
         /// <summary>
         /// Adds an element with the provided key and value to the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
         /// </summary>
-        /// <param name="key">The object to use as the key of the element to add.</param><param name="value">The object to use as the value of the element to add.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</exception><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        /// <param name="key">
+        /// The object to use as the key of the element to add.
+        /// </param>
+        /// <param name="value">
+        /// The object to use as the value of the element to add.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="key"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.ArgumentException">
+        /// An element with the same key already exists in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+        /// </exception>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.
+        /// </exception>
         public void Add(string key,  IDictionary<int, Tuple<Bitmap, ScanArea>> value)
         {
             this.items.Add(key, value);
@@ -126,7 +183,15 @@
         /// <returns>
         /// true if the element is successfully removed; otherwise, false.  This method also returns false if <paramref name="key"/> was not found in the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.
         /// </returns>
-        /// <param name="key">The key of the element to remove.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        /// <param name="key">
+        /// The key of the element to remove.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="key"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.
+        /// </exception>
         public bool Remove(string key)
         {
             return this.items.Remove(key);
@@ -138,7 +203,15 @@
         /// <returns>
         /// true if the object that implements <see cref="T:System.Collections.Generic.IDictionary`2"/> contains an element with the specified key; otherwise, false.
         /// </returns>
-        /// <param name="key">The key whose value to get.</param><param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+        /// <param name="key">
+        /// The key whose value to get.
+        /// </param>
+        /// <param name="value">
+        /// When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="key"/> is null.
+        /// </exception>
         public bool TryGetValue(string key, out  IDictionary<int, Tuple<Bitmap, ScanArea>> value)
         {
             return this.items.TryGetValue(key, out value);
@@ -150,7 +223,18 @@
         /// <returns>
         /// The element with the specified key.
         /// </returns>
-        /// <param name="key">The key of the element to get or set.</param><exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception><exception cref="T:System.Collections.Generic.KeyNotFoundException">The property is retrieved and <paramref name="key"/> is not found.</exception><exception cref="T:System.NotSupportedException">The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.</exception>
+        /// <param name="key">
+        /// The key of the element to get or set.
+        /// </param>
+        /// <exception cref="T:System.ArgumentNullException">
+        /// <paramref name="key"/> is null.
+        /// </exception>
+        /// <exception cref="T:System.Collections.Generic.KeyNotFoundException">
+        /// The property is retrieved and <paramref name="key"/> is not found.
+        /// </exception>
+        /// <exception cref="T:System.NotSupportedException">
+        /// The property is set and the <see cref="T:System.Collections.Generic.IDictionary`2"/> is read-only.
+        /// </exception>
         public  IDictionary<int, Tuple<Bitmap, ScanArea>> this[string key]
         {
             get
@@ -159,8 +243,10 @@
                 {
                     return this.items[key];
                 }
+
                 return null;
             }
+
             set
             {
                 this.items[key] = value;
@@ -195,6 +281,9 @@
             }
         }
 
+        /// <summary>
+        /// The items.
+        /// </summary>
         private IDictionary<string, IDictionary<int, Tuple<Bitmap, ScanArea>>> items = new Dictionary<string, IDictionary<int, Tuple<Bitmap, ScanArea>>>();
 
         /// <summary>

@@ -1,35 +1,90 @@
-﻿namespace HearthCap.Shell.UserPreferences
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UserPreferences.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The user preferences.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Shell.UserPreferences
 {
-    using System;
+    using System.ComponentModel;
     using System.ComponentModel.Composition;
+    using System.Reflection;
+    using System.Threading;
     using System.Windows;
+
     using Caliburn.Micro;
 
     using Microsoft.Win32;
 
+    /// <summary>
+    /// The user preferences.
+    /// </summary>
     [Export(typeof(UserPreferences))]
     public class UserPreferences : PropertyChangedBase
     {
         #region Member Variables
 
+        /// <summary>
+        /// The window top.
+        /// </summary>
         private double windowTop;
+
+        /// <summary>
+        /// The window left.
+        /// </summary>
         private double windowLeft;
+
+        /// <summary>
+        /// The window height.
+        /// </summary>
         private double windowHeight;
+
+        /// <summary>
+        /// The window width.
+        /// </summary>
         private double windowWidth;
+
+        /// <summary>
+        /// The window state.
+        /// </summary>
         private WindowState windowState;
 
+        /// <summary>
+        /// The dont save.
+        /// </summary>
         private bool dontSave;
 
-        private System.Threading.Timer timer;
+        /// <summary>
+        /// The timer.
+        /// </summary>
+        private Timer timer;
 
+        /// <summary>
+        /// The timer lock.
+        /// </summary>
         private readonly object timerLock = new object();
 
+        /// <summary>
+        /// The start minimized.
+        /// </summary>
         private bool startMinimized;
 
+        /// <summary>
+        /// The start on logon.
+        /// </summary>
         private bool startOnLogon;
 
+        /// <summary>
+        /// The minimize to tray.
+        /// </summary>
         private bool minimizeToTray;
 
+        /// <summary>
+        /// Gets or sets the window top.
+        /// </summary>
         public double WindowTop
         {
             get { return this.windowTop; }
@@ -41,6 +96,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window left.
+        /// </summary>
         public double WindowLeft
         {
             get { return this.windowLeft; }
@@ -52,6 +110,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window height.
+        /// </summary>
         public double WindowHeight
         {
             get { return this.windowHeight; }
@@ -63,6 +124,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window width.
+        /// </summary>
         public double WindowWidth
         {
             get { return this.windowWidth; }
@@ -74,6 +138,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window state.
+        /// </summary>
         public WindowState WindowState
         {
             get { return this.windowState; }
@@ -85,138 +152,182 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether start minimized.
+        /// </summary>
         public bool StartMinimized
         {
             get
             {
                 return this.startMinimized;
             }
+
             set
             {
                 if (value.Equals(this.startMinimized))
                 {
                     return;
                 }
+
                 this.startMinimized = value;
                 this.NotifyOfPropertyChange(() => this.StartMinimized);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether start on logon.
+        /// </summary>
         public bool StartOnLogon
         {
             get
             {
                 return this.startOnLogon;
             }
+
             set
             {
                 if (value.Equals(this.startOnLogon))
                 {
                     return;
                 }
+
                 this.startOnLogon = value;
                 this.NotifyOfPropertyChange(() => this.StartOnLogon);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether minimize to tray.
+        /// </summary>
         public bool MinimizeToTray
         {
             get
             {
                 return this.minimizeToTray;
             }
+
             set
             {
                 if (value.Equals(this.minimizeToTray)) return;
                 this.minimizeToTray = value;
-                NotifyOfPropertyChange(() => MinimizeToTray);
+                this.NotifyOfPropertyChange(() => this.MinimizeToTray);
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserPreferences"/> class.
+        /// </summary>
         [ImportingConstructor]
         public UserPreferences()
         {
-            Load();
+            this.Load();
         }
 
+        /// <summary>
+        /// The initialize.
+        /// </summary>
         public void Initialize()
         {
             this.dontSave = true;
-            this.PropertyChanged += UserPreferences_PropertyChanged;
-            SizeToFit();
-            MoveIntoView();
+            this.PropertyChanged += this.UserPreferences_PropertyChanged;
+            this.SizeToFit();
+            this.MoveIntoView();
             this.dontSave = false;
-            Save();
+            this.Save();
         }
 
-        void UserPreferences_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /// <summary>
+        /// The user preferences_ property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        void UserPreferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // just catch all as we don't have other properties yet.
             if (this.timer == null)
             {
-                lock (timerLock)
+                lock (this.timerLock)
                 {
                     if (this.timer == null)
                     {
-                        timer = new System.Threading.Timer(TimerOnElapsed, null, 250, -1);
+                        this.timer = new Timer(this.TimerOnElapsed, null, 250, -1);
                     }
                 }
             }
             else
             {
-                timer.Change(250, -1);
+                this.timer.Change(250, -1);
             }
         }
 
+        /// <summary>
+        /// The timer on elapsed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
         private void TimerOnElapsed(object sender)
         {
-            Save();
-            if (timer != null)
+            this.Save();
+            if (this.timer != null)
             {
                 this.timer.Dispose();
                 this.timer = null;                
             }
         }
 
+        /// <summary>
+        /// The size to fit.
+        /// </summary>
         public void SizeToFit()
         {
-            if (WindowHeight > SystemParameters.VirtualScreenHeight)
+            if (this.WindowHeight > SystemParameters.VirtualScreenHeight)
             {
-                WindowHeight = SystemParameters.VirtualScreenHeight;
+                this.WindowHeight = SystemParameters.VirtualScreenHeight;
             }
 
-            if (WindowWidth > SystemParameters.VirtualScreenWidth)
+            if (this.WindowWidth > SystemParameters.VirtualScreenWidth)
             {
-                WindowWidth = SystemParameters.VirtualScreenWidth;
+                this.WindowWidth = SystemParameters.VirtualScreenWidth;
             }
         }
 
+        /// <summary>
+        /// The move into view.
+        /// </summary>
         public void MoveIntoView()
         {
             var virtualScreenHeight = SystemParameters.VirtualScreenHeight;
-            if (WindowTop + WindowHeight / 2 > virtualScreenHeight)
+            if (this.WindowTop + this.WindowHeight / 2 > virtualScreenHeight)
             {
-                WindowTop = virtualScreenHeight - this.windowHeight;
+                this.WindowTop = virtualScreenHeight - this.windowHeight;
             }
 
             var virtualScreenWidth = SystemParameters.VirtualScreenWidth;
-            if (WindowLeft + WindowWidth / 2 > virtualScreenWidth)
+            if (this.WindowLeft + this.WindowWidth / 2 > virtualScreenWidth)
             {
-                WindowLeft = virtualScreenWidth - WindowWidth;
+                this.WindowLeft = virtualScreenWidth - this.WindowWidth;
             }
 
             // Center on first load
-            if (WindowTop < 0)
+            if (this.WindowTop < 0)
             {
-                WindowTop = (virtualScreenHeight - WindowHeight) / 2;
+                this.WindowTop = (virtualScreenHeight - this.WindowHeight) / 2;
             }
 
-            if (WindowLeft < 0)
+            if (this.WindowLeft < 0)
             {
-                WindowLeft = (SystemParameters.PrimaryScreenWidth - WindowWidth) / 2;
+                this.WindowLeft = (SystemParameters.PrimaryScreenWidth - this.WindowWidth) / 2;
             }
         }
 
+        /// <summary>
+        /// The load.
+        /// </summary>
         private void Load()
         {
             using (var reg = new WindowRegistrySettings())
@@ -224,17 +335,17 @@
                 // On first startup
                 if (reg.WindowHeight == 0 || reg.WindowWidth == 0)
                 {
-                    Save();
+                    this.Save();
                     return;
                 }
 
-                WindowTop = reg.WindowTop;
-                WindowLeft = reg.WindowLeft;
-                WindowHeight = reg.WindowHeight;
-                WindowWidth = reg.WindowWidth;
-                WindowState = reg.WindowState;
-                StartMinimized = reg.StartMinimized;
-                MinimizeToTray = reg.MinimizeToTray;
+                this.WindowTop = reg.WindowTop;
+                this.WindowLeft = reg.WindowLeft;
+                this.WindowHeight = reg.WindowHeight;
+                this.WindowWidth = reg.WindowWidth;
+                this.WindowState = reg.WindowState;
+                this.StartMinimized = reg.StartMinimized;
+                this.MinimizeToTray = reg.MinimizeToTray;
 
                 using (var section = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
                 {
@@ -246,8 +357,8 @@
                             this.StartOnLogon = true;
 
                             // Verify location still correct:
-                            var exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
-                            var value = String.Format("\"{0}\" -logon", exeName);
+                            var exeName = Assembly.GetEntryAssembly().Location;
+                            var value = string.Format("\"{0}\" -logon", exeName);
                             if (startupLocation.ToString() != value)
                             {
                                 section.SetValue("HearthstoneTracker", value);
@@ -258,32 +369,35 @@
             }
         }
 
+        /// <summary>
+        /// The save.
+        /// </summary>
         public void Save()
         {
-            if (WindowState != WindowState.Minimized && !dontSave)
+            if (this.WindowState != WindowState.Minimized && !this.dontSave)
             {
                 using (var reg = new WindowRegistrySettings())
                 {
-                    if (WindowState != WindowState.Maximized)
+                    if (this.WindowState != WindowState.Maximized)
                     {
-                        reg.WindowTop = WindowTop;
-                        reg.WindowLeft = WindowLeft;
-                        reg.WindowHeight = WindowHeight;
-                        reg.WindowWidth = WindowWidth;
+                        reg.WindowTop = this.WindowTop;
+                        reg.WindowLeft = this.WindowLeft;
+                        reg.WindowHeight = this.WindowHeight;
+                        reg.WindowWidth = this.WindowWidth;
                     }
 
-                    reg.StartMinimized = StartMinimized;
-                    reg.MinimizeToTray = MinimizeToTray;
-                    reg.WindowState = WindowState;
+                    reg.StartMinimized = this.StartMinimized;
+                    reg.MinimizeToTray = this.MinimizeToTray;
+                    reg.WindowState = this.WindowState;
 
                     using (var section = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
                     {
                         if (section != null)
                         {
-                            if (StartOnLogon)
+                            if (this.StartOnLogon)
                             {
-                                var exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
-                                var value = String.Format("\"{0}\" -logon", exeName);
+                                var exeName = Assembly.GetEntryAssembly().Location;
+                                var value = string.Format("\"{0}\" -logon", exeName);
                                 section.SetValue("HearthstoneTracker", value);
                             }
                             else if (section.GetValue("HearthstoneTracker") != null)

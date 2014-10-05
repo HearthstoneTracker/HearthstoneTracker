@@ -1,4 +1,13 @@
-﻿#if NETFX_CORE
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StringToBrushConverter.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The string to brush converter.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#if NETFX_CORE
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,6 +25,9 @@ namespace HearthCap.UI.Converters
     using System.Windows.Data;
     using System.Windows.Media;
 
+    /// <summary>
+    /// The string to brush converter.
+    /// </summary>
     public class StringToBrushConverter : IValueConverter
     {
 #if NETFX_CORE
@@ -31,11 +43,50 @@ namespace HearthCap.UI.Converters
         }
 
 #else
+
+        /// <summary>
+        /// The convert.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="targetType">
+        /// The target type.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="culture">
+        /// The culture.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return this.InternalConvert(value, targetType, parameter);
         }
 
+        /// <summary>
+        /// The convert back.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="targetType">
+        /// The target type.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <param name="culture">
+        /// The culture.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
+        /// <exception cref="NotImplementedException">
+        /// </exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -43,6 +94,21 @@ namespace HearthCap.UI.Converters
 
 #endif
 
+        /// <summary>
+        /// The internal convert.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="targetType">
+        /// The target type.
+        /// </param>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
         public object InternalConvert(object value, Type targetType, object parameter)
         {
             if (value == null)
@@ -52,7 +118,7 @@ namespace HearthCap.UI.Converters
 
             string colorName = value.ToString();
             SolidColorBrush scb = new SolidColorBrush();
-            switch (colorName as string)
+            switch (colorName)
             {
                 case "Magenta":
                     scb.Color = Colors.Magenta;

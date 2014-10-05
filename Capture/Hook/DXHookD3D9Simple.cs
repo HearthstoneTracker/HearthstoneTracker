@@ -1,4 +1,13 @@
-﻿namespace Capture.Hook
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DXHookD3D9Simple.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The dx hook d 3 d 9 simple.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Capture.Hook
 {
     using System;
     using System.Collections.Generic;
@@ -10,86 +19,197 @@
     using SharpDX;
     using SharpDX.Direct3D9;
 
+    /// <summary>
+    /// The dx hook d 3 d 9 simple.
+    /// </summary>
     internal class DXHookD3D9Simple : BaseDXHook
     {
         #region Constants
 
+        /// <summary>
+        /// The d 3 d 9 ex_ devic e_ metho d_ count.
+        /// </summary>
         private const int D3D9Ex_DEVICE_METHOD_COUNT = 15;
 
+        /// <summary>
+        /// The d 3 d 9_ devic e_ metho d_ count.
+        /// </summary>
         private const int D3D9_DEVICE_METHOD_COUNT = 119;
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// The copy event.
+        /// </summary>
         private readonly ManualResetEventSlim copyEvent = new ManualResetEventSlim(false);
 
+        /// <summary>
+        /// The copy ready signal.
+        /// </summary>
         private readonly ManualResetEventSlim copyReadySignal = new ManualResetEventSlim(false);
 
+        /// <summary>
+        /// The end scene lock.
+        /// </summary>
         private readonly object endSceneLock = new object();
 
+        /// <summary>
+        /// The render target lock.
+        /// </summary>
         private readonly object renderTargetLock = new object();
 
+        /// <summary>
+        /// The surface lock.
+        /// </summary>
         private readonly object surfaceLock = new object();
 
-        private HookData<Direct3D9DeviceEx_PresentExDelegate> Direct3DDeviceEx_PresentExHook = null;
+        /// <summary>
+        /// The direct 3 d device ex_ present ex hook.
+        /// </summary>
+        private HookData<Direct3D9DeviceEx_PresentExDelegate> Direct3DDeviceEx_PresentExHook;
 
-        private HookData<Direct3D9DeviceEx_ResetExDelegate> Direct3DDeviceEx_ResetExHook = null;
+        /// <summary>
+        /// The direct 3 d device ex_ reset ex hook.
+        /// </summary>
+        private HookData<Direct3D9DeviceEx_ResetExDelegate> Direct3DDeviceEx_ResetExHook;
 
-        private HookData<Direct3D9Device_EndSceneDelegate> Direct3DDevice_EndSceneHook = null;
+        /// <summary>
+        /// The direct 3 d device_ end scene hook.
+        /// </summary>
+        private HookData<Direct3D9Device_EndSceneDelegate> Direct3DDevice_EndSceneHook;
 
-        private HookData<Direct3D9Device_PresentDelegate> Direct3DDevice_PresentHook = null;
+        /// <summary>
+        /// The direct 3 d device_ present hook.
+        /// </summary>
+        private HookData<Direct3D9Device_PresentDelegate> Direct3DDevice_PresentHook;
 
-        private HookData<Direct3D9Device_ResetDelegate> Direct3DDevice_ResetHook = null;
+        /// <summary>
+        /// The direct 3 d device_ reset hook.
+        /// </summary>
+        private HookData<Direct3D9Device_ResetDelegate> Direct3DDevice_ResetHook;
 
+        /// <summary>
+        /// The copy thread.
+        /// </summary>
         private Thread copyThread;
 
+        /// <summary>
+        /// The current device.
+        /// </summary>
         private IntPtr currentDevice;
 
+        /// <summary>
+        /// The format.
+        /// </summary>
         private Format format;
 
+        /// <summary>
+        /// The height.
+        /// </summary>
         private int height;
 
+        /// <summary>
+        /// The hooks started.
+        /// </summary>
         private bool hooksStarted;
 
+        /// <summary>
+        /// The id 3 d device function addresses.
+        /// </summary>
         private List<IntPtr> id3dDeviceFunctionAddresses = new List<IntPtr>();
 
+        /// <summary>
+        /// The is using present.
+        /// </summary>
         private bool isUsingPresent;
 
+        /// <summary>
+        /// The kill thread.
+        /// </summary>
         private bool killThread;
 
+        /// <summary>
+        /// The pitch.
+        /// </summary>
         private int pitch;
 
+        /// <summary>
+        /// The query.
+        /// </summary>
         private Query query;
 
+        /// <summary>
+        /// The query issued.
+        /// </summary>
         private bool queryIssued;
 
+        /// <summary>
+        /// The render target.
+        /// </summary>
         private Surface renderTarget;
 
+        /// <summary>
+        /// The retrieve params.
+        /// </summary>
         private RetrieveImageDataParams? retrieveParams;
 
+        /// <summary>
+        /// The retrieve thread.
+        /// </summary>
         private Thread retrieveThread;
 
-        private bool supportsDirect3DEx = false;
+        /// <summary>
+        /// The supports direct 3 d ex.
+        /// </summary>
+        private bool supportsDirect3DEx;
 
+        /// <summary>
+        /// The surface.
+        /// </summary>
         private Surface surface;
 
+        /// <summary>
+        /// The surface data pointer.
+        /// </summary>
         private IntPtr surfaceDataPointer;
 
+        /// <summary>
+        /// The surface locked.
+        /// </summary>
         private bool surfaceLocked;
 
+        /// <summary>
+        /// The surfaces setup.
+        /// </summary>
         private bool surfacesSetup;
 
+        /// <summary>
+        /// The width.
+        /// </summary>
         private int width;
 
+        /// <summary>
+        /// The present hook recurse.
+        /// </summary>
         private int presentHookRecurse;
 
+        /// <summary>
+        /// The last request id.
+        /// </summary>
         private Guid? lastRequestId;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DXHookD3D9Simple"/> class.
+        /// </summary>
+        /// <param name="ssInterface">
+        /// The ss interface.
+        /// </param>
         public DXHookD3D9Simple(CaptureInterface ssInterface)
             : base(ssInterface)
         {
@@ -99,15 +219,48 @@
 
         #region Delegates
 
+        /// <summary>
+        /// The direct 3 d 9 device ex_ present ex delegate.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="pSourceRect">
+        /// The p source rect.
+        /// </param>
+        /// <param name="pDestRect">
+        /// The p dest rect.
+        /// </param>
+        /// <param name="hDestWindowOverride">
+        /// The h dest window override.
+        /// </param>
+        /// <param name="pDirtyRegion">
+        /// The p dirty region.
+        /// </param>
+        /// <param name="dwFlags">
+        /// The dw flags.
+        /// </param>
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         private unsafe delegate int Direct3D9DeviceEx_PresentExDelegate(
-            IntPtr devicePtr,
-            Rectangle* pSourceRect,
-            Rectangle* pDestRect,
-            IntPtr hDestWindowOverride,
-            IntPtr pDirtyRegion,
+            IntPtr devicePtr, 
+            Rectangle* pSourceRect, 
+            Rectangle* pDestRect, 
+            IntPtr hDestWindowOverride, 
+            IntPtr pDirtyRegion, 
             Present dwFlags);
 
+        /// <summary>
+        /// The direct 3 d 9 device ex_ reset ex delegate.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="presentParameters">
+        /// The present parameters.
+        /// </param>
+        /// <param name="displayModeEx">
+        /// The display mode ex.
+        /// </param>
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         private delegate int Direct3D9DeviceEx_ResetExDelegate(IntPtr devicePtr, ref PresentParameters presentParameters, DisplayModeEx displayModeEx);
 
@@ -119,12 +272,30 @@
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         private delegate int Direct3D9Device_EndSceneDelegate(IntPtr device);
 
+        /// <summary>
+        /// The direct 3 d 9 device_ present delegate.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="pSourceRect">
+        /// The p source rect.
+        /// </param>
+        /// <param name="pDestRect">
+        /// The p dest rect.
+        /// </param>
+        /// <param name="hDestWindowOverride">
+        /// The h dest window override.
+        /// </param>
+        /// <param name="pDirtyRegion">
+        /// The p dirty region.
+        /// </param>
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         private unsafe delegate int Direct3D9Device_PresentDelegate(
-            IntPtr devicePtr,
-            Rectangle* pSourceRect,
-            Rectangle* pDestRect,
-            IntPtr hDestWindowOverride,
+            IntPtr devicePtr, 
+            Rectangle* pSourceRect, 
+            Rectangle* pDestRect, 
+            IntPtr hDestWindowOverride, 
             IntPtr pDirtyRegion);
 
         /// <summary>
@@ -140,6 +311,9 @@
 
         #region Properties
 
+        /// <summary>
+        /// Gets the hook name.
+        /// </summary>
         protected override string HookName
         {
             get
@@ -152,11 +326,17 @@
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// The cleanup.
+        /// </summary>
         public override void Cleanup()
         {
             // ClearData();
         }
 
+        /// <summary>
+        /// The hook.
+        /// </summary>
         public override unsafe void Hook()
         {
             this.DebugMessage("Hook: Begin");
@@ -167,12 +347,12 @@
                 this.DebugMessage("Hook: Direct3D created");
                 using (
                     var device = new Device(
-                        d3d,
-                        0,
-                        DeviceType.NullReference,
-                        IntPtr.Zero,
-                        CreateFlags.HardwareVertexProcessing,
-                        new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 }))
+                        d3d, 
+                        0, 
+                        DeviceType.NullReference, 
+                        IntPtr.Zero, 
+                        CreateFlags.HardwareVertexProcessing, 
+                        new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 }))
                 {
                     this.id3dDeviceFunctionAddresses.AddRange(this.GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
                 }
@@ -185,13 +365,13 @@
                     this.DebugMessage("Hook: Try Direct3DEx...");
                     using (
                         var deviceEx = new DeviceEx(
-                            d3dEx,
-                            0,
-                            DeviceType.NullReference,
-                            IntPtr.Zero,
-                            CreateFlags.HardwareVertexProcessing,
-                            new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
-                            new DisplayModeEx() { Width = 800, Height = 600 }))
+                            d3dEx, 
+                            0, 
+                            DeviceType.NullReference, 
+                            IntPtr.Zero, 
+                            CreateFlags.HardwareVertexProcessing, 
+                            new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 }, 
+                            new DisplayModeEx { Width = 800, Height = 600 }))
                     {
                         this.id3dDeviceFunctionAddresses.AddRange(
                             this.GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
@@ -207,8 +387,8 @@
             this.DebugMessage("Setting up Direct3D hooks...");
             this.Direct3DDevice_EndSceneHook =
                 new HookData<Direct3D9Device_EndSceneDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene],
-                    new Direct3D9Device_EndSceneDelegate(this.EndSceneHook),
+                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene], 
+                    new Direct3D9Device_EndSceneDelegate(this.EndSceneHook), 
                     this);
 
             this.Direct3DDevice_EndSceneHook.ReHook();
@@ -216,14 +396,14 @@
 
             this.Direct3DDevice_PresentHook =
                 new HookData<Direct3D9Device_PresentDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present],
-                    new Direct3D9Device_PresentDelegate(this.PresentHook),
+                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present], 
+                    new Direct3D9Device_PresentDelegate(this.PresentHook), 
                     this);
 
             this.Direct3DDevice_ResetHook =
                 new HookData<Direct3D9Device_ResetDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset],
-                    new Direct3D9Device_ResetDelegate(this.ResetHook),
+                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset], 
+                    new Direct3D9Device_ResetDelegate(this.ResetHook), 
                     this);
 
             if (this.supportsDirect3DEx)
@@ -231,14 +411,14 @@
                 this.DebugMessage("Setting up Direct3DEx hooks...");
                 this.Direct3DDeviceEx_PresentExHook =
                     new HookData<Direct3D9DeviceEx_PresentExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx],
-                        new Direct3D9DeviceEx_PresentExDelegate(this.PresentExHook),
+                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx], 
+                        new Direct3D9DeviceEx_PresentExDelegate(this.PresentExHook), 
                         this);
 
                 this.Direct3DDeviceEx_ResetExHook =
                     new HookData<Direct3D9DeviceEx_ResetExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx],
-                        new Direct3D9DeviceEx_ResetExDelegate(this.ResetExHook),
+                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx], 
+                        new Direct3D9DeviceEx_ResetExDelegate(this.ResetExHook), 
                         this);
             }
 
@@ -264,6 +444,12 @@
 
         #region Methods
 
+        /// <summary>
+        /// The dispose.
+        /// </summary>
+        /// <param name="disposing">
+        /// The disposing.
+        /// </param>
         protected override void Dispose(bool disposing)
         {
             if (true)
@@ -276,9 +462,13 @@
                 {
                 }
             }
+
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// The clear data.
+        /// </summary>
         private void ClearData()
         {
             this.DebugMessage("ClearData called");
@@ -335,17 +525,20 @@
                 this.surface.Dispose();
                 this.surface = null;
             }
+
             if (this.renderTarget != null)
             {
                 this.renderTarget.Dispose();
                 this.renderTarget = null;
             }
+
             if (this.query != null)
             {
                 this.query.Dispose();
                 this.query = null;
                 this.queryIssued = false;
             }
+
             this.hooksStarted = false;
             this.surfacesSetup = false;
         }
@@ -353,7 +546,11 @@
         /// <summary>
         /// Implementation of capturing from the render target of the Direct3D9 Device (or DeviceEx)
         /// </summary>
-        /// <param name="device"></param>
+        /// <param name="device">
+        /// </param>
+        /// <param name="hook">
+        /// The hook.
+        /// </param>
         private void DoCaptureRenderTarget(Device device, string hook)
         {
             try
@@ -379,13 +576,13 @@
                 {
                     try
                     {
-                        this.lastRequestId = Request.RequestId;
+                        this.lastRequestId = this.Request.RequestId;
                         this.HandleCaptureRequest(device);
                     }
                     finally
                     {
-                        Request.Dispose();
-                        Request = null;
+                        this.Request.Dispose();
+                        this.Request = null;
                     }
                 }
             }
@@ -398,9 +595,15 @@
         /// <summary>
         /// Hook for IDirect3DDevice9.EndScene
         /// </summary>
-        /// <param name="devicePtr">Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as the first parameter.</param>
-        /// <returns>The HRESULT of the original EndScene</returns>
-        /// <remarks>Remember that this is called many times a second by the Direct3D application - be mindful of memory and performance!</remarks>
+        /// <param name="devicePtr">
+        /// Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as the first parameter.
+        /// </param>
+        /// <returns>
+        /// The HRESULT of the original EndScene
+        /// </returns>
+        /// <remarks>
+        /// Remember that this is called many times a second by the Direct3D application - be mindful of memory and performance!
+        /// </remarks>
         private int EndSceneHook(IntPtr devicePtr)
         {
             int hresult = Result.Ok.Code;
@@ -417,10 +620,17 @@
             {
                 this.DebugMessage(ex.ToString());
             }
+
             hresult = this.Direct3DDevice_EndSceneHook.Original(devicePtr);
             return hresult;
         }
 
+        /// <summary>
+        /// The handle capture request.
+        /// </summary>
+        /// <param name="device">
+        /// The device.
+        /// </param>
         private void HandleCaptureRequest(Device device)
         {
             try
@@ -478,6 +688,9 @@
             }
         }
 
+        /// <summary>
+        /// The handle capture request thread.
+        /// </summary>
         private void HandleCaptureRequestThread()
         {
             while (true)
@@ -485,7 +698,7 @@
                 this.copyEvent.Wait();
                 this.copyEvent.Reset();
 
-                if (killThread)
+                if (this.killThread)
                     break;
 
                 var requestId = this.lastRequestId;
@@ -506,16 +719,15 @@
                         var size = this.height * this.pitch;
                         var bdata = new byte[size];
                         Marshal.Copy(this.surfaceDataPointer, bdata, 0, size);
-                        // Marshal.FreeHGlobal(this.surfaceDataPointer);
 
-                        this.retrieveParams = new RetrieveImageDataParams()
-                        {
-                            RequestId = requestId.Value,
-                            Data = bdata,
-                            Width = this.width,
-                            Height = this.height,
-                            Pitch = this.pitch
-                        };
+                        // Marshal.FreeHGlobal(this.surfaceDataPointer);
+                        this.retrieveParams = new RetrieveImageDataParams {
+                                                      RequestId = requestId.Value, 
+                                                      Data = bdata, 
+                                                      Width = this.width, 
+                                                      Height = this.height, 
+                                                      Pitch = this.pitch
+                                                  };
 
                         this.copyReadySignal.Set();
                     }
@@ -530,6 +742,9 @@
             }
         }
 
+        /// <summary>
+        /// The retrieve image data thread.
+        /// </summary>
         private void RetrieveImageDataThread()
         {
             while (true)
@@ -537,13 +752,14 @@
                 this.copyReadySignal.Wait();
                 this.copyReadySignal.Reset();
 
-                if (killThread)
+                if (this.killThread)
                     break;
 
                 if (this.retrieveParams == null)
                 {
                     continue;
                 }
+
                 try
                 {
                     this.ProcessCapture(this.retrieveParams.Value);
@@ -555,12 +771,36 @@
             }
         }
 
+        /// <summary>
+        /// The present ex hook.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="pSourceRect">
+        /// The p source rect.
+        /// </param>
+        /// <param name="pDestRect">
+        /// The p dest rect.
+        /// </param>
+        /// <param name="hDestWindowOverride">
+        /// The h dest window override.
+        /// </param>
+        /// <param name="pDirtyRegion">
+        /// The p dirty region.
+        /// </param>
+        /// <param name="dwFlags">
+        /// The dw flags.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         private unsafe int PresentExHook(
-            IntPtr devicePtr,
-            Rectangle* pSourceRect,
-            Rectangle* pDestRect,
-            IntPtr hDestWindowOverride,
-            IntPtr pDirtyRegion,
+            IntPtr devicePtr, 
+            Rectangle* pSourceRect, 
+            Rectangle* pDestRect, 
+            IntPtr hDestWindowOverride, 
+            IntPtr pDirtyRegion, 
             Present dwFlags)
         {
             int hresult = Result.Ok.Code;
@@ -573,7 +813,7 @@
 
             try
             {
-                if (presentHookRecurse == 0)
+                if (this.presentHookRecurse == 0)
                 {
                     this.DoCaptureRenderTarget(device, "PresentEx");
                 }
@@ -586,16 +826,38 @@
             {
                 this.presentHookRecurse++;
                 hresult = this.Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
-                presentHookRecurse--;
+                this.presentHookRecurse--;
             }
+
             return hresult;
         }
 
+        /// <summary>
+        /// The present hook.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="pSourceRect">
+        /// The p source rect.
+        /// </param>
+        /// <param name="pDestRect">
+        /// The p dest rect.
+        /// </param>
+        /// <param name="hDestWindowOverride">
+        /// The h dest window override.
+        /// </param>
+        /// <param name="pDirtyRegion">
+        /// The p dirty region.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         private unsafe int PresentHook(
-            IntPtr devicePtr,
-            Rectangle* pSourceRect,
-            Rectangle* pDestRect,
-            IntPtr hDestWindowOverride,
+            IntPtr devicePtr, 
+            Rectangle* pSourceRect, 
+            Rectangle* pDestRect, 
+            IntPtr hDestWindowOverride, 
             IntPtr pDirtyRegion)
         {
             int hresult;
@@ -605,9 +867,10 @@
                 hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
                 return hresult;
             }
+
             try
             {
-                if (presentHookRecurse == 0)
+                if (this.presentHookRecurse == 0)
                 {
                     this.DoCaptureRenderTarget(device, "PresentHook");
                 }
@@ -622,6 +885,7 @@
                 hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
                 this.presentHookRecurse--;
             }
+
             return hresult;
         }
 
@@ -635,6 +899,21 @@
         // return true;
         // }
 
+        /// <summary>
+        /// The reset ex hook.
+        /// </summary>
+        /// <param name="devicePtr">
+        /// The device ptr.
+        /// </param>
+        /// <param name="presentparameters">
+        /// The presentparameters.
+        /// </param>
+        /// <param name="displayModeEx">
+        /// The display mode ex.
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         private int ResetExHook(IntPtr devicePtr, ref PresentParameters presentparameters, DisplayModeEx displayModeEx)
         {
             int hresult = Result.Ok.Code;
@@ -661,15 +940,20 @@
             {
                 this.DebugMessage(ex.ToString());
             }
+
             return hresult;
         }
 
         /// <summary>
         /// Reset the _renderTarget so that we are sure it will have the correct presentation parameters (required to support working across changes to windowed/fullscreen or resolution changes)
         /// </summary>
-        /// <param name="devicePtr"></param>
-        /// <param name="presentParameters"></param>
-        /// <returns></returns>
+        /// <param name="devicePtr">
+        /// </param>
+        /// <param name="presentParameters">
+        /// </param>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
         private int ResetHook(IntPtr devicePtr, ref PresentParameters presentParameters)
         {
             int hresult = Result.Ok.Code;
@@ -696,9 +980,16 @@
             {
                 this.DebugMessage(ex.ToString());
             }
+
             return hresult;
         }
 
+        /// <summary>
+        /// The setup data.
+        /// </summary>
+        /// <param name="device">
+        /// The device.
+        /// </param>
         private void SetupData(Device device)
         {
             this.DebugMessage("SetupData called");
@@ -716,18 +1007,24 @@
             this.hooksStarted = true;
         }
 
+        /// <summary>
+        /// The setup surfaces.
+        /// </summary>
+        /// <param name="device">
+        /// The device.
+        /// </param>
         private void SetupSurfaces(Device device)
         {
             try
             {
-                this.surface = Surface.CreateOffscreenPlain(device, this.width, this.height, (Format)this.format, Pool.SystemMemory);
+                this.surface = Surface.CreateOffscreenPlain(device, this.width, this.height, this.format, Pool.SystemMemory);
                 var lockedRect = this.surface.LockRectangle(LockFlags.ReadOnly);
                 this.pitch = lockedRect.Pitch;
                 this.surface.UnlockRectangle();
                 this.renderTarget = Surface.CreateRenderTarget(device, this.width, this.height, this.format, MultisampleType.None, 0, false);
                 this.query = new Query(device, QueryType.Event);
 
-                killThread = false;
+                this.killThread = false;
                 this.copyThread = new Thread(this.HandleCaptureRequestThread);
                 this.copyThread.Start();
 
@@ -739,7 +1036,7 @@
             catch (Exception ex)
             {
                 this.DebugMessage(ex.ToString());
-                ClearData();
+                this.ClearData();
             }
         }
 

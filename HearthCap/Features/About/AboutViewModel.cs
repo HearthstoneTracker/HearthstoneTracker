@@ -1,3 +1,11 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AboutViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The about view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 namespace HearthCap.Features.About
 {
     using System;
@@ -13,42 +21,69 @@ namespace HearthCap.Features.About
 
     using MahApps.Metro.Controls;
 
+    /// <summary>
+    /// The about view model.
+    /// </summary>
     [Export(typeof(IFlyout))]
     public class AboutViewModel : FlyoutViewModel
     {
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AboutViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
         [ImportingConstructor]
         public AboutViewModel(IEventAggregator events)
         {
             this.events = events;
             this.Name = "about";
             this.Header = "About";
-            SetPosition(Position.Left);
-            CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
+            this.SetPosition(Position.Left);
+            this.CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
             this.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == "IsOpen" && IsOpen)
+                if (args.PropertyName == "IsOpen" && this.IsOpen)
                 {
-                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
+                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", this.Name, 1);
                 }
             };
         }
 
+        /// <summary>
+        /// Gets or sets the about text.
+        /// </summary>
         public string AboutText { get; set; }
 
+        /// <summary>
+        /// Gets or sets the license text.
+        /// </summary>
         public string LicenseText { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current version.
+        /// </summary>
         public Version CurrentVersion { get; set; }
 
+        /// <summary>
+        /// The visit website.
+        /// </summary>
         public void VisitWebsite()
         {
-            events.PublishOnBackgroundThread(new VisitWebsiteCommand());
+            this.events.PublishOnBackgroundThread(new VisitWebsiteCommand());
         }
 
+        /// <summary>
+        /// The donate.
+        /// </summary>
         public void Donate()
         {
-            events.PublishOnBackgroundThread(new VisitWebsiteCommand(Resources.DonationLink));
+            this.events.PublishOnBackgroundThread(new VisitWebsiteCommand(Resources.DonationLink));
         }
     }
 }

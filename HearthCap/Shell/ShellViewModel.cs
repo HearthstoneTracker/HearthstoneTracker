@@ -1,12 +1,23 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ShellViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The shell view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Shell
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.Composition;
     using System.Diagnostics;
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
     using System.Windows;
 
@@ -38,68 +49,173 @@ namespace HearthCap.Shell
 
     using LogManager = NLog.LogManager;
 
+    /// <summary>
+    /// The shell view model.
+    /// </summary>
     [Export(typeof(IShell))]
     public class ShellViewModel :
-        Conductor<ITab>.Collection.OneActive,
-        IShell,
-        IHandle<ToggleFlyoutCommand>,
-        IHandle<VisitWebsiteCommand>,
+        Conductor<ITab>.Collection.OneActive, 
+        IShell, 
+        IHandle<ToggleFlyoutCommand>, 
+        IHandle<VisitWebsiteCommand>, 
         IHandle<RestoreWindowCommand>
     {
+        /// <summary>
+        /// The log.
+        /// </summary>
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// The dialog manager.
+        /// </summary>
         private readonly IDialogManager dialogManager;
 
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The db context.
+        /// </summary>
         private readonly Func<HearthStatsDbContext> dbContext;
 
+        /// <summary>
+        /// The service locator.
+        /// </summary>
         private readonly IServiceLocator serviceLocator;
 
+        /// <summary>
+        /// The tabs.
+        /// </summary>
         private readonly IEnumerable<ITab> tabs;
 
+        /// <summary>
+        /// The update view model.
+        /// </summary>
         private readonly UpdateViewModel updateViewModel;
 
+        /// <summary>
+        /// The command bar items.
+        /// </summary>
         private readonly BindableCollection<ICommandBarItem> commandBarItems;
 
+        /// <summary>
+        /// The window commands.
+        /// </summary>
         private readonly BindableCollection<IWindowCommand> windowCommands;
 
+        /// <summary>
+        /// The flyouts.
+        /// </summary>
         private readonly BindableCollection<IFlyout> flyouts;
 
-        private bool viewReady = false;
+        /// <summary>
+        /// The view ready.
+        /// </summary>
+        private bool viewReady;
 
+        /// <summary>
+        /// The updater.
+        /// </summary>
         private UpdateViewModel updater;
 
+        /// <summary>
+        /// The update available.
+        /// </summary>
         private bool updateAvailable;
 
+        /// <summary>
+        /// The window state.
+        /// </summary>
         private WindowState windowState;
 
+        /// <summary>
+        /// The tray icon.
+        /// </summary>
         private TrayIconViewModel trayIcon;
 
+        /// <summary>
+        /// The settings manager.
+        /// </summary>
         private readonly SettingsManager settingsManager;
 
+        /// <summary>
+        /// The support view model.
+        /// </summary>
         private readonly SupportViewModel supportViewModel;
 
+        /// <summary>
+        /// The user preferences.
+        /// </summary>
         private readonly UserPreferences.UserPreferences userPreferences;
 
+        /// <summary>
+        /// The was visible.
+        /// </summary>
         private bool wasVisible;
 
+        /// <summary>
+        /// The servers.
+        /// </summary>
         private readonly BindableServerCollection servers = BindableServerCollection.Instance;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellViewModel"/> class.
+        /// </summary>
+        /// <param name="serviceLocator">
+        /// The service locator.
+        /// </param>
+        /// <param name="dialogManager">
+        /// The dialog manager.
+        /// </param>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="dbContext">
+        /// The db context.
+        /// </param>
+        /// <param name="flyouts">
+        /// The flyouts.
+        /// </param>
+        /// <param name="tabs">
+        /// The tabs.
+        /// </param>
+        /// <param name="windowCommands">
+        /// The window commands.
+        /// </param>
+        /// <param name="commandBarItems">
+        /// The command bar items.
+        /// </param>
+        /// <param name="updateViewModel">
+        /// The update view model.
+        /// </param>
+        /// <param name="userPreferences">
+        /// The user preferences.
+        /// </param>
+        /// <param name="trayIcon">
+        /// The tray icon.
+        /// </param>
+        /// <param name="settingsManager">
+        /// The settings manager.
+        /// </param>
+        /// <param name="supportViewModel">
+        /// The support view model.
+        /// </param>
         [ImportingConstructor]
         public ShellViewModel(
-            IServiceLocator serviceLocator,
-            IDialogManager dialogManager,
-            IEventAggregator events,
-            Func<HearthStatsDbContext> dbContext,
-            [ImportMany]IEnumerable<IFlyout> flyouts,
-            [ImportMany]IEnumerable<ITab> tabs,
-            [ImportMany]IEnumerable<IWindowCommand> windowCommands,
-            [ImportMany]IEnumerable<ICommandBarItem> commandBarItems,
-            UpdateViewModel updateViewModel,
-            UserPreferences.UserPreferences userPreferences,
-            TrayIconViewModel trayIcon,
-            SettingsManager settingsManager,
+            IServiceLocator serviceLocator, 
+            IDialogManager dialogManager, 
+            IEventAggregator events, 
+            Func<HearthStatsDbContext> dbContext, 
+            [ImportMany]IEnumerable<IFlyout> flyouts, 
+            [ImportMany]IEnumerable<ITab> tabs, 
+            [ImportMany]IEnumerable<IWindowCommand> windowCommands, 
+            [ImportMany]IEnumerable<ICommandBarItem> commandBarItems, 
+            UpdateViewModel updateViewModel, 
+            UserPreferences.UserPreferences userPreferences, 
+            TrayIconViewModel trayIcon, 
+            SettingsManager settingsManager, 
             SupportViewModel supportViewModel)
         {
             this.dialogManager = dialogManager;
@@ -122,61 +238,90 @@ namespace HearthCap.Shell
                 {
                     if (args.PropertyName == "WindowState")
                     {
-                        WindowState = userPreferences.WindowState;
+                        this.WindowState = userPreferences.WindowState;
                     }
                 };
-            this.WindowState = UserPreferences.WindowState;
-            this.PropertyChanged += ShellViewModel_PropertyChanged;
+            this.WindowState = this.UserPreferences.WindowState;
+            this.PropertyChanged += this.ShellViewModel_PropertyChanged;
         }
 
+        /// <summary>
+        /// The change server.
+        /// </summary>
+        /// <param name="server">
+        /// The server.
+        /// </param>
         public void ChangeServer(ServerItemModel server)
         {
-            servers.Default = server;
+            this.servers.Default = server;
             server.IsChecked = true;
         }
 
+        /// <summary>
+        /// Gets or sets the notifications.
+        /// </summary>
         [Import]
         public NotificationsViewModel Notifications { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tray icon.
+        /// </summary>
         [Import]
         public TrayIconViewModel TrayIcon { get; set; }
 
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
         [Import]
         public StatusViewModel Status { get; set; }
 
+        /// <summary>
+        /// Gets the servers.
+        /// </summary>
         public BindableCollection<ServerItemModel> Servers
         {
             get
             {
-                return servers;
+                return this.servers;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the updater.
+        /// </summary>
         public UpdateViewModel Updater
         {
             get
             {
                 return this.updater;
             }
+
             set
             {
                 if (Equals(value, this.updater))
                 {
                     return;
                 }
+
                 this.updater = value;
                 this.NotifyOfPropertyChange(() => this.Updater);
             }
         }
 
+        /// <summary>
+        /// Gets the dialogs.
+        /// </summary>
         public IDialogManager Dialogs
         {
             get
             {
-                return dialogManager;
+                return this.dialogManager;
             }
         }
 
+        /// <summary>
+        /// Gets the flyouts.
+        /// </summary>
         public IObservableCollection<IFlyout> Flyouts
         {
             get
@@ -185,6 +330,9 @@ namespace HearthCap.Shell
             }
         }
 
+        /// <summary>
+        /// Gets the window commands.
+        /// </summary>
         public IObservableCollection<IWindowCommand> WindowCommands
         {
             get
@@ -193,6 +341,9 @@ namespace HearthCap.Shell
             }
         }
 
+        /// <summary>
+        /// Gets the command bar items.
+        /// </summary>
         public BindableCollection<ICommandBarItem> CommandBarItems
         {
             get
@@ -201,32 +352,69 @@ namespace HearthCap.Shell
             }
         }
 
+        /// <summary>
+        /// The exit to desktop.
+        /// </summary>
         public void ExitToDesktop()
         {
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// The close.
+        /// </summary>
         public void Close()
         {
             this.TryClose();
         }
 
         #region Flyouts
+
+        /// <summary>
+        /// The toggle flyout.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
         public void ToggleFlyout(string name)
         {
             this.ApplyToggleFlyout(name);
         }
 
+        /// <summary>
+        /// The toggle flyout.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="isModal">
+        /// The is modal.
+        /// </param>
         public void ToggleFlyout(string name, bool isModal)
         {
             this.ApplyToggleFlyout(name, null, isModal);
         }
 
+        /// <summary>
+        /// The support request.
+        /// </summary>
         public void SupportRequest()
         {
-            dialogManager.ShowDialog(supportViewModel);
+            this.dialogManager.ShowDialog(this.supportViewModel);
         }
 
+        /// <summary>
+        /// The apply toggle flyout.
+        /// </summary>
+        /// <param name="name">
+        /// The name.
+        /// </param>
+        /// <param name="isModal">
+        /// The is modal.
+        /// </param>
+        /// <param name="show">
+        /// The show.
+        /// </param>
         protected void ApplyToggleFlyout(string name, bool? isModal = null, bool? show = null)
         {
             Contract.Requires(name != null, "name cannot be null");
@@ -250,51 +438,72 @@ namespace HearthCap.Shell
 
         #endregion
 
+        /// <summary>
+        /// The visit website.
+        /// </summary>
+        /// <param name="target">
+        /// The target.
+        /// </param>
         public void VisitWebsite(string target)
         {
             try
             {
-                if (String.IsNullOrWhiteSpace(target))
+                if (string.IsNullOrWhiteSpace(target))
                 {
                     target = VisitWebsiteCommand.DefaultWebsite;
                 }
 
-                System.Diagnostics.Process.Start(target);
+                Process.Start(target);
             }
-            catch (System.ComponentModel.Win32Exception noBrowser)
+            catch (Win32Exception noBrowser)
             {
                 if (noBrowser.ErrorCode == -2147467259)
                 {
                     this.dialogManager.ShowMessageBox(noBrowser.Message, "No browser detected");
                 }
             }
-            catch (System.Exception other)
+            catch (Exception other)
             {
                 this.dialogManager.ShowMessageBox(other.Message, "Unknown error");
             }
         }
 
+        /// <summary>
+        /// The check for updates.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task CheckForUpdates()
         {
-            OpenUpdater();
-            await Updater.CheckForUpdates();
+            this.OpenUpdater();
+            await this.Updater.CheckForUpdates();
         }
 
+        /// <summary>
+        /// The open updater.
+        /// </summary>
         public void OpenUpdater()
         {
-            Updater = updateViewModel;
-            ((IActivate)Updater).Activate();
-            updateViewModel.Deactivated += (sender, args) =>
+            this.Updater = this.updateViewModel;
+            ((IActivate)this.Updater).Activate();
+            this.updateViewModel.Deactivated += (sender, args) =>
             {
-                Updater = null;
+                this.Updater = null;
             };
         }
 
+        /// <summary>
+        /// The visit website.
+        /// </summary>
         public void VisitWebsite()
         {
-            VisitWebsite(VisitWebsiteCommand.DefaultWebsite);
+            this.VisitWebsite(VisitWebsiteCommand.DefaultWebsite);
         }
 
+        /// <summary>
+        /// The open data folder.
+        /// </summary>
         public void OpenDataFolder()
         {
             var dir = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
@@ -302,15 +511,17 @@ namespace HearthCap.Shell
             Process.Start("explorer.exe", dir);
         }
 
+        /// <summary>
+        /// The change data folder.
+        /// </summary>
         public void ChangeDataFolder()
         {
             var current = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
 
-            var dialog = new CommonOpenFileDialog()
-                             {
-                                 InitialDirectory = current,
-                                 DefaultDirectory = current,
-                                 IsFolderPicker = true,
+            var dialog = new CommonOpenFileDialog {
+                                 InitialDirectory = current, 
+                                 DefaultDirectory = current, 
+                                 IsFolderPicker = true, 
                                  EnsurePathExists = true
                              };
             var result = dialog.ShowDialog();
@@ -333,16 +544,19 @@ namespace HearthCap.Shell
                 }
 
                 MessageBox.Show(
-                    "Application will now restart with new data folder location.",
-                    "Restarting",
-                    MessageBoxButton.OK,
+                    "Application will now restart with new data folder location.", 
+                    "Restarting", 
+                    MessageBoxButton.OK, 
                     MessageBoxImage.Information);
 
-                Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location, "-restarting");
+                Process.Start(Assembly.GetEntryAssembly().Location, "-restarting");
                 Application.Current.Shutdown();
             }
         }
 
+        /// <summary>
+        /// The show.
+        /// </summary>
         public void Show()
         {
             Execute.OnUIThread(
@@ -356,6 +570,7 @@ namespace HearthCap.Shell
                         {
                             window.WindowState = WindowState.Normal;
                         }
+
                         window.Activate();
                         window.Topmost = true;  // important
                         window.Topmost = false; // important
@@ -364,6 +579,9 @@ namespace HearthCap.Shell
                 });
         }
 
+        /// <summary>
+        /// The hide.
+        /// </summary>
         public void Hide()
         {
             Execute.OnUIThread(
@@ -380,26 +598,36 @@ namespace HearthCap.Shell
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(VisitWebsiteCommand message)
         {
             var target = message.Website;
-            VisitWebsite(target);
+            this.VisitWebsite(target);
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ToggleFlyoutCommand message)
         {
             this.ApplyToggleFlyout(message.Name, message.IsModal, message.Show);
         }
 
+        /// <summary>
+        /// The on activate.
+        /// </summary>
         protected override void OnActivate()
         {
         }
 
+        /// <summary>
+        /// The on initialize.
+        /// </summary>
         protected override async void OnInitialize()
         {
         }
@@ -407,59 +635,67 @@ namespace HearthCap.Shell
         /// <summary>
         /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view">
+        /// </param>
         protected override void OnViewReady(object view)
         {
-            if (servers.Default == null)
+            if (this.servers.Default == null)
             {
-                var dialog = new ChooseServerDialogViewModel(servers);
+                var dialog = new ChooseServerDialogViewModel(this.servers);
                 dialog.Deactivated += (sender, args) =>
                     {
                         if (args.WasClosed)
                         {
-                            ChangeServer(dialog.SelectedServer);
-                            SetMissingServer(dialog.SelectedServer);
+                            this.ChangeServer(dialog.SelectedServer);
+                            this.SetMissingServer(dialog.SelectedServer);
                         }
                     };
-                dialogManager.ShowDialog(dialog);
+                this.dialogManager.ShowDialog(dialog);
             }
         }
 
+        /// <summary>
+        /// The set missing server.
+        /// </summary>
+        /// <param name="selectedServer">
+        /// The selected server.
+        /// </param>
         private void SetMissingServer(ServerItemModel selectedServer)
         {
             if (selectedServer == null) return;
             var serverName = selectedServer.Name;
 
-            using (var context = dbContext())
+            using (var context = this.dbContext())
             {
                 context.Database.ExecuteSqlCommand("UPDATE GameResults SET Server = @p0 WHERE Server IS NULL OR Server = ''", serverName);
                 context.Database.ExecuteSqlCommand("UPDATE ArenaSessions SET Server = @p0 WHERE Server IS NULL OR Server = ''", serverName);
             }
 
-            events.PublishOnBackgroundThread(new RefreshAll());
+            this.events.PublishOnBackgroundThread(new RefreshAll());
         }
 
         /// <summary>
         /// Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view">
+        /// </param>
         protected override void OnViewLoaded(object view)
         {
-            if (!viewReady)
+            if (!this.viewReady)
             {
-                viewReady = true;
+                this.viewReady = true;
                 Task.Run(
                     async () =>
                     {
-                        await updateViewModel.CheckForUpdates();
-                        UpdateAvailable = updateViewModel.UpdateAvailable;
+                        await this.updateViewModel.CheckForUpdates();
+                        this.UpdateAvailable = this.updateViewModel.UpdateAvailable;
                     });
 
-                ((IActivate)Notifications).Activate();
-                ((IActivate)Status).Activate();
+                ((IActivate)this.Notifications).Activate();
+                ((IActivate)this.Status).Activate();
 
                 // order tabs
-                var ordered = tabs.OrderBy(x => x.Order);
+                var ordered = this.tabs.OrderBy(x => x.Order);
                 foreach (var tab in ordered)
                 {
                     this.Items.Add(tab);
@@ -475,66 +711,81 @@ namespace HearthCap.Shell
                 foreach (var flyout in this.Flyouts)
                 {
                     flyout.PropertyChanged += (sender, args) =>
-                    {
-                        if (args.PropertyName == "IsOpen")
                         {
-                            var f = (IFlyout)sender;
-                            if (f.IsOpen)
+                            if (args.PropertyName == "IsOpen")
                             {
-                                f.Activate();
+                                var f = (IFlyout)sender;
+                                if (f.IsOpen)
+                                {
+                                    f.Activate();
+                                }
+                                else
+                                {
+                                    f.Deactivate(false);
+                                }
                             }
-                            else
-                            {
-                                f.Deactivate(false);
-                            }
-                        }
-                    };
-                    //var activate = flyout as IActivate;
-                    //if (activate != null)
-                    //{
-                    //    activate.Activate();
-                    //}
+                        };
+
+                    // var activate = flyout as IActivate;
+                    // if (activate != null)
+                    // {
+                    // activate.Activate();
+                    // }
                 }
+
                 this.events.PublishOnBackgroundThread(new ShellReady());
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether update available.
+        /// </summary>
         public bool UpdateAvailable
         {
             get
             {
                 return this.updateAvailable;
             }
+
             set
             {
                 if (value.Equals(this.updateAvailable))
                 {
                     return;
                 }
+
                 this.updateAvailable = value;
                 this.NotifyOfPropertyChange(() => this.UpdateAvailable);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the window state.
+        /// </summary>
         public WindowState WindowState
         {
             get
             {
                 return this.windowState;
             }
+
             set
             {
                 if (value == this.windowState)
                 {
                     return;
                 }
+
                 this.windowState = value;
-                UserPreferences.WindowState = value;
+                this.UserPreferences.WindowState = value;
                 this.NotifyOfPropertyChange(() => this.WindowState);
-                events.PublishOnBackgroundThread(new WindowStateChanged(value));
+                this.events.PublishOnBackgroundThread(new WindowStateChanged(value));
             }
         }
 
+        /// <summary>
+        /// Gets the user preferences.
+        /// </summary>
         public UserPreferences.UserPreferences UserPreferences
         {
             get
@@ -543,21 +794,31 @@ namespace HearthCap.Shell
             }
         }
 
-        void ShellViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /// <summary>
+        /// The shell view model_ property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        void ShellViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (PauseNotify.IsPaused(this)) return;
 
             switch (e.PropertyName)
             {
                 case "WindowState":
-                    if (WindowState == WindowState.Minimized)
+                    if (this.WindowState == WindowState.Minimized)
                     {
-                        if (!userPreferences.MinimizeToTray) return;
-                        wasVisible = trayIcon.IsVisible;
-                        Hide();
-                        trayIcon.IsVisible = true;
-                        trayIcon.ShowBalloonTip("HearthstoneTracker is minimized", "Click the icon to restore it.");
+                        if (!this.userPreferences.MinimizeToTray) return;
+                        this.wasVisible = this.trayIcon.IsVisible;
+                        this.Hide();
+                        this.trayIcon.IsVisible = true;
+                        this.trayIcon.ShowBalloonTip("HearthstoneTracker is minimized", "Click the icon to restore it.");
                     }
+
                     break;
             }
         }
@@ -565,10 +826,12 @@ namespace HearthCap.Shell
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(RestoreWindowCommand message)
         {
-            Show();
+            this.Show();
         }
     }
 }

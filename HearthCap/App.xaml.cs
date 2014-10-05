@@ -1,23 +1,34 @@
-﻿namespace HearthCap
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interaction logic for App.xaml
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap
 {
     using System;
-    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Windows;
-    using System.Windows.Markup;
-
-    using Hardcodet.Wpf.TaskbarNotification;
 
     using HearthCap.UI.Controls;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
-        private static Mutex mutex = null;
+        /// <summary>
+        /// The mutex.
+        /// </summary>
+        private static Mutex mutex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="App"/> class.
+        /// </summary>
         public App()
         {
             var args = Environment.GetCommandLineArgs();
@@ -46,15 +57,12 @@
             }
         }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-        }
-
         /// <summary>
         /// Raises the <see cref="E:System.Windows.Application.Exit"/> event.
         /// </summary>
-        /// <param name="e">An <see cref="T:System.Windows.ExitEventArgs"/> that contains the event data.</param>
+        /// <param name="e">
+        /// An <see cref="T:System.Windows.ExitEventArgs"/> that contains the event data.
+        /// </param>
         protected override void OnExit(ExitEventArgs e)
         {
             if (mutex != null)
@@ -62,6 +70,7 @@
                 mutex.ReleaseMutex();
                 mutex.Dispose();
             }
+
             base.OnExit(e);
         }
     }

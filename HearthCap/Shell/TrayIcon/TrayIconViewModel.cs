@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Shell.TrayIcon
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TrayIconViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The tray icon view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Shell.TrayIcon
 {
     using System;
     using System.ComponentModel;
@@ -17,81 +26,135 @@
 
     using MahApps.Metro.Controls;
 
+    /// <summary>
+    /// The tray icon view model.
+    /// </summary>
     [Export(typeof(TrayIconViewModel))]
-    public class TrayIconViewModel : Screen,
-        IDisposable,
+    public class TrayIconViewModel : Screen, 
+        IDisposable, 
         IHandle<TrayNotification>
     {
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The balloon settings.
+        /// </summary>
         private readonly BalloonSettings balloonSettings;
 
+        /// <summary>
+        /// The taskbar icon.
+        /// </summary>
         private TaskbarIcon taskbarIcon;
 
+        /// <summary>
+        /// The is visible.
+        /// </summary>
         private bool isVisible;
 
+        /// <summary>
+        /// The was visible.
+        /// </summary>
         private bool wasVisible;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrayIconViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="balloonSettings">
+        /// The balloon settings.
+        /// </param>
         [ImportingConstructor]
         public TrayIconViewModel(IEventAggregator events, BalloonSettings balloonSettings)
         {
             this.events = events;
             this.balloonSettings = balloonSettings;
-            LeftClickCommand = new PublishCommand<TrayIconLeftClick>(events);
-            DoubleClickCommand = new PublishCommand<TrayIconDoubleClick>(events);
+            this.LeftClickCommand = new PublishCommand<TrayIconLeftClick>(events);
+            this.DoubleClickCommand = new PublishCommand<TrayIconDoubleClick>(events);
             events.Subscribe(this);
-            PropertyChanged += OnPropertyChanged;
+            this.PropertyChanged += this.OnPropertyChanged;
         }
 
+        /// <summary>
+        /// The on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible" && TaskbarIcon != null)
+            if (e.PropertyName == "IsVisible" && this.TaskbarIcon != null)
             {
-                TaskbarIcon.Visibility = IsVisible ? Visibility.Visible : Visibility.Collapsed;
+                this.TaskbarIcon.Visibility = this.IsVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the left click command.
+        /// </summary>
         public ICommand LeftClickCommand { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets the double click command.
+        /// </summary>
         public ICommand DoubleClickCommand { get; protected set; }
 
+        /// <summary>
+        /// Gets the taskbar icon.
+        /// </summary>
         public TaskbarIcon TaskbarIcon
         {
             get
             {
-                if (taskbarIcon == null)
+                if (this.taskbarIcon == null)
                 {
-                    var view = GetView();
+                    var view = this.GetView();
                     if (view is TaskbarIcon)
                     {
-                        taskbarIcon = (TaskbarIcon)view;
+                        this.taskbarIcon = (TaskbarIcon)view;
                     }
                     else
                     {
-                        taskbarIcon = ((UIElement)GetView()).FindChildren<TaskbarIcon>().FirstOrDefault();
+                        this.taskbarIcon = ((UIElement)this.GetView()).FindChildren<TaskbarIcon>().FirstOrDefault();
                     }
                 }
-                return taskbarIcon;
+
+                return this.taskbarIcon;
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether is visible.
+        /// </summary>
         public bool IsVisible
         {
             get
             {
                 return this.isVisible;
             }
+
             set
             {
                 if (value.Equals(this.isVisible))
                 {
                     return;
                 }
+
                 this.isVisible = value;
                 this.NotifyOfPropertyChange(() => this.IsVisible);
             }
         }
 
+        /// <summary>
+        /// Gets the balloon settings.
+        /// </summary>
         public BalloonSettings BalloonSettings
         {
             get
@@ -100,19 +163,28 @@
             }
         }
 
+        /// <summary>
+        /// The quit.
+        /// </summary>
         public void Quit()
         {
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// The visit website.
+        /// </summary>
         public void VisitWebsite()
         {
-            events.PublishOnBackgroundThread(new VisitWebsiteCommand());
+            this.events.PublishOnBackgroundThread(new VisitWebsiteCommand());
         }
 
+        /// <summary>
+        /// The restore window.
+        /// </summary>
         public void RestoreWindow()
         {
-            events.PublishOnBackgroundThread(new RestoreWindowCommand());
+            this.events.PublishOnBackgroundThread(new RestoreWindowCommand());
         }
 
         /// <summary>
@@ -120,67 +192,93 @@
         /// </summary>
         protected override void OnInitialize()
         {
-            IsVisible = true;
+            this.IsVisible = true;
         }
 
         /// <summary>
         /// Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view">
+        /// </param>
         protected override void OnViewLoaded(object view)
         {
-            if (TaskbarIcon != null)
+            if (this.TaskbarIcon != null)
             {
-                TaskbarIcon.Visibility = IsVisible ? Visibility.Visible : Visibility.Collapsed;
+                this.TaskbarIcon.Visibility = this.IsVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
+        /// <summary>
+        /// The show balloon tip.
+        /// </summary>
+        /// <param name="title">
+        /// The title.
+        /// </param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
+        /// <param name="viewModel">
+        /// The view model.
+        /// </param>
+        /// <param name="timeout">
+        /// The timeout.
+        /// </param>
         public void ShowBalloonTip(string title, string message, object viewModel = null, int timeout = 6000)
         {
-            var balloonTipViewModel = new DefaultBalloonTipViewModel()
-                                          {
-                                              Title = title,
-                                              Message = message,
+            var balloonTipViewModel = new DefaultBalloonTipViewModel {
+                                              Title = title, 
+                                              Message = message, 
                                               ViewModel = viewModel
                                           };
 
             this.wasVisible = this.IsVisible;
-            if (!wasVisible)
+            if (!this.wasVisible)
             {
-                balloonTipViewModel.BalloonClosing += BalloonTipViewModelOnBalloonClosing;
-                IsVisible = true;
+                balloonTipViewModel.BalloonClosing += this.BalloonTipViewModelOnBalloonClosing;
+                this.IsVisible = true;
             }
 
             Execute.OnUIThread(
                 () =>
                     {
-                        var balloonTip = new DefaultBalloonTip() { };
+                        var balloonTip = new DefaultBalloonTip { };
                         ViewModelBinder.Bind(balloonTipViewModel, balloonTip, null);
-                        TaskbarIcon.ShowCustomBalloon(balloonTip, PopupAnimation.Slide, timeout);
+                        this.TaskbarIcon.ShowCustomBalloon(balloonTip, PopupAnimation.Slide, timeout);
                     });
         }
 
+        /// <summary>
+        /// The balloon tip view model on balloon closing.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void BalloonTipViewModelOnBalloonClosing(object sender, EventArgs eventArgs)
         {
-            this.IsVisible = wasVisible;
-            ((DefaultBalloonTipViewModel)sender).BalloonClosing -= BalloonTipViewModelOnBalloonClosing;
+            this.IsVisible = this.wasVisible;
+            ((DefaultBalloonTipViewModel)sender).BalloonClosing -= this.BalloonTipViewModelOnBalloonClosing;
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(TrayNotification message)
         {
-            if (!String.IsNullOrEmpty(message.BalloonType))
+            if (!string.IsNullOrEmpty(message.BalloonType))
             {
-                if (!balloonSettings.IsEnabled(message.BalloonType))
+                if (!this.balloonSettings.IsEnabled(message.BalloonType))
                 {
                     return;
                 }
             }
 
-            ShowBalloonTip(message.Title, message.Message, message.ViewModel, message.Timeout);
+            this.ShowBalloonTip(message.Title, message.Message, message.ViewModel, message.Timeout);
         }
 
         /// <summary>
@@ -188,7 +286,7 @@
         /// </summary>
         public void Dispose()
         {
-            TaskbarIcon.Dispose();
+            this.TaskbarIcon.Dispose();
         }
     }
 }

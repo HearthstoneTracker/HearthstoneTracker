@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GenericWebApiProviderSettingsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The generic web api provider settings view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.WebApi.Generic
 {
     using System;
@@ -5,32 +14,68 @@ namespace HearthCap.Features.WebApi.Generic
 
     using Caliburn.Micro.Recipes.Filters;
 
+    /// <summary>
+    /// The generic web api provider settings view model.
+    /// </summary>
     public class GenericWebApiProviderSettingsViewModel : WebApiProviderSettingsViewModel
     {
+        /// <summary>
+        /// The provider descriptor.
+        /// </summary>
         private readonly WebApiProviderDescriptor providerDescriptor;
 
+        /// <summary>
+        /// The url.
+        /// </summary>
         private string url;
 
+        /// <summary>
+        /// The api key.
+        /// </summary>
         private string apiKey;
 
+        /// <summary>
+        /// The secret key.
+        /// </summary>
         private string secretKey;
 
+        /// <summary>
+        /// The values changed.
+        /// </summary>
         private bool valuesChanged;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericWebApiProviderSettingsViewModel"/> class.
+        /// </summary>
+        /// <param name="providerDescriptor">
+        /// The provider descriptor.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
         public GenericWebApiProviderSettingsViewModel(WebApiProviderDescriptor providerDescriptor)
         {
             if (providerDescriptor == null)
             {
                 throw new ArgumentNullException("providerDescriptor");
             }
-            Url = String.Empty;
-            ApiKey = String.Empty;
-            SecretKey = String.Empty;
+
+            this.Url = string.Empty;
+            this.ApiKey = string.Empty;
+            this.SecretKey = string.Empty;
 
             this.providerDescriptor = providerDescriptor;
-            this.PropertyChanged += OnPropertyChanged;
+            this.PropertyChanged += this.OnPropertyChanged;
         }
 
+        /// <summary>
+        /// The on property changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -44,63 +89,82 @@ namespace HearthCap.Features.WebApi.Generic
             }
         }
 
+        /// <summary>
+        /// Gets or sets the url.
+        /// </summary>
         public virtual string Url
         {
             get
             {
                 return this.url;
             }
+
             set
             {
                 if (value == this.url)
                 {
                     return;
                 }
+
                 this.url = value;
                 this.NotifyOfPropertyChange(() => this.Url);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the api key.
+        /// </summary>
         public virtual string ApiKey
         {
             get
             {
                 return this.apiKey;
             }
+
             set
             {
                 if (value == this.apiKey)
                 {
                     return;
                 }
+
                 this.apiKey = value;
                 this.NotifyOfPropertyChange(() => this.ApiKey);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the secret key.
+        /// </summary>
         public virtual string SecretKey
         {
             get
             {
                 return this.secretKey;
             }
+
             set
             {
                 if (value == this.secretKey)
                 {
                     return;
                 }
+
                 this.secretKey = value;
                 this.NotifyOfPropertyChange(() => this.SecretKey);
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether values changed.
+        /// </summary>
         public bool ValuesChanged
         {
             get
             {
                 return this.valuesChanged;
             }
+
             set
             {
                 if (value.Equals(this.valuesChanged)) return;
@@ -116,6 +180,9 @@ namespace HearthCap.Features.WebApi.Generic
         {
         }
 
+        /// <summary>
+        /// The save.
+        /// </summary>
         [Dependencies("Url", "ApiKey", "SecretKey", "IsEnabled", "ValuesChanged")]
         public virtual void Save()
         {
@@ -126,13 +193,20 @@ namespace HearthCap.Features.WebApi.Generic
                 reg.ApiKey = this.ApiKey;
                 reg.SecretKey = this.SecretKey;
             }
+
             this.providerDescriptor.IsEnabled = this.IsEnabled;
-            this.providerDescriptor.Data["Url"] = this.Url ?? String.Empty;
-            this.providerDescriptor.Data["ApiKey"] = this.ApiKey ?? String.Empty;
-            this.providerDescriptor.Data["SecretKey"] = this.SecretKey ?? String.Empty;
+            this.providerDescriptor.Data["Url"] = this.Url ?? string.Empty;
+            this.providerDescriptor.Data["ApiKey"] = this.ApiKey ?? string.Empty;
+            this.providerDescriptor.Data["SecretKey"] = this.SecretKey ?? string.Empty;
             ((IWebApiProviderDescriptor)this.providerDescriptor).Initialize();
         }
 
+        /// <summary>
+        /// The can save.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public virtual bool CanSave()
         {
             bool valid = true;
@@ -141,28 +215,32 @@ namespace HearthCap.Features.WebApi.Generic
             {
                 valid = false;
             }
-            valid = valid && !String.IsNullOrWhiteSpace(this.ApiKey);
-            valid = valid && !String.IsNullOrWhiteSpace(this.SecretKey);
-            return valid && ValuesChanged;
+
+            valid = valid && !string.IsNullOrWhiteSpace(this.ApiKey);
+            valid = valid && !string.IsNullOrWhiteSpace(this.SecretKey);
+            return valid && this.ValuesChanged;
         }
 
+        /// <summary>
+        /// The load settings.
+        /// </summary>
         protected override void LoadSettings()
         {
-            IsNotifying = false;
+            this.IsNotifying = false;
             using (var reg = new WebApiProviderSettings(this.providerDescriptor.ProviderKey))
             {
                 this.IsEnabled = reg.Enabled;
-                this.Url = !String.IsNullOrEmpty(reg.Url) ? reg.Url : this.Url;
-                this.ApiKey = !String.IsNullOrEmpty(reg.ApiKey) ? reg.ApiKey : this.ApiKey;
-                this.SecretKey = !String.IsNullOrEmpty(reg.SecretKey) ? reg.SecretKey : this.SecretKey;
+                this.Url = !string.IsNullOrEmpty(reg.Url) ? reg.Url : this.Url;
+                this.ApiKey = !string.IsNullOrEmpty(reg.ApiKey) ? reg.ApiKey : this.ApiKey;
+                this.SecretKey = !string.IsNullOrEmpty(reg.SecretKey) ? reg.SecretKey : this.SecretKey;
             }
 
             this.providerDescriptor.IsEnabled = this.IsEnabled;
-            this.providerDescriptor.Data["Url"] = this.Url ?? String.Empty;
-            this.providerDescriptor.Data["ApiKey"] = this.ApiKey ?? String.Empty;
-            this.providerDescriptor.Data["SecretKey"] = this.SecretKey ?? String.Empty;
-            IsNotifying = true;
-            Refresh();
+            this.providerDescriptor.Data["Url"] = this.Url ?? string.Empty;
+            this.providerDescriptor.Data["ApiKey"] = this.ApiKey ?? string.Empty;
+            this.providerDescriptor.Data["SecretKey"] = this.SecretKey ?? string.Empty;
+            this.IsNotifying = true;
+            this.Refresh();
         }
     }
 }

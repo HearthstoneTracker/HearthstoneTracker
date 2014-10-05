@@ -1,17 +1,40 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ResizeThumb.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The resize thumb.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.Diagnostics.AreaDesigner
 {
     using System;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
 
+    /// <summary>
+    /// The resize thumb.
+    /// </summary>
     public class ResizeThumb : Thumb
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResizeThumb"/> class.
+        /// </summary>
         public ResizeThumb()
         {
             this.DragDelta += this.ResizeThumb_DragDelta;
         }
 
+        /// <summary>
+        /// The resize thumb_ drag delta.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             var region = this.DataContext as RegionModel;

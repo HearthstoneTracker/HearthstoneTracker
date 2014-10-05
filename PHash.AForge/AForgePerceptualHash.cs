@@ -1,18 +1,47 @@
-﻿namespace PHash.AForge
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AForgePerceptualHash.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The a forge perceptual hash.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace PHash.AForge
 {
     using System.Collections.Generic;
     using System.Drawing.Imaging;
 
     using global::AForge.Imaging;
+
     using global::AForge.Imaging.Filters;
 
     using MathNet.Numerics.LinearAlgebra.Double;
 
+    /// <summary>
+    /// The a forge perceptual hash.
+    /// </summary>
     public class AForgePerceptualHash : PerceptualHash
     {
+        /// <summary>
+        /// The filter.
+        /// </summary>
         public static int[,] Filter = Kernel.Create(3, 3, 1);
+
+        /// <summary>
+        /// The extract channel.
+        /// </summary>
         public static YCbCrExtractChannel ExtractChannel = new YCbCrExtractChannel(YCbCr.YIndex);
 
+        /// <summary>
+        /// The create.
+        /// </summary>
+        /// <param name="image">
+        /// The image.
+        /// </param>
+        /// <returns>
+        /// The <see cref="ulong"/>.
+        /// </returns>
         public override ulong Create(BitmapData image)
         {
             var data = new DenseMatrix(32, 32);
@@ -34,6 +63,7 @@
                             {
                                 data.At(y, x, (float)*src / 255);
                             }
+
                             src += offset;
                         }
                     }

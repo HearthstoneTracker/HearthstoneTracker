@@ -1,72 +1,130 @@
-﻿namespace Capture
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EntryPoint.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The entry point.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Capture
 {
     using System;
+    using System.Collections;
+    using System.Runtime.Remoting;
+    using System.Runtime.Remoting.Channels;
     using System.Runtime.Remoting.Channels.Ipc;
+    using System.Runtime.Serialization.Formatters;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Capture.Hook;
     using Capture.Interface;
 
-    public class EntryPoint : EasyHook.IEntryPoint
+    using EasyHook;
+
+    /// <summary>
+    /// The entry point.
+    /// </summary>
+    public class EntryPoint : IEntryPoint
     {
         #region Fields
 
+        /// <summary>
+        /// The _check alive.
+        /// </summary>
         private Task _checkAlive;
 
+        /// <summary>
+        /// The _client event proxy.
+        /// </summary>
         private ClientCaptureInterfaceEventProxy _clientEventProxy = new ClientCaptureInterfaceEventProxy();
 
+        /// <summary>
+        /// The _client server channel.
+        /// </summary>
         private IpcServerChannel _clientServerChannel = null;
 
-        private IDXHook _directXHook = null;
+        /// <summary>
+        /// The _direct x hook.
+        /// </summary>
+        private IDXHook _directXHook;
 
+        /// <summary>
+        /// The _interface.
+        /// </summary>
         private CaptureInterface _interface;
 
-        private System.Threading.ManualResetEvent _runWait;
+        /// <summary>
+        /// The _run wait.
+        /// </summary>
+        private ManualResetEvent _runWait;
 
-        private long _stopCheckAlive = 0;
+        /// <summary>
+        /// The _stop check alive.
+        /// </summary>
+        private long _stopCheckAlive;
 
         #endregion
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntryPoint"/> class.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="channelName">
+        /// The channel name.
+        /// </param>
+        /// <param name="config">
+        /// The config.
+        /// </param>
         public EntryPoint(
-            EasyHook.RemoteHooking.IContext context,
-            String channelName,
+            RemoteHooking.IContext context, 
+            string channelName, 
             CaptureConfig config)
         {
             // Get reference to IPC to host application
             // Note: any methods called or events triggered against _interface will execute in the host process.
-            this._interface = EasyHook.RemoteHooking.IpcConnectClient<CaptureInterface>(channelName);
+            this._interface = RemoteHooking.IpcConnectClient<CaptureInterface>(channelName);
 
             // We try to ping immediately, if it fails then injection fails
             this._interface.Ping();
 
-            #region Allow client event handlers (bi-directional IPC)
-
             // Attempt to create a IpcServerChannel so that any event handlers on the client will function correctly
-            System.Collections.IDictionary properties = new System.Collections.Hashtable();
+            IDictionary properties = new Hashtable();
             properties["name"] = channelName;
             properties["portName"] = channelName + Guid.NewGuid().ToString("N");
+
             // random portName so no conflict with existing channels of channelName
+            BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
+            binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
 
-            System.Runtime.Remoting.Channels.BinaryServerFormatterSinkProvider binaryProv =
-                new System.Runtime.Remoting.Channels.BinaryServerFormatterSinkProvider();
-            binaryProv.TypeFilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Full;
-
-            System.Runtime.Remoting.Channels.Ipc.IpcServerChannel _clientServerChannel =
-                new System.Runtime.Remoting.Channels.Ipc.IpcServerChannel(properties, binaryProv);
-            System.Runtime.Remoting.Channels.ChannelServices.RegisterChannel(_clientServerChannel, false);
-
-            #endregion
+            IpcServerChannel _clientServerChannel = new IpcServerChannel(properties, binaryProv);
+            ChannelServices.RegisterChannel(_clientServerChannel, false);
         }
 
         #endregion
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// The run.
+        /// </summary>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        /// <param name="channelName">
+        /// The channel name.
+        /// </param>
+        /// <param name="config">
+        /// The config.
+        /// </param>
         public void Run(
-            EasyHook.RemoteHooking.IContext context,
-            String channelName,
+            RemoteHooking.IContext context, 
+            string channelName, 
             CaptureConfig config)
         {
             // When not using GAC there can be issues with remoting assemblies resolving correctly
@@ -76,9 +134,9 @@
                 (sender, args) => { return this.GetType().Assembly.FullName == args.Name ? this.GetType().Assembly : null; };
 
             // NOTE: This is running in the target process
-            this._interface.Message(MessageType.Information, "Injected into process Id:{0}.", EasyHook.RemoteHooking.GetCurrentProcessId());
+            this._interface.Message(MessageType.Information, "Injected into process Id:{0}.", RemoteHooking.GetCurrentProcessId());
 
-            this._runWait = new System.Threading.ManualResetEvent(false);
+            this._runWait = new ManualResetEvent(false);
             this._runWait.Reset();
             try
             {
@@ -87,12 +145,12 @@
                 {
                     return;
                 }
+
                 this._interface.Disconnected += this._clientEventProxy.DisconnectedProxyHandler;
 
                 // Important Note:
                 // accessing the _interface from within a _clientEventProxy event handler must always 
                 // be done on a different thread otherwise it will cause a deadlock
-
                 this._clientEventProxy.Disconnected += () =>
                     {
                         // We can now signal the exit of the Run method
@@ -121,17 +179,17 @@
             {
                 try
                 {
-                    this._interface.Message(MessageType.Information, "Disconnecting from process {0}", EasyHook.RemoteHooking.GetCurrentProcessId());
+                    this._interface.Message(MessageType.Information, "Disconnecting from process {0}", RemoteHooking.GetCurrentProcessId());
                 }
                 catch
                 {
                 }
 
                 // Remove the client server channel (that allows client event handlers)
-                System.Runtime.Remoting.Channels.ChannelServices.UnregisterChannel(this._clientServerChannel);
+                ChannelServices.UnregisterChannel(this._clientServerChannel);
 
                 // Always sleep long enough for any remaining messages to complete sending
-                System.Threading.Thread.Sleep(100);
+                Thread.Sleep(100);
             }
         }
 
@@ -139,6 +197,9 @@
 
         #region Methods
 
+        /// <summary>
+        /// The dispose direct x hook.
+        /// </summary>
         private void DisposeDirectXHook()
         {
             if (this._directXHook != null)
@@ -147,20 +208,31 @@
                 {
                     this._interface.Message(MessageType.Debug, "Disposing of hooks...");
                 }
-                catch (System.Runtime.Remoting.RemotingException)
+                catch (RemotingException)
                 {
-                } // Ignore channel remoting errors
+                }
+
+                // Ignore channel remoting errors
 
                 // Dispose of the hooks so they are removed
                 this._directXHook.Dispose();
             }
         }
 
+        /// <summary>
+        /// The initialise direct x hook.
+        /// </summary>
+        /// <param name="config">
+        /// The config.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool InitialiseDirectXHook(CaptureConfig config)
         {
             Direct3DVersion version = config.Direct3DVersion;
 
-            bool isX64Process = EasyHook.RemoteHooking.IsX64Process(EasyHook.RemoteHooking.GetCurrentProcessId());
+            bool isX64Process = RemoteHooking.IsX64Process(RemoteHooking.GetCurrentProcessId());
             this._interface.Message(MessageType.Information, "Remote process is a {0}-bit process.", isX64Process ? "64" : "32");
 
             try
@@ -187,7 +259,7 @@
                         d3D10_1Loaded = NativeMethods.GetModuleHandle("d3d10_1.dll");
                         d3D11Loaded = NativeMethods.GetModuleHandle("d3d11.dll");
                         d3D11_1Loaded = NativeMethods.GetModuleHandle("d3d11_1.dll");
-                        System.Threading.Thread.Sleep(delayTime);
+                        Thread.Sleep(delayTime);
 
                         if (retryCount * delayTime > 5000)
                         {
@@ -231,25 +303,26 @@
                         break;
                     case Direct3DVersion.Direct3D9Simple:
                         this._directXHook = new DXHookD3D9Simple(this._interface);
-                        break;                        //case Direct3DVersion.Direct3D9Obs:
+                        break; // case Direct3DVersion.Direct3D9Obs:
                     case Direct3DVersion.Direct3D9SharedMem:
                         this._directXHook = new DXHookD3D9SharedMem(this._interface);
                         break;
-                    //case Direct3DVersion.Direct3D9Obs:
-                    //    _directXHook = new DXHookD3D9Obs(_interface);
-                    //    break;
-                    //case Direct3DVersion.Direct3D10:
-                    //    _directXHook = new DXHookD3D10(_interface);
-                    //    break;
-                    //case Direct3DVersion.Direct3D10_1:
-                    //    _directXHook = new DXHookD3D10_1(_interface);
-                    //    break;
-                    //case Direct3DVersion.Direct3D11:
-                    //    _directXHook = new DXHookD3D11(_interface);
-                    //    break;
-                    //case Direct3DVersion.Direct3D11_1:
-                    //    _directXHook = new DXHookD3D11_1(_interface);
-                    //    return;
+
+                        // case Direct3DVersion.Direct3D9Obs:
+                        // _directXHook = new DXHookD3D9Obs(_interface);
+                        // break;
+                        // case Direct3DVersion.Direct3D10:
+                        // _directXHook = new DXHookD3D10(_interface);
+                        // break;
+                        // case Direct3DVersion.Direct3D10_1:
+                        // _directXHook = new DXHookD3D10_1(_interface);
+                        // break;
+                        // case Direct3DVersion.Direct3D11:
+                        // _directXHook = new DXHookD3D11(_interface);
+                        // break;
+                        // case Direct3DVersion.Direct3D11_1:
+                        // _directXHook = new DXHookD3D11_1(_interface);
+                        // return;
                     default:
                         this._interface.Message(MessageType.Error, "Unsupported Direct3D version: {0}", version);
                         return false;
@@ -278,16 +351,17 @@
                 {
                     try
                     {
-                        while (System.Threading.Interlocked.Read(ref this._stopCheckAlive) == 0)
+                        while (Interlocked.Read(ref this._stopCheckAlive) == 0)
                         {
-                            System.Threading.Thread.Sleep(1000);
+                            Thread.Sleep(1000);
 
                             // .NET Remoting exceptions will throw RemotingException
                             this._interface.Ping();
                         }
                     }
-                    catch // We will assume that any exception means that the hooks need to be removed. 
+                    catch
                     {
+                        // We will assume that any exception means that the hooks need to be removed. 
                         // Signal the Run method so that it can exit
                         this._runWait.Set();
                     }
@@ -301,7 +375,7 @@
         /// </summary>
         private void StopCheckHostIsAliveThread()
         {
-            System.Threading.Interlocked.Increment(ref this._stopCheckAlive);
+            Interlocked.Increment(ref this._stopCheckAlive);
         }
 
         #endregion

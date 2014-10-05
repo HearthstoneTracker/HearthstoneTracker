@@ -1,119 +1,209 @@
-﻿namespace HearthCap.UI.Behaviors.DragDrop
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DataGridDragDropBehavior.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The relay command.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.UI.Behaviors.DragDrop
 {
     using System;
-    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Interactivity;
 
+    /// <summary>
+    /// The relay command.
+    /// </summary>
+    /// <typeparam name="T">
+    /// </typeparam>
     public class RelayCommand<T> : ICommand
     {
         #region Fields
 
-        private readonly Action<T> _execute = null;
-        private readonly Predicate<T> _canExecute = null;
+        /// <summary>
+        /// The _execute.
+        /// </summary>
+        private readonly Action<T> _execute;
+
+        /// <summary>
+        /// The _can execute.
+        /// </summary>
+        private readonly Predicate<T> _canExecute;
 
         #endregion
 
         #region Constructors
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RelayCommand{T}"/> class. 
         /// Creates a new command that can always execute.
         /// </summary>
-        /// <param name="execute">The execution logic.</param>
+        /// <param name="execute">
+        /// The execution logic.
+        /// </param>
         public RelayCommand(Action<T> execute)
             : this(execute, null)
         {
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RelayCommand{T}"/> class. 
         /// Creates a new command with conditional execution.
         /// </summary>
-        /// <param name="execute">The execution logic.</param>
-        /// <param name="canExecute">The execution status logic.</param>
+        /// <param name="execute">
+        /// The execution logic.
+        /// </param>
+        /// <param name="canExecute">
+        /// The execution status logic.
+        /// </param>
         public RelayCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
 
-            _execute = execute;
-            _canExecute = canExecute;
+            this._execute = execute;
+            this._canExecute = canExecute;
         }
 
         #endregion
 
         #region ICommand Members
 
+        /// <summary>
+        /// The can execute.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool CanExecute(object parameter)
         {
             return this._canExecute == null || this._canExecute((T)parameter);
         }
 
+        /// <summary>
+        /// The can execute changed.
+        /// </summary>
         public event EventHandler CanExecuteChanged
         {
             add
             {
-                if (_canExecute != null)
+                if (this._canExecute != null)
                     CommandManager.RequerySuggested += value;
             }
+
             remove
             {
-                if (_canExecute != null)
+                if (this._canExecute != null)
                     CommandManager.RequerySuggested -= value;
             }
         }
 
+        /// <summary>
+        /// The execute.
+        /// </summary>
+        /// <param name="parameter">
+        /// The parameter.
+        /// </param>
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            this._execute((T)parameter);
         }
 
         #endregion
     }
 
+    /// <summary>
+    /// The data grid drag drop behavior.
+    /// </summary>
     public class DataGridDragDropBehavior : Behavior<DataGrid>
     {
         #region Dependency Properties
+
+        /// <summary>
+        /// The command property.
+        /// </summary>
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register("Command", typeof(RelayCommand<DataGridDragDropEventArgs>), typeof(DataGridDragDropBehavior), new UIPropertyMetadata(null));
 
+        /// <summary>
+        /// The allowed effects property.
+        /// </summary>
         public static readonly DependencyProperty AllowedEffectsProperty =
             DependencyProperty.Register("AllowedEffects", typeof(DragDropEffects), typeof(DataGridDragDropBehavior), new UIPropertyMetadata(DragDropEffects.Move));
 
+        /// <summary>
+        /// The drop target property.
+        /// </summary>
         public static readonly DependencyProperty DropTargetProperty =
             DependencyProperty.Register("DropTarget", typeof(DataGrid), typeof(DataGridDragDropBehavior), new UIPropertyMetadata());
 
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets the allowed effects.
+        /// </summary>
         public DragDropEffects AllowedEffects
         {
             get { return (DragDropEffects)this.GetValue(AllowedEffectsProperty); }
             set { this.SetValue(AllowedEffectsProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the command.
+        /// </summary>
         public RelayCommand<DataGridDragDropEventArgs> Command
         {
             get { return (RelayCommand<DataGridDragDropEventArgs>)this.GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
+            set { this.SetValue(CommandProperty, value); }
         }
 
+        /// <summary>
+        /// Gets or sets the drop target.
+        /// </summary>
         public DataGrid DropTarget
         {
             get { return (DataGrid)this.GetValue(DropTargetProperty); }
-            set { SetValue(DropTargetProperty, value); }
+            set { this.SetValue(DropTargetProperty, value); }
         }
         #endregion
 
-        private object _dropTarget = null;
+        /// <summary>
+        /// The _drop target.
+        /// </summary>
+        private object _dropTarget;
 
+        /// <summary>
+        /// The _direction.
+        /// </summary>
         private DataGridDragDropDirection _direction = DataGridDragDropDirection.Indeterminate;
-        private object _source = null;
-        private object _destination = null;
 
+        /// <summary>
+        /// The _source.
+        /// </summary>
+        private object _source;
+
+        /// <summary>
+        /// The _destination.
+        /// </summary>
+        private object _destination;
+
+        /// <summary>
+        /// The _last index.
+        /// </summary>
         private int _lastIndex = -1;
 
+        /// <summary>
+        /// The on attached.
+        /// </summary>
         protected override void OnAttached()
         {
             // Mouse Move
@@ -136,7 +226,7 @@
             this.AssociatedObject.DragOver += dragListener.OnEvent;
 
             // Drop
-            var target = DropTarget ?? AssociatedObject;
+            var target = this.DropTarget ?? this.AssociatedObject;
             WeakEventListener<DataGridDragDropBehavior, DataGrid, DragEventArgs> dropListener = new WeakEventListener<DataGridDragDropBehavior, DataGrid, DragEventArgs>(this, target);
             dropListener.OnEventAction = (instance, source, args) => instance.DataGrid_Drop(source, args);
             dropListener.OnDetachAction = (listenerRef, source) => source.Drop -= listenerRef.OnEvent;
@@ -145,6 +235,15 @@
             base.OnAttached();
         }
 
+        /// <summary>
+        /// The data grid_ mouse move.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void DataGrid_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -158,9 +257,18 @@
             }
         }
 
+        /// <summary>
+        /// The data grid_ check drop target.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void DataGrid_CheckDropTarget(object sender, DragEventArgs e)
         {
-            DataGridRow row = UIHelper.FindVisualParent<DataGridRow>(DropTarget ?? e.OriginalSource as UIElement);
+            DataGridRow row = UIHelper.FindVisualParent<DataGridRow>(this.DropTarget ?? e.OriginalSource as UIElement);
             if (row == null)
             {
                 // Not over a DataGridRow
@@ -178,6 +286,15 @@
             e.Handled = true;
         }
 
+        /// <summary>
+        /// The data grid_ drop.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void DataGrid_Drop(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.None;
@@ -193,14 +310,14 @@
                 {
                     e.Effects = ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy) && (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
                 }
+
                 var item = e.Data.GetData("data");
-                DataGridDragDropEventArgs args = new DataGridDragDropEventArgs()
-                {
-                    Destination = this._destination,
-                    Direction = this._direction,
-                    DroppedObject = item,
-                    Effects = e.Effects,
-                    Source = this._source,
+                DataGridDragDropEventArgs args = new DataGridDragDropEventArgs {
+                    Destination = this._destination, 
+                    Direction = this._direction, 
+                    DroppedObject = item, 
+                    Effects = e.Effects, 
+                    Source = this._source, 
                     TargetObject = this._dropTarget
                 };
 

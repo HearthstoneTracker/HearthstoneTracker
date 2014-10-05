@@ -1,4 +1,13 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UpdateProgress.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The update progress.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,24 +22,48 @@ namespace HearthCap.Updater
 
     using NLog;
 
+    /// <summary>
+    /// The update progress.
+    /// </summary>
     public partial class UpdateProgress : Form
     {
+        /// <summary>
+        /// The log.
+        /// </summary>
         private static Logger Log = LogManager.GetCurrentClassLogger();
 
-        private bool isTesting = false;
+        /// <summary>
+        /// The is testing.
+        /// </summary>
+        private bool isTesting;
 
+        /// <summary>
+        /// The install file.
+        /// </summary>
         private readonly string installFile;
 
+        /// <summary>
+        /// The install path.
+        /// </summary>
         private readonly string installPath;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UpdateProgress"/> class.
+        /// </summary>
         public UpdateProgress()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UpdateProgress"/> class.
+        /// </summary>
+        /// <param name="args">
+        /// The args.
+        /// </param>
         public UpdateProgress(string[] args)
         {
-            InitializeComponent();
-            this.Shown += OnShown;
+            this.InitializeComponent();
+            this.Shown += this.OnShown;
 
             this.installFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, args[0]);
 
@@ -51,11 +84,23 @@ namespace HearthCap.Updater
             this.isTesting = args.Any(x => x.Contains("--testing"));
         }
 
+        /// <summary>
+        /// The on shown.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="eventArgs">
+        /// The event args.
+        /// </param>
         private void OnShown(object sender, EventArgs eventArgs)
         {
             Task.Run(() => this.DoUpdate());
         }
 
+        /// <summary>
+        /// The do update.
+        /// </summary>
         private void DoUpdate()
         {
             var success = false;
@@ -77,14 +122,14 @@ namespace HearthCap.Updater
                 }
                 while (retry && !notRunning);
 
-                if (isTesting)
+                if (this.isTesting)
                 {
                     Thread.Sleep(2000);
                     success = true;
                 }
                 else
                 {
-                    success = DoUpdate(this.installFile);
+                    success = this.DoUpdate(this.installFile);
                     File.Delete(this.installFile);
                 }
 
@@ -107,6 +152,15 @@ namespace HearthCap.Updater
             }
         }
 
+        /// <summary>
+        /// The do update.
+        /// </summary>
+        /// <param name="zipfile">
+        /// The zipfile.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private bool DoUpdate(string zipfile)
         {
             Log.Info("Starting update... using: {0}", zipfile);
@@ -163,10 +217,17 @@ namespace HearthCap.Updater
                 MessageBox.Show("An unknown error occured:\n" + ex, "Unknown error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
             Log.Info("Update done");
             return true;
         }
 
+        /// <summary>
+        /// The is running.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private static bool IsRunning()
         {
             bool createdNew;
@@ -176,6 +237,15 @@ namespace HearthCap.Updater
             }
         }
 
+        /// <summary>
+        /// The check not running.
+        /// </summary>
+        /// <param name="retry">
+        /// The retry.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         private static bool CheckNotRunning(out bool retry)
         {
             retry = false;
@@ -186,6 +256,7 @@ namespace HearthCap.Updater
                 {
                     retry = true;
                 }
+
                 return false;
             }
 
@@ -208,6 +279,18 @@ namespace HearthCap.Updater
             return true;
         }
 
+        /// <summary>
+        /// The find window.
+        /// </summary>
+        /// <param name="lpClassName">
+        /// The lp class name.
+        /// </param>
+        /// <param name="lpWindowName">
+        /// The lp window name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IntPtr"/>.
+        /// </returns>
         [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
         static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }

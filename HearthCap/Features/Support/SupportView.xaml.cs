@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SupportView.xaml.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interaction logic for SupportView.xaml
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HearthCap.Features.Support
 {
     /// <summary>
     /// Interaction logic for SupportView.xaml
     /// </summary>
-    public partial class SupportView : UserControl
+    public partial class SupportView
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SupportView"/> class.
+        /// </summary>
         public SupportView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

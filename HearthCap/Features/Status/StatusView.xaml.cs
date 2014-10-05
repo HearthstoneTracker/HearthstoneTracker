@@ -1,28 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StatusView.xaml.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interaction logic for StatusView.xaml
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HearthCap.Features.Status
 {
     /// <summary>
     /// Interaction logic for StatusView.xaml
     /// </summary>
-    public partial class StatusView : UserControl
+    public partial class StatusView
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StatusView"/> class.
+        /// </summary>
         public StatusView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }

@@ -1,48 +1,105 @@
-﻿namespace HearthCap.Shell
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StartupViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The startup view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Shell
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.Composition;
-    using System.Configuration;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Windows;
-    using System.Windows.Interop;
 
     using Caliburn.Micro;
 
     using HearthCap.Shell.TrayIcon;
 
+    /// <summary>
+    /// The startup view model.
+    /// </summary>
     [Export(typeof(StartupViewModel))]
-    public class StartupViewModel : Screen,
-        IHandle<TrayIconLeftClick>,
+    public class StartupViewModel : Screen, 
+        IHandle<TrayIconLeftClick>, 
         IHandle<TrayIconDoubleClick>
     {
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// The window manager.
+        /// </summary>
         private readonly CustomWindowManager windowManager;
 
+        /// <summary>
+        /// The user preferences.
+        /// </summary>
         private readonly UserPreferences.UserPreferences userPreferences;
 
+        /// <summary>
+        /// The old height.
+        /// </summary>
         private double oldHeight;
 
+        /// <summary>
+        /// The old width.
+        /// </summary>
         private double oldWidth;
 
+        /// <summary>
+        /// The init lock.
+        /// </summary>
         private static object initLock = new object();
 
+        /// <summary>
+        /// The old left.
+        /// </summary>
         private double oldLeft;
+
+        /// <summary>
+        /// The old top.
+        /// </summary>
         private double oldTop;
 
+        /// <summary>
+        /// The shell window.
+        /// </summary>
         private Window shellWindow;
 
+        /// <summary>
+        /// The tray icon.
+        /// </summary>
         private TrayIconViewModel trayIcon;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartupViewModel"/> class.
+        /// </summary>
+        /// <param name="events">
+        /// The events.
+        /// </param>
+        /// <param name="shell">
+        /// The shell.
+        /// </param>
+        /// <param name="trayIcon">
+        /// The tray icon.
+        /// </param>
+        /// <param name="windowManager">
+        /// The window manager.
+        /// </param>
+        /// <param name="userPreferences">
+        /// The user preferences.
+        /// </param>
         [ImportingConstructor]
         public StartupViewModel(
             IEventAggregator events, 
             IShell shell, 
             TrayIconViewModel trayIcon, 
-            CustomWindowManager windowManager,
+            CustomWindowManager windowManager, 
             UserPreferences.UserPreferences userPreferences)
         {
             this.events = events;
@@ -51,28 +108,45 @@
             this.Shell = shell;
             this.trayIcon = trayIcon;
             events.Subscribe(this);
-            Shell.Deactivated += ShellOnDeactivated;
+            this.Shell.Deactivated += this.ShellOnDeactivated;
         }
 
+        /// <summary>
+        /// The shell on deactivated.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="deactivationEventArgs">
+        /// The deactivation event args.
+        /// </param>
         private void ShellOnDeactivated(object sender, DeactivationEventArgs deactivationEventArgs)
         {
             this.TryClose();
         }
 
+        /// <summary>
+        /// Gets or sets the shell.
+        /// </summary>
         public IShell Shell { get; set; }
 
+        /// <summary>
+        /// Gets or sets the tray icon.
+        /// </summary>
         public TrayIconViewModel TrayIcon
         {
             get
             {
                 return this.trayIcon;
             }
+
             set
             {
                 if (Equals(value, this.trayIcon))
                 {
                     return;
                 }
+
                 this.trayIcon = value;
                 this.NotifyOfPropertyChange(() => this.TrayIcon);
             }
@@ -85,69 +159,74 @@
         {
             lock (initLock)
             {
-                ((IActivate)TrayIcon).Activate();
+                ((IActivate)this.TrayIcon).Activate();
 
-                oldHeight = userPreferences.WindowHeight;
-                oldWidth = userPreferences.WindowWidth;
-                oldLeft = userPreferences.WindowLeft;
-                oldTop = userPreferences.WindowTop;
+                this.oldHeight = this.userPreferences.WindowHeight;
+                this.oldWidth = this.userPreferences.WindowWidth;
+                this.oldLeft = this.userPreferences.WindowLeft;
+                this.oldTop = this.userPreferences.WindowTop;
 
-                shellWindow = windowManager.EnsureWindow<IShell>();
+                this.shellWindow = this.windowManager.EnsureWindow<IShell>();
                 var args = Environment.GetCommandLineArgs();
                 bool isLogon = args.Any(x => x.Contains("-logon"));
-                if (isLogon || userPreferences.StartMinimized)
+                if (isLogon || this.userPreferences.StartMinimized)
                 {
-                    if (userPreferences.MinimizeToTray)
+                    if (this.userPreferences.MinimizeToTray)
                     {
-                        TrayIcon.IsVisible = true;
-                        shellWindow.ShowInTaskbar = false;
-                        shellWindow.ShowActivated = false;
-                        shellWindow.Height = 0;
-                        shellWindow.Width = 0;
-                        shellWindow.Show();
-                        shellWindow.Hide();
-                        shellWindow.ShowInTaskbar = true;
-                        shellWindow.ShowActivated = true;
+                        this.TrayIcon.IsVisible = true;
+                        this.shellWindow.ShowInTaskbar = false;
+                        this.shellWindow.ShowActivated = false;
+                        this.shellWindow.Height = 0;
+                        this.shellWindow.Width = 0;
+                        this.shellWindow.Show();
+                        this.shellWindow.Hide();
+                        this.shellWindow.ShowInTaskbar = true;
+                        this.shellWindow.ShowActivated = true;
                     }
                     else
                     {
-                        shellWindow.WindowState = WindowState.Minimized;
-                        shellWindow.Show();                        
+                        this.shellWindow.WindowState = WindowState.Minimized;
+                        this.shellWindow.Show();                        
                     }
                 }
                 else
                 {
-                    Shell.Show();
+                    this.Shell.Show();
                 }
-                shellWindow.Height = oldHeight;
-                shellWindow.Width = oldWidth;
-                shellWindow.Left = oldLeft;
-                shellWindow.Top = oldTop;
-                userPreferences.Initialize();
+
+                this.shellWindow.Height = this.oldHeight;
+                this.shellWindow.Width = this.oldWidth;
+                this.shellWindow.Left = this.oldLeft;
+                this.shellWindow.Top = this.oldTop;
+                this.userPreferences.Initialize();
             }
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(TrayIconLeftClick message)
         {
             lock (initLock)
             {
-                Shell.Show();
+                this.Shell.Show();
             }
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(TrayIconDoubleClick message)
         {
             lock (initLock)
             {
-                Shell.Show();
+                this.Shell.Show();
             }
         }
     }

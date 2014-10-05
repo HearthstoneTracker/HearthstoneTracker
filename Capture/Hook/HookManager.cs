@@ -1,4 +1,13 @@
-﻿namespace Capture.Hook
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HookManager.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The hook manager.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace Capture.Hook
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +15,17 @@
 
     using EasyHook;
 
+    /// <summary>
+    /// The hook manager.
+    /// </summary>
     public class HookManager
     {
         #region Static Fields
 
-        internal static List<Int32> HookedProcesses = new List<Int32>();
+        /// <summary>
+        /// The hooked processes.
+        /// </summary>
+        internal static List<int> HookedProcesses = new List<int>();
 
         /*
          * Please note that we have obtained this information with system privileges.
@@ -22,15 +37,27 @@
          * it contains but you should keep the code semantic.
          */
 
+        /// <summary>
+        /// The process list.
+        /// </summary>
         internal static List<ProcessInfo> ProcessList = new List<ProcessInfo>();
 
-        private static List<Int32> ActivePIDList = new List<Int32>();
+        /// <summary>
+        /// The active pid list.
+        /// </summary>
+        private static List<int> ActivePIDList = new List<int>();
 
         #endregion
 
         #region Public Methods and Operators
 
-        public static void AddHookedProcess(Int32 processId)
+        /// <summary>
+        /// The add hooked process.
+        /// </summary>
+        /// <param name="processId">
+        /// The process id.
+        /// </param>
+        public static void AddHookedProcess(int processId)
         {
             lock (HookedProcesses)
             {
@@ -38,6 +65,12 @@
             }
         }
 
+        /// <summary>
+        /// The enum processes.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="ProcessInfo[]"/>.
+        /// </returns>
         public static ProcessInfo[] EnumProcesses()
         {
             List<ProcessInfo> result = new List<ProcessInfo>();
@@ -66,7 +99,16 @@
             return result.ToArray();
         }
 
-        public static bool IsHooked(Int32 processId)
+        /// <summary>
+        /// The is hooked.
+        /// </summary>
+        /// <param name="processId">
+        /// The process id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public static bool IsHooked(int processId)
         {
             lock (HookedProcesses)
             {
@@ -74,7 +116,13 @@
             }
         }
 
-        public static void RemoveHookedProcess(Int32 processId)
+        /// <summary>
+        /// The remove hooked process.
+        /// </summary>
+        /// <param name="processId">
+        /// The process id.
+        /// </param>
+        public static void RemoveHookedProcess(int processId)
         {
             lock (HookedProcesses)
             {
@@ -84,18 +132,33 @@
 
         #endregion
 
+        /// <summary>
+        /// The process info.
+        /// </summary>
         [Serializable]
         public class ProcessInfo
         {
             #region Fields
 
-            public String FileName;
+            /// <summary>
+            /// The file name.
+            /// </summary>
+            public string FileName;
 
-            public Int32 Id;
+            /// <summary>
+            /// The id.
+            /// </summary>
+            public int Id;
 
-            public Boolean Is64Bit;
+            /// <summary>
+            /// The is 64 bit.
+            /// </summary>
+            public bool Is64Bit;
 
-            public String User;
+            /// <summary>
+            /// The user.
+            /// </summary>
+            public string User;
 
             #endregion
         }

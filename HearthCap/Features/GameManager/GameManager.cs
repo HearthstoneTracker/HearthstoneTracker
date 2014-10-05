@@ -1,4 +1,13 @@
-﻿namespace HearthCap.Features.GameManager
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GameManager.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The game manager.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace HearthCap.Features.GameManager
 {
     using System;
     using System.Collections.Generic;
@@ -16,15 +25,38 @@
 
     using Omu.ValueInjecter;
 
+    using LogManager = NLog.LogManager;
+
+    /// <summary>
+    /// The game manager.
+    /// </summary>
     [Export(typeof(GameManager))]
     public class GameManager
     {
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// The db context.
+        /// </summary>
         private readonly Func<HearthStatsDbContext> dbContext;
 
+        /// <summary>
+        /// The events.
+        /// </summary>
         private readonly IEventAggregator events;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameManager"/> class.
+        /// </summary>
+        /// <param name="dbContext">
+        /// The db context.
+        /// </param>
+        /// <param name="events">
+        /// The events.
+        /// </param>
         [ImportingConstructor]
         public GameManager(Func<HearthStatsDbContext> dbContext, IEventAggregator events)
         {
@@ -32,11 +64,22 @@
             this.events = events;
         }
 
+        /// <summary>
+        /// The add game.
+        /// </summary>
+        /// <param name="gameModel">
+        /// The game model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        /// </exception>
         public async Task AddGame(GameResultModel gameModel)
         {
             using (var context = this.dbContext())
             {
-                var game = new GameResult() { };
+                var game = new GameResult { };
                 game.InjectFrom(gameModel);
 
                 if (gameModel.Hero != null)
@@ -63,10 +106,10 @@
                     {
                         throw new InvalidOperationException("Add arena using gameManager first!");
                     }
-                    // context.Entry(arena).CurrentValues.SetValues(arenaModel);
 
-                    AddGameToArena(game, arena);
-                    SetEndDateIfNeeded(arena);
+                    // context.Entry(arena).CurrentValues.SetValues(arenaModel);
+                    this.AddGameToArena(game, arena);
+                    this.SetEndDateIfNeeded(arena);
                     arena.Modified = DateTime.Now;
                 }
 
@@ -92,6 +135,15 @@
             }
         }
 
+        /// <summary>
+        /// The delete game.
+        /// </summary>
+        /// <param name="id">
+        /// The id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task DeleteGame(Guid id)
         {
             using (var context = this.dbContext())
@@ -101,6 +153,7 @@
                 {
                     this.events.PublishOnBackgroundThread(new GameResultDeleted(id));
                     return;
+
                     // throw new ArgumentException(string.Format("Game with id '{0}' not found", id), "id");
                 }
 
@@ -129,14 +182,14 @@
                     arena = context.ArenaSessions.Query().FirstOrDefault(x => x.Id == arenaId);
                     if (arena != null)
                     {
-                        //if (victory && arena.IncompleteWins)
-                        //{
-                        //    arena.Wins--;
-                        //}
-                        //else if (!victory && arena.IncompleteLosses)
-                        //{
-                        //    arena.Losses--;
-                        //}
+                        // if (victory && arena.IncompleteWins)
+                        // {
+                        // arena.Wins--;
+                        // }
+                        // else if (!victory && arena.IncompleteLosses)
+                        // {
+                        // arena.Losses--;
+                        // }
                         if (victory)
                         {
                             arena.Wins--;
@@ -160,6 +213,18 @@
             }
         }
 
+        /// <summary>
+        /// The merge arenas.
+        /// </summary>
+        /// <param name="source">
+        /// The source.
+        /// </param>
+        /// <param name="target">
+        /// The target.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task MergeArenas(ArenaSessionModel source, ArenaSessionModel target)
         {
             if (source == null || target == null || source.Hero == null || target.Hero == null || source.Hero.Id != target.Hero.Id)
@@ -181,7 +246,7 @@
                 var updatedGames = new List<GameResult>();
                 foreach (var sourceGame in sourceArena.Games)
                 {
-                    AddGameToArena(sourceGame, targetArena);
+                    this.AddGameToArena(sourceGame, targetArena);
                     updatedGames.Add(sourceGame);
                 }
 
@@ -192,7 +257,7 @@
 
                 context.ArenaSessions.Remove(sourceArena);
 
-                SetEndDateIfNeeded(targetArena);
+                this.SetEndDateIfNeeded(targetArena);
 
                 await context.SaveChangesAsync();
 
@@ -206,6 +271,17 @@
             }
         }
 
+        /// <summary>
+        /// The update game.
+        /// </summary>
+        /// <param name="gameModel">
+        /// The game model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// </exception>
         public async Task UpdateGame(GameResultModel gameModel)
         {
             using (var context = this.dbContext())
@@ -215,6 +291,7 @@
                 {
                     throw new ArgumentException("game does not exist", "gameModel");
                 }
+
                 var oldVictory = game.Victory;
                 if (gameModel.ArenaSession != null)
                 {
@@ -226,10 +303,12 @@
                 {
                     game.Hero = context.Heroes.Find(gameModel.Hero.Id);
                 }
+
                 if (!Equals(gameModel.OpponentHero, game.OpponentHero) && gameModel.OpponentHero != null)
                 {
                     game.OpponentHero = context.Heroes.Find(gameModel.OpponentHero.Id);
                 }
+
                 if (!Equals(gameModel.Deck, game.Deck) && gameModel.Deck != null)
                 {
                     game.Deck = context.Decks.Find(gameModel.Deck.Id);
@@ -254,7 +333,7 @@
                         arena.Losses++;
                     }
 
-                    SetEndDateIfNeeded(arena);
+                    this.SetEndDateIfNeeded(arena);
 
                     gameModel.ArenaSession.InjectFrom(arena);
                     arena.Modified = DateTime.Now;
@@ -270,6 +349,15 @@
             }
         }
 
+        /// <summary>
+        /// The add arena session.
+        /// </summary>
+        /// <param name="arenaModel">
+        /// The arena model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task<ArenaSessionModel> AddArenaSession(ArenaSessionModel arenaModel)
         {
             using (var context = this.dbContext())
@@ -280,6 +368,7 @@
                 {
                     arena.Hero = context.Heroes.Find(arenaModel.Hero.Id);
                 }
+
                 if (arenaModel.Image1 != null)
                 {
                     var img = context.ArenaDeckImages.Find(arenaModel.Image1.Id);
@@ -288,9 +377,11 @@
                         img = arenaModel.Image1;
                         context.ArenaDeckImages.Add(img);
                     }
+
                     context.Entry(img).CurrentValues.SetValues(arenaModel.Image1);
                     arena.Image1 = img;
                 }
+
                 if (arenaModel.Image2 != null)
                 {
                     var img = context.ArenaDeckImages.Find(arenaModel.Image2.Id);
@@ -299,17 +390,29 @@
                         img = arenaModel.Image2;
                         context.ArenaDeckImages.Add(img);
                     }
+
                     context.Entry(img).CurrentValues.SetValues(arenaModel.Image2);
                     arena.Image2 = img;
                 }
+
                 context.ArenaSessions.Add(arena);
                 await context.SaveChangesAsync();
                 arenaModel.InjectFrom(arena);
             }
+
             this.events.PublishOnBackgroundThread(new ArenaSessionAdded(arenaModel));
             return arenaModel;
         }
 
+        /// <summary>
+        /// The delete arena session.
+        /// </summary>
+        /// <param name="arenaId">
+        /// The arena id.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task DeleteArenaSession(Guid arenaId)
         {
             using (var context = this.dbContext())
@@ -337,11 +440,13 @@
                     var img = context.ArenaDeckImages.Find(arena.Image1.Id);
                     context.ArenaDeckImages.Remove(img);
                 }
+
                 if (arena.Image2 != null)
                 {
                     var img = context.ArenaDeckImages.Find(arena.Image2.Id);
                     context.ArenaDeckImages.Remove(img);
                 }
+
                 context.ArenaSessions.Remove(arena);
                 await context.SaveChangesAsync();
                 this.events.PublishOnBackgroundThread(new ArenaSessionDeleted(arenaModel));
@@ -352,6 +457,17 @@
             }
         }
 
+        /// <summary>
+        /// The update arena session.
+        /// </summary>
+        /// <param name="arenaModel">
+        /// The arena model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// </exception>
         public async Task UpdateArenaSession(ArenaSessionModel arenaModel)
         {
             using (var context = this.dbContext())
@@ -361,10 +477,12 @@
                 {
                     throw new ArgumentException("arena does not exist", "arenaModel");
                 }
+
                 if (!Equals(arenaModel.Hero, arena.Hero))
                 {
                     arena.Hero = context.Heroes.Find(arenaModel.Hero.Id);
                 }
+
                 if (arenaModel.Image1 != null)
                 {
                     var img = context.ArenaDeckImages.Find(arenaModel.Image1.Id);
@@ -373,9 +491,11 @@
                         img = arenaModel.Image1;
                         context.ArenaDeckImages.Add(img);
                     }
+
                     context.Entry(img).CurrentValues.SetValues(arenaModel.Image1);
                     arena.Image1 = img;
                 }
+
                 if (arenaModel.Image2 != null)
                 {
                     var img = context.ArenaDeckImages.Find(arenaModel.Image2.Id);
@@ -384,12 +504,13 @@
                         img = arenaModel.Image2;
                         context.ArenaDeckImages.Add(img);
                     }
+
                     context.Entry(img).CurrentValues.SetValues(arenaModel.Image2);
                     arena.Image2 = img;
                 }
 
                 context.Entry(arena).CurrentValues.SetValues(arenaModel);
-                SetEndDateIfNeeded(arena);
+                this.SetEndDateIfNeeded(arena);
                 arena.Modified = DateTime.Now;
                 await context.SaveChangesAsync();
 
@@ -400,7 +521,12 @@
             }
         }
 
-
+        /// <summary>
+        /// The set end date if needed.
+        /// </summary>
+        /// <param name="arena">
+        /// The arena.
+        /// </param>
         private void SetEndDateIfNeeded(ArenaSession arena)
         {
             if (arena.IsEnded && arena.EndDate == null)
@@ -414,6 +540,15 @@
             }
         }
 
+        /// <summary>
+        /// The add game to arena.
+        /// </summary>
+        /// <param name="game">
+        /// The game.
+        /// </param>
+        /// <param name="arena">
+        /// The arena.
+        /// </param>
         protected void AddGameToArena(GameResult game, ArenaSession arena)
         {
             game.ArenaSessionId = arena.Id;
@@ -430,6 +565,18 @@
             }
         }
 
+        /// <summary>
+        /// The assign game to arena.
+        /// </summary>
+        /// <param name="gameModel">
+        /// The game model.
+        /// </param>
+        /// <param name="arenaModel">
+        /// The arena model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task AssignGameToArena(GameResultModel gameModel, ArenaSessionModel arenaModel)
         {
             using (var context = this.dbContext())
@@ -437,10 +584,10 @@
                 // var lastGame = context.Games.Where(x => x.ArenaSessionId == arenaModel.Id).OrderByDescending(x => x.ArenaGameNo).FirstOrDefault();
                 var arena = context.ArenaSessions.Query().First(x => x.Id == arenaModel.Id);
                 var game = context.Games.Query().First(x => x.Id == gameModel.Id);
-                // game.ArenaGameNo = lastGame == null ? 1 : lastGame.ArenaGameNo + 1;
 
-                AddGameToArena(game, arena);
-                SetEndDateIfNeeded(arena);
+                // game.ArenaGameNo = lastGame == null ? 1 : lastGame.ArenaGameNo + 1;
+                this.AddGameToArena(game, arena);
+                this.SetEndDateIfNeeded(arena);
                 arena.Modified = DateTime.Now;
                 game.Modified = DateTime.Now;
                 await context.SaveChangesAsync();
@@ -453,6 +600,15 @@
             }
         }
 
+        /// <summary>
+        /// The retire.
+        /// </summary>
+        /// <param name="arenaModel">
+        /// The arena model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task Retire(ArenaSessionModel arenaModel)
         {
             using (var context = this.dbContext())
@@ -463,12 +619,25 @@
                 {
                     arena.EndDate = DateTime.Now;
                 }
+
                 arena.Modified = DateTime.Now;
                 await context.SaveChangesAsync();
                 arenaModel.InjectFrom(arena);
             }
         }
 
+        /// <summary>
+        /// The move game to arena.
+        /// </summary>
+        /// <param name="gameModel">
+        /// The game model.
+        /// </param>
+        /// <param name="arenaModel">
+        /// The arena model.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Task"/>.
+        /// </returns>
         public async Task MoveGameToArena(GameResultModel gameModel, ArenaSessionModel arenaModel)
         {
             using (var context = this.dbContext())
@@ -489,12 +658,14 @@
                         sourceArena.Losses--;
                     }
                 }
-                if (!(Equals(targetarena.Hero, game.Hero)))
+
+                if (!Equals(targetarena.Hero, game.Hero))
                 {
                     game.Hero = targetarena.Hero;
                 }
-                AddGameToArena(game, targetarena);
-                SetEndDateIfNeeded(targetarena);
+
+                this.AddGameToArena(game, targetarena);
+                this.SetEndDateIfNeeded(targetarena);
 
                 context.SaveChanges();
                 var latestId = context.ArenaSessions.OrderByDescending(x => x.StartDate).Select(x => x.Id).FirstOrDefault();

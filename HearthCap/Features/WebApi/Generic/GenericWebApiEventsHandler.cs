@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GenericWebApiEventsHandler.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The generic web api events handler.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.WebApi.Generic
 {
     using System;
@@ -6,29 +15,47 @@ namespace HearthCap.Features.WebApi.Generic
     using Caliburn.Micro;
 
     using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Features.GameManager.Events;
     using HearthCap.Features.WebApi.Hmac;
 
     using NLog;
 
-    public class GenericWebApiEventsHandler : IWebApiEventsHandler,
-        IHandle<GameStarted>,
-        IHandle<GameEnded>,
-        IHandle<ArenaSessionStarted>,
+    using LogManager = NLog.LogManager;
+
+    /// <summary>
+    /// The generic web api events handler.
+    /// </summary>
+    public class GenericWebApiEventsHandler : IWebApiEventsHandler, 
+        IHandle<GameStarted>, 
+        IHandle<GameEnded>, 
+        IHandle<ArenaSessionStarted>, 
         IHandle<ArenaSessionEnded>
     {
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// The provider descriptor.
+        /// </summary>
         private WebApiProviderDescriptor providerDescriptor;
 
+        /// <summary>
+        /// The client.
+        /// </summary>
         private HttpClient client;
 
+        /// <summary>
+        /// The base url.
+        /// </summary>
         private string baseUrl;
 
-        public GenericWebApiEventsHandler()
-        {
-        }
-
+        /// <summary>
+        /// The initialize.
+        /// </summary>
+        /// <param name="providerDescriptor">
+        /// The provider descriptor.
+        /// </param>
         public void Initialize(WebApiProviderDescriptor providerDescriptor)
         {
             this.providerDescriptor = providerDescriptor;
@@ -39,14 +66,13 @@ namespace HearthCap.Features.WebApi.Generic
             }
 
             var signingHandler = new HmacSigningHandler(
-                this.providerDescriptor.Data["ApiKey"],
-                this.providerDescriptor.Data["SecretKey"],
-                new CanonicalRepresentationBuilder(),
+                this.providerDescriptor.Data["ApiKey"], 
+                this.providerDescriptor.Data["SecretKey"], 
+                new CanonicalRepresentationBuilder(), 
                 new HmacSignatureCalculator());
 
             this.client = new HttpClient(
-                new RequestContentMd5Handler()
-                {
+                new RequestContentMd5Handler {
                     InnerHandler = signingHandler
                 });            
         }
@@ -54,7 +80,9 @@ namespace HearthCap.Features.WebApi.Generic
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameStarted message)
         {
             this.Post("gamestarted", message);
@@ -63,7 +91,9 @@ namespace HearthCap.Features.WebApi.Generic
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(GameEnded message)
         {
             this.Post("gameended", message);
@@ -72,21 +102,34 @@ namespace HearthCap.Features.WebApi.Generic
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaSessionStarted message)
         {
-            Post("arenastarted", message);
+            this.Post("arenastarted", message);
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
-        /// <param name="message">The message.</param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         public void Handle(ArenaSessionEnded message)
         {
-            Post("arenaended", message);
+            this.Post("arenaended", message);
         }
 
+        /// <summary>
+        /// The post.
+        /// </summary>
+        /// <param name="path">
+        /// The path.
+        /// </param>
+        /// <param name="message">
+        /// The message.
+        /// </param>
         private void Post(string path, object message)
         {
             try

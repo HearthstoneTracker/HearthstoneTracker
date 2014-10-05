@@ -1,15 +1,35 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HearthstoneTrackerWebApiProvider.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The hearthstone tracker web api provider.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.WebApi.HearthstoneTracker
 {
     using System.ComponentModel.Composition;
 
-    using HearthCap.Features.WebApi.Generic;
-
+    /// <summary>
+    /// The hearthstone tracker web api provider.
+    /// </summary>
     [Export(typeof(IWebApiProviderDescriptor))]
     public class HearthstoneTrackerWebApiProvider : WebApiProviderDescriptor
     {
+        /// <summary>
+        /// The events handler.
+        /// </summary>
         private IWebApiEventsHandler eventsHandler;
+
+        /// <summary>
+        /// The settings.
+        /// </summary>
         private IWebApiProviderScreen settings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HearthstoneTrackerWebApiProvider"/> class.
+        /// </summary>
         [ImportingConstructor]
         public HearthstoneTrackerWebApiProvider()
             : base("HearthstoneTracker")
@@ -19,6 +39,9 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             this.eventsHandler = new HearthstoneTrackerWebApiEventsHandler();
         }
 
+        /// <summary>
+        /// Gets the settings.
+        /// </summary>
         public override IWebApiProviderScreen Settings
         {
             get
@@ -27,6 +50,9 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             }
         }
 
+        /// <summary>
+        /// Gets the events handler.
+        /// </summary>
         public override IWebApiEventsHandler EventsHandler
         {
             get

@@ -1,3 +1,12 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SettingsViewModel.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The settings view model.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace HearthCap.Features.Settings
 {
     using System.Collections.Generic;
@@ -11,50 +20,65 @@ namespace HearthCap.Features.Settings
 
     using MahApps.Metro.Controls;
 
+    /// <summary>
+    /// The settings view model.
+    /// </summary>
     [Export(typeof(IFlyout))]
     public class SettingsViewModel : FlyoutViewModel<ISettingsScreen>.Collection.AllActive
     {
+        /// <summary>
+        /// The settings screens.
+        /// </summary>
         private readonly BindableCollection<ISettingsScreen> settingsScreens;
 
+        /// <summary>
+        /// The first time.
+        /// </summary>
         private bool firstTime = true;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
+        /// </summary>
+        /// <param name="settingsScreens">
+        /// The settings screens.
+        /// </param>
         [ImportingConstructor]
         public SettingsViewModel([ImportMany]IEnumerable<ISettingsScreen> settingsScreens)
         {
             // this.settingsScreens = new BindableCollection<ISettingsScreen>(settingsScreens.OrderBy(x=>x.Order));
             this.Name = "settings";
             this.Header = "Settings";
-            SetPosition(Position.Left);
+            this.SetPosition(Position.Left);
             this.Items.AddRange(settingsScreens.OrderBy(x => x.Order));
             this.PropertyChanged += (sender, args) =>
             {
-                if (args.PropertyName == "IsOpen" && IsOpen)
+                if (args.PropertyName == "IsOpen" && this.IsOpen)
                 {
-                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
+                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", this.Name, 1);
                 }
             };
         }
 
-        //public IObservableCollection<ISettingsScreen> SettingsScreens
-        //{
-        //    get
-        //    {
-        //        return this.settingsScreens;
-        //    }
-        //}
+        // public IObservableCollection<ISettingsScreen> SettingsScreens
+        // {
+        // get
+        // {
+        // return this.settingsScreens;
+        // }
+        // }
 
         /// <summary>
         /// Called when activating.
         /// </summary>
         protected override void OnActivate()
         {
-            if (firstTime)
+            if (this.firstTime)
             {
-                firstTime = false;
+                this.firstTime = false;
 
-                foreach (var settingsScreen in Items)
+                foreach (var settingsScreen in this.Items)
                 {
-                    ActivateItem(settingsScreen);
+                    this.ActivateItem(settingsScreen);
                 }
             }
         }

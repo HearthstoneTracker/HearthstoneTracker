@@ -94,11 +94,11 @@ dotnet_check_ok:
     ;GetDLLVersion "D3DCompiler_43.dll" $R0 $R1
     ;IfErrors dxMissing dxOK
     ;dxMissing:
-    ;	MessageBox MB_YESNO|MB_ICONEXCLAMATION "Your system is missing DirectX components that ${APPNAME} requires. Would you like to download them?" IDYES dxtrue IDNO dxfalse
-    ;	dxtrue:
-    ;		ExecShell "open" "http://www.microsoft.com/en-us/download/details.aspx?id=35"
-    ;	dxfalse:
-    ;	Quit
+    ;    MessageBox MB_YESNO|MB_ICONEXCLAMATION "Your system is missing DirectX components that ${APPNAME} requires. Would you like to download them?" IDYES dxtrue IDNO dxfalse
+    ;    dxtrue:
+    ;        ExecShell "open" "http://www.microsoft.com/en-us/download/details.aspx?id=35"
+    ;    dxfalse:
+    ;    Quit
     ;dxOK:
     ClearErrors
     
