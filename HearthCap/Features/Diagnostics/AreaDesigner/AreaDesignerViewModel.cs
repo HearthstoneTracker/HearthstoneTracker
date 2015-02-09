@@ -408,7 +408,7 @@
 
         public void OpenImage()
         {
-            var dlg = new Microsoft.Win32.SaveFileDialog
+            var dlg = new Microsoft.Win32.OpenFileDialog
                           {
                               FileName = "area", 
                               DefaultExt = ".png", 
