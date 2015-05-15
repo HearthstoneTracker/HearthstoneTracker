@@ -812,7 +812,7 @@ namespace HearthCap.Core.GameCapture.HS
             if (deckScreenshotRequested)
             {
                 var detect1 = Detect(this.areas, "deckscreen");
-                var detect2 = Detect(this.areas, "deckscreen2");
+                var detect2 = Detect(this.areas, "deckscreen2", null, 16);
                 if (detect1 && detect2)
                 {
                     this.deckScreenshotRequested = false;
