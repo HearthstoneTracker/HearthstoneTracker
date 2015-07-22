@@ -230,14 +230,12 @@ namespace HearthCap.Features.Diagnostics
             Execute.OnUIThread(
                 () =>
                 {
-                    if (!(message is WindowCaptured))
+                    if (engineEvents.Count > 1000)
                     {
-                        if (engineEvents.Count > 1000)
-                        {
-                            engineEvents.Clear();
-                        }
-                        EngineEvents.Add(message.ToMessageModel());
+                        engineEvents.Clear();
                     }
+
+                    EngineEvents.Add(message.ToMessageModel());
                 });
         }
 

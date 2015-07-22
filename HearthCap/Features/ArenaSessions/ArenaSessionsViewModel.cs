@@ -137,7 +137,7 @@
         //    }
         //}
 
-        private void DragDropItem(DataGridDragDropEventArgs args)
+        private async void DragDropItem(DataGridDragDropEventArgs args)
         {
             var arena = args.TargetObject as ArenaSessionModel;
             var game = args.DroppedObject as GameResultModel;
@@ -146,7 +146,7 @@
 
 
             // move game to arena
-            gameManager.MoveGameToArena(game, arena);
+            await gameManager.MoveGameToArena(game, arena);
         }
 
         //public async Task DeleteSelectedGames()
@@ -640,7 +640,7 @@
         /// <summary>
         /// Called when initializing.
         /// </summary>
-        protected override async void OnInitialize()
+        protected override void OnInitialize()
         {
             this.dateFilter.DateChanged += DateFilterOnPropertyChanged;
         }
@@ -668,15 +668,6 @@
             }
         }
 
-        /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
-        /// </summary>
-        /// <param name="view"/>
-        protected override async void OnViewReady(object view)
-        {
-
-        }
-
         private async Task LoadInitialData()
         {
             var data = await GlobalData.GetAsync();
@@ -700,10 +691,10 @@
             }
         }
 
-        private async Task LoadMore(bool clearValues = false)
+        private void LoadMore(bool clearValues = false)
         {
-            await Application.Current.Dispatcher.BeginInvoke(
-                (Action)(() =>
+            Application.Current.Dispatcher.BeginInvoke(
+                (Action)(async () =>
                     {
                         if (needRefresh)
                         {
@@ -713,7 +704,7 @@
                                 return;
                             }
                             this.loadMoreTicket = Busy.GetTicket();
-                            Task.Run(
+                            await Task.Run(
                                 async () =>
                                 {
                                     if (clearValues)

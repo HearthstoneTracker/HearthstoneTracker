@@ -396,14 +396,6 @@ namespace HearthCap.Shell
             this.ApplyToggleFlyout(message.Name, message.IsModal, message.Show);
         }
 
-        protected override void OnActivate()
-        {
-        }
-
-        protected override async void OnInitialize()
-        {
-        }
-
         /// <summary>
         /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
         /// </summary>

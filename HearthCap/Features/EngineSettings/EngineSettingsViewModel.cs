@@ -137,7 +137,7 @@
             }
         }
 
-        private async void UpdateSettings()
+        private void UpdateSettings()
         {
             if (PauseNotify.IsPaused(this)) return;
 

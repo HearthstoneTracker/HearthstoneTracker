@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:oxy="http://oxyplot.codeplex.com"
+             xmlns:wpf="http://oxyplot.org/wpf"
              HorizontalAlignment="Stretch"
              HorizontalContentAlignment="Stretch"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <Grid VerticalAlignment="Stretch">
-        <oxy:Plot Title="Win ratio"
+        <wpf:Plot Title="Win ratio"
                   Width="600"
                   Model="{Binding PlotModel}"
                   VerticalAlignment="Stretch">
@@ -24,6 +25,6 @@
                                 DataFieldX="Date"
                                 DataFieldY="Value"></oxy:LineSeries>
             </oxy:Plot.Series>-->
-        </oxy:Plot>
+        </wpf:Plot>
     </Grid>
 </UserControl>

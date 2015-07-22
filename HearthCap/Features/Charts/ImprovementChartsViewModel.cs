@@ -31,30 +31,33 @@ namespace HearthCap.Features.Charts
             Order = 1;
             this.dbContext = dbContext;
 
-            PlotModel = new PlotModel("Win ratio")
-                            {
-                                IsLegendVisible = true,
-                            };
-            PlotModel.Axes.Add(new LinearAxis(AxisPosition.Left)
-                                   {
-                                       MinimumRange = 0.50,
-                                       // Minimum = 0,
-                                       MajorStep = 0.05,
-                                       MinorStep = 0.01,
-                                       StringFormat = "P0",
-                                       IsZoomEnabled = false,
-                                       IsPanEnabled = false
-                                   });
-            PlotModel.Axes.Add(new DateTimeAxis(AxisPosition.Bottom)
-                                   {
-                                       Angle = 45,
-                                       IntervalType = DateTimeIntervalType.Auto,
-                                       MinorGridlineStyle = LineStyle.Solid,
-                                       MinorIntervalType = DateTimeIntervalType.Auto,
-                                       StringFormat = "dd MMM",
-                                       IsZoomEnabled = false,
-                                       IsPanEnabled = false
-                                   });
+            PlotModel = new PlotModel()
+            {
+                Title = "Win ratio",
+                IsLegendVisible = true,
+            };
+            PlotModel.Axes.Add(new LinearAxis()
+            {
+                Position = AxisPosition.Left,
+                MinimumRange = 0.50,
+                // Minimum = 0,
+                MajorStep = 0.05,
+                MinorStep = 0.01,
+                StringFormat = "P0",
+                IsZoomEnabled = false,
+                IsPanEnabled = false
+            });
+            PlotModel.Axes.Add(new DateTimeAxis()
+            {
+                Position = AxisPosition.Bottom,
+                Angle = 45,
+                IntervalType = DateTimeIntervalType.Auto,
+                MinorGridlineStyle = LineStyle.Solid,
+                MinorIntervalType = DateTimeIntervalType.Auto,
+                StringFormat = "dd MMM",
+                IsZoomEnabled = false,
+                IsPanEnabled = false
+            });
         }
 
         [Import(RequiredCreationPolicy = CreationPolicy.NonShared)]
@@ -86,29 +89,29 @@ namespace HearthCap.Features.Charts
             var weekGroups = allGames
                 .Select(
                     g => new
-                             {
-                                 Game = g,
-                                 Year = g.Started.Year,
-                                 Week =
+                    {
+                        Game = g,
+                        Year = g.Started.Year,
+                        Week =
                              CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(g.Started, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday),
-                                 Date = g.Started.Date
-                             })
+                        Date = g.Started.Date
+                    })
                 // .GroupBy(x => new { x.Date })
                 // .OrderBy(x => x.Key.Date)
                 .GroupBy(x => new { x.Year, x.Week })
                 .OrderBy(x => x.Key.Year).ThenBy(x => x.Key.Week)
                 .Select(
                     (g, i) => new
-                                  {
-                                      WeekGroup = g,
-                                      WeekNum = i + 1,
-                                      Year = g.Key.Year,
-                                      CalendarWeek = g.Key.Week,
-                                      //Date = g.Key.Date,
-                                      Wins = g.Sum(x => x.Game.Victory ? 1 : 0),
-                                      Losses = g.Sum(x => x.Game.Victory ? 0 : 1),
-                                      Total = g.Count()
-                                  });
+                    {
+                        WeekGroup = g,
+                        WeekNum = i + 1,
+                        Year = g.Key.Year,
+                        CalendarWeek = g.Key.Week,
+                        //Date = g.Key.Date,
+                        Wins = g.Sum(x => x.Game.Victory ? 1 : 0),
+                        Losses = g.Sum(x => x.Game.Victory ? 0 : 1),
+                        Total = g.Count()
+                    });
             var dayGroups = allGames
                 .Select(
                     g => new
@@ -141,15 +144,15 @@ namespace HearthCap.Features.Charts
 
             PlotModel.Series.Add(
                 new LineSeries()
-                    {
-                        Title = "Win ratio per week",
-                        ItemsSource = winrateDataPoints,
-                        MarkerStroke = OxyColors.Black,
-                        MarkerType = MarkerType.Circle,
-                        DataFieldX = "Date",
-                        DataFieldY = "Value",
-                        Smooth = true,
-                    });
+                {
+                    Title = "Win ratio per week",
+                    ItemsSource = winrateDataPoints,
+                    MarkerStroke = OxyColors.Black,
+                    MarkerType = MarkerType.Circle,
+                    DataFieldX = "Date",
+                    DataFieldY = "Value",
+                    Smooth = true,
+                });
 
             PlotModel.Series.Add(
                 new LineSeries()
@@ -189,29 +192,29 @@ namespace HearthCap.Features.Charts
                 var weekGroups = heroGroup
                     .Select(
                         g => new
-                                 {
-                                     Game = g,
-                                     Year = g.Started.Year,
-                                     Week =
+                        {
+                            Game = g,
+                            Year = g.Started.Year,
+                            Week =
                                  CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(g.Started, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday),
-                                     Date = g.Started.Date
-                                 })
+                            Date = g.Started.Date
+                        })
                     // .GroupBy(x => new { x.Date })
                     // .OrderBy(x => x.Key.Date)
                     .GroupBy(x => new { x.Year, x.Week })
                     .OrderBy(x => x.Key.Year).ThenBy(x => x.Key.Week)
                     .Select(
                         (g, i) => new
-                                      {
-                                          WeekGroup = g,
-                                          WeekNum = i + 1,
-                                          Year = g.Key.Year,
-                                          CalendarWeek = g.Key.Week,
-                                          //Date = g.Key.Date,
-                                          Wins = g.Sum(x => x.Game.Victory ? 1 : 0),
-                                          Losses = g.Sum(x => x.Game.Victory ? 0 : 1),
-                                          Total = g.Count()
-                                      });
+                        {
+                            WeekGroup = g,
+                            WeekNum = i + 1,
+                            Year = g.Key.Year,
+                            CalendarWeek = g.Key.Week,
+                            //Date = g.Key.Date,
+                            Wins = g.Sum(x => x.Game.Victory ? 1 : 0),
+                            Losses = g.Sum(x => x.Game.Victory ? 0 : 1),
+                            Total = g.Count()
+                        });
                 var winrateDataPoints = new List<DateValue>();
                 foreach (var weekGroup in weekGroups)
                 {
@@ -222,16 +225,16 @@ namespace HearthCap.Features.Charts
                 var color = heroGroup.Key.GetColor();
                 PlotModel.Series.Add(
                     new LineSeries()
-                        {
-                            Title = heroGroup.Key.ClassName,
-                            ItemsSource = winrateDataPoints,
-                            MarkerStroke = OxyColors.Black,
-                            MarkerType = MarkerType.Circle,
-                            DataFieldX = "Date",
-                            DataFieldY = "Value",
-                            Smooth = true,
-                            Color = OxyColor.FromArgb(color.A, color.R, color.G, color.B)
-                        });
+                    {
+                        Title = heroGroup.Key.ClassName,
+                        ItemsSource = winrateDataPoints,
+                        MarkerStroke = OxyColors.Black,
+                        MarkerType = MarkerType.Circle,
+                        DataFieldX = "Date",
+                        DataFieldY = "Value",
+                        Smooth = true,
+                        Color = OxyColor.FromArgb(color.A, color.R, color.G, color.B)
+                    });
             }
         }
 

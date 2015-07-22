@@ -5,14 +5,8 @@
 
     using GoogleAnalyticsTracker.Core;
 
-    public class HsAnalyticsSession : IAnalyticsSession
+    public class HsAnalyticsSession : AnalyticsSession
     {
-        public HsAnalyticsSession()
-        {
-        }
-
-        public string SessionId { get; set; }
-
         private AnalyticsCookie ParseCookie(string cookie)
         {
             var result = new string[4];
@@ -68,7 +62,7 @@
             return val;
         }
 
-        public string GenerateCookieValue()
+        public override string GenerateCookieValue()
         {
             AnalyticsCookie cookie;
             using (var reg = new AnalyticsRegistrySettings())
@@ -105,7 +99,7 @@
             }
         }
 
-        public string GenerateSessionId()
+        public override string GenerateSessionId()
         {
             if (this.SessionId == null)
             {

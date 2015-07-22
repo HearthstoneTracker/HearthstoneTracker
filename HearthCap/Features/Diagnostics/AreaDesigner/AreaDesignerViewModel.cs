@@ -39,8 +39,6 @@
 
         private RegionModel region;
 
-        private OverlayRegionModel overlay;
-
         private bool capturing = true;
 
         private ScanAreasModel scanAreasModel;

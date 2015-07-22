@@ -727,7 +727,7 @@
                     }
                     catch (Exception ex)
                     {
-                        Log.Debug("Error decoding DirectX pixels: {0}", ex);
+                        Log.Debug(ex, "Error decoding DirectX pixels: {0}");
                         return null;
                     }
                 }
@@ -863,7 +863,7 @@
                     {
                         locked = sharedMemMutexes[i].WaitOne(1000);
                     }
-                    catch (AbandonedMutexException ex)
+                    catch (AbandonedMutexException)
                     {
                         locked = true;
                     }

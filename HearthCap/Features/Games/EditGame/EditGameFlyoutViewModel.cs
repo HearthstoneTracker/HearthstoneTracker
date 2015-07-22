@@ -64,9 +64,6 @@ namespace HearthCap.Features.Games.EditGame
 
         private readonly IRepository<GameResult> gameRepository;
 
-        /// <summary>The deck key.</summary>
-        private string deckKey;
-
         /// <summary>The end time.</summary>
         private DateTime endTime;
 

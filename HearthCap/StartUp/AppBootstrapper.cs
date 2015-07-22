@@ -27,11 +27,9 @@ namespace HearthCap.StartUp
 
     public class AppBootstrapper : BootstrapperBase, IDisposable
     {
-        private string applicationDataDirectory;
-
         private static CompositionContainer container;
 
-        private IAppLogManager logManager;
+        private IAppLogManager _logManager;
 
         public AppBootstrapper()
         {
@@ -53,10 +51,10 @@ namespace HearthCap.StartUp
                 Container.Dispose();
             }
 
-            if (this.logManager != null)
+            if (this._logManager != null)
             {
-                this.logManager.Flush();
-                this.logManager.Dispose();
+                this._logManager.Flush();
+                this._logManager.Dispose();
             }
         }
 
@@ -95,11 +93,12 @@ namespace HearthCap.StartUp
             FilterFrameworkCoreCustomization.Hook();
 
             var logPath = Path.Combine((string)AppDomain.CurrentDomain.GetData("DataDirectory"), "logs");
-            container.GetExportedValue<IAppLogManager>().Initialize(logPath);
+            _logManager = container.GetExportedValue<IAppLogManager>();
+            _logManager.Initialize(logPath);
             container.GetExportedValue<CrashManager>().WireUp();
 
-            this.Application.Activated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
-            this.Application.Deactivated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
+            Application.Activated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
+            Application.Deactivated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
         }
 
         private void InitializeApplicationDataDirectory()

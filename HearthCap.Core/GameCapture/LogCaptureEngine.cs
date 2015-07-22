@@ -58,8 +58,6 @@ namespace HearthCap.Core.GameCapture
 
         private bool windowLost;
 
-        private bool windowMinimized;
-
         private IEventAggregator events;
 
         // private Regex _loadingScreenRegex = new Regex(@"prevMode=(?<prevMode>.*) nextMode=(?<nextMode>.*)");
@@ -234,7 +232,7 @@ namespace HearthCap.Core.GameCapture
                 Log.Debug("Hearthstone window is lost (not running?)");
                 this.Publish(new WindowNotFound());
             }
-            this.windowMinimized = false;
+
             this.windowFound = false;
             this.windowLost = true;
         }
@@ -268,7 +266,6 @@ namespace HearthCap.Core.GameCapture
             }
             this.windowFound = true;
             this.windowLost = false;
-            this.windowMinimized = false;
         }
 
         private void InitServerChannel()

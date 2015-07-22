@@ -496,7 +496,7 @@
                 AddGameToArena(game, targetarena);
                 SetEndDateIfNeeded(targetarena);
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 var latestId = context.ArenaSessions.OrderByDescending(x => x.StartDate).Select(x => x.Id).FirstOrDefault();
                 this.events.PublishOnBackgroundThread(new ArenaSessionUpdated(sourceArena.Id, latestId == sourceArena.Id));
                 this.events.PublishOnBackgroundThread(new ArenaSessionUpdated(targetarena.Id, latestId == targetarena.Id));

@@ -105,8 +105,6 @@
 
         private readonly DateFilter dateFilter = new DateFilter() { ShowAllTime = true };
 
-        private int currentMax;
-
         private int totalCount;
 
         private string search;
@@ -488,21 +486,6 @@
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
-        /// </summary>
-        /// <param name="view"/>
-        protected override void OnViewReady(object view)
-        {
-        }
-
-        /// <summary>
-        /// Called when initializing.
-        /// </summary>
-        protected override async void OnInitialize()
-        {
-        }
 
         protected override void OnActivate()
         {

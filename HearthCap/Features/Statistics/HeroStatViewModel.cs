@@ -22,8 +22,6 @@ namespace HearthCap.Features.Statistics
 
         private bool refreshing;
 
-        private bool showPlayedVsRatio;
-
         [ImportingConstructor]
         public HeroStatViewModel(IRepository<GameResult> gameRepository)
         {

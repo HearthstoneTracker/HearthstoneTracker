@@ -42,25 +42,31 @@ namespace HearthCap.StartUp
 
         private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            this.HandleException(e.Exception);
+            HandleException(e.Exception);
         }
 
         private void ApplicationOnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            this.HandleException(e.Exception);
+            HandleException(e.Exception);
         }
 
         private void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            this.HandleException((Exception)e.ExceptionObject);
+            HandleException((Exception)e.ExceptionObject);
         }
 
         public void HandleException(Exception exception)
         {
-            Log.Fatal(exception);
-
-            Tracker.TrackEventAsync(Tracker.ErrorsCategory, "Fatal", exception.ToString(), 1);
-            appLogManager.Flush();
+            try
+            {
+                Log.Fatal(exception);
+                Tracker.TrackEventAsync(Tracker.ErrorsCategory, "Fatal", exception.ToString(), 1);
+                appLogManager.Flush();
+            }
+            catch (Exception)
+            {
+                // TODO: check, swallow any exceptions because of final actions after fatal error
+            }
 
             //var result = MessageBox.Show("An unhandled error occured. Please report this error.\nRestarting is recommended. Restart now?", "Unhandled error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
             //if (result == DialogResult.Yes)

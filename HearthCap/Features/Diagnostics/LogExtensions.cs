@@ -26,25 +26,18 @@ namespace HearthCap.Features.Diagnostics
             {
                 case LogLevel.All:
                     return NLog.LogLevel.Trace;
-                    break;
                 case LogLevel.Debug:
                     return NLog.LogLevel.Debug;
-                    break;
                 case LogLevel.Diag:
                     return NLog.LogLevel.Trace;
-                    break;
                 case LogLevel.Error:
                     return NLog.LogLevel.Error;
-                    break;
                 case LogLevel.Info:
                     return NLog.LogLevel.Info;
-                    break;
                 case LogLevel.None:
                     return NLog.LogLevel.Off;
-                    break;
                 case LogLevel.Warn:
                     return NLog.LogLevel.Warn;
-                    break;
                 default:
                     return NLog.LogLevel.Info;
             }

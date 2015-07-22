@@ -15,7 +15,6 @@
                    xmlns:system="clr-namespace:System;assembly=mscorlib"
                    xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                    mc:Ignorable="d"
-                   d:DataContext="{d:DesignInstance Type=shell:ShellViewModel, IsDesignTimeCreatable=False}"
                    cal:Bind.AtDesignTime="False"
                    WindowStartupLocation="CenterScreen"
                    ShowIconOnTitleBar="True"

@@ -40,3 +40,4 @@ installer/Version.nsh
 HearthCap.sdf
 *.opensdf
 ipch/*
+NDependOut/*

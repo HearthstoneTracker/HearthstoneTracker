@@ -74,20 +74,15 @@ namespace HearthCap.Logging
             {
                 NLog.LogManager.Shutdown();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                // TODO: check, swallow exceptions during shutdown/dispose
             }
         }
 
         public void Flush()
         {
-            try
-            {
-                logfile.Flush(ex => { });
-            }
-            catch (Exception ex)
-            {
-            }
+            logfile.Flush(ex => { });
         }
     }
 }

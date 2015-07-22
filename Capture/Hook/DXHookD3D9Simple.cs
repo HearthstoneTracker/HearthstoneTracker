@@ -54,8 +54,6 @@
 
         private List<IntPtr> id3dDeviceFunctionAddresses = new List<IntPtr>();
 
-        private bool isUsingPresent;
-
         private bool killThread;
 
         private int pitch;

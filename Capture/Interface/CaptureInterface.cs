@@ -20,9 +20,7 @@
 
         private Action<Screenshot> _completeScreenshot = null;
 
-        private bool _disposed;
-
-        private object _lock = new object();
+        private readonly object _lock = new object();
 
         private Guid? _requestId = null;
 

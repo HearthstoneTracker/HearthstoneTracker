@@ -68,7 +68,7 @@ namespace HearthCap.Shell.UserPreferences
                     value = Enum.Parse(typeof(T), value.ToString());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 value = defaultValue;
                 section.SetValue(key, defaultValue, RegistryValueKind.String);

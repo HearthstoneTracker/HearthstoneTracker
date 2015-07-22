@@ -63,8 +63,6 @@
 
         private Surface[] copySurfaces = new Surface[BUFFERS];
 
-        private RetrieveImageDataParams? retrieveParams;
-
         private Thread retrieveThread;
 
         private bool supportsDirect3DEx = false;
@@ -599,7 +597,7 @@
                                 }
                             }
                         }
-                        catch (AbandonedMutexException ex)
+                        catch (AbandonedMutexException)
                         {
                             sharedMemMutexes[lastKnown].ReleaseMutex();
                             continue;
@@ -828,7 +826,7 @@
                         {
                             locked = this.sharedMemMutexes[i].WaitOne(0);
                         }
-                        catch (AbandonedMutexException ex)
+                        catch (AbandonedMutexException)
                         {
                             locked = true;
                         }

@@ -60,8 +60,6 @@
 
         private Surface[] copySurfaces = new Surface[BUFFERS];
 
-        private RetrieveImageDataParams? retrieveParams;
-
         private Thread retrieveThread;
 
         private bool supportsDirect3DEx = false;
@@ -87,10 +85,6 @@
         private int currentSurface;
 
         private const int BUFFERS = 2;
-
-        private long desiredFrameTime = TimeSpan.FromMilliseconds(1000 / 30).Ticks;
-
-        private long lastTime;
 
         private Guid? previousRequestId;
 

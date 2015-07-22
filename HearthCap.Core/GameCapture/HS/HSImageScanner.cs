@@ -7,9 +7,6 @@ namespace HearthCap.Core.GameCapture.HS
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
     using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
-    using System.Security.Cryptography;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -24,6 +21,9 @@ namespace HearthCap.Core.GameCapture.HS
     using NLog;
 
     using PHash;
+
+    using Action = System.Action;
+    using LogManager = NLog.LogManager;
 
     [Export(typeof(IImageScanner))]
     [PartCreationPolicy(CreationPolicy.Shared)]
@@ -100,15 +100,13 @@ namespace HearthCap.Core.GameCapture.HS
 
         private int inGameCounter = 0;
 
-        private bool inMenu;
-
         private string lastDeck;
 
         private GameMode lastGameMode;
 
         private int lastResolution = 900;
 
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly TraceLogger TraceLog = new TraceLogger(Log);
 
         private bool myturn;
@@ -137,7 +135,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         private ScanAreaImageDictionary arenaWinsLookup2;
 
-        private Queue<System.Action> gameModeChangeActionQueue = new Queue<System.Action>();
+        private Queue<Action> gameModeChangeActionQueue = new Queue<Action>();
 
         private bool requestReset;
 
@@ -150,10 +148,6 @@ namespace HearthCap.Core.GameCapture.HS
         private StringBuilder foundUsing = new StringBuilder();
 
         private bool arenaWinsScanning;
-
-        private string lastVicDetect;
-
-        private string lastLossDetect;
 
         private CurrentScanState currentScan;
 
@@ -308,13 +302,13 @@ namespace HearthCap.Core.GameCapture.HS
                 if (template.ContainsKey(this.lastResolution))
                 {
                     matchhash = template[this.lastResolution].Hash;
-                    rect = template[this.lastResolution].Rect;
+                    rect = template[this.lastResolution].Rectangle;
                     theResolution = this.lastResolution;
                 }
                 else if (template.ContainsKey(this.BaseResolution))
                 {
                     matchhash = template[this.BaseResolution].Hash;
-                    rect = template[this.BaseResolution].Rect;
+                    rect = template[this.BaseResolution].Rectangle;
                     theResolution = this.BaseResolution;
                 }
                 else
@@ -403,7 +397,7 @@ namespace HearthCap.Core.GameCapture.HS
             var source = this.image;
             int distance = -1;
             DetectionResult result = new DetectionResult();
-            using (var roi = source.Lock(ResolutionHelper.CorrectRectangle(source.Size, area.Rect, theResolution), source.PixelFormat))
+            using (var roi = source.Lock(ResolutionHelper.CorrectRectangle(source.Size, area.Rectangle, theResolution), source.PixelFormat))
             {
                 // var roi = source.Clone(ResolutionHelper.CorrectRectangle(source.Size, area.Rect, theResolution), source.PixelFormat);
                 //Tuple<byte[], DetectionResult> cached = null;
@@ -691,7 +685,6 @@ namespace HearthCap.Core.GameCapture.HS
             this.gameTurns = 0;
             this.roundTurned = false;
             this.conceded = false;
-            this.inMenu = false;
             this.myturn = false;
             this.endTime = DateTime.MinValue;
             // this.lastDeck = null;
@@ -787,7 +780,7 @@ namespace HearthCap.Core.GameCapture.HS
             if (arenadeckScreenshotRequested && gameMode == GameMode.Arena)
             {
                 arenadeckScreenshotRequested = false;
-                var deckRect = this.areas["deckarea_arena"][BaseResolution].Rect;
+                var deckRect = this.areas["deckarea_arena"][BaseResolution].Rectangle;
                 deckRect = ResolutionHelper.CorrectRectangle(this.image.Size, deckRect, BaseResolution);
                 var deck = this.image.Clone(deckRect, this.image.PixelFormat);
                 Log.Debug("Arena deck Screenshot Requested. Sending screenshot...");
@@ -840,7 +833,7 @@ namespace HearthCap.Core.GameCapture.HS
             if (takeDeckScreenshot)
             {
                 takeDeckScreenshot = false;
-                var deckRect = this.areas["deckarea_cards"][BaseResolution].Rect;
+                var deckRect = this.areas["deckarea_cards"][BaseResolution].Rectangle;
                 deckRect = ResolutionHelper.CorrectRectangle(this.image.Size, deckRect, BaseResolution);
                 var deck = this.image.Clone(deckRect, this.image.PixelFormat);
                 Log.Debug("Deck Screenshot Requested. Sending screenshot...");
@@ -1048,7 +1041,6 @@ namespace HearthCap.Core.GameCapture.HS
             if (!found && this.Detect(this.areas, "quest"))
             {
                 foundGameMode = GameMode.Unknown;
-                this.inMenu = true;
                 found = true;
             }
 
@@ -1219,9 +1211,7 @@ namespace HearthCap.Core.GameCapture.HS
             Log.Debug("ResetFoundVictory called. Was: {0}", this.foundUsing);
             this.foundLoss = 0;
             this.foundVic = 0;
-            this.foundUsing.Clear();
-            this.lastLossDetect = null;
-            this.lastVicDetect = null;
+            this.foundUsing.Clear();           
         }
 
         private void ScanVictory()
@@ -1234,84 +1224,72 @@ namespace HearthCap.Core.GameCapture.HS
             if (this.Detect(this.areas, "victory"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory";
                 foundUsing.Append("victory|");
             }
 
             if (this.Detect(this.areas, "loss"))
             {
                 this.foundLoss++;
-                this.lastLossDetect = "loss";
                 foundUsing.Append("loss|");
             }
 
             if (this.Detect(this.areas, "victory_explode"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory_explode";
                 foundUsing.Append("victory_explode|");
             }
 
             if (this.Detect(this.areas, "victory_explode2"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory_explode2";
                 foundUsing.Append("victory_explode2|");
             }
 
             if (this.Detect(this.areas, "victory_explode3"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory_explode3";
                 foundUsing.Append("victory_explode3|");
             }
 
             if (this.Detect(this.areas, "victory_explode4"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory_explode4";
                 foundUsing.Append("victory_explode4|");
             }
 
             if (this.Detect(this.areas, "victory_explode5"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory_explode5";
                 foundUsing.Append("victory_explode5|");
             }
 
             if (this.Detect(this.areas, "loss_explode"))
             {
                 this.foundLoss++;
-                this.lastLossDetect = "loss_explode";
                 foundUsing.Append("loss_explode|");
             }
 
             if (this.Detect(this.areas, "loss_explode2"))
             {
                 this.foundLoss++;
-                this.lastLossDetect = "loss_explode2";
                 foundUsing.Append("loss_explode2|");
             }
 
             if (this.Detect(this.areas, "victory2"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory2";
                 foundUsing.Append("victory2|");
             }
 
             if (this.Detect(this.areas, "victory3"))
             {
                 this.foundVic++;
-                this.lastVicDetect = "victory3";
                 foundUsing.Append("victory3|");
             }
 
             if (this.Detect(this.areas, "loss2"))
             {
                 this.foundLoss++;
-                this.lastLossDetect = "loss2";
                 foundUsing.Append("loss2|");
             }
 
