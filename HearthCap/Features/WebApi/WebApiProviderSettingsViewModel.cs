@@ -25,7 +25,12 @@ namespace HearthCap.Features.WebApi
 
         void IWebApiProviderScreen.Initialize()
         {
-            this.LoadSettings();
+            Initialize();
+        }
+
+        protected void Initialize()
+        {
+            LoadSettings();
         }
 
         protected abstract void LoadSettings();

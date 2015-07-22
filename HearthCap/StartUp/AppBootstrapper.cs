@@ -25,7 +25,7 @@ namespace HearthCap.StartUp
 
     using Configuration = HearthCap.Data.Migrations.Configuration;
 
-    public class AppBootstrapper : BootstrapperBase, IDisposable
+    public sealed class AppBootstrapper : BootstrapperBase, IDisposable
     {
         private static CompositionContainer container;
 
@@ -132,11 +132,6 @@ namespace HearthCap.StartUp
         protected override IEnumerable<object> GetAllInstances(Type serviceType)
         {
             return container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
-        }
-
-        protected IEnumerable<T> GetAllInstances<T>()
-        {
-            return container.GetExportedValues<T>();
         }
 
         protected override object GetInstance(Type serviceType, string key)

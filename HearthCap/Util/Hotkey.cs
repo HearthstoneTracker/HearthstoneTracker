@@ -11,11 +11,14 @@
     {
         private static Dictionary<int, HotKey> _dictHotKeyToCalBackProc;
 
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vlc);
+        private static class NativeMethods
+        {
+            [DllImport("user32.dll")]
+            public static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vlc);
 
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+            [DllImport("user32.dll")]
+            public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        }
 
         public const int WmHotKey = 0x0312;
 
@@ -43,7 +46,7 @@
         {
             int virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
             Id = virtualKeyCode + ((int)KeyModifiers * 0x10000);
-            bool result = RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
+            bool result = NativeMethods.RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
 
             if (_dictHotKeyToCalBackProc == null)
             {
@@ -63,7 +66,7 @@
             HotKey hotKey;
             if (_dictHotKeyToCalBackProc.TryGetValue(Id, out hotKey))
             {
-                UnregisterHotKey(IntPtr.Zero, Id);
+                NativeMethods.UnregisterHotKey(IntPtr.Zero, Id);
             }
         }
 

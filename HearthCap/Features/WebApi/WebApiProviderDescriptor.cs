@@ -1,6 +1,5 @@
 namespace HearthCap.Features.WebApi
 {
-    using System.Collections;
     using System.Collections.Generic;
 
     using Caliburn.Micro;
@@ -18,7 +17,7 @@ namespace HearthCap.Features.WebApi
         protected WebApiProviderDescriptor(string providerKey)
         {
             this.providerKey = providerKey;
-            this.Data = new Dictionary<string, string>();
+            Data = new Dictionary<string, string>();
         }
 
         public string ProviderKey
@@ -33,16 +32,16 @@ namespace HearthCap.Features.WebApi
         {
             get
             {
-                return this.providerName;
+                return providerName;
             }
             set
             {
-                if (value == this.providerName)
+                if (value == providerName)
                 {
                     return;
                 }
-                this.providerName = value;
-                this.NotifyOfPropertyChange(() => this.ProviderName);
+                providerName = value;
+                NotifyOfPropertyChange(() => ProviderName);
             }
         }
 
@@ -50,16 +49,16 @@ namespace HearthCap.Features.WebApi
         {
             get
             {
-                return this.providerDescription;
+                return providerDescription;
             }
             set
             {
-                if (value == this.providerDescription)
+                if (value == providerDescription)
                 {
                     return;
                 }
-                this.providerDescription = value;
-                this.NotifyOfPropertyChange(() => this.ProviderDescription);
+                providerDescription = value;
+                NotifyOfPropertyChange(() => ProviderDescription);
             }
         }
 
@@ -67,16 +66,16 @@ namespace HearthCap.Features.WebApi
         {
             get
             {
-                return this.isEnabled;
+                return isEnabled;
             }
             set
             {
-                if (value.Equals(this.isEnabled))
+                if (value.Equals(isEnabled))
                 {
                     return;
                 }
-                this.isEnabled = value;
-                this.NotifyOfPropertyChange(() => this.IsEnabled);
+                isEnabled = value;
+                NotifyOfPropertyChange(() => IsEnabled);
             }
         }
 
@@ -86,8 +85,13 @@ namespace HearthCap.Features.WebApi
 
         void IWebApiProviderDescriptor.Initialize()
         {
-            this.Settings.Initialize();
-            this.EventsHandler.Initialize(this);
+            Initialize();
+        }
+
+        protected void Initialize()
+        {
+            Settings.Initialize();
+            EventsHandler.Initialize(this);
         }
 
         public IDictionary<string, string> Data { get; private set; }

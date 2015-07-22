@@ -37,7 +37,7 @@
 
     [Export(typeof(IFlyout))]
     [Export(typeof(CurrentSessionFlyoutViewModel))]
-    public class CurrentSessionFlyoutViewModel : FlyoutViewModel,
+    public sealed class CurrentSessionFlyoutViewModel : FlyoutViewModel,
                                                  IPartImportsSatisfiedNotification,
                                                  IHandleWithTask<ArenaHeroDetected>,
                                                  IHandle<GameModeChanged>,
@@ -46,7 +46,7 @@
                                                  IHandleWithTask<ArenaDeckScreenshotTaken>,
                                                  IHandle<ArenaWinsDetected>,
                                                  IHandle<ArenaLossesDetected>,
-                                                 IHandle<SelectedGameChanged>
+                                                 IHandle<SelectedGameChanged>                                                 
     {
         #region Static Fields
 
@@ -1041,9 +1041,9 @@
             using (await newArenaLock.LockAsync())
             {
                 var arena = new ArenaSessionModel
-                                {
-                                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
-                                };
+                {
+                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
+                };
                 arena = await gameManager.AddArenaSession(arena);
 
                 // for web api

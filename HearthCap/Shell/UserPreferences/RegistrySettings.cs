@@ -12,6 +12,8 @@ namespace HearthCap.Shell.UserPreferences
 
         private readonly RegistryKey section;
 
+        private bool _disposed;
+
         protected RegistrySettings(string sectionName)
         {
             this.sectionName = sectionName;
@@ -86,9 +88,33 @@ namespace HearthCap.Shell.UserPreferences
             section.SetValue(key, realValue, kind);
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
-            this.Section.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            if (disposing)
+            {
+                if (section != null)
+                {
+                    section.Dispose();                    
+                }
+            }
+
+            _disposed = true;
+        }
+
+        ~RegistrySettings()
+        {
+            Dispose(false);
         }
     }
 }

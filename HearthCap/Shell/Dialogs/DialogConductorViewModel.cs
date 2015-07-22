@@ -17,7 +17,7 @@
             this.createMessageBox = messageBoxFactory;
         }
 
-        public IScreen ActiveItem { get; private set; }
+        public IScreen ActiveItem { get; protected set; }
 
         public IEnumerable GetChildren()
         {

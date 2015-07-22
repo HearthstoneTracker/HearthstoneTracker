@@ -129,6 +129,7 @@
             TryClose();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         [Dependencies("Email", "Subject", "Message")]
         public void Send()
         {

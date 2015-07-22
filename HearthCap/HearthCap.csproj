@@ -355,6 +355,7 @@
     <Compile Include="Features\SlowOpponent\SlowOpponentSettingsViewModel.cs" />
     <Compile Include="Features\Charts\ChartsViewModel.cs" />
     <Compile Include="Features\Core\GameModesStringCollection.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Shell\Flyouts\FlyoutAttribute.cs" />
     <Compile Include="Shell\Flyouts\FlyoutRegistrySettings.cs" />
     <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropBehavior.cs" />

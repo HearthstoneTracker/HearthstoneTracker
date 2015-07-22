@@ -17,12 +17,13 @@ namespace HearthCap.Features.Diagnostics
     using HearthCap.Shell.Tabs;
 
     // [Export(typeof(ITab))]
-    public class DiagnosisViewModel : TabViewModel,
+    public sealed class DiagnosisViewModel : TabViewModel,
         IHandle<GameEvent>,
         IHandle<GameModeChanged>,
         IHandle<DeckDetected>,
         IHandle<LogEvent>,
-        IHandle<WindowCaptured>
+        IHandle<WindowCaptured>,
+        IDisposable
     {
         private readonly IEventAggregator events;
 
@@ -296,6 +297,17 @@ namespace HearthCap.Features.Diagnostics
 
                     EngineEvents.Add(message.ToMessageModel("Generic event: " + message.GetType().Name));
                 });
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (screenshotBitmap != null)
+            {
+                screenshotBitmap.Dispose();
+            }
         }
     }
 }

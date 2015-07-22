@@ -85,6 +85,7 @@
     <Compile Include="DeletedGameResult.cs" />
     <Compile Include="EagerLoadExtensions.cs" />
     <Compile Include="GameMode.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IEntityWithId.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="HearthStatsDbContext.cs" />

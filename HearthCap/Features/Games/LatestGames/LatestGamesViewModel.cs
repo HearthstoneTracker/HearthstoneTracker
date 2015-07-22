@@ -111,7 +111,7 @@
 
         private BindableCollection<GameResultModel> selectedGames = new BindableCollection<GameResultModel>();
 
-        private BusyWatcher.BusyWatcherTicket loadMoreTicket;
+        private IDisposable loadMoreTicket;
 
         #endregion
 
