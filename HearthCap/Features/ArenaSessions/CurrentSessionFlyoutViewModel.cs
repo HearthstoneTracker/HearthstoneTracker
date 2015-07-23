@@ -831,11 +831,9 @@
             SelectedArenaSession = arenaSessionModel;
             InitLatest();
             InitViewModel(SelectedArenaSession);
-            if (IsOpen)
-            {
-                IsOpen = false;
-            }
+
             IsOpen = true;
+
             events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, arenaSessionModel.Id));
         }
 

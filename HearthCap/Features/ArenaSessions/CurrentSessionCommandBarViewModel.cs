@@ -4,6 +4,7 @@
 
     using Caliburn.Micro;
 
+    using HearthCap.Features.Games.EditGame;
     using HearthCap.Shell.CommandBar;
     using HearthCap.Shell.Dialogs;
 
@@ -27,10 +28,14 @@
         public CurrentSessionFlyoutViewModel ArenaViewModel { get; set; }
 
         [Import]
+        public EditGameFlyoutViewModel GameViewModel { get; set; }
+
+        [Import]
         public AddArenaViewModel AddArenaViewModel { get; set; }
 
         public void ShowLatest()
         {
+            GameViewModel.IsOpen = false;
             ArenaViewModel.LoadLatest();
         }
 
