@@ -46,7 +46,7 @@
                                                  IHandleWithTask<ArenaDeckScreenshotTaken>,
                                                  IHandle<ArenaWinsDetected>,
                                                  IHandle<ArenaLossesDetected>,
-                                                 IHandle<SelectedGameChanged>                                                 
+                                                 IHandle<SelectedGameChanged>
     {
         #region Static Fields
 
@@ -779,7 +779,7 @@
                         arenaIdForScreenshot = latestArena.Id;
                         TakingScreenshot = true;
                         CanTakeScreenshot = false;
-                        await Task.Delay(1000).ContinueWith(t => events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot()));
+                        Task.Delay(1000).ContinueWith(t => events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot()));
                     }
                 }
             }
