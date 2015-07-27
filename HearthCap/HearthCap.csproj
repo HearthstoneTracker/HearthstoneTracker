@@ -376,7 +376,9 @@
     <Compile Include="Util\PredicateBuilder.cs" />
     <Compile Include="Features\Games\Statistics\StatModel.cs" />
     <Compile Include="Features\StartHearthstone\StartHearthstoneViewModel.cs" />
-    <Compile Include="Features\StartupSettings\StartupSettingsViewModel.cs" />
+    <Compile Include="Features\StartupSettings\StartupSettingsViewModel.cs">
+      <DependentUpon>StartupSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Features\BalloonSettings\BalloonSettingsViewModel.cs" />
     <Compile Include="Features\Dashboard\DashboardViewModel.cs" />
     <Compile Include="Features\Diagnostics\LogFlyout\CaptureTarget.cs" />
@@ -395,7 +397,9 @@
     <Compile Include="Features\Status\StatusView.xaml.cs">
       <DependentUpon>StatusView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Features\Status\StatusViewModel.cs" />
+    <Compile Include="Features\Status\StatusViewModel.cs">
+      <DependentUpon>StatusView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Features\Support\SupportCommandBarViewModel.cs" />
     <Compile Include="Features\Support\SupportView.xaml.cs">
       <DependentUpon>SupportView.xaml</DependentUpon>
@@ -518,7 +522,9 @@
     <Compile Include="Features\Diagnostics\LogFlyout\LogFlyoutViewModel.cs" />
     <Compile Include="Features\Diagnostics\LogFlyout\ToggleAddGameCommand.cs" />
     <Compile Include="Features\EngineControl\StartStopCommandBarViewModel.cs" />
-    <Compile Include="Features\EngineSettings\EngineSettingsViewModel.cs" />
+    <Compile Include="Features\EngineSettings\EngineSettingsViewModel.cs">
+      <DependentUpon>EngineSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Features\Games\AddGame\AddGameCommandBarViewModel.cs">
       <SubType>Code</SubType>
     </Compile>

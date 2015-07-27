@@ -15,6 +15,7 @@
     using HearthCap.Features.EngineControl;
     using HearthCap.Features.Settings;
     using HearthCap.Shell.Settings;
+    using HearthCap.Shell.UserPreferences;
     using HearthCap.Util;
 
     public abstract class SpeedScreen : Screen, ISettingsScreen
@@ -30,6 +31,8 @@
         private readonly ICaptureEngine captureEngine;
 
         private readonly SettingsManager settingsManager;
+
+        private readonly UserPreferences _userPreferences;
 
         private IEnumerable<SettingModel> defaultSpeeds = new[]
                                                                    {
@@ -81,11 +84,13 @@
         public EngineSettingsViewModel(
             Func<HearthStatsDbContext> dbContext,
             ICaptureEngine captureEngine,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            UserPreferences userPreferences)
         {
             this.dbContext = dbContext;
             this.captureEngine = captureEngine;
             this.settingsManager = settingsManager;
+            this._userPreferences = userPreferences;
             this.DisplayName = "Engine settings:";
             this.Speeds = new BindableCollection<SettingModel>(defaultSpeeds);
             Order = 0;
@@ -134,6 +139,14 @@
             get
             {
                 return engines;
+            }
+        }
+
+        public UserPreferences UserPreferences
+        {
+            get
+            {
+                return this._userPreferences;
             }
         }
 

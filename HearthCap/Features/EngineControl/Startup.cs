@@ -10,6 +10,7 @@
     using HearthCap.Core.GameCapture;
     using HearthCap.Shell.Events;
     using HearthCap.Shell.Settings;
+    using HearthCap.Shell.UserPreferences;
     using HearthCap.StartUp;
 
     [Export(typeof(IStartupTask))]
@@ -24,6 +25,8 @@
 
         private readonly ILogCaptureEngine logCaptureEngine;
 
+        private readonly UserPreferences _userPreferences;
+
         private CrashManager crashManager;
 
         [ImportingConstructor]
@@ -32,13 +35,15 @@
             SettingsManager settingsManager,
             ICaptureEngine captureEngine,
             ILogCaptureEngine logCaptureEngine,
-            CrashManager crashManager)
+            CrashManager crashManager,
+            UserPreferences userPreferences)
         {
             this.events = events;
             this.settingsManager = settingsManager;
             this.captureEngine = captureEngine;
             this.logCaptureEngine = logCaptureEngine;
             this.crashManager = crashManager;
+            this._userPreferences = userPreferences;
             captureEngine.UnhandledException += this.OnUnhandledException;
             Application.Current.Exit += CurrentOnExit;
         }
@@ -60,13 +65,16 @@
         /// <param name="message">The message.</param>
         public void Handle(ShellReady message)
         {
-            using (var reg = new EngineRegistrySettings())
+            if (this._userPreferences.AutoAttachToHearthstone)
             {
-                captureEngine.CaptureMethod = reg.CaptureMethod;
-                captureEngine.Speed = (int)reg.Speed;
-            }
+                using (var reg = new EngineRegistrySettings())
+                {
+                    captureEngine.CaptureMethod = reg.CaptureMethod;
+                    captureEngine.Speed = (int)reg.Speed;
+                }
 
-            this.captureEngine.StartAsync();
+                this.captureEngine.StartAsync();
+            }
         }
 
         private void CurrentOnExit(object sender, ExitEventArgs exitEventArgs)

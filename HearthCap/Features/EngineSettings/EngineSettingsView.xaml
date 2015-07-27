@@ -42,6 +42,12 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Grid.IsSharedSizeScope="True">
+            <HeaderedContentControl x:Name="hccAutoAttach" Header="" Tag="{Binding ElementName=cbxAutoAttach}" Style="{StaticResource hccFormStyle}">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="-43,0,0,0">
+                    <CheckBox Name="cbxAutoAttach" IsChecked="{Binding UserPreferences.AutoAttachToHearthstone}"></CheckBox>
+                    <TextBlock Margin="4 0 0 0">Auto attach to Hearthstone (applied after restart)</TextBlock>
+                </StackPanel>
+            </HeaderedContentControl>
             <HeaderedContentControl x:Name="speed"
                                     Header="Speed:"
                                     Tag="{Binding ElementName=Speeds}"
