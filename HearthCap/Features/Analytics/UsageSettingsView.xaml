@@ -21,10 +21,11 @@
                 <StackPanel VerticalAlignment="Center"
                             Orientation="Horizontal">
                     <CheckBox Name="ShareUsageStatistics"
-                              IsChecked="{Binding ShareUsageStatistics}"></CheckBox>                    
-                    <TextBlock>
+                              IsChecked="{Binding ShareUsageStatistics}">
+                        <TextBlock>
                         Anonymously share usage information.
-                    </TextBlock>
+                        </TextBlock>
+                    </CheckBox>
                 </StackPanel>
             </HeaderedContentControl>
         </StackPanel>

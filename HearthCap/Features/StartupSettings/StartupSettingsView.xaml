@@ -23,8 +23,9 @@
                                     HorizontalContentAlignment="Stretch">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <CheckBox Name="StartOnLogon"
-                              IsChecked="{Binding UserPreferences.StartOnLogon}"></CheckBox>
-                    <TextBlock Margin="4 0 0 0">Start with windows? (it will start minimized)</TextBlock>
+                              IsChecked="{Binding UserPreferences.StartOnLogon}">
+                        <TextBlock Margin="4 0 0 0">Start with windows? (it will start minimized)</TextBlock>
+                    </CheckBox>
                 </StackPanel>
             </HeaderedContentControl>
         </StackPanel>

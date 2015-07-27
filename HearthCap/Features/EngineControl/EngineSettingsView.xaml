@@ -42,20 +42,14 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Grid.IsSharedSizeScope="True">
-            <HeaderedContentControl x:Name="hccAutoStart" Header="" Tag="{Binding ElementName=AutoStart}" Style="{StaticResource hccFormStyle}">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="-43,0,0,0">
-                    <CheckBox Name="AutoStart">
-                        <TextBlock Margin="4 0 0 0">Start engine on startup (applied on restart)</TextBlock>
-                    </CheckBox>
-                </StackPanel>
-            </HeaderedContentControl>
-            <HeaderedContentControl x:Name="hccShowControls" Header="" Tag="{Binding ElementName=ShowControls}" Style="{StaticResource hccFormStyle}">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Margin="-43,0,0,0">
-                    <CheckBox Name="ShowControls">
-                        <TextBlock Margin="4 0 0 0">Show engine control buttons</TextBlock>
-                    </CheckBox>
-                </StackPanel>
-            </HeaderedContentControl>
+            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Margin="8">
+                <CheckBox Name="ShowControls" Margin="4">
+                    <TextBlock Margin="4 0 0 0">Show engine control buttons</TextBlock>
+                </CheckBox>
+                <CheckBox Name="AutoStart" Margin="4">
+                    <TextBlock Margin="4 0 0 0">Start engine on startup (applied on restart)</TextBlock>
+                </CheckBox>
+            </StackPanel>
             <HeaderedContentControl x:Name="speed"
                                     Header="Speed:"
                                     Tag="{Binding ElementName=Speeds}"

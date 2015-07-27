@@ -43,30 +43,19 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Grid.IsSharedSizeScope="True">
-            <HeaderedContentControl x:Name="startupminimized"
-                                    Header="Start minimized?"
-                                    Tag="{Binding ElementName=StartMinimized}"
-                                    Style="{StaticResource hccFormStyle}"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch">
-                <StackPanel VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                    <CheckBox Name="StartMinimized"
-                              IsChecked="{Binding UserPreferences.StartMinimized}"></CheckBox>
-                </StackPanel>
-            </HeaderedContentControl>
-            <HeaderedContentControl x:Name="minimizesetting"
-                                    Header="Minimize to tray:"
-                                    Tag="{Binding ElementName=MinimizeToTray}"
-                                    Style="{StaticResource hccFormStyle}"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch">
-                <StackPanel VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                    <CheckBox Name="MinimizeToTray"
-                              IsChecked="{Binding MinimizeToTray}"></CheckBox>                    
-                </StackPanel>
-            </HeaderedContentControl>
+            <StackPanel VerticalAlignment="Center"
+                            Orientation="Vertical" Margin="8">
+                <CheckBox Name="StartMinimized"
+                          Margin="4"
+                              IsChecked="{Binding UserPreferences.StartMinimized}">
+                    <TextBlock Margin="4 0 0 0">Start minimized?</TextBlock>
+                </CheckBox>
+                <CheckBox Name="MinimizeToTray"
+                          Margin="4"
+                              IsChecked="{Binding MinimizeToTray}">
+                    <TextBlock Margin="4 0 0 0">Minimize to tray:</TextBlock>
+                </CheckBox>
+            </StackPanel>
             <HeaderedContentControl x:Name="balloonsetting"
                                     Header="Show tray balloons:"
                                     Tag="{Binding ElementName=ShowBalloons}"
@@ -78,20 +67,23 @@
                     <StackPanel Orientation="Horizontal"
                                 Margin="0 4 0 0">
                         <CheckBox Name="ShowBalloons"
-                                  IsChecked="{Binding BalloonSettings.GameMode}"></CheckBox>
-                        <TextBlock Margin="4 0 0 0">Game-mode/deck change</TextBlock>
+                                  IsChecked="{Binding BalloonSettings.GameMode}">
+                            <TextBlock Margin="4 0 0 0">Game-mode/deck change</TextBlock>
+                        </CheckBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Margin="0 4 0 0">
                         <CheckBox Name="ShowBalloons2"
-                                  IsChecked="{Binding BalloonSettings.GameStartEnd}"></CheckBox>
-                        <TextBlock Margin="4 0 0 0">When game starts/ends</TextBlock>
+                                  IsChecked="{Binding BalloonSettings.GameStartEnd}">
+                            <TextBlock Margin="4 0 0 0">When game starts/ends</TextBlock>
+                        </CheckBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"
                                 Margin="0 4 0 0">
                         <CheckBox Name="ShowBalloons3"
-                                  IsChecked="{Binding BalloonSettings.GameTurns}"></CheckBox>
-                        <TextBlock Margin="4 0 0 0">On every game turn</TextBlock>
+                                  IsChecked="{Binding BalloonSettings.GameTurns}">
+                            <TextBlock Margin="4 0 0 0">On every game turn</TextBlock>
+                        </CheckBox>
                     </StackPanel>
                 </StackPanel>
             </HeaderedContentControl>
