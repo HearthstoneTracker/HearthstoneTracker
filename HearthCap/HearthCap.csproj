@@ -344,6 +344,7 @@
     <Compile Include="Features\Decks\EditDeckViewModel.cs" />
     <Compile Include="Features\Diagnostics\Tests\TestsView.cs" />
     <Compile Include="Features\EngineControl\EngineRegistrySettings.cs" />
+    <Compile Include="Features\EngineControl\EngineRegistrySettingsChanged.cs" />
     <Compile Include="Features\GameManager\Events\CorrectLastGameResult.cs" />
     <Compile Include="Features\Games\Balloons\GameStartedBalloonViewModel.cs" />
     <Compile Include="Features\Core\HeroExtensions.cs" />
@@ -522,7 +523,7 @@
     <Compile Include="Features\Diagnostics\LogFlyout\LogFlyoutViewModel.cs" />
     <Compile Include="Features\Diagnostics\LogFlyout\ToggleAddGameCommand.cs" />
     <Compile Include="Features\EngineControl\StartStopCommandBarViewModel.cs" />
-    <Compile Include="Features\EngineSettings\EngineSettingsViewModel.cs">
+    <Compile Include="Features\EngineControl\EngineSettingsViewModel.cs">
       <DependentUpon>EngineSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Features\Games\AddGame\AddGameCommandBarViewModel.cs">
@@ -760,7 +761,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Features\EngineSettings\EngineSettingsView.xaml">
+    <Page Include="Features\EngineControl\EngineSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

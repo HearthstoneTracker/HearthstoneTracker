@@ -9,7 +9,8 @@
     using HearthCap.Shell.CommandBar;
 
     [Export(typeof(ICommandBarItem))]
-    public class StartStopCommandBarViewModel : CommandBarItemViewModel
+    public class StartStopCommandBarViewModel : CommandBarItemViewModel,
+        IHandle<EngineRegistrySettingsChanged>
     {
         private readonly ICaptureEngine _captureEngine;
 
@@ -31,8 +32,12 @@
             _captureEngine.Started += CaptureEngine_Started;
             _captureEngine.Stopped += CaptureEngine_Stopped;
             eventAggregator.Subscribe(this);
-            // lol
             IsStarted = captureEngine.IsRunning;
+
+            using (var reg = new EngineRegistrySettings())
+            {
+                ShowControls = reg.GetOrCreate("ShowControls", true);
+            }
         }
 
         private void CaptureEngine_Stopped(object sender, EventArgs e)
@@ -125,6 +130,18 @@
         {
             IsStopping = true;
             _captureEngine.Stop();
+        }
+
+        /// <summary>
+        /// Handles the message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void Handle(EngineRegistrySettingsChanged message)
+        {
+            using (var reg = new EngineRegistrySettings())
+            {
+                ShowControls = reg.GetOrCreate("ShowControls", true);
+            }
         }
     }
 }

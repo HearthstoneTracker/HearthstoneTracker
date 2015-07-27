@@ -23,7 +23,9 @@
     [Export(typeof(ISettingsScreen))]
     public class EngineSettingsViewModel : SettingsScreen
     {
-        private readonly ICaptureEngine captureEngine;
+        private readonly IEventAggregator _events;
+
+        private readonly ICaptureEngine _captureEngine;
 
         private readonly UserPreferences _userPreferences;
 
@@ -75,12 +77,16 @@
 
         private bool _autoStart;
 
+        private bool _showControls;
+
         [ImportingConstructor]
         public EngineSettingsViewModel(
+            IEventAggregator events,
             ICaptureEngine captureEngine,
             UserPreferences userPreferences)
         {
-            this.captureEngine = captureEngine;
+            _events = events;
+            _captureEngine = captureEngine;
             _userPreferences = userPreferences;
             DisplayName = "Engine settings:";
             Speeds = new BindableCollection<SettingModel>(defaultSpeeds);
@@ -144,6 +150,24 @@
             }
         }
 
+        public bool ShowControls
+        {
+            get
+            {
+                return _showControls;
+            }
+            set
+            {
+                if (value.Equals(_showControls))
+                {
+                    return;
+                }
+                _showControls = value;
+                UpdateSettings();
+                NotifyOfPropertyChange(() => ShowControls);
+            }
+        }
+
         public IObservableCollection<SettingModel> Engines
         {
             get
@@ -164,13 +188,15 @@
         {
             if (PauseNotify.IsPaused(this)) return;
 
-            captureEngine.Speed = (int)SelectedSpeed.Value;
-            captureEngine.CaptureMethod = ((CaptureMethod)SelectedEngine.Value);
+            _captureEngine.Speed = (int)SelectedSpeed.Value;
+            _captureEngine.CaptureMethod = ((CaptureMethod)SelectedEngine.Value);
             using (var reg = new EngineRegistrySettings())
             {
                 reg.Speed = (int)SelectedSpeed.Value;
                 reg.CaptureMethod = (CaptureMethod)SelectedEngine.Value;
                 reg.AutoStart = AutoStart;
+                reg.SetValue("ShowControls", ShowControls);
+                _events.PublishOnBackgroundThread(new EngineRegistrySettingsChanged());
             }
         }
 
@@ -183,6 +209,7 @@
                     SelectedSpeed = Speeds.FirstOrDefault(speed => (int)speed.Value == reg.Speed);
                     SelectedEngine = Engines.FirstOrDefault(key => (CaptureMethod)key.Value == reg.CaptureMethod);
                     AutoStart = reg.AutoStart;
+                    ShowControls = reg.GetOrCreate("ShowControls", true);
                 }
             }
         }
