@@ -30,8 +30,6 @@
 
         private bool minimizeToTray;
 
-        private Boolean _autoAttachToHearthstone = true;
-
         public double WindowTop
         {
             get { return this.windowTop; }
@@ -132,23 +130,6 @@
                 if (value.Equals(this.minimizeToTray)) return;
                 this.minimizeToTray = value;
                 NotifyOfPropertyChange(() => MinimizeToTray);
-            }
-        }
-
-        public Boolean AutoAttachToHearthstone
-        {
-            get
-            {
-                return this._autoAttachToHearthstone;
-            }
-            set
-            {
-                if (value.Equals(this._autoAttachToHearthstone))
-                {
-                    return;
-                }
-                this._autoAttachToHearthstone = value;
-                this.NotifyOfPropertyChange(() => this.AutoAttachToHearthstone);
             }
         }
 
@@ -254,7 +235,6 @@
                 WindowState = reg.WindowState;
                 StartMinimized = reg.StartMinimized;
                 MinimizeToTray = reg.MinimizeToTray;
-                this.AutoAttachToHearthstone = reg.AutoAttachToHearthstone;
 
                 using (var section = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
                 {
@@ -294,7 +274,6 @@
 
                     reg.StartMinimized = StartMinimized;
                     reg.MinimizeToTray = MinimizeToTray;
-                    reg.AutoAttachToHearthstone = this.AutoAttachToHearthstone;
                     reg.WindowState = WindowState;
 
                     using (var section = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))

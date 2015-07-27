@@ -92,6 +92,10 @@ namespace HearthCap.Core.GameCapture
             events.Subscribe(this);
         }
 
+        public event EventHandler<EventArgs> Started;
+
+        public event EventHandler<EventArgs> Stopped;
+
         public int Speed { get; set; }
 
         public bool PublishCapturedWindow { get; set; }
@@ -118,111 +122,124 @@ namespace HearthCap.Core.GameCapture
                 Log.Warn("already running");
                 return;
             }
+
             this.running = true;
-
-            Log.Debug("Capture method: {0}, Version: {1}", this.CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
-
-            stopRequested = false;
-            while (stopRequested == false)
+            try
             {
-                if (!injected)
+                Log.Debug("Capture method: {0}, Version: {1}", this.CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
+                stopRequested = false;
+
+                OnStarted();
+                CaptureLoop();
+                while (stopRequested == false)
                 {
-                    IntPtr wnd = IntPtr.Zero;
+                    CaptureLoop();
+                }
+            }
+            finally
+            {
+                if (_interface != null)
+                {
                     try
                     {
-                        wnd = HearthstoneHelper.GetHearthstoneWindow();
+                        this._interface.Disconnect();
                     }
-                    catch (Exception ex)
+                    finally
                     {
-                        Log.Error(ex);
+                        RemotingServices.Disconnect(this._interface);
                     }
-
-                    // Verify window exists
-                    if (wnd == IntPtr.Zero)
-                    {
-                        OnWindowLost();
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-
-                    Thread.Sleep(3000);
-
-                    this.InitServerChannel();
-                    int injectresult = -1;
-                    var injecttask = Task.Run(
-                        () =>
-                        {
-                            injectresult = Inject("hearthstone.exe", "HearthCapLogger.dll", "HearthCapLogger", "Loader", "Load", this.probe);
-                        });
-
-                    if (!injecttask.Wait(5000))
-                    {
-
-                    }
-
-                    if (injectresult != 0)
-                    {
-                        Log.Warn("Window found, but could not find hearthstone.exe");
-                        OnWindowLost();
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-
-                    Log.Info("Injected into hearthstone.exe");
-
-                    Thread.Sleep(500);
-                    injected = true;
                 }
+
+                running = false;
+            }
+        }
+
+        private void CaptureLoop()
+        {
+            if (!injected)
+            {
+                IntPtr wnd = IntPtr.Zero;
+                try
+                {
+                    wnd = HearthstoneHelper.GetHearthstoneWindow();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+
+                // Verify window exists
+                if (wnd == IntPtr.Zero)
+                {
+                    OnWindowLost();
+                    Thread.Sleep(1000);
+                    return;
+                }
+
+                Thread.Sleep(3000);
+
+                this.InitServerChannel();
+                int injectresult = -1;
+                var injecttask = Task.Run(
+                    () =>
+                    {
+                        injectresult = Inject("hearthstone.exe", "HearthCapLogger.dll", "HearthCapLogger", "Loader", "Load", this.probe);
+                    });
+
+                if (!injecttask.Wait(5000))
+                {
+
+                }
+
+                if (injectresult != 0)
+                {
+                    Log.Warn("Window found, but could not find hearthstone.exe");
+                    OnWindowLost();
+                    Thread.Sleep(1000);
+                    return;
+                }
+
+                Log.Info("Injected into hearthstone.exe");
+
+                Thread.Sleep(500);
+                injected = true;
+            }
+
+            try
+            {
+                bool error = false;
 
                 try
                 {
-                    bool error = false;
-
-                    try
+                    // .NET Remoting exceptions will throw RemotingException
+                    if (!this._interface.Ping(1000))
                     {
-                        // .NET Remoting exceptions will throw RemotingException
-                        if (!this._interface.Ping(1000))
-                        {
-                            Log.Error("Failed to ping log engine.");
-                            error = true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex);
+                        Log.Error("Failed to ping log engine.");
                         error = true;
                     }
-
-                    if (error)
-                    {
-                        injected = false;
-                    }
-                    else
-                    {
-                        OnWindowFound();
-                        Thread.Sleep(1000);
-                    }
-
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Log.Error(e.ToString);
-                    // this._interface.Message(MessageType.Error, "An unexpected error occured: {0}", e.ToString());
+                    Log.Error(ex);
+                    error = true;
+                }
+
+                if (error)
+                {
+                    injected = false;
+                }
+                else
+                {
+                    OnWindowFound();
+                    Thread.Sleep(1000);
                 }
 
             }
-            if (_interface != null)
+            catch (Exception e)
             {
-                try
-                {
-                    this._interface.Disconnect();
-                }
-                finally
-                {
-                    RemotingServices.Disconnect(this._interface);
-                }
+                Log.Error(e.ToString);
+                // this._interface.Message(MessageType.Error, "An unexpected error occured: {0}", e.ToString());
             }
-            running = false;
         }
 
         private void OnWindowLost()
@@ -456,17 +473,17 @@ namespace HearthCap.Core.GameCapture
                     var victory = match.Groups["victory"].Value;
 
                     Publish(new GameEnded()
-                                {
-                                    Deck = gameStarted.Deck,
-                                    EndTime = DateTime.Now,
-                                    GameMode = gameStarted.GameMode,
-                                    GoFirst = gameStarted.GoFirst,
-                                    Hero = gameStarted.Hero,
-                                    OpponentHero = gameStarted.OpponentHero,
-                                    StartTime = gameStarted.StartTime,
-                                    Turns = this.turns,
-                                    Victory = victory == "1"
-                                });
+                    {
+                        Deck = gameStarted.Deck,
+                        EndTime = DateTime.Now,
+                        GameMode = gameStarted.GameMode,
+                        GoFirst = gameStarted.GoFirst,
+                        Hero = gameStarted.Hero,
+                        OpponentHero = gameStarted.OpponentHero,
+                        StartTime = gameStarted.StartTime,
+                        Turns = this.turns,
+                        Victory = victory == "1"
+                    });
                     gameStarted = null;
                 }
             }
@@ -539,6 +556,24 @@ namespace HearthCap.Core.GameCapture
         public void Handle(RequestDecks message)
         {
             CaptureInterface.Publish(message);
+        }
+
+        protected virtual void OnStarted()
+        {
+            var handler = this.Started;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnStopped()
+        {
+            var handler = this.Stopped;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
     }
 }

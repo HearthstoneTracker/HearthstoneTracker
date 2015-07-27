@@ -3,10 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
-    using System.Configuration;
-    using System.Data.Entity;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using Caliburn.Micro;
 
@@ -26,42 +23,38 @@
     [Export(typeof(ISettingsScreen))]
     public class EngineSettingsViewModel : SettingsScreen
     {
-        private readonly Func<HearthStatsDbContext> dbContext;
-
         private readonly ICaptureEngine captureEngine;
-
-        private readonly SettingsManager settingsManager;
 
         private readonly UserPreferences _userPreferences;
 
         private IEnumerable<SettingModel> defaultSpeeds = new[]
                                                                    {
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "Slow (5 fps)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.Slow
                                                                            },
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "Medium (10 fps)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.Medium
                                                                            },
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "Fast (20 fps)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.Fast
                                                                            },
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "Very fast (30 fps)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.VeryFast
                                                                            },
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "Insanely Fast (60 fps)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.InsanelyFast
                                                                            },
-                                                                       new SettingModel()
+                                                                       new SettingModel
                                                                            {
                                                                                Name = "No delay (not recommended!)",
                                                                                Value = (int)HearthCap.Core.GameCapture.Speeds.NoDelay
@@ -80,19 +73,17 @@
                                                                                                         new SettingModel("Hook (fast, 100% accurate, beta)", CaptureMethod.Log)
                                                                                                     });
 
+        private bool _autoStart;
+
         [ImportingConstructor]
         public EngineSettingsViewModel(
-            Func<HearthStatsDbContext> dbContext,
             ICaptureEngine captureEngine,
-            SettingsManager settingsManager,
             UserPreferences userPreferences)
         {
-            this.dbContext = dbContext;
             this.captureEngine = captureEngine;
-            this.settingsManager = settingsManager;
-            this._userPreferences = userPreferences;
-            this.DisplayName = "Engine settings:";
-            this.Speeds = new BindableCollection<SettingModel>(defaultSpeeds);
+            _userPreferences = userPreferences;
+            DisplayName = "Engine settings:";
+            Speeds = new BindableCollection<SettingModel>(defaultSpeeds);
             Order = 0;
         }
 
@@ -102,17 +93,17 @@
         {
             get
             {
-                return this.selectedSpeed;
+                return selectedSpeed;
             }
             set
             {
-                if (Equals(value, this.selectedSpeed))
+                if (Equals(value, selectedSpeed))
                 {
                     return;
                 }
-                this.selectedSpeed = value;
+                selectedSpeed = value;
                 UpdateSettings();
-                this.NotifyOfPropertyChange(() => this.SelectedSpeed);
+                NotifyOfPropertyChange(() => SelectedSpeed);
             }
         }
 
@@ -120,17 +111,36 @@
         {
             get
             {
-                return this.selectedEngine;
+                return selectedEngine;
             }
             set
             {
-                if (value == this.selectedEngine)
+                if (value == selectedEngine)
                 {
                     return;
                 }
-                this.selectedEngine = value;
+                selectedEngine = value;
                 UpdateSettings();
-                this.NotifyOfPropertyChange(() => this.SelectedEngine);
+                NotifyOfPropertyChange(() => SelectedEngine);
+            }
+        }
+
+
+        public bool AutoStart
+        {
+            get
+            {
+                return _autoStart;
+            }
+            set
+            {
+                if (value.Equals(_autoStart))
+                {
+                    return;
+                }
+                _autoStart = value;
+                UpdateSettings();
+                NotifyOfPropertyChange(() => AutoStart);
             }
         }
 
@@ -146,7 +156,7 @@
         {
             get
             {
-                return this._userPreferences;
+                return _userPreferences;
             }
         }
 
@@ -154,12 +164,13 @@
         {
             if (PauseNotify.IsPaused(this)) return;
 
-            this.captureEngine.Speed = (int)this.SelectedSpeed.Value;
-            this.captureEngine.CaptureMethod = ((CaptureMethod)this.SelectedEngine.Value);
+            captureEngine.Speed = (int)SelectedSpeed.Value;
+            captureEngine.CaptureMethod = ((CaptureMethod)SelectedEngine.Value);
             using (var reg = new EngineRegistrySettings())
             {
-                reg.Speed = (int)this.SelectedSpeed.Value;
-                reg.CaptureMethod = (CaptureMethod)this.SelectedEngine.Value;
+                reg.Speed = (int)SelectedSpeed.Value;
+                reg.CaptureMethod = (CaptureMethod)SelectedEngine.Value;
+                reg.AutoStart = AutoStart;
             }
         }
 
@@ -169,8 +180,9 @@
             {
                 using (var reg = new EngineRegistrySettings())
                 {
-                    this.SelectedSpeed = this.Speeds.FirstOrDefault(speed => (int)speed.Value == reg.Speed);
-                    this.SelectedEngine = this.Engines.FirstOrDefault(key => (CaptureMethod)key.Value == reg.CaptureMethod);
+                    SelectedSpeed = Speeds.FirstOrDefault(speed => (int)speed.Value == reg.Speed);
+                    SelectedEngine = Engines.FirstOrDefault(key => (CaptureMethod)key.Value == reg.CaptureMethod);
+                    AutoStart = reg.AutoStart;
                 }
             }
         }
@@ -180,7 +192,7 @@
         /// </summary>
         protected override void OnInitialize()
         {
-            this.LoadSettings();
+            LoadSettings();
         }
     }
 }

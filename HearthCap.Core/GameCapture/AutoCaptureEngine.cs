@@ -133,6 +133,33 @@
             }
         }
 
+        public event EventHandler<EventArgs> Started
+        {
+            add
+            {
+                this.autoCaptureEngine.Started += value;
+                this.logCaptureEngine.Started += value;
+            }
+            remove
+            {
+                this.autoCaptureEngine.Started -= value;
+                this.logCaptureEngine.Started -= value;
+            }
+        }
+
+        public event EventHandler<EventArgs> Stopped
+        {
+            add
+            {
+                this.autoCaptureEngine.Stopped += value;
+                this.logCaptureEngine.Stopped += value;
+            }
+            remove
+            {
+                this.autoCaptureEngine.Stopped -= value;
+                this.logCaptureEngine.Stopped -= value;
+            }
+        }
         [ImportingConstructor]
         public CaptureEngine(IAutoCaptureEngine autoCaptureEngine, ILogCaptureEngine logCaptureEngine)
         {
@@ -285,45 +312,50 @@
                 Log.Warn("already running");
                 return;
             }
+
             running = true;
-            // this.scannerThread = new Thread(ScannerThread) { IsBackground = true };
-            // this.scannerThread.Start();
-
-            Log.Debug("Capture method: {0}, Version: {1}", CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
-            lastCaptureMethod = CaptureMethod;
-            preferredCaptureMethod = CaptureMethod;
-            while (running)
+            try
             {
-                var start = DateTime.Now.Ticks;
+                Log.Debug("Capture method: {0}, Version: {1}", CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
+                lastCaptureMethod = CaptureMethod;
+                preferredCaptureMethod = CaptureMethod;
+                OnStarted();
 
-                CaptureLoop();
-
-                if (running)
+                while (running)
                 {
-                    DelayInternal(start);
+                    var start = DateTime.Now.Ticks;
+
+                    CaptureLoop();
+
+                    if (running)
+                    {
+                        DelayInternal(start);
+                    }
                 }
             }
-
-            foreach (var imageScanner in this.imageScanners)
+            finally
             {
-                imageScanner.Stop(null);
-                // imageScanner.Dispose();
+                foreach (var imageScanner in this.imageScanners)
+                {
+                    imageScanner.Stop(null);
+                    // imageScanner.Dispose();
+                }
+
+                this.windowLost = false;
+                this.windowFound = false;
+                this.windowMinimized = false;
+                this.currentCaptureMethod = null;
+                this.averageCount = 0;
+                this.averageSpeed = 0;
+                this.attached = false;
+                this.extraDelay = 0;
+                this.lastImageHeight = 0;
+                this.directXErrorCount = 0;
+                this.dontUseDirectX = false;
+                // this.lastCaptured = -1;
+
+                OnStopped();
             }
-
-            this.windowLost = false;
-            this.windowFound = false;
-            this.windowMinimized = false;
-            this.currentCaptureMethod = null;
-            this.averageCount = 0;
-            this.averageSpeed = 0;
-            this.attached = false;
-            this.extraDelay = 0;
-            this.lastImageHeight = 0;
-            this.directXErrorCount = 0;
-            this.dontUseDirectX = false;
-            // this.lastCaptured = -1;
-
-            OnStopped();
         }
 
         //private void ScannerThread()

@@ -92,18 +92,6 @@ namespace HearthCap.Shell.UserPreferences
             {
                 this.SetValue("MinimizeToTray", value ? 1 : 0);
             }
-        }
-
-        public Boolean AutoAttachToHearthstone
-        {
-            get
-            {
-                return this.GetOrCreate("AutoAttachToHearthstone", 1) == 1;
-            }
-            set
-            {
-                this.SetValue("AutoAttachToHearthstone", value ? 1 : 0);
-            }
-        }
+        }        
     }
 }

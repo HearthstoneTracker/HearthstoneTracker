@@ -20,25 +20,12 @@
     {
         private readonly IEventAggregator events;
 
-        private readonly Func<HearthStatsDbContext> dbContext;
-
-        private readonly SettingsManager settingsManager;
-
-        private readonly UserPreferences userPreferences;
-
         private bool enableSlowOpponentMode;
 
         [ImportingConstructor]
-        public SlowOpponentSettingsViewModel(
-            IEventAggregator events,
-            Func<HearthStatsDbContext> dbContext,
-            SettingsManager settingsManager,
-            UserPreferences userPreferences)
+        public SlowOpponentSettingsViewModel(IEventAggregator events)
         {
             this.events = events;
-            this.dbContext = dbContext;
-            this.settingsManager = settingsManager;
-            this.userPreferences = userPreferences;
             this.DisplayName = "Slow opponent mode:";
             this.Order = 3;
             using (var reg = new CommonSettings())

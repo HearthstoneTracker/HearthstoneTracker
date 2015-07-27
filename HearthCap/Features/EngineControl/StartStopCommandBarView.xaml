@@ -26,7 +26,7 @@
                            Fill="{DynamicResource BlackBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{StaticResource appbar_play}" />
+                                     Visual="{StaticResource appbar_control_play}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
@@ -46,7 +46,7 @@
                            Fill="{DynamicResource BlackBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{StaticResource appbar_pause}" />
+                                     Visual="{StaticResource appbar_control_pause}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"

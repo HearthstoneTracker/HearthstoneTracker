@@ -69,8 +69,6 @@
     <Compile Include="GameCapture\AutoCaptureEngine.cs" />
     <Compile Include="GameCapture\CaptureMethod.cs" />
     <Compile Include="GameCapture\EngineEvent.cs" />
-    <Compile Include="GameCapture\EngineEvents\CaptureEngineStarted.cs" />
-    <Compile Include="GameCapture\EngineEvents\CaptureEngineStopped.cs" />
     <Compile Include="GameCapture\EngineEvents\WindowFound.cs" />
     <Compile Include="GameCapture\EngineEvents\WindowMinimized.cs" />
     <Compile Include="GameCapture\EngineEvents\WindowNotFound.cs" />
