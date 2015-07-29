@@ -1003,14 +1003,14 @@
       },
       {
         "Key": "mode_brawl",
-        "X": 8,
-        "Y": 676,
+        "X": 1126,
+        "Y": 591,
         "Height": 64,
         "Width": 64,
-        "Hash": 2797063390992607989,
+        "Hash": 11586411709140126967,
         "Image": null,
         "BaseResolution": 0,
-        "Mostly": "Red"        
+        "Mostly": "Blue"        
       }
     ]
   }
