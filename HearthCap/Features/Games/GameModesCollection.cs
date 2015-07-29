@@ -15,7 +15,8 @@ namespace HearthCap.Features.Games
                            GameMode.Challenge,
                            GameMode.Practice,
                            GameMode.Ranked,
-                           GameMode.Mission
+                           GameMode.Mission,
+                           GameMode.TavernBrawl
                        })
         {
         }

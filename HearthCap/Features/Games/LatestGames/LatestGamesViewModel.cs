@@ -67,7 +67,7 @@
             new BindableCollection<string>(
                 new[]
                     {
-                        string.Empty, GameMode.Arena.ToString(), GameMode.Casual.ToString(), GameMode.Challenge.ToString(), GameMode.Practice.ToString(), 
+                        string.Empty, GameMode.Arena.ToString(), GameMode.Casual.ToString(), GameMode.Challenge.ToString(), GameMode.Practice.ToString(), GameMode.TavernBrawl.ToString(),
                         GameMode.Ranked.ToString()
                     });
 

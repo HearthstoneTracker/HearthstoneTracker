@@ -1000,6 +1000,17 @@
         "Hash": 0,
         "Image": null,
         "BaseResolution": 0
+      },
+      {
+        "Key": "mode_brawl",
+        "X": 8,
+        "Y": 676,
+        "Height": 64,
+        "Width": 64,
+        "Hash": 2797063390992607989,
+        "Image": null,
+        "BaseResolution": 0,
+        "Mostly": "Red"        
       }
     ]
   }
