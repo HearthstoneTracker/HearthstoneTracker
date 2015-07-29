@@ -210,9 +210,9 @@
                         this.NotifyOfPropertyChange(() => this.BoardHeight);
                     }
                 }
-                if (value != null)
+                if (value != null && scanAreasModel != null && scanAreasModel.BaseResolution != value.PixelHeight)
                 {
-                    this.scanAreasModel.BaseResolution = value.PixelHeight;
+                    scanAreasModel.BaseResolution = value.PixelHeight;
                 }
             }
         }
@@ -326,8 +326,8 @@
             var roi = image.Clone(new Rectangle((int)(this.Region.XPos + this.BoardX), (int)this.Region.YPos, (int)this.Region.Width, (int)this.Region.Height), image.PixelFormat);
             var hash = hasher.Create(roi);
 
-            var filename = AppDomain.CurrentDomain.BaseDirectory + "\\data\\images\\" + model.Key + ".png";
-            roi.Save(filename, ImageFormat.Png);
+            // var filename = AppDomain.CurrentDomain.BaseDirectory + "\\data\\images\\" + model.Key + ".png";
+            // roi.Save(filename, ImageFormat.Png);
 
             image.Dispose();
             model.Hash = hash;
