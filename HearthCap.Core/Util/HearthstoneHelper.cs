@@ -113,13 +113,14 @@ namespace HearthCap.Core.Util
                         // Already Maximized or Restored so just bring to front
                         NativeMethods.SetForegroundWindow(handle);
                     }
-                    Thread.Sleep(250);
 
                     // Check if the target process main window is now in the foreground
                     if (NativeMethods.IsWindowInForeground(handle))
                     {
                         return;
                     }
+
+                    Thread.Sleep(250);
 
                     // Prevent an infinite loop
                     if (i > 10)
