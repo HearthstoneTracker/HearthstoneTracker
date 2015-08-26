@@ -9,19 +9,19 @@ namespace HearthCap.Features.Diagnostics
 
     public class LogMessageModel : PropertyChangedBase
     {
-        private string message;
+        private string _message;
 
-        private LogLevel level;
+        private LogLevel _level;
 
-        private object data;
+        private object _data;
 
-        private DateTime date;
+        private DateTime _date;
 
         public LogMessageModel(string message, LogLevel level, DateTime date)
         {
-            this.Date = date;
-            this.message = message;
-            this.level = level;
+            _date = date;
+            _message = message;
+            _level = level;
             IsVisible = true;
         }
 
@@ -29,16 +29,16 @@ namespace HearthCap.Features.Diagnostics
         {
             get
             {
-                return this.date;
+                return _date;
             }
             set
             {
-                if (value.Equals(this.date))
+                if (value.Equals(_date))
                 {
                     return;
                 }
-                this.date = value;
-                this.NotifyOfPropertyChange(() => this.Date);
+                _date = value;
+                NotifyOfPropertyChange(() => Date);
             }
         }
 
@@ -46,16 +46,16 @@ namespace HearthCap.Features.Diagnostics
         {
             get
             {
-                return this.message;
+                return _message;
             }
             set
             {
-                if (value == this.message)
+                if (value == _message)
                 {
                     return;
                 }
-                this.message = value;
-                this.NotifyOfPropertyChange(() => this.Message);
+                _message = value;
+                NotifyOfPropertyChange(() => Message);
             }
         }
 
@@ -63,16 +63,16 @@ namespace HearthCap.Features.Diagnostics
         {
             get
             {
-                return this.level;
+                return _level;
             }
             set
             {
-                if (value == this.level)
+                if (value == _level)
                 {
                     return;
                 }
-                this.level = value;
-                this.NotifyOfPropertyChange(() => this.Level);
+                _level = value;
+                NotifyOfPropertyChange(() => Level);
             }
         }
 
@@ -80,16 +80,16 @@ namespace HearthCap.Features.Diagnostics
         {
             get
             {
-                return this.data;
+                return _data;
             }
             set
             {
-                if (Equals(value, this.data))
+                if (Equals(value, _data))
                 {
                     return;
                 }
-                this.data = value;
-                this.NotifyOfPropertyChange(() => this.Data);
+                _data = value;
+                NotifyOfPropertyChange(() => Data);
             }
         }
 
@@ -111,7 +111,7 @@ namespace HearthCap.Features.Diagnostics
         /// </returns>
         public override string ToString()
         {
-            return this.Message;
+            return Message;
         }
     }
 }

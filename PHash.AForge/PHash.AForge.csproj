@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AForgePerceptualHash.cs" />
+    <Compile Include="YCbCrExtractYChannel.cs" />
     <Compile Include="DctMatrix.cs" />
     <Compile Include="CornerDetector.cs" />
     <Compile Include="Kernel.cs" />
