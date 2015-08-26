@@ -39,9 +39,9 @@ namespace HearthCap.Core.GameCapture.HS
 
         private struct DetectionResult
         {
-            public bool Found { get; }
+            public bool Found { get; private set; }
 
-            public int Distance { get; }
+            public int Distance { get; private set; }
 
             public DetectionResult(bool found, int distance)
                 : this()
