@@ -506,7 +506,13 @@ namespace HearthCap.Core.GameCapture
                     return GameMode.Challenge;
                 case "HUB":
                     return GameMode.Menu;
-                case "MISSIONDECKPICKER":
+                case "TAVERN_BRAWL":
+                    return GameMode.TavernBrawl;
+                case "ADVENTURE":
+                    return GameMode.Mission;
+                case "MISSIONDISPLAY":
+                    return GameMode.Mission;
+                case "CLASSCHALLENGE":
                     return GameMode.Mission;
                 default:
                     return GameMode.Unknown;
