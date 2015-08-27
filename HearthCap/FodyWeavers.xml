@@ -1,4 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers>
-	<Costura/>
+    <Costura>
+        <ExcludeAssemblies>
+            Capture
+            EasyHook
+            HearthCap.Updater
+            HearthCapLogger
+            HearthCap.Logger.Interface
+            System.Runtime.Remoting
+            System.Runtime.Serialization.Formatters.Soap
+        </ExcludeAssemblies>
+    </Costura>
 </Weavers>
