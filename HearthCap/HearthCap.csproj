@@ -904,12 +904,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="costura32\HearthCapLoader.dll" />
     <Resource Include="Resources\Entypo.ttf" />
     <Resource Include="Resources\hearthstone_icon.ico" />
     <Resource Include="Resources\Bulb.ico" />
     <Resource Include="Resources\hearthstone_icon16.ico" />
     <Resource Include="costura32\placeholder.txt" />
+    <Resource Include="costura64\placeholder.txt" />
+    <EmbeddedResource Include="costura32\HearthCapLoader.dll" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -919,7 +920,9 @@
     <Resource Include="Resources\Entypo-license.txt" />
     <Content Include="update.xml" />
     <Content Include="Version.txt" />
-    <Resource Include="FodyWeavers.xml" />
+    <Resource Include="FodyWeavers.xml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Content Include="HearthCap.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1004,7 +1007,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
+    <PreBuildEvent>
+if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
 if not exist "$(ProjectDir)\costura64" md "$(ProjectDir)\costura64"
 xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"
 </PreBuildEvent>
@@ -1039,7 +1043,7 @@ xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad64.dll" "$(TargetDir)"
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(ToolsVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="AfterCompile" Condition="exists('App.$(Configuration).config')">
     <!-- Generate transformed app config in the intermediate directory -->
-	<TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
+    <TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
     <!-- Force build process to use the transformed configuration file from now on. -->
     <ItemGroup>
       <AppConfigWithTargetPath Remove="App.config" />
@@ -1089,6 +1093,8 @@ xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad64.dll" "$(TargetDir)"
       <ExcludedCosturaFiles Include="**\HearthCap.Updater.exe" />
       <ExcludedCosturaFiles Include="**\HearthCapLogger.dll" />
       <ExcludedCosturaFiles Include="**\HearthCap.Logger.Interface.dll" />
+      <ExcludedCosturaFiles Include="**\System.Runtime.Remoting" />
+      <ExcludedCosturaFiles Include="**\System.Runtime.Serialization.Formatters.Soap" />
       <ReferenceCopyLocalPathsReal Include="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Exclude="@(ExcludedCosturaFiles)" />
     </ItemGroup>
     <Delete Files="@(ReferenceCopyLocalPathsReal->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Condition="'$(Configuration)' == 'Release' " />
