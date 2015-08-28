@@ -9,6 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HearthCap.Core", "HearthCap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HearthCap.Data", "HearthCap.Data\HearthCap.Data.csproj", "{DE8E519E-B0AF-4605-8076-37D59651A775}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7D7B6759-091B-4F4A-A4F8-3FC753681DB0}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PHash.AForge", "PHash.AForge\PHash.AForge.csproj", "{F9C10B21-24D7-4741-88B9-B99E77033295}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PHash", "PHash\PHash.csproj", "{8CB58721-58DF-4E3D-8814-682275982EBF}"
