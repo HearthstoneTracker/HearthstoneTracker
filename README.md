@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master)](https://ci.appveyor.com/project/remcoros/hearthstonetracker/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master?svg=true)](https://ci.appveyor.com/project/hearthstonetracker/hearthstonetracker/branch/master)
 [![Gitter chat](https://badges.gitter.im/HearthstoneTracker/HearthstoneTracker.png)](https://gitter.im/HearthstoneTracker/HearthstoneTracker)
 
 Hearthstone Tracker 
