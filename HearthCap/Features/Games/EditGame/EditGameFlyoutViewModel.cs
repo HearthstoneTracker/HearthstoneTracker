@@ -530,6 +530,8 @@ namespace HearthCap.Features.Games.EditGame
         public void ViewArena()
         {
             if (ArenaSession == null) return;
+            IsOpen = false;
+            // events.PublishOnUIThread(new SelectedArenaSessionChanged(this, ArenaSession.Id));
             ArenaViewModel.Load(ArenaSession);
         }
 
