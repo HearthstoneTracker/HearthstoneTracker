@@ -78,8 +78,6 @@ namespace HearthCap.Features.Games.CurrentGame
         /// <summary>The turns.</summary>
         private int turns;
 
-        private DeckModel selectedDeck;
-
         private IDeckManager deckManager;
 
         private readonly GameManager gameManager;
@@ -767,11 +765,6 @@ namespace HearthCap.Features.Games.CurrentGame
         #endregion
 
         #region Methods
-
-        /// <summary>The on initialize.</summary>
-        protected override async void OnInitialize()
-        {
-        }
 
         /// <summary>The load data.</summary>
         /// <returns>The <see cref="Task"/>.</returns>

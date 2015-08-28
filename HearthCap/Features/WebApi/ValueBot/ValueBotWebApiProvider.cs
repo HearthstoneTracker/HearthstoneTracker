@@ -1,13 +1,14 @@
 namespace HearthCap.Features.WebApi.ValueBot
 {
+    using System;
     using System.ComponentModel.Composition;
 
     using HearthCap.Features.WebApi.Generic;
 
     [Export(typeof(IWebApiProviderDescriptor))]
-    public class ValueBotWebApiProvider : WebApiProviderDescriptor
+    public sealed class ValueBotWebApiProvider : WebApiProviderDescriptor, IDisposable
     {
-        private IWebApiEventsHandler eventsHandler;
+        private GenericWebApiEventsHandler eventsHandler;
         private IWebApiProviderScreen settings;
 
         [ImportingConstructor]
@@ -32,6 +33,17 @@ namespace HearthCap.Features.WebApi.ValueBot
             get
             {
                 return this.eventsHandler;
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (eventsHandler != null)
+            {
+                eventsHandler.Dispose();
             }
         }
     }

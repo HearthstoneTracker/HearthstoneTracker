@@ -67,7 +67,7 @@
             new BindableCollection<string>(
                 new[]
                     {
-                        string.Empty, GameMode.Arena.ToString(), GameMode.Casual.ToString(), GameMode.Challenge.ToString(), GameMode.Practice.ToString(), 
+                        string.Empty, GameMode.Arena.ToString(), GameMode.Casual.ToString(), GameMode.Challenge.ToString(), GameMode.Practice.ToString(), GameMode.TavernBrawl.ToString(),
                         GameMode.Ranked.ToString()
                     });
 
@@ -105,15 +105,13 @@
 
         private readonly DateFilter dateFilter = new DateFilter() { ShowAllTime = true };
 
-        private int currentMax;
-
         private int totalCount;
 
         private string search;
 
         private BindableCollection<GameResultModel> selectedGames = new BindableCollection<GameResultModel>();
 
-        private BusyWatcher.BusyWatcherTicket loadMoreTicket;
+        private IDisposable loadMoreTicket;
 
         #endregion
 
@@ -488,21 +486,6 @@
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
-        /// </summary>
-        /// <param name="view"/>
-        protected override void OnViewReady(object view)
-        {
-        }
-
-        /// <summary>
-        /// Called when initializing.
-        /// </summary>
-        protected override async void OnInitialize()
-        {
-        }
 
         protected override void OnActivate()
         {

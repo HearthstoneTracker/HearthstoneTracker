@@ -18,15 +18,13 @@
     {
         #region Fields
 
-        private Action<Screenshot> _completeScreenshot = null;
+        private Action<Screenshot> _completeScreenshot;
 
-        private bool _disposed;
+        private readonly object _lock = new object();
 
-        private object _lock = new object();
+        private Guid? _requestId;
 
-        private Guid? _requestId = null;
-
-        private ManualResetEvent _wait = new ManualResetEvent(false);
+        private readonly ManualResetEvent _wait = new ManualResetEvent(false);
 
         #endregion
 
@@ -62,7 +60,7 @@
 
         public IAsyncResult BeginGetScreenshot(Rectangle region, TimeSpan timeout, AsyncCallback callback = null)
         {
-            Func<Rectangle, TimeSpan, Screenshot> getScreenshot = this.GetScreenshot;
+            Func<Rectangle, TimeSpan, Screenshot> getScreenshot = GetScreenshot;
 
             return getScreenshot.BeginInvoke(region, timeout, callback, getScreenshot);
         }
@@ -72,7 +70,7 @@
         /// </summary>
         public void Disconnect()
         {
-            this.SafeInvokeDisconnected();
+            SafeInvokeDisconnected();
         }
 
         public Screenshot EndGetScreenshot(IAsyncResult result)
@@ -93,7 +91,7 @@
         /// </summary>
         public Screenshot GetScreenshot()
         {
-            return this.GetScreenshot(Rectangle.Empty, new TimeSpan(0, 0, 2));
+            return GetScreenshot(Rectangle.Empty, new TimeSpan(0, 0, 2));
         }
 
         /// <summary>
@@ -103,15 +101,15 @@
         /// <param name="timeout">maximum time to wait for the screenshot</param>
         public Screenshot GetScreenshot(Rectangle region, TimeSpan timeout)
         {
-            lock (this._lock)
+            lock (_lock)
             {
                 Screenshot result = null;
-                this._requestId = Guid.NewGuid();
-                this._wait.Reset();
+                _requestId = Guid.NewGuid();
+                _wait.Reset();
 
-                this.SafeInvokeScreenshotRequested(new ScreenshotRequest(this._requestId.Value, region));
+                SafeInvokeScreenshotRequested(new ScreenshotRequest(_requestId.Value, region));
 
-                this._completeScreenshot = (sc) =>
+                _completeScreenshot = (sc) =>
                     {
                         try
                         {
@@ -120,11 +118,11 @@
                         catch
                         {
                         }
-                        this._wait.Set();
+                        _wait.Set();
                     };
 
-                this._wait.WaitOne(timeout);
-                this._completeScreenshot = null;
+                _wait.WaitOne(timeout);
+                _completeScreenshot = null;
                 return result;
             }
         }
@@ -137,12 +135,12 @@
         /// <param name="args"></param>
         public void Message(MessageType messageType, string format, params object[] args)
         {
-            this.Message(messageType, String.Format(format, args));
+            Message(messageType, String.Format(format, args));
         }
 
         public void Message(MessageType messageType, string message)
         {
-            this.SafeInvokeMessageRecevied(new MessageReceivedEventArgs(messageType, message));
+            SafeInvokeMessageRecevied(new MessageReceivedEventArgs(messageType, message));
         }
 
         public void Ping()
@@ -151,11 +149,11 @@
 
         public void SendScreenshotResponse(Screenshot screenshot)
         {
-            if (this._requestId != null && screenshot != null && screenshot.RequestId == this._requestId.Value)
+            if (_requestId != null && screenshot != null && screenshot.RequestId == _requestId.Value)
             {
-                if (this._completeScreenshot != null)
+                if (_completeScreenshot != null)
                 {
-                    this._completeScreenshot(screenshot);
+                    _completeScreenshot(screenshot);
                 }
             }
         }
@@ -166,13 +164,13 @@
 
         private void SafeInvokeDisconnected()
         {
-            if (this.Disconnected == null)
+            if (Disconnected == null)
             {
                 return; //No Listeners
             }
 
             DisconnectedEvent listener = null;
-            Delegate[] dels = this.Disconnected.GetInvocationList();
+            Delegate[] dels = Disconnected.GetInvocationList();
 
             foreach (Delegate del in dels)
             {
@@ -185,20 +183,20 @@
                 {
                     //Could not reach the destination, so remove it
                     //from the list
-                    this.Disconnected -= listener;
+                    Disconnected -= listener;
                 }
             }
         }
 
         private void SafeInvokeMessageRecevied(MessageReceivedEventArgs eventArgs)
         {
-            if (this.RemoteMessage == null)
+            if (RemoteMessage == null)
             {
                 return; //No Listeners
             }
 
             MessageReceivedEvent listener = null;
-            Delegate[] dels = this.RemoteMessage.GetInvocationList();
+            Delegate[] dels = RemoteMessage.GetInvocationList();
 
             foreach (Delegate del in dels)
             {
@@ -211,20 +209,20 @@
                 {
                     //Could not reach the destination, so remove it
                     //from the list
-                    this.RemoteMessage -= listener;
+                    RemoteMessage -= listener;
                 }
             }
         }
 
         private void SafeInvokeScreenshotRequested(ScreenshotRequest eventArgs)
         {
-            if (this.ScreenshotRequested == null)
+            if (ScreenshotRequested == null)
             {
                 return; //No Listeners
             }
 
             ScreenshotRequestedEvent listener = null;
-            Delegate[] dels = this.ScreenshotRequested.GetInvocationList();
+            Delegate[] dels = ScreenshotRequested.GetInvocationList();
 
             foreach (Delegate del in dels)
             {
@@ -237,7 +235,7 @@
                 {
                     //Could not reach the destination, so remove it
                     //from the list
-                    this.ScreenshotRequested -= listener;
+                    ScreenshotRequested -= listener;
                 }
             }
         }

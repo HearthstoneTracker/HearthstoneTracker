@@ -7,17 +7,57 @@ namespace HearthCap.Core.GameCapture.HS
     /// <summary>The scan area.</summary>
     public class ScanArea
     {
-        private Rectangle rect;
+        private Rectangle _rectangle;
 
         public string Key { get; set; }
 
-        public int X { get; set; }
+        public int X
+        {
+            get
+            {
+                return _rectangle.X;
+            }
+            set
+            {
+                _rectangle.X = value;
+            }
+        }
 
-        public int Y { get; set; }
+        public int Y
+        {
+            get
+            {
+                return _rectangle.Y;
+            }
+            set
+            {
+                _rectangle.Y = value;
+            }
+        }
 
-        public int Height { get; set; }
+        public int Height
+        {
+            get
+            {
+                return _rectangle.Height;
+            }
+            set
+            {
+                _rectangle.Height = value;
+            }            
+        }
 
-        public int Width { get; set; }
+        public int Width
+        {
+            get
+            {
+                return _rectangle.Width;
+            }
+            set
+            {
+                _rectangle.Width = value;
+            }            
+        }
 
         public ulong Hash { get; set; }
 
@@ -27,13 +67,12 @@ namespace HearthCap.Core.GameCapture.HS
 
         public string Mostly { get; set; }
 
-        public Rectangle Rect
+        public Rectangle Rectangle
         {
             get
             {
-                return new Rectangle(X, Y, Width, Height);
+                return _rectangle;
             }
         }
-        // public int MatchThreshold { get; set; }
     }
 }

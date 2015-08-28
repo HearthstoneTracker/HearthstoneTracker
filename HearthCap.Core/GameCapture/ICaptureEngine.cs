@@ -18,5 +18,9 @@
         void Stop();
 
         event EventHandler<UnhandledExceptionEventArgs> UnhandledException;
+
+        event EventHandler<EventArgs> Started;
+
+        event EventHandler<EventArgs> Stopped;
     }
 }

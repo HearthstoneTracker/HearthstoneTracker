@@ -63,9 +63,9 @@
                     Process.Start(start);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
+                // TODO: check, show error message instead of ignoring exception
             }
         }
 

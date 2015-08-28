@@ -107,7 +107,6 @@ namespace HearthCap.Features.TextFiles
                     using (var file = File.CreateText(template.Filename))
                     {
                         file.Write(content);
-                        file.Close();
                     }                    
                 }
             }

@@ -64,9 +64,6 @@ namespace HearthCap.Features.Games.EditGame
 
         private readonly IRepository<GameResult> gameRepository;
 
-        /// <summary>The deck key.</summary>
-        private string deckKey;
-
         /// <summary>The end time.</summary>
         private DateTime endTime;
 
@@ -533,6 +530,8 @@ namespace HearthCap.Features.Games.EditGame
         public void ViewArena()
         {
             if (ArenaSession == null) return;
+            IsOpen = false;
+            // events.PublishOnUIThread(new SelectedArenaSessionChanged(this, ArenaSession.Id));
             ArenaViewModel.Load(ArenaSession);
         }
 

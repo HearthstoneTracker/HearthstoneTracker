@@ -7,9 +7,6 @@ namespace HearthCap.Core.GameCapture.HS
     using System.Drawing.Drawing2D;
     using System.Drawing.Imaging;
     using System.Linq;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
-    using System.Security.Cryptography;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -24,6 +21,9 @@ namespace HearthCap.Core.GameCapture.HS
     using NLog;
 
     using PHash;
+
+    using Action = System.Action;
+    using LogManager = NLog.LogManager;
 
     [Export(typeof(IImageScanner))]
     [PartCreationPolicy(CreationPolicy.Shared)]
@@ -46,8 +46,8 @@ namespace HearthCap.Core.GameCapture.HS
             public DetectionResult(bool found, int distance)
                 : this()
             {
-                this.Found = found;
-                this.Distance = distance;
+                Found = found;
+                Distance = distance;
             }
 
             public static implicit operator bool(DetectionResult instance)
@@ -84,7 +84,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         private bool gameStarted;
 
-        private int gameTurns = 0;
+        private int gameTurns;
 
         private bool goFirst = true;
 
@@ -98,9 +98,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         private readonly ITemplateMatcher templateMatcher;
 
-        private int inGameCounter = 0;
-
-        private bool inMenu;
+        private int inGameCounter;
 
         private string lastDeck;
 
@@ -108,7 +106,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         private int lastResolution = 900;
 
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly TraceLogger TraceLog = new TraceLogger(Log);
 
         private bool myturn;
@@ -137,7 +135,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         private ScanAreaImageDictionary arenaWinsLookup2;
 
-        private Queue<System.Action> gameModeChangeActionQueue = new Queue<System.Action>();
+        private Queue<Action> gameModeChangeActionQueue = new Queue<Action>();
 
         private bool requestReset;
 
@@ -150,10 +148,6 @@ namespace HearthCap.Core.GameCapture.HS
         private StringBuilder foundUsing = new StringBuilder();
 
         private bool arenaWinsScanning;
-
-        private string lastVicDetect;
-
-        private string lastLossDetect;
 
         private CurrentScanState currentScan;
 
@@ -181,13 +175,13 @@ namespace HearthCap.Core.GameCapture.HS
             this.scanAreaProvider = scanAreaProvider;
             this.imageHasher = imageHasher;
             this.templateMatcher = templateMatcher;
-            this.ThreshHold = 9;
-            this.ThreshHoldForHeroes = 12;
-            this.BaseResolution = 900;
+            ThreshHold = 9;
+            ThreshHoldForHeroes = 12;
+            BaseResolution = 900;
 
             // TODO: fix, this is hacky
             BasePath = AppDomain.CurrentDomain.BaseDirectory;
-            this.LoadScanAreas();
+            LoadScanAreas();
         }
 
         #endregion
@@ -212,22 +206,22 @@ namespace HearthCap.Core.GameCapture.HS
 
         public void Run(Bitmap img, object context)
         {
-            this.image = img;
-            if (this.lastResolution != img.Height)
+            image = img;
+            if (lastResolution != img.Height)
             {
-                Log.Info("Base resolution changed from {0} to {1}.", this.lastResolution, img.Height);
-                this.lastResolution = img.Height;
-                this.LoadScanAreas();
+                Log.Info("Base resolution changed from {0} to {1}.", lastResolution, img.Height);
+                lastResolution = img.Height;
+                LoadScanAreas();
             }
 
-            this.Scan();
+            Scan();
 
-            this.image = null;
+            image = null;
         }
 
         public void Stop(object context)
         {
-            this.Reset();
+            Reset();
         }
 
         #endregion
@@ -305,17 +299,17 @@ namespace HearthCap.Core.GameCapture.HS
             {
                 var template = lookup[key];
                 ulong matchhash;
-                if (template.ContainsKey(this.lastResolution))
+                if (template.ContainsKey(lastResolution))
                 {
-                    matchhash = template[this.lastResolution].Hash;
-                    rect = template[this.lastResolution].Rect;
-                    theResolution = this.lastResolution;
+                    matchhash = template[lastResolution].Hash;
+                    rect = template[lastResolution].Rectangle;
+                    theResolution = lastResolution;
                 }
-                else if (template.ContainsKey(this.BaseResolution))
+                else if (template.ContainsKey(BaseResolution))
                 {
-                    matchhash = template[this.BaseResolution].Hash;
-                    rect = template[this.BaseResolution].Rect;
-                    theResolution = this.BaseResolution;
+                    matchhash = template[BaseResolution].Hash;
+                    rect = template[BaseResolution].Rectangle;
+                    theResolution = BaseResolution;
                 }
                 else
                 {
@@ -326,10 +320,10 @@ namespace HearthCap.Core.GameCapture.HS
                 keys.Add(key);
             }
 
-            var source = this.image;
+            var source = image;
             using (var roi = source.Lock(ResolutionHelper.CorrectRectangle(source.Size, rect, theResolution), PixelFormat.Format32bppRgb))
             {
-                var hash = this.imageHasher.Create(roi.Data);
+                var hash = imageHasher.Create(roi.Data);
                 var best = PerceptualHash.FindBest(hash, hashes);
                 TraceLog.Log("Detected best hash: '{0}' Distance: {1}", debugkey, best.Distance);
                 if (best.Distance <= threshold)
@@ -361,19 +355,19 @@ namespace HearthCap.Core.GameCapture.HS
             int theResolution;
             // ulong matchhash;
             ScanArea area = null;
-            if (template.ContainsKey(this.lastResolution))
+            if (template.ContainsKey(lastResolution))
             {
                 // rect = template[this.lastResolution].Rect;
                 // matchhash = template[this.lastResolution].Hash;
-                area = template[this.lastResolution];
-                theResolution = this.lastResolution;
+                area = template[lastResolution];
+                theResolution = lastResolution;
             }
-            else if (template.ContainsKey(this.BaseResolution))
+            else if (template.ContainsKey(BaseResolution))
             {
                 // rect = template[this.BaseResolution].Rect;
                 // matchhash = template[this.BaseResolution].Hash;
-                area = template[this.BaseResolution];
-                theResolution = this.BaseResolution;
+                area = template[BaseResolution];
+                theResolution = BaseResolution;
             }
             else
             {
@@ -382,17 +376,17 @@ namespace HearthCap.Core.GameCapture.HS
             }
             if (useArea != null)
             {
-                if (useArea.ContainsKey(this.lastResolution))
+                if (useArea.ContainsKey(lastResolution))
                 {
                     // rect = useArea[this.lastResolution].Rect;
-                    area = useArea[this.lastResolution];
-                    theResolution = this.lastResolution;
+                    area = useArea[lastResolution];
+                    theResolution = lastResolution;
                 }
-                else if (useArea.ContainsKey(this.BaseResolution))
+                else if (useArea.ContainsKey(BaseResolution))
                 {
                     // rect = useArea[this.BaseResolution].Rect;
-                    area = useArea[this.BaseResolution];
-                    theResolution = this.BaseResolution;
+                    area = useArea[BaseResolution];
+                    theResolution = BaseResolution;
                 }
                 else
                 {
@@ -400,10 +394,10 @@ namespace HearthCap.Core.GameCapture.HS
                     return new DetectionResult(false, -1);
                 }
             }
-            var source = this.image;
+            var source = image;
             int distance = -1;
             DetectionResult result = new DetectionResult();
-            using (var roi = source.Lock(ResolutionHelper.CorrectRectangle(source.Size, area.Rect, theResolution), source.PixelFormat))
+            using (var roi = source.Lock(ResolutionHelper.CorrectRectangle(source.Size, area.Rectangle, theResolution), source.PixelFormat))
             {
                 // var roi = source.Clone(ResolutionHelper.CorrectRectangle(source.Size, area.Rect, theResolution), source.PixelFormat);
                 //Tuple<byte[], DetectionResult> cached = null;
@@ -417,7 +411,7 @@ namespace HearthCap.Core.GameCapture.HS
                 //    }
                 //}
 
-                var hash = this.imageHasher.Create(roi.Data);
+                var hash = imageHasher.Create(roi.Data);
                 distance = PerceptualHash.HammingDistance(hash, area.Hash);
                 TraceLog.Log("Detecting '{0}'. Distance: {1}", key, distance);
 
@@ -472,26 +466,26 @@ namespace HearthCap.Core.GameCapture.HS
             int theResolution;
             Bitmap matchhash;
             ScanArea area = null;
-            if (template.ContainsKey(this.lastResolution))
+            if (template.ContainsKey(lastResolution))
             {
-                area = template[this.lastResolution].Item2;
+                area = template[lastResolution].Item2;
                 // rect = new Rectangle(area.X, area.Y, area.Width, area.Height);
-                matchhash = template[this.lastResolution].Item1;
-                theResolution = this.lastResolution;
+                matchhash = template[lastResolution].Item1;
+                theResolution = lastResolution;
             }
-            else if (template.ContainsKey(this.BaseResolution))
+            else if (template.ContainsKey(BaseResolution))
             {
-                area = template[this.BaseResolution].Item2;
+                area = template[BaseResolution].Item2;
                 // rect = new Rectangle(area.X, area.Y, area.Width, area.Height);
-                matchhash = template[this.BaseResolution].Item1;
-                theResolution = this.BaseResolution;
+                matchhash = template[BaseResolution].Item1;
+                theResolution = BaseResolution;
             }
             else
             {
                 Log.Error("No scan data found for requested template: " + key);
                 return -1;
             }
-            var source = this.image;
+            var source = image;
             rect = new Rectangle(area.X, area.Y, area.Width, area.Height);
             if (area.BaseResolution > 0)
             {
@@ -519,33 +513,33 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void GameEnded()
         {
-            if (this.inGameCounter < 2 ||
-                this.hero == null ||
-                this.opponentHero == null ||
-                this.gameJustEnded)
+            if (inGameCounter < 2 ||
+                hero == null ||
+                opponentHero == null ||
+                gameJustEnded)
             {
                 return;
             }
 
-            this.gameJustEnded = true;
-            this.endTime = DateTime.Now;
-            this.victory = this.foundVic > this.foundLoss;
+            gameJustEnded = true;
+            endTime = DateTime.Now;
+            victory = foundVic > foundLoss;
 
-            this.inGameCounter = 0;
-            this.pauseScanning = true;
-            this.Publish(
-                new GameEnded()
+            inGameCounter = 0;
+            pauseScanning = true;
+            Publish(
+                new GameEnded
                     {
-                        GameMode = this.gameMode,
-                        StartTime = this.startTime,
-                        EndTime = this.endTime,
-                        Victory = this.victory,
-                        GoFirst = this.goFirst,
-                        Hero = this.hero,
-                        OpponentHero = this.opponentHero,
-                        Turns = this.gameTurns,
-                        Conceded = this.conceded,
-                        Deck = this.lastDeck
+                        GameMode = gameMode,
+                        StartTime = startTime,
+                        EndTime = endTime,
+                        Victory = victory,
+                        GoFirst = goFirst,
+                        Hero = hero,
+                        OpponentHero = opponentHero,
+                        Turns = gameTurns,
+                        Conceded = conceded,
+                        Deck = lastDeck
                     });
 
             // This is done from the ui using an event
@@ -554,25 +548,25 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void GameStarted()
         {
-            if (this.gameStarted)
+            if (gameStarted)
             {
                 return;
             }
 
-            if (this.inGameCounter >= 2 && this.startTime == DateTime.MinValue)
+            if (inGameCounter >= 2 && startTime == DateTime.MinValue)
             {
-                this.startTime = DateTime.Now;
+                startTime = DateTime.Now;
             }
 
-            if (this.hero != null &&
-                this.opponentHero != null &&
-                this.inGameCounter >= 2)
+            if (hero != null &&
+                opponentHero != null &&
+                inGameCounter >= 2)
             {
-                this.gameStarted = true;
-                this.arenaHero = null;
-                this.arenaWins = -1;
-                this.arenaLosses = -1;
-                this.Publish(new GameStarted(this.gameMode, this.startTime, this.hero, this.opponentHero, this.goFirst, this.lastDeck));
+                gameStarted = true;
+                arenaHero = null;
+                arenaWins = -1;
+                arenaLosses = -1;
+                Publish(new GameStarted(gameMode, startTime, hero, opponentHero, goFirst, lastDeck));
             }
         }
 
@@ -612,34 +606,34 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void LoadScanAreas()
         {
-            this.areas = new ScanAreaDictionary();
-            this.heroes = new ScanAreaDictionary();
-            this.opponentHeroes = new ScanAreaDictionary();
-            this.decks = new ScanAreaDictionary();
-            this.arenaHeroes = new ScanAreaDictionary();
-            this.arenaWinsLookup = new ScanAreaDictionary();
-            this.arenaWinsLookup2 = new ScanAreaImageDictionary();
-            this.arenaLossesLookup = new ScanAreaDictionary();
+            areas = new ScanAreaDictionary();
+            heroes = new ScanAreaDictionary();
+            opponentHeroes = new ScanAreaDictionary();
+            decks = new ScanAreaDictionary();
+            arenaHeroes = new ScanAreaDictionary();
+            arenaWinsLookup = new ScanAreaDictionary();
+            arenaWinsLookup2 = new ScanAreaImageDictionary();
+            arenaLossesLookup = new ScanAreaDictionary();
 
-            this.scanAreaProvider.Load();
-            this.scanareas = this.scanAreaProvider.GetScanAreas();
+            scanAreaProvider.Load();
+            scanareas = scanAreaProvider.GetScanAreas();
 
-            foreach (var scanArea in this.scanareas)
+            foreach (var scanArea in scanareas)
             {
                 var allareas = scanArea.Areas.ToDictionary(x => x.Key, x => x);
                 foreach (var a in allareas)
                 {
                     if (a.Key.StartsWith("hero_"))
                     {
-                        this.InitAreas(a.Key, "hero_", scanArea, this.heroes, a);
+                        InitAreas(a.Key, "hero_", scanArea, heroes, a);
                     }
                     else if (a.Key.StartsWith("opphero_"))
                     {
-                        this.InitAreas(a.Key, "opphero_", scanArea, this.opponentHeroes, a);
+                        InitAreas(a.Key, "opphero_", scanArea, opponentHeroes, a);
                     }
                     else if (a.Key.StartsWith("deck_"))
                     {
-                        this.InitAreas(a.Key, "deck_", scanArea, this.decks, a);
+                        InitAreas(a.Key, "deck_", scanArea, decks, a);
                     }
                     //else if (a.Key.StartsWith("arenahero_"))
                     //{
@@ -647,20 +641,20 @@ namespace HearthCap.Core.GameCapture.HS
                     //}
                     else if (a.Key.StartsWith("arenawins_"))
                     {
-                        this.InitAreas(a.Key, "arenawins_", scanArea, this.arenaWinsLookup, a);
-                        this.InitImageAreas(a.Key, "arenawins_", scanArea, this.arenaWinsLookup2, a);
+                        InitAreas(a.Key, "arenawins_", scanArea, arenaWinsLookup, a);
+                        InitImageAreas(a.Key, "arenawins_", scanArea, arenaWinsLookup2, a);
                     }
                     else if (a.Key.StartsWith("arenaloss_"))
                     {
-                        this.InitAreas(a.Key, "arenaloss_", scanArea, this.arenaLossesLookup, a);
+                        InitAreas(a.Key, "arenaloss_", scanArea, arenaLossesLookup, a);
                     }
                     else if (a.Key.StartsWith("arena_hero_"))
                     {
-                        this.InitAreas(a.Key, "arena_hero_", scanArea, this.arenaHeroes, a);
+                        InitAreas(a.Key, "arena_hero_", scanArea, arenaHeroes, a);
                     }
                     else
                     {
-                        this.InitAreas(a.Key, string.Empty, scanArea, this.areas, a);
+                        InitAreas(a.Key, string.Empty, scanArea, areas, a);
                     }
                 }
             }
@@ -674,36 +668,35 @@ namespace HearthCap.Core.GameCapture.HS
             //    Log.Info("Ignoring last GameEvent because scanner reset was requested.");
             //    return;
             //}
-            this.events.PublishOnBackgroundThread(message);
+            events.PublishOnBackgroundThread(message);
         }
 
         private void Reset()
         {
             // this.lastGameMode = GameMode.Unknown;
-            this.hero = null;
-            this.opponentHero = null;
-            this.goFirst = true;
-            this.victory = null;
+            hero = null;
+            opponentHero = null;
+            goFirst = true;
+            victory = null;
             // this.gameMode = GameMode.Unknown;
-            this.startTime = DateTime.MinValue;
-            this.gameStarted = false;
-            this.inGameCounter = 0;
-            this.gameTurns = 0;
-            this.roundTurned = false;
-            this.conceded = false;
-            this.inMenu = false;
-            this.myturn = false;
-            this.endTime = DateTime.MinValue;
+            startTime = DateTime.MinValue;
+            gameStarted = false;
+            inGameCounter = 0;
+            gameTurns = 0;
+            roundTurned = false;
+            conceded = false;
+            myturn = false;
+            endTime = DateTime.MinValue;
             // this.lastDeck = null;
-            this.foundVic = 0;
-            this.foundLoss = 0;
-            this.arenaDrafting = false;
-            this.arenaHero = null;
-            this.arenaWins = -1;
-            this.arenaLosses = -1;
-            this.coinDetected = false;
-            this.requestReset = false;
-            this.foundUsing.Clear();
+            foundVic = 0;
+            foundLoss = 0;
+            arenaDrafting = false;
+            arenaHero = null;
+            arenaWins = -1;
+            arenaLosses = -1;
+            coinDetected = false;
+            requestReset = false;
+            foundUsing.Clear();
             ResetFoundVictory();
             // this.nothingFoundFired = false;
             // this.gameJustEnded = false; // NOTE: we reset this on entering a game-mode or the menu
@@ -711,41 +704,41 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void Scan()
         {
-            this.currentScan = new CurrentScanState();
+            currentScan = new CurrentScanState();
 
             if (requestReset)
             {
-                this.Reset();
+                Reset();
             }
 
             // Scan these before game-modes, to catch victories earlier
-            if (!this.gameJustEnded && !pauseScanning)
+            if (!gameJustEnded && !pauseScanning)
             {
                 // Scan victory earlier
-                if (this.inGameCounter >= 2)
+                if (inGameCounter >= 2)
                 {
-                    this.ScanVictory();
+                    ScanVictory();
                 }
 
-                if (this.inGameCounter >= 1)
+                if (inGameCounter >= 1)
                 {
-                    this.ScanHeroes();
+                    ScanHeroes();
                 }
 
-                if (this.inGameCounter >= 1)
+                if (inGameCounter >= 1)
                 {
-                    this.ScanCoin();
+                    ScanCoin();
                 }
 
-                if (this.inGameCounter >= 1)
+                if (inGameCounter >= 1)
                 {
-                    this.ScanTurn();
+                    ScanTurn();
                     // TODO: enable again sometimee later
                     // this.ScanConceded();
                 }
             }
 
-            this.ScanGameModes();
+            ScanGameModes();
 
             if (gameMode == GameMode.Unknown)
             {
@@ -758,26 +751,26 @@ namespace HearthCap.Core.GameCapture.HS
             }
 
             // Make sure this is AFTER ScanGameModes() !! 
-            if (this.pauseScanning)
+            if (pauseScanning)
             {
                 return;
             }
 
-            if (this.currentScan.ArenaLeafDetected && this.inGameCounter <= 0)
+            if (currentScan.ArenaLeafDetected && inGameCounter <= 0)
             {
-                if (!Detect(this.areas, "arenanohero"))
+                if (!Detect(areas, "arenanohero"))
                 {
-                    this.ScanArenaHero();
+                    ScanArenaHero();
 
-                    if (this.arenaHero != null)
+                    if (arenaHero != null)
                     {
-                        this.ScanArenaScore();
+                        ScanArenaScore();
                     }
                 }
 
-                if (this.arenaHero == null)
+                if (arenaHero == null)
                 {
-                    this.ScanArenaDrafting();
+                    ScanArenaDrafting();
                 }
             }
         }
@@ -787,9 +780,9 @@ namespace HearthCap.Core.GameCapture.HS
             if (arenadeckScreenshotRequested && gameMode == GameMode.Arena)
             {
                 arenadeckScreenshotRequested = false;
-                var deckRect = this.areas["deckarea_arena"][BaseResolution].Rect;
-                deckRect = ResolutionHelper.CorrectRectangle(this.image.Size, deckRect, BaseResolution);
-                var deck = this.image.Clone(deckRect, this.image.PixelFormat);
+                var deckRect = areas["deckarea_arena"][BaseResolution].Rectangle;
+                deckRect = ResolutionHelper.CorrectRectangle(image.Size, deckRect, BaseResolution);
+                var deck = image.Clone(deckRect, image.PixelFormat);
                 Log.Debug("Arena deck Screenshot Requested. Sending screenshot...");
                 events.PublishOnBackgroundThread(new ArenaDeckScreenshotTaken(deck));
             }
@@ -811,11 +804,11 @@ namespace HearthCap.Core.GameCapture.HS
 
             if (deckScreenshotRequested)
             {
-                var detect1 = Detect(this.areas, "deckscreen");
-                var detect2 = Detect(this.areas, "deckscreen2");
+                var detect1 = Detect(areas, "deckscreen");
+                var detect2 = Detect(areas, "deckscreen2");
                 if (detect1 && detect2)
                 {
-                    this.deckScreenshotRequested = false;
+                    deckScreenshotRequested = false;
                     if (cancelDeckScreenshot != null)
                     {
                         cancelDeckScreenshot.Cancel();
@@ -824,8 +817,8 @@ namespace HearthCap.Core.GameCapture.HS
                     cancelDeckScreenshot = new CancellationTokenSource();
                     Log.Debug("Deck Screenshot Requested. Found!");
 
-                    Task.Delay(500, this.cancelDeckScreenshot.Token).ContinueWith(
-                        (t) =>
+                    Task.Delay(500, cancelDeckScreenshot.Token).ContinueWith(
+                        t =>
                         {
                             if (t.IsCanceled) return;
                             takeDeckScreenshot = true;
@@ -840,9 +833,9 @@ namespace HearthCap.Core.GameCapture.HS
             if (takeDeckScreenshot)
             {
                 takeDeckScreenshot = false;
-                var deckRect = this.areas["deckarea_cards"][BaseResolution].Rect;
-                deckRect = ResolutionHelper.CorrectRectangle(this.image.Size, deckRect, BaseResolution);
-                var deck = this.image.Clone(deckRect, this.image.PixelFormat);
+                var deckRect = areas["deckarea_cards"][BaseResolution].Rectangle;
+                deckRect = ResolutionHelper.CorrectRectangle(image.Size, deckRect, BaseResolution);
+                var deck = image.Clone(deckRect, image.PixelFormat);
                 Log.Debug("Deck Screenshot Requested. Sending screenshot...");
                 events.PublishOnBackgroundThread(new DeckScreenshotTaken(deck));
             }
@@ -850,11 +843,11 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void ScanArenaDrafting()
         {
-            if (!this.arenaDrafting)
+            if (!arenaDrafting)
             {
-                if (this.Detect(this.areas, "arena_drafting"))
+                if (Detect(areas, "arena_drafting"))
                 {
-                    this.arenaDrafting = true;
+                    arenaDrafting = true;
                     Publish(new ArenaDrafting());
                 }
             }
@@ -876,18 +869,18 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void ScanArenaHero()
         {
-            if (this.arenaHero != null || this.arenaWins == 12 || this.arenaLosses == 3) return;
+            if (arenaHero != null || arenaWins == 12 || arenaLosses == 3) return;
 
-            var best = this.DetectBest(this.arenaHeroes, "arena_hero_*", ThreshHoldForHeroes);
+            var best = DetectBest(arenaHeroes, "arena_hero_*", ThreshHoldForHeroes);
 
             if (best == null)
             {
                 return;
             }
 
-            this.arenaHero = best;
-            this.Publish(new ArenaHeroDetected(this.arenaHero));
-            gameModeChangeActionQueue.Enqueue(() => { this.arenaHero = null; });
+            arenaHero = best;
+            Publish(new ArenaHeroDetected(arenaHero));
+            gameModeChangeActionQueue.Enqueue(() => { arenaHero = null; });
 
             //foreach (var k in this.heroes.Keys)
             //{
@@ -902,184 +895,189 @@ namespace HearthCap.Core.GameCapture.HS
 
         private void ScanArenaScore()
         {
-            if (this.arenaWins < 0 && !arenaWinsScanning)
+            if (arenaWins < 0 && !arenaWinsScanning)
             {
                 arenaWinsScanning = true;
                 TraceLog.Log("delay scan score to let key animation finish");
                 Task.Delay(1000).ContinueWith(
-                    (t) =>
+                    t =>
                         {
                             TraceLog.Log("delay scan score finished now.");
                             doArenaWinsScan = true;
                         });
                 Task.Delay(5000).ContinueWith(
-                    (t) =>
+                    t =>
                         {
                             doArenaWinsScan = false;
                             arenaWinsScanning = false;
                         });
             }
-            if (this.arenaWins < 0 && doArenaWinsScan)
+            if (arenaWins < 0 && doArenaWinsScan)
             {
-                var best = DetectBest(this.arenaWinsLookup2);
+                var best = DetectBest(arenaWinsLookup2);
                 if (best != null)
                 {
                     doArenaWinsScan = false;
                     arenaWinsScanning = false;
                     int wins = Convert.ToInt32(best);
-                    this.arenaWins = wins;
-                    this.Publish(new ArenaWinsDetected(this.arenaWins));
-                    gameModeChangeActionQueue.Enqueue(() => { this.arenaWins = -1; });
+                    arenaWins = wins;
+                    Publish(new ArenaWinsDetected(arenaWins));
+                    gameModeChangeActionQueue.Enqueue(() => { arenaWins = -1; });
                 }
             }
-            if (this.arenaLosses < 0)
+            if (arenaLosses < 0)
             {
                 // var detected = false;
-                foreach (var k in this.arenaLossesLookup.Keys.OrderByDescending(k => k))
+                foreach (var k in arenaLossesLookup.Keys.OrderByDescending(k => k))
                 {
-                    if (this.Detect(this.arenaLossesLookup, k))
+                    if (Detect(arenaLossesLookup, k))
                     {
                         int losses = Convert.ToInt32(k);
-                        this.arenaLosses = losses;
-                        this.Publish(new ArenaLossesDetected(this.arenaLosses));
-                        gameModeChangeActionQueue.Enqueue(() => { this.arenaLosses = -1; });
+                        arenaLosses = losses;
+                        Publish(new ArenaLossesDetected(arenaLosses));
+                        gameModeChangeActionQueue.Enqueue(() => { arenaLosses = -1; });
                         break;
                     }
                 }
-                if (this.arenaLosses < 0)
+                if (arenaLosses < 0)
                 {
                     // TODO: refine this, as when we cannot detect 'checked' it could be a false detection
-                    this.arenaLosses = 0;
-                    this.Publish(new ArenaLossesDetected(this.arenaLosses));
-                    gameModeChangeActionQueue.Enqueue(() => { this.arenaLosses = -1; });
+                    arenaLosses = 0;
+                    Publish(new ArenaLossesDetected(arenaLosses));
+                    gameModeChangeActionQueue.Enqueue(() => { arenaLosses = -1; });
                 }
             }
         }
 
         private void ScanCoin()
         {
-            if (this.coinDetected)
+            if (coinDetected)
             {
                 return;
             }
 
-            if (this.gameTurns > 0)
+            if (gameTurns > 0)
             {
                 return;
             }
 
             var detected = false;
             // this the THE THE coin !
-            if (this.Detect(this.areas, "gosecond"))
+            if (Detect(areas, "gosecond"))
             {
                 detected = true;
             }
 
-            if (!detected && this.Detect(this.areas, "gosecond2"))
+            if (!detected && Detect(areas, "gosecond2"))
             {
                 detected = true;
             }
 
             if (detected)
             {
-                this.coinDetected = true;
-                this.goFirst = false;
+                coinDetected = true;
+                goFirst = false;
 
-                this.inGameCounter++;
-                this.gameTurns++;
-                this.Publish(new NewRound(this.gameTurns, false));
-                this.Publish(new CoinDetected(false) { });
-                this.GameStarted();
+                inGameCounter++;
+                gameTurns++;
+                Publish(new NewRound(gameTurns, false));
+                Publish(new CoinDetected(false));
+                GameStarted();
             }
         }
 
         private void ScanConceded()
         {
-            if (this.conceded)
+            if (conceded)
             {
                 return;
             }
 
-            if (this.Detect(this.areas, "conceded"))
+            if (Detect(areas, "conceded"))
             {
-                this.conceded = true;
-                this.victory = false;
+                conceded = true;
+                victory = false;
                 Log.Debug("concede detected, calling GameEnded()");
-                this.Publish(new VictoryDetected(false, true));
-                this.GameEnded();
+                Publish(new VictoryDetected(false, true));
+                GameEnded();
             }
         }
 
         private void ScanDeck()
         {
-            foreach (var deck in this.decks)
+            foreach (var deck in decks)
             {
-                if (this.Detect(this.decks, deck.Key, null, 10))
+                if (Detect(decks, deck.Key, null, 10))
                 {
-                    if (this.lastDeck == deck.Key)
+                    if (lastDeck == deck.Key)
                     {
                         return;
                     }
 
-                    this.lastDeck = deck.Key;
-                    this.Publish(new DeckDetected(deck.Key));
+                    lastDeck = deck.Key;
+                    Publish(new DeckDetected(deck.Key));
                 }
             }
         }
 
         private void ScanGameModes()
         {
-            var foundGameMode = this.gameMode;
+            var foundGameMode = gameMode;
 
             bool found = false,
                 detectedGameBoard = false;
 
-            if (!pauseScanning && (this.Detect(this.areas, "ingame") || this.Detect(this.areas, "ingame2")))
+            if (!pauseScanning && (Detect(areas, "ingame") || Detect(areas, "ingame2")))
             {
-                if (inGameCounter == 0 && !this.gameJustEnded)
+                if (inGameCounter == 0 && !gameJustEnded)
                 {
-                    this.inGameCounter++;
+                    inGameCounter++;
                     Log.Debug("Detected gameboard");
                 }
                 detectedGameBoard = true;
                 found = true;
             }
 
-            if (!found && this.Detect(this.areas, "quest"))
+            if (!found && Detect(areas, "quest"))
             {
                 foundGameMode = GameMode.Unknown;
-                this.inMenu = true;
                 found = true;
             }
 
-            if (!found && Detect(this.areas, "play_mode") && Detect(this.areas, "play_casual"))
+            if (!found && Detect(areas, "play_mode") && Detect(areas, "play_casual"))
             {
                 foundGameMode = GameMode.Casual;
                 found = true;
             }
 
-            if (!found && Detect(this.areas, "play_mode") && Detect(this.areas, "play_ranked"))
+            if (!found && Detect(areas, "play_mode") && Detect(areas, "play_ranked"))
             {
                 foundGameMode = GameMode.Ranked;
                 found = true;
             }
 
-            if (!found && this.Detect(this.areas, "practice"))
+            if (!found && Detect(areas, "practice"))
             {
                 foundGameMode = GameMode.Practice;
                 found = true;
             }
 
-            if (!found && Detect(this.areas, "challenge") && Detect(this.areas, "challenge2"))
+            if (!found && Detect(areas, "challenge") && Detect(areas, "challenge2"))
             {
                 foundGameMode = GameMode.Challenge;
                 found = true;
             }
 
-            if (!found && (this.Detect(this.areas, "arena_leaf") || (Detect(this.areas, "arenanohero") && Detect(this.areas, "arena"))))
+            if (!found && (Detect(areas, "arena_leaf") || (Detect(areas, "arenanohero") && Detect(areas, "arena"))))
             {
-                this.currentScan.ArenaLeafDetected = true;
+                currentScan.ArenaLeafDetected = true;
                 foundGameMode = GameMode.Arena;
+                found = true;
+            }
+
+            if (!found && Detect(areas, "mode_brawl"))
+            {
+                foundGameMode = GameMode.TavernBrawl;
                 found = true;
             }
 
@@ -1092,20 +1090,20 @@ namespace HearthCap.Core.GameCapture.HS
 
             if (found && !detectedGameBoard)
             {
-                if (this.inGameCounter >= 2)
+                if (inGameCounter >= 2)
                 {
                     Log.Debug("gamemode detected ({0}) and was in game, calling GameEnded()", foundGameMode);
-                    Log.Debug("victory/loss information at this point: {0}", this.foundUsing);
-                    this.GameEnded();
+                    Log.Debug("victory/loss information at this point: {0}", foundUsing);
+                    GameEnded();
                 }
 
-                this.pauseScanning = false;
-                this.gameJustEnded = false; // NOTE: this is to not trigger new game detection when a game just finished
+                pauseScanning = false;
+                gameJustEnded = false; // NOTE: this is to not trigger new game detection when a game just finished
 
-                this.inGameCounter = 0;
-                this.gameMode = foundGameMode;
+                inGameCounter = 0;
+                gameMode = foundGameMode;
 
-                if (this.lastGameMode != this.gameMode)
+                if (lastGameMode != gameMode)
                 {
                     while (gameModeChangeActionQueue.Count > 0)
                     {
@@ -1113,47 +1111,47 @@ namespace HearthCap.Core.GameCapture.HS
                         action();
                     }
 
-                    this.Publish(new GameModeChanged(this.lastGameMode, this.gameMode));
-                    this.lastGameMode = this.gameMode;
+                    Publish(new GameModeChanged(lastGameMode, gameMode));
+                    lastGameMode = gameMode;
                 }
 
-                if (this.inGameCounter <= 0 &&
-                    (this.gameMode == GameMode.Casual
-                    || this.gameMode == GameMode.Ranked
-                    || this.gameMode == GameMode.Challenge
-                    || this.gameMode == GameMode.Practice))
+                if (inGameCounter <= 0 &&
+                    (gameMode == GameMode.Casual
+                    || gameMode == GameMode.Ranked
+                    || gameMode == GameMode.Challenge
+                    || gameMode == GameMode.Practice))
                 {
-                    this.ScanDeck();
+                    ScanDeck();
                 }
             }
         }
 
         private void ScanHeroes()
         {
-            if (this.hero != null && this.opponentHero != null)
+            if (hero != null && opponentHero != null)
             {
                 return;
             }
 
-            if (this.hero == null)
+            if (hero == null)
             {
-                var best = this.DetectBest(this.heroes, "hero_*");
+                var best = DetectBest(heroes, "hero_*");
                 if (best != null)
                 {
-                    this.hero = best;
-                    this.inGameCounter++;
-                    this.Publish(new HeroDetected(this.hero));
+                    hero = best;
+                    inGameCounter++;
+                    Publish(new HeroDetected(hero));
                 }
             }
 
-            if (this.opponentHero == null)
+            if (opponentHero == null)
             {
-                var best = this.DetectBest(this.opponentHeroes, "opphero_*");
+                var best = DetectBest(opponentHeroes, "opphero_*");
                 if (best != null)
                 {
-                    this.opponentHero = best;
-                    this.inGameCounter++;
-                    this.Publish(new OpponentHeroDetected(this.opponentHero));
+                    opponentHero = best;
+                    inGameCounter++;
+                    Publish(new OpponentHeroDetected(opponentHero));
                 }
             }
 
@@ -1169,17 +1167,17 @@ namespace HearthCap.Core.GameCapture.HS
         {
             if (roundTurned) return;
 
-            if (Detect(this.areas, "yourturn") || Detect(this.areas, "yourturn2"))
+            if (Detect(areas, "yourturn") || Detect(areas, "yourturn2"))
             {
-                if (this.gameTurns == 0)
+                if (gameTurns == 0)
                 {
-                    this.inGameCounter++;
+                    inGameCounter++;
                 }
 
                 if (myturn)
                 {
                     // we missed enemy turn detection
-                    this.myturn = false;
+                    myturn = false;
                     gameTurns++;
                 }
                 if (!myturn)
@@ -1187,141 +1185,127 @@ namespace HearthCap.Core.GameCapture.HS
                     // to avoid false positives, we reset the victory counter
                     ResetFoundVictory();
 
-                    this.gameTurns++;
-                    this.roundTurned = true;
-                    this.myturn = true;
-                    this.GameStarted();
-                    Task.Delay(2000).ContinueWith(task => this.roundTurned = false);
-                    this.Publish(new NewRound(this.gameTurns, true));
+                    gameTurns++;
+                    roundTurned = true;
+                    myturn = true;
+                    GameStarted();
+                    Task.Delay(2000).ContinueWith(task => roundTurned = false);
+                    Publish(new NewRound(gameTurns, true));
                 }
             }
-            else if (Detect(this.areas, "enemyturn") || Detect(this.areas, "enemyturn2"))
+            else if (Detect(areas, "enemyturn") || Detect(areas, "enemyturn2"))
             {
-                if (this.gameTurns == 0)
+                if (gameTurns == 0)
                 {
-                    this.inGameCounter++;
+                    inGameCounter++;
                 }
 
                 if (myturn)
                 {
-                    this.gameTurns++;
-                    this.roundTurned = true;
-                    this.myturn = false;
-                    this.GameStarted();
-                    Task.Delay(2000).ContinueWith(task => this.roundTurned = false);
-                    this.Publish(new NewRound(this.gameTurns));
+                    gameTurns++;
+                    roundTurned = true;
+                    myturn = false;
+                    GameStarted();
+                    Task.Delay(2000).ContinueWith(task => roundTurned = false);
+                    Publish(new NewRound(gameTurns));
                 }
             }
         }
 
         private void ResetFoundVictory()
         {
-            Log.Debug("ResetFoundVictory called. Was: {0}", this.foundUsing);
-            this.foundLoss = 0;
-            this.foundVic = 0;
-            this.foundUsing.Clear();
-            this.lastLossDetect = null;
-            this.lastVicDetect = null;
+            Log.Debug("ResetFoundVictory called. Was: {0}", foundUsing);
+            foundLoss = 0;
+            foundVic = 0;
+            foundUsing.Clear();           
         }
 
         private void ScanVictory()
         {
-            if (gameJustEnded || this.victory != null)
+            if (gameJustEnded || victory != null)
             {
                 return;
             }
 
-            if (this.Detect(this.areas, "victory"))
+            if (Detect(areas, "victory"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory";
+                foundVic++;
                 foundUsing.Append("victory|");
             }
 
-            if (this.Detect(this.areas, "loss"))
+            if (Detect(areas, "loss"))
             {
-                this.foundLoss++;
-                this.lastLossDetect = "loss";
+                foundLoss++;
                 foundUsing.Append("loss|");
             }
 
-            if (this.Detect(this.areas, "victory_explode"))
+            if (Detect(areas, "victory_explode"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory_explode";
+                foundVic++;
                 foundUsing.Append("victory_explode|");
             }
 
-            if (this.Detect(this.areas, "victory_explode2"))
+            if (Detect(areas, "victory_explode2"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory_explode2";
+                foundVic++;
                 foundUsing.Append("victory_explode2|");
             }
 
-            if (this.Detect(this.areas, "victory_explode3"))
+            if (Detect(areas, "victory_explode3"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory_explode3";
+                foundVic++;
                 foundUsing.Append("victory_explode3|");
             }
 
-            if (this.Detect(this.areas, "victory_explode4"))
+            if (Detect(areas, "victory_explode4"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory_explode4";
+                foundVic++;
                 foundUsing.Append("victory_explode4|");
             }
 
-            if (this.Detect(this.areas, "victory_explode5"))
+            if (Detect(areas, "victory_explode5"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory_explode5";
+                foundVic++;
                 foundUsing.Append("victory_explode5|");
             }
 
-            if (this.Detect(this.areas, "loss_explode"))
+            if (Detect(areas, "loss_explode"))
             {
-                this.foundLoss++;
-                this.lastLossDetect = "loss_explode";
+                foundLoss++;
                 foundUsing.Append("loss_explode|");
             }
 
-            if (this.Detect(this.areas, "loss_explode2"))
+            if (Detect(areas, "loss_explode2"))
             {
-                this.foundLoss++;
-                this.lastLossDetect = "loss_explode2";
+                foundLoss++;
                 foundUsing.Append("loss_explode2|");
             }
 
-            if (this.Detect(this.areas, "victory2"))
+            if (Detect(areas, "victory2"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory2";
+                foundVic++;
                 foundUsing.Append("victory2|");
             }
 
-            if (this.Detect(this.areas, "victory3"))
+            if (Detect(areas, "victory3"))
             {
-                this.foundVic++;
-                this.lastVicDetect = "victory3";
+                foundVic++;
                 foundUsing.Append("victory3|");
             }
 
-            if (this.Detect(this.areas, "loss2"))
+            if (Detect(areas, "loss2"))
             {
-                this.foundLoss++;
-                this.lastLossDetect = "loss2";
+                foundLoss++;
                 foundUsing.Append("loss2|");
             }
 
-            if (this.foundVic >= 3 || this.foundLoss >= 3)
+            if (foundVic >= 3 || foundLoss >= 3)
             {
-                this.victory = foundVic > foundLoss;
-                this.Publish(new VictoryDetected(this.victory.Value));
-                Log.Info("found victory/loss (debug info: {0})", this.foundUsing);
-                this.foundUsing.Clear();
-                this.GameEnded();
+                victory = foundVic > foundLoss;
+                Publish(new VictoryDetected(victory.Value));
+                Log.Info("found victory/loss (debug info: {0})", foundUsing);
+                foundUsing.Clear();
+                GameEnded();
             }
         }
 
@@ -1334,7 +1318,7 @@ namespace HearthCap.Core.GameCapture.HS
         public void Handle(ResetCurrentGame message)
         {
             Log.Debug("ResetCurrentGame requested");
-            this.requestReset = true;
+            requestReset = true;
         }
 
         /// <summary>
@@ -1343,10 +1327,10 @@ namespace HearthCap.Core.GameCapture.HS
         /// <param name="message">The message.</param>
         public void Handle(RequestDeckScreenshot message)
         {
-            this.deckScreenshotRequested = !message.Cancel;
+            deckScreenshotRequested = !message.Cancel;
             if (message.Cancel)
             {
-                this.deckScreenshotRequestedCanceled = true;
+                deckScreenshotRequestedCanceled = true;
             }
         }
 
@@ -1357,7 +1341,7 @@ namespace HearthCap.Core.GameCapture.HS
         /// <param name="message">The message.</param>
         public void Handle(RequestArenaDeckScreenshot message)
         {
-            this.arenadeckScreenshotRequested = !message.Cancel;
+            arenadeckScreenshotRequested = !message.Cancel;
         }
     }
 

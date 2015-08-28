@@ -8,7 +8,7 @@
     using Microsoft.Win32;
 
     [Export(typeof(UserPreferences))]
-    public class UserPreferences : PropertyChangedBase
+    public sealed class UserPreferences : PropertyChangedBase, IDisposable
     {
         #region Member Variables
 
@@ -297,6 +297,15 @@
         }
 
         #endregion //Functions
-
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
+        }
     }
 }

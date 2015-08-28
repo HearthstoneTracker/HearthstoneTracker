@@ -1,10 +1,12 @@
 ﻿namespace HearthCap.Framework
 {
+    using System;
+
     public interface IBusyWatcher
     {
         bool IsBusy { get; }
 
-        BusyWatcher.BusyWatcherTicket GetTicket();
+        IDisposable GetTicket();
 
         void AddWatch();
 

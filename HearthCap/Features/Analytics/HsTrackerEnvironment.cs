@@ -3,7 +3,7 @@ namespace HearthCap.Features.Analytics
     using System;
     using System.Net;
 
-    using GoogleAnalyticsTracker.Core;
+    using GoogleAnalyticsTracker.Core.Interface;
 
     public class HsTrackerEnvironment : ITrackerEnvironment
     {

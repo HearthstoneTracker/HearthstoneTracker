@@ -14,7 +14,6 @@
     using Caliburn.Micro;
     using Caliburn.Micro.Recipes.Filters;
 
-    using HearthCap.Core.GameCapture;
     using HearthCap.Core.GameCapture.HS;
     using HearthCap.Core.GameCapture.HS.Commands;
     using HearthCap.Core.GameCapture.HS.Events;
@@ -34,9 +33,11 @@
 
     using NLog;
 
+    using LogManager = NLog.LogManager;
+
     [Export(typeof(IFlyout))]
     [Export(typeof(CurrentSessionFlyoutViewModel))]
-    public class CurrentSessionFlyoutViewModel : FlyoutViewModel,
+    public sealed class CurrentSessionFlyoutViewModel : FlyoutViewModel,
                                                  IPartImportsSatisfiedNotification,
                                                  IHandleWithTask<ArenaHeroDetected>,
                                                  IHandle<GameModeChanged>,
@@ -49,7 +50,7 @@
     {
         #region Static Fields
 
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private Logger Log = LogManager.GetCurrentClassLogger();
 
         #endregion
 
@@ -137,11 +138,11 @@
             this.arenaRepository = arenaRepository;
             this.heroRepository = heroRepository;
             this.gameManager = gameManager;
-            this.Name = "arenasession";
+            Name = "arenasession";
             SetPosition(Position.Right);
             this.events.Subscribe(this);
-            this.PropertyChanged += this.OnPropertyChanged;
-            this.lastIsOpen = this.IsOpen;
+            PropertyChanged += OnPropertyChanged;
+            lastIsOpen = IsOpen;
         }
 
         #endregion
@@ -155,16 +156,16 @@
         {
             get
             {
-                return this.showScreenshotColumn;
+                return showScreenshotColumn;
             }
             set
             {
-                if (value.Equals(this.showScreenshotColumn))
+                if (value.Equals(showScreenshotColumn))
                 {
                     return;
                 }
-                this.showScreenshotColumn = value;
-                this.NotifyOfPropertyChange(() => this.ShowScreenshotColumn);
+                showScreenshotColumn = value;
+                NotifyOfPropertyChange(() => ShowScreenshotColumn);
             }
         }
 
@@ -172,16 +173,16 @@
         {
             get
             {
-                return this.selectedServer;
+                return selectedServer;
             }
             set
             {
-                if (Equals(value, this.selectedServer))
+                if (Equals(value, selectedServer))
                 {
                     return;
                 }
-                this.selectedServer = value;
-                this.NotifyOfPropertyChange(() => this.SelectedServer);
+                selectedServer = value;
+                NotifyOfPropertyChange(() => SelectedServer);
             }
         }
 
@@ -189,16 +190,16 @@
         {
             get
             {
-                return this.rewardGold;
+                return rewardGold;
             }
             set
             {
-                if (value == this.rewardGold)
+                if (value == rewardGold)
                 {
                     return;
                 }
-                this.rewardGold = value;
-                this.NotifyOfPropertyChange(() => this.RewardGold);
+                rewardGold = value;
+                NotifyOfPropertyChange(() => RewardGold);
             }
         }
 
@@ -206,16 +207,16 @@
         {
             get
             {
-                return this.rewardDust;
+                return rewardDust;
             }
             set
             {
-                if (value == this.rewardDust)
+                if (value == rewardDust)
                 {
                     return;
                 }
-                this.rewardDust = value;
-                this.NotifyOfPropertyChange(() => this.RewardDust);
+                rewardDust = value;
+                NotifyOfPropertyChange(() => RewardDust);
             }
         }
 
@@ -223,16 +224,16 @@
         {
             get
             {
-                return this.rewardPacks;
+                return rewardPacks;
             }
             set
             {
-                if (value == this.rewardPacks)
+                if (value == rewardPacks)
                 {
                     return;
                 }
-                this.rewardPacks = value;
-                this.NotifyOfPropertyChange(() => this.RewardPacks);
+                rewardPacks = value;
+                NotifyOfPropertyChange(() => RewardPacks);
             }
         }
 
@@ -240,16 +241,16 @@
         {
             get
             {
-                return this.notes;
+                return notes;
             }
             set
             {
-                if (value == this.notes)
+                if (value == notes)
                 {
                     return;
                 }
-                this.notes = value;
-                this.NotifyOfPropertyChange(() => this.Notes);
+                notes = value;
+                NotifyOfPropertyChange(() => Notes);
             }
         }
 
@@ -257,16 +258,16 @@
         {
             get
             {
-                return this.ended;
+                return ended;
             }
             set
             {
-                if (value.Equals(this.ended))
+                if (value.Equals(ended))
                 {
                     return;
                 }
-                this.ended = value;
-                this.NotifyOfPropertyChange(() => this.Ended);
+                ended = value;
+                NotifyOfPropertyChange(() => Ended);
             }
         }
 
@@ -274,16 +275,16 @@
         {
             get
             {
-                return this.hero;
+                return hero;
             }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
@@ -299,16 +300,16 @@
         {
             get
             {
-                return this.isEnded;
+                return isEnded;
             }
             set
             {
-                if (value.Equals(this.isEnded))
+                if (value.Equals(isEnded))
                 {
                     return;
                 }
-                this.isEnded = value;
-                this.NotifyOfPropertyChange(() => this.IsEnded);
+                isEnded = value;
+                NotifyOfPropertyChange(() => IsEnded);
             }
         }
 
@@ -318,7 +319,7 @@
             {
                 if (SelectedArenaSession == null || LatestArenaSession == null) return false;
 
-                return Equals(this.SelectedArenaSession.Id, this.LatestArenaSession.Id);
+                return Equals(SelectedArenaSession.Id, LatestArenaSession.Id);
             }
         }
 
@@ -326,17 +327,17 @@
         {
             get
             {
-                return this.latestArenaSession;
+                return latestArenaSession;
             }
             set
             {
-                if (Equals(value, this.latestArenaSession))
+                if (Equals(value, latestArenaSession))
                 {
                     return;
                 }
-                this.latestArenaSession = value;
-                this.NotifyOfPropertyChange(() => this.LatestArenaSession);
-                this.NotifyOfPropertyChange(() => this.IsLatest);
+                latestArenaSession = value;
+                NotifyOfPropertyChange(() => LatestArenaSession);
+                NotifyOfPropertyChange(() => IsLatest);
             }
         }
 
@@ -344,16 +345,16 @@
         {
             get
             {
-                return this.losses;
+                return losses;
             }
             set
             {
-                if (value == this.losses)
+                if (value == losses)
                 {
                     return;
                 }
-                this.losses = value;
-                this.NotifyOfPropertyChange(() => this.Losses);
+                losses = value;
+                NotifyOfPropertyChange(() => Losses);
             }
         }
 
@@ -361,16 +362,16 @@
         {
             get
             {
-                return this.retired;
+                return retired;
             }
             set
             {
-                if (value.Equals(this.retired))
+                if (value.Equals(retired))
                 {
                     return;
                 }
-                this.retired = value;
-                this.NotifyOfPropertyChange(() => this.Retired);
+                retired = value;
+                NotifyOfPropertyChange(() => Retired);
             }
         }
 
@@ -378,21 +379,21 @@
         {
             get
             {
-                return this.selectedArenaSession;
+                return selectedArenaSession;
             }
             set
             {
-                if (ReferenceEquals(value, this.selectedArenaSession))
+                if (ReferenceEquals(value, selectedArenaSession))
                 {
                     return;
                 }
-                this.selectedArenaSession = value;
+                selectedArenaSession = value;
                 //if (value != null)
                 //{
                 //    this.InitViewModel(value);
                 //}
-                this.NotifyOfPropertyChange(() => this.SelectedArenaSession);
-                this.NotifyOfPropertyChange(() => this.IsLatest);
+                NotifyOfPropertyChange(() => SelectedArenaSession);
+                NotifyOfPropertyChange(() => IsLatest);
             }
         }
 
@@ -400,16 +401,16 @@
         {
             get
             {
-                return this.started;
+                return started;
             }
             set
             {
-                if (value.Equals(this.started))
+                if (value.Equals(started))
                 {
                     return;
                 }
-                this.started = value;
-                this.NotifyOfPropertyChange(() => this.Started);
+                started = value;
+                NotifyOfPropertyChange(() => Started);
             }
         }
 
@@ -417,16 +418,16 @@
         {
             get
             {
-                return this.wins;
+                return wins;
             }
             set
             {
-                if (value == this.wins)
+                if (value == wins)
                 {
                     return;
                 }
-                this.wins = value;
-                this.NotifyOfPropertyChange(() => this.Wins);
+                wins = value;
+                NotifyOfPropertyChange(() => Wins);
             }
         }
 
@@ -434,7 +435,7 @@
         {
             get
             {
-                return this.servers;
+                return servers;
             }
         }
 
@@ -442,12 +443,12 @@
         {
             get
             {
-                return this.deckScreenshot1;
+                return deckScreenshot1;
             }
             set
             {
-                this.deckScreenshot1 = value;
-                this.NotifyOfPropertyChange(() => this.DeckScreenshot1);
+                deckScreenshot1 = value;
+                NotifyOfPropertyChange(() => DeckScreenshot1);
             }
         }
 
@@ -455,12 +456,12 @@
         {
             get
             {
-                return this.deckScreenshot2;
+                return deckScreenshot2;
             }
             set
             {
-                this.deckScreenshot2 = value;
-                this.NotifyOfPropertyChange(() => this.DeckScreenshot2);
+                deckScreenshot2 = value;
+                NotifyOfPropertyChange(() => DeckScreenshot2);
             }
         }
 
@@ -468,16 +469,16 @@
         {
             get
             {
-                return this.canTakeScreenshot;
+                return canTakeScreenshot;
             }
             set
             {
-                if (value.Equals(this.canTakeScreenshot))
+                if (value.Equals(canTakeScreenshot))
                 {
                     return;
                 }
-                this.canTakeScreenshot = value;
-                this.NotifyOfPropertyChange(() => this.CanTakeScreenshot);
+                canTakeScreenshot = value;
+                NotifyOfPropertyChange(() => CanTakeScreenshot);
             }
         }
 
@@ -485,16 +486,16 @@
         {
             get
             {
-                return this.takingScreenshot;
+                return takingScreenshot;
             }
             set
             {
-                if (value.Equals(this.takingScreenshot))
+                if (value.Equals(takingScreenshot))
                 {
                     return;
                 }
-                this.takingScreenshot = value;
-                this.NotifyOfPropertyChange(() => this.TakingScreenshot);
+                takingScreenshot = value;
+                NotifyOfPropertyChange(() => TakingScreenshot);
             }
         }
 
@@ -505,7 +506,7 @@
         public void AddGame()
         {
             // this.IsOpen = false;
-            events.PublishOnCurrentThread(new CreateNewGame() { ArenaSession = this.SelectedArenaSession });
+            events.PublishOnCurrentThread(new CreateNewGame() { ArenaSession = SelectedArenaSession });
         }
 
         public async Task Delete()
@@ -517,7 +518,7 @@
 
             if (MessageBox.Show("Delete this arena?", "Delete this arena?", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                await gameManager.DeleteArenaSession(this.SelectedArenaSession.Id);
+                await gameManager.DeleteArenaSession(SelectedArenaSession.Id);
                 events.PublishOnBackgroundThread(new SendNotification("Arena successfully deleted."));
                 LoadLatest();
             }
@@ -587,20 +588,20 @@
 
         public void TakeFirstScreenshot()
         {
-            this.arenaIdForScreenshot = SelectedArenaSession.Id;
-            this.isSecondScreenshot = false;
+            arenaIdForScreenshot = SelectedArenaSession.Id;
+            isSecondScreenshot = false;
             CanTakeScreenshot = false;
             TakingScreenshot = true;
-            this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
+            events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
         }
 
         public void TakeSecondScreenshot()
         {
-            this.arenaIdForScreenshot = SelectedArenaSession.Id;
-            this.isSecondScreenshot = true;
+            arenaIdForScreenshot = SelectedArenaSession.Id;
+            isSecondScreenshot = true;
             CanTakeScreenshot = false;
             TakingScreenshot = true;
-            this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
+            events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot());
         }
 
         public void ToggleScreenshot()
@@ -647,7 +648,7 @@
         public async Task Handle(ArenaHeroDetected message)
         {
             EnsureInitialized();
-            this.detectedHero = message.Hero;
+            detectedHero = message.Hero;
 
             if (String.IsNullOrEmpty(detectedHero))
             {
@@ -668,7 +669,7 @@
         /// <param name="message">The message.</param>
         public void Handle(ArenaWinsDetected message)
         {
-            this.detectedWins = message.Wins;
+            detectedWins = message.Wins;
         }
 
         /// <summary>
@@ -677,7 +678,7 @@
         /// <param name="message">The message.</param>
         public void Handle(ArenaLossesDetected message)
         {
-            this.detectedLosses = message.Losses;
+            detectedLosses = message.Losses;
         }
 
         private async Task HandleArenaDetect()
@@ -763,7 +764,7 @@
             }
             finally
             {
-                this.LatestArenaSession = latestArena;
+                LatestArenaSession = latestArena;
                 detectedHero = null;
                 detectedWins = -1;
                 detectedLosses = -1;
@@ -775,10 +776,10 @@
                     if (latestArena.Image1 == null)
                     {
                         // add screenshot async
-                        this.arenaIdForScreenshot = latestArena.Id;
+                        arenaIdForScreenshot = latestArena.Id;
                         TakingScreenshot = true;
                         CanTakeScreenshot = false;
-                        Task.Delay(1000).ContinueWith(t => this.events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot()));
+                        Task.Delay(1000).ContinueWith(t => events.PublishOnBackgroundThread(new RequestArenaDeckScreenshot()));
                     }
                 }
             }
@@ -804,9 +805,9 @@
         /// <param name="message">The message.</param>
         public void Handle(ArenaSessionUpdated message)
         {
-            if (this.SelectedArenaSession == null) return;
+            if (SelectedArenaSession == null) return;
 
-            if (message.ArenaSessionId == this.SelectedArenaSession.Id)
+            if (message.ArenaSessionId == SelectedArenaSession.Id)
             {
                 var updatedArena = arenaRepository.FirstOrDefault(x => x.Id == message.ArenaSessionId);
                 SelectedArenaSession.MapFrom(updatedArena);
@@ -830,12 +831,10 @@
             SelectedArenaSession = arenaSessionModel;
             InitLatest();
             InitViewModel(SelectedArenaSession);
-            if (IsOpen)
-            {
-                IsOpen = false;
-            }
+
             IsOpen = true;
-            this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, arenaSessionModel.Id));
+
+            events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, arenaSessionModel.Id));
         }
 
         public bool CanSave()
@@ -866,16 +865,16 @@
                 }
                 changeGameHeroes = true;
             }
-            arena.Hero = this.Hero;
-            arena.StartDate = this.Started;
-            arena.EndDate = this.Ended;
-            arena.Retired = this.Retired;
-            arena.Losses = this.Losses;
-            arena.Wins = this.Wins;
-            arena.RewardDust = this.RewardDust;
-            arena.RewardGold = this.RewardGold;
-            arena.RewardPacks = this.RewardPacks;
-            arena.Notes = this.Notes;
+            arena.Hero = Hero;
+            arena.StartDate = Started;
+            arena.EndDate = Ended;
+            arena.Retired = Retired;
+            arena.Losses = Losses;
+            arena.Wins = Wins;
+            arena.RewardDust = RewardDust;
+            arena.RewardGold = RewardGold;
+            arena.RewardPacks = RewardPacks;
+            arena.Notes = Notes;
             arena.Server = SelectedServer.Name;
 
             await gameManager.UpdateArenaSession(SelectedArenaSession);
@@ -895,18 +894,18 @@
         /// <summary>The set end time.</summary>
         public void SetEndTime()
         {
-            this.Ended = DateTime.Now;
+            Ended = DateTime.Now;
         }
 
         /// <summary>The set start time.</summary>
         public void SetStartTime()
         {
-            this.Started = DateTime.Now;
+            Started = DateTime.Now;
         }
 
         public async Task ShowCurrent()
         {
-            LoadLatest();
+            await Task.Run(() => LoadLatest());
         }
 
 
@@ -932,53 +931,46 @@
 
         #region Methods
 
-        /// <summary>
-        /// Called when initializing.
-        /// </summary>
-        protected override async void OnInitialize()
-        {
-        }
-
         private void InitViewModel(ArenaSessionModel arenaSession)
         {
-            this.Started = arenaSession.StartDate;
-            this.Ended = arenaSession.EndDate;
-            this.Wins = arenaSession.Wins;
-            this.Losses = arenaSession.Losses;
-            this.Hero = arenaSession.Hero;
-            this.IsEnded = arenaSession.IsEnded;
-            this.Retired = arenaSession.Retired;
-            this.RewardDust = arenaSession.RewardDust;
-            this.RewardGold = arenaSession.RewardGold;
-            this.RewardPacks = arenaSession.RewardPacks;
-            this.Notes = arenaSession.Notes;
-            this.SelectedServer = servers.FirstOrDefault(x => x.Name == arenaSession.Server);
+            Started = arenaSession.StartDate;
+            Ended = arenaSession.EndDate;
+            Wins = arenaSession.Wins;
+            Losses = arenaSession.Losses;
+            Hero = arenaSession.Hero;
+            IsEnded = arenaSession.IsEnded;
+            Retired = arenaSession.Retired;
+            RewardDust = arenaSession.RewardDust;
+            RewardGold = arenaSession.RewardGold;
+            RewardPacks = arenaSession.RewardPacks;
+            Notes = arenaSession.Notes;
+            SelectedServer = servers.FirstOrDefault(x => x.Name == arenaSession.Server);
 
-            this.DeckScreenshot1 = null;
-            this.DeckScreenshot2 = null;
+            DeckScreenshot1 = null;
+            DeckScreenshot2 = null;
             if (arenaSession.Image1 != null)
             {
-                this.DeckScreenshot1 = CreateBitmapImage(arenaSession.Image1.Image);
+                DeckScreenshot1 = CreateBitmapImage(arenaSession.Image1.Image);
             }
 
             if (arenaSession.Image2 != null)
             {
-                this.DeckScreenshot2 = CreateBitmapImage(arenaSession.Image2.Image);
+                DeckScreenshot2 = CreateBitmapImage(arenaSession.Image2.Image);
             }
 
             NotifyOfPropertyChange(() => IsLatest);
 
             if (IsLatest && !IsEnded)
             {
-                this.Header = this.DisplayName = "Running Arena:";
+                Header = DisplayName = "Running Arena:";
             }
             else if (IsLatest)
             {
-                this.Header = this.DisplayName = "Last Arena:";
+                Header = DisplayName = "Last Arena:";
             }
             else
             {
-                this.Header = this.DisplayName = "Finished Arena:";
+                Header = DisplayName = "Finished Arena:";
             }
         }
 
@@ -987,9 +979,9 @@
             if (initialized) return;
             initialized = true;
 
-            var data = this.GlobalData.Get();
-            this.heroes.Clear();
-            this.heroes.AddRange(data.Heroes);
+            var data = GlobalData.Get();
+            heroes.Clear();
+            heroes.AddRange(data.Heroes);
             InitLatest();
         }
 
@@ -998,7 +990,7 @@
             // arena session is always the latest session in the db.
             var serverName = BindableServerCollection.Instance.DefaultName;
             var session = arenaRepository.Query(a => a.Where(x => x.Server == serverName).OrderByDescending(x => x.StartDate).FirstOrDefault().ToModel());
-            this.LatestArenaSession = session;
+            LatestArenaSession = session;
         }
 
         /// <summary>The on property changed.</summary>
@@ -1009,16 +1001,16 @@
             switch (args.PropertyName)
             {
                 case "IsOpen":
-                    if (!this.IsOpen && this.lastIsOpen)
+                    if (!IsOpen && lastIsOpen)
                     {
-                        this.events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, null));
+                        events.PublishOnBackgroundThread(new SelectedArenaSessionChanged(this, null));
                     }
                     //if (IsOpen)
                     //{
                     //    OnSelectedArenaChanged();
                     //}
 
-                    this.lastIsOpen = this.IsOpen;
+                    lastIsOpen = IsOpen;
                     break;
             }
         }
@@ -1047,9 +1039,9 @@
             using (await newArenaLock.LockAsync())
             {
                 var arena = new ArenaSessionModel
-                                {
-                                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
-                                };
+                {
+                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
+                };
                 arena = await gameManager.AddArenaSession(arena);
 
                 // for web api

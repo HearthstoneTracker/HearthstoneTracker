@@ -9,7 +9,7 @@
 
         public CaptureConfig()
         {
-            this.Direct3DVersion = Direct3DVersion.AutoDetect;
+            Direct3DVersion = Direct3DVersion.AutoDetect;
         }
 
         #endregion

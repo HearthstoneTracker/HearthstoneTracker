@@ -16,13 +16,13 @@
 
         public MessageReceivedEventArgs(MessageType messageType, string message)
         {
-            this.MessageType = messageType;
-            this.Message = message;
+            MessageType = messageType;
+            Message = message;
         }
 
         ~MessageReceivedEventArgs()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -39,13 +39,13 @@
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         public override string ToString()
         {
-            return String.Format("{0}: {1}", this.MessageType, this.Message);
+            return String.Format("{0}: {1}", MessageType, Message);
         }
 
         #endregion
@@ -54,13 +54,13 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     RemotingServices.Disconnect(this);
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
 

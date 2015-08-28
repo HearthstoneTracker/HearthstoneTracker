@@ -20,10 +20,11 @@
                                     Style="{StaticResource hccFormStyle}">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <CheckBox Name="EnableSlowOpponentMode"
-                              IsChecked="{Binding EnableSlowOpponentMode}"></CheckBox>                    
-                    <TextBlock>
+                              IsChecked="{Binding EnableSlowOpponentMode}">
+                        <TextBlock>
                         Popup Hearthstone window on your turn.
-                    </TextBlock>
+                        </TextBlock>
+                    </CheckBox>                    
                 </StackPanel>
             </HeaderedContentControl>
         </StackPanel>

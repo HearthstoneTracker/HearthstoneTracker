@@ -1,1102 +1,1121 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9A838E34-5AA7-4BDC-B730-6A59C3F02054}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HearthCap</RootNamespace>
-    <AssemblyName>HearthCap</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <NuGetPackageImportStamp>335bf4d8</NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-    <PublishUrl>ftp://waws-prod-am2-001.ftp.azurewebsites.windows.net/site/wwwroot/install/</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://hearthstonetracker.com/install/</InstallUrl>
-    <SupportUrl>http://hearthstonetracker.com</SupportUrl>
-    <ProductName>HearthstoneTracker</ProductName>
-    <PublisherName>HearthstoneTracker.com</PublisherName>
-    <SuiteName>HearthstoneTracker.com</SuiteName>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <WebPage>publish.html</WebPage>
-    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>11</ApplicationRevision>
-    <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>true</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-    <NoWarn>
-    </NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowedReferenceRelatedFileExtensions>
-      none
-    </AllowedReferenceRelatedFileExtensions>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <NoWarn>
-    </NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>7AD1B40C8B6F39B99E7745E33E6CF6C3291006BE</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>HearthCap_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>false</SignManifests>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup />
-  <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationIcon>HearthCap.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Caliburn.Micro, Version=2.0.1.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Caliburn.Micro.Core.2.0.1\lib\net45\Caliburn.Micro.dll</HintPath>
-    </Reference>
-    <Reference Include="Caliburn.Micro.Platform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Caliburn.Micro.2.0.1\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
-    </Reference>
-    <Reference Include="Caliburn.Micro.Recipes.Filters.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Caliburn\Caliburn.Micro.Recipes.Filters.NET45.dll</HintPath>
-    </Reference>
-    <Reference Include="De.TorstenMandelkow.MetroChart">
-      <HintPath>..\lib\De.TorstenMandelkow.MetroChart.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.1\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
-    </Reference>
-    <Reference Include="GoogleAnalyticsTracker.Core">
-      <HintPath>..\packages\GoogleAnalyticsTracker.Core.3.0.19\lib\portable-net45+win+wp80\GoogleAnalyticsTracker.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
-    </Reference>
-    <Reference Include="HearthCap.Logger.Interface">
-      <HintPath>..\lib\HearthCap\HearthCap.Logger.Interface.dll</HintPath>
-    </Reference>
-    <Reference Include="MahApps.Metro, Version=0.14.0.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\MahApps.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Expression\Microsoft.Expression.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Expression\Microsoft.Expression.Interactions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
-      <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions">
-      <HintPath>..\packages\winapicp.1.1\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="Omu.ValueInjecter">
-      <HintPath>..\packages\valueinjecter.2.3.3\lib\net35\Omu.ValueInjecter.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.2014.1.319.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Wpf, Version=2014.1.319.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.319.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Xps">
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.319.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.Composition.Registration" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Linq.Dynamic, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\System.Linq.Dynamic.1.0.2\lib\net40\System.Linq.Dynamic.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Management" />
-    <Reference Include="System.Net">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Reflection.Context" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UserVoice">
-      <HintPath>..\packages\UserVoice.0.0.4\lib\UserVoice.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="Xceed.Wpf.Toolkit, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.2.1\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Features\About\DonateCommandBarViewModel.cs" />
-    <Compile Include="Features\About\AboutViewModel.cs" />
-    <Compile Include="Features\About\WelcomeNotification.cs" />
-    <Compile Include="Features\Analytics\AnalyticsCookie.cs" />
-    <Compile Include="Features\Analytics\AnalyticsRegistrySettings.cs" />
-    <Compile Include="Features\Analytics\HsTracker.cs" />
-    <Compile Include="Features\Analytics\HsTrackerEnvironment.cs" />
-    <Compile Include="Features\Analytics\UsageSettingsViewModel.cs" />
-    <Compile Include="Features\Analytics\HsAnalyticsSession.cs" />
-    <Compile Include="Features\Analytics\Tracker.cs" />
-    <Compile Include="Features\Analytics\TrackStartup.cs" />
-    <Compile Include="Features\ArenaSessions\AddArenaViewModel.cs" />
-    <Compile Include="Features\ArenaSessions\ArenaSessionTotalsModel.cs" />
-    <Compile Include="Features\ArenaSessions\Statistics\FilteredStatsViewModel.cs" />
-    <Compile Include="Features\ArenaSessions\Statistics\StatModel.cs" />
-    <Compile Include="Features\AutoUpdate\UpdateViewModel.cs" />
-    <Compile Include="Features\BalloonSettings\BalloonRegistrySettings.cs" />
-    <Compile Include="Features\BalloonSettings\BalloonSettings.cs" />
-    <Compile Include="Features\Charts\ImprovementChartsView.xaml.cs">
-      <DependentUpon>ImprovementChartsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Charts\ImprovementChartsViewModel.cs" />
-    <Compile Include="Features\Charts\CommonChartsViewModel.cs" />
-    <Compile Include="Features\Charts\CommonChartsView.xaml.cs">
-      <DependentUpon>CommonChartsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Charts\IChartTab.cs" />
-    <Compile Include="Features\Core\BindableServerCollection.cs" />
-    <Compile Include="Features\Core\ServerChanged.cs" />
-    <Compile Include="Features\Decks\AvailableDecksModel.cs" />
-    <Compile Include="Features\Decks\DecksCommandBarViewModel.cs" />
-    <Compile Include="Features\Decks\DeckSettingsViewModel.cs" />
-    <Compile Include="Features\Decks\DeckUpdated.cs" />
-    <Compile Include="Features\Decks\EditDeckViewModel.cs" />
-    <Compile Include="Features\Diagnostics\Tests\TestsView.cs" />
-    <Compile Include="Features\EngineControl\EngineRegistrySettings.cs" />
-    <Compile Include="Features\GameManager\Events\CorrectLastGameResult.cs" />
-    <Compile Include="Features\Games\Balloons\GameStartedBalloonViewModel.cs" />
-    <Compile Include="Features\Core\HeroExtensions.cs" />
-    <Compile Include="Features\Core\GlobalLocks.cs" />
-    <Compile Include="Features\Core\DateFilter.cs" />
-    <Compile Include="Features\Decks\SelectDeck.cs" />
-    <Compile Include="Features\IncompatibleHooks\IncompatibleHookNotify.cs" />
-    <Compile Include="Features\SlowOpponent\CommonSettings.cs" />
-    <Compile Include="Features\SlowOpponent\SlowOpponentSettingsViewModel.cs" />
-    <Compile Include="Features\Charts\ChartsViewModel.cs" />
-    <Compile Include="Features\Core\GameModesStringCollection.cs" />
-    <Compile Include="Shell\Flyouts\FlyoutAttribute.cs" />
-    <Compile Include="Shell\Flyouts\FlyoutRegistrySettings.cs" />
-    <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropBehavior.cs" />
-    <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropDirection.cs" />
-    <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropEventArgs.cs" />
-    <Compile Include="UI\Behaviors\DragDrop\UIHelper.cs" />
-    <Compile Include="UI\Behaviors\DragDrop\WeakEventListener.cs" />
-    <Compile Include="UI\Behaviors\TwoListSynchronizer.cs" />
-    <Compile Include="UI\Behaviors\InputBindingTrigger.cs" />
-    <Compile Include="UI\Behaviors\FixedWidthColumn.cs" />
-    <Compile Include="UI\Behaviors\GridViewColumnResize.cs" />
-    <Compile Include="UI\Behaviors\SelectingItemAttachedProperty.cs" />
-    <Compile Include="UI\Converters\PercentToColorConverter.cs" />
-    <Compile Include="UI\Converters\PositionToIntegerConverter.cs" />
-    <Compile Include="UI\Converters\ValueAboveThreshold.cs" />
-    <Compile Include="UI\Converters\ValueBelowThreshold.cs" />
-    <Compile Include="Util\Hotkey.cs" />
-    <Compile Include="Util\PredicateBuilder.cs" />
-    <Compile Include="Features\Games\Statistics\StatModel.cs" />
-    <Compile Include="Features\StartHearthstone\StartHearthstoneViewModel.cs" />
-    <Compile Include="Features\StartupSettings\StartupSettingsViewModel.cs" />
-    <Compile Include="Features\BalloonSettings\BalloonSettingsViewModel.cs" />
-    <Compile Include="Features\Dashboard\DashboardViewModel.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\CaptureTarget.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\ColorRule.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\LogReceivedEventArgs.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\LogStyleSelector.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\LogTemplateSelector.cs" />
-    <Compile Include="Features\Games\Balloons\GameResultBalloonViewModel.cs" />
-    <Compile Include="Features\Diagnostics\Tests\LogCommandBarViewModel.cs" />
-    <Compile Include="Features\Games\LatestGames\GameResultTotalsModel.cs" />
-    <Compile Include="Features\Statistics\HeroStatViewModel.cs" />
-    <Compile Include="Features\Statistics\DecksStatViewModel.cs" />
-    <Compile Include="Features\Statistics\StatModel.cs" />
-    <Compile Include="Features\Statistics\StatRegistrySettings.cs" />
-    <Compile Include="Features\Statistics\StatViewModelBase.cs" />
-    <Compile Include="Features\Status\StatusView.xaml.cs">
-      <DependentUpon>StatusView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Status\StatusViewModel.cs" />
-    <Compile Include="Features\Support\SupportCommandBarViewModel.cs" />
-    <Compile Include="Features\Support\SupportView.xaml.cs">
-      <DependentUpon>SupportView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Support\SupportViewModel.cs" />
-    <Compile Include="Features\WebApi\Generic\WebApiProviderSettings.cs" />
-    <Compile Include="Features\WebApi\HearthstoneTracker\AddUserAgentHandler.cs" />
-    <Compile Include="Features\WebApi\HearthstoneTracker\HearthstoneTrackerWebApiEventsHandler.cs" />
-    <Compile Include="Features\WebApi\HearthstoneTracker\ProviderSettingsViewModel.cs" />
-    <Compile Include="Features\WebApi\HearthstoneTracker\HearthstoneTrackerWebApiProvider.cs" />
-    <Compile Include="Features\WebApi\ProviderSettings.cs" />
-    <Compile Include="Features\WebApi\Twitter\TwitterApiEventsHandler.cs" />
-    <Compile Include="Features\WebApi\Twitter\TwitterSettingsViewModel.cs" />
-    <Compile Include="Features\WebApi\Twitter\TwitterApiProvider.cs" />
-    <Compile Include="Features\WebApi\ValueBot\ProviderSettingsViewModel.cs" />
-    <Compile Include="Features\WebApi\WebApiProviderSettingsViewModel.cs" />
-    <Compile Include="Features\WebApi\Hmac\CanonicalRepresentationBuilder.cs" />
-    <Compile Include="Features\WebApi\Hmac\Configuration.cs" />
-    <Compile Include="Features\WebApi\Generic\GenericWebApiEventsHandler.cs" />
-    <Compile Include="Features\WebApi\Generic\GenericWebApiProviderSettingsViewModel.cs" />
-    <Compile Include="Features\WebApi\Hmac\HmacSignatureCalculator.cs" />
-    <Compile Include="Features\WebApi\Hmac\HmacSigningHandler.cs" />
-    <Compile Include="Features\WebApi\Hmac\IBuildMessageRepresentation.cs" />
-    <Compile Include="Features\WebApi\Hmac\ICalculteSignature.cs" />
-    <Compile Include="Features\WebApi\IWebApiEventsHandler.cs" />
-    <Compile Include="Features\WebApi\IWebApiProviderDescriptor.cs" />
-    <Compile Include="Features\WebApi\IWebApiProviderScreen.cs" />
-    <Compile Include="Features\WebApi\Hmac\MessageRepresentation.cs" />
-    <Compile Include="Features\WebApi\Hmac\RequestContentMd5Handler.cs" />
-    <Compile Include="Features\WebApi\ValueBot\ValueBotWebApiProvider.cs" />
-    <Compile Include="Features\WebApi\WebApiManager.cs" />
-    <Compile Include="Features\WebApi\WebApiProviderDescriptor.cs" />
-    <Compile Include="Features\WebApi\WebApiSettingsViewModel.cs" />
-    <Compile Include="Logging\AppDataFolderManager.cs" />
-    <Compile Include="Logging\DataDirectorySettings.cs" />
-    <Compile Include="Features\Servers\ChooseServerDialogView.xaml.cs">
-      <DependentUpon>ChooseServerDialogView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Features\Servers\ChooseServerDialogViewModel.cs" />
-    <Compile Include="Shell\CustomWindowManager.cs" />
-    <Compile Include="Features\Core\ServerItemModel.cs" />
-    <Compile Include="Shell\Events\RefreshAll.cs" />
-    <Compile Include="Shell\StartupViewModel.cs" />
-    <Compile Include="Shell\Commands\RestoreWindowCommand.cs" />
-    <Compile Include="Shell\Theme\ThemeRegistrySettings.cs" />
-    <Compile Include="Shell\UserPreferences\ApplicationRegistrySettings.cs" />
-    <Compile Include="Shell\UserPreferences\RegistrySettings.cs" />
-    <Compile Include="Shell\UserPreferences\UserPreferences.cs" />
-    <Compile Include="Shell\UserPreferences\WindowRegistrySettings.cs" />
-    <Compile Include="UI\Behaviors\ActualSizeBehavior.cs" />
-    <Compile Include="UI\Behaviors\DatePickerWatermarkBehaviour.cs" />
-    <Compile Include="UI\Behaviors\TextBoxInputRegExBehaviour.cs" />
-    <Compile Include="UI\Converters\HeroKeyToBrushConverter.cs" />
-    <Compile Include="UI\Converters\RemoveNewLinesConverter.cs" />
-    <Compile Include="UI\Converters\PositionToBooleanConverter.cs" />
-    <Compile Include="UI\Converters\ValueToBooleanInverseConverter.cs" />
-    <Compile Include="Util\DateTimeExtensions.cs" />
-    <Compile Include="Features\Settings\SettingKeys.cs" />
-    <Compile Include="Features\Settings\SettingModel.cs" />
-    <Compile Include="Features\Flyouts.cs" />
-    <Compile Include="Features\Games\Models\ArenaSessionModel.cs" />
-    <Compile Include="Features\Games\Models\GameResultModel.cs" />
-    <Compile Include="Features\Games\Models\ModelMapperExtensions.cs" />
-    <Compile Include="Features\Games\Statistics\FilteredStatsViewModel.cs" />
-    <Compile Include="Features\Statistics\IStatsViewModel.cs" />
-    <Compile Include="Features\TextFiles\TextFilesManager.cs" />
-    <Compile Include="Features\TextFiles\Listeners\WinrateEventsListener.cs" />
-    <Compile Include="Features\TextFiles\Listeners\ArenaEventsListener.cs" />
-    <Compile Include="Features\TextFiles\TextFileModel.cs" />
-    <Compile Include="Features\TextFiles\TextFilesEventsListener.cs" />
-    <Compile Include="Features\TextFiles\TextFilesListenerCollection.cs" />
-    <Compile Include="Features\TextFiles\TextFilesViewModel.cs" />
-    <Compile Include="Shell\Events\WindowStateChanged.cs" />
-    <Compile Include="Logging\NLogger.cs" />
-    <Compile Include="Logging\RingTarget.cs" />
-    <Compile Include="Logging\AppLogManager.cs" />
-    <Compile Include="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="Shell\Notifications\NotificationsViewModel.cs" />
-    <Compile Include="Shell\Notifications\NotificationViewModel.cs" />
-    <Compile Include="Shell\Notifications\SendNotification.cs" />
-    <Compile Include="Shell\TrayIcon\CommandEvent.cs" />
-    <Compile Include="Shell\TrayIcon\DefaultBalloonTip.xaml.cs">
-      <DependentUpon>DefaultBalloonTip.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Shell\TrayIcon\DefaultBalloonTipViewModel.cs" />
-    <Compile Include="Shell\TrayIcon\PublishCommand.cs" />
-    <Compile Include="Shell\TrayIcon\TrayIconDoubleClick.cs" />
-    <Compile Include="Shell\TrayIcon\TrayIconLeftClick.cs" />
-    <Compile Include="Shell\TrayIcon\TrayIconViewModel.cs" />
-    <Compile Include="Shell\TrayIcon\TrayNotification.cs" />
-    <Compile Include="StartUp\CrashManager.cs" />
-    <Compile Include="Logging\IAppLogManager.cs" />
-    <Compile Include="UI\Behaviors\RoutedEventTrigger.cs" />
-    <Compile Include="UI\Behaviors\ListBoxBehaviour.cs" />
-    <Compile Include="UI\Controls\DelayedSplashScreen.cs" />
-    <Compile Include="UI\Converters\StringToBrushConverter.cs" />
-    <Compile Include="UI\Converters\ValueToCollapsedConverter.cs" />
-    <Compile Include="UI\Converters\ValueToVisibleConverter.cs" />
-    <Compile Include="Util\PauseNotify.cs" />
-    <Compile Include="Shell\Commands\VisitWebsiteCommand.cs" />
-    <Compile Include="Features\About\AboutCommandBarViewModel.cs" />
-    <Compile Include="Features\GameManager\Events\ArenaSessionAdded.cs" />
-    <Compile Include="Features\GameManager\Events\ArenaSessionDeleted.cs" />
-    <Compile Include="Features\ArenaSessions\ArenaSessionsViewModel.cs" />
-    <Compile Include="Features\GameManager\Events\ArenaSessionUpdated.cs" />
-    <Compile Include="Features\ArenaSessions\CurrentSessionCommandBarViewModel.cs" />
-    <Compile Include="Features\ArenaSessions\CurrentSessionFlyoutViewModel.cs" />
-    <Compile Include="Features\ArenaSessions\SelectedArenaSessionChanged.cs" />
-    <Compile Include="Features\Configuration.cs" />
-    <Compile Include="Features\Core\GlobalData.cs" />
-    <Compile Include="Features\Games\CurrentGame\CurrentGameFlyoutViewModel.cs" />
-    <Compile Include="Features\GameManager\Events\GameResultAdded.cs" />
-    <Compile Include="Features\GameManager\Events\GameResultUpdated.cs" />
-    <Compile Include="Features\Decks\DeckManager.cs" />
-    <Compile Include="Features\Decks\IDeckManager.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\AreaDesignerViewModel.cs" />
-    <Compile Include="Features\Diagnostics\EventCaptureEngineLogger.cs" />
-    <Compile Include="Features\Diagnostics\LogExtensions.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\LogCommandBarViewModel.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\LogFlyoutViewModel.cs" />
-    <Compile Include="Features\Diagnostics\LogFlyout\ToggleAddGameCommand.cs" />
-    <Compile Include="Features\EngineControl\StartStopCommandBarViewModel.cs" />
-    <Compile Include="Features\EngineSettings\EngineSettingsViewModel.cs" />
-    <Compile Include="Features\Games\AddGame\AddGameCommandBarViewModel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Features\Games\CreateNewGame.cs" />
-    <Compile Include="Features\Decks\DeckModel.cs" />
-    <Compile Include="Features\Decks\ModelMappers\DeckModelMapper.cs" />
-    <Compile Include="Features\Games\EditGame\EditGameFlyoutViewModel.cs" />
-    <Compile Include="Features\GameManager\GameManager.cs" />
-    <Compile Include="Features\GameManager\Events\GameResultDeleted.cs" />
-    <Compile Include="Features\Games\GameModesCollection.cs" />
-    <Compile Include="Features\Games\LatestGames\LatestGamesViewModel.cs" />
-    <Compile Include="Features\Games\ListExtensions.cs" />
-    <Compile Include="Features\Games\SelectedGameChanged.cs" />
-    <Compile Include="Features\PHash\RegisterAforgePHash.cs" />
-    <Compile Include="Features\Settings\SettingsScreen.cs" />
-    <Compile Include="Shell\Events\ShellInitialized.cs" />
-    <Compile Include="Shell\Events\ShellReady.cs" />
-    <Compile Include="Features\EngineControl\Startup.cs" />
-    <Compile Include="Shell\Settings\SettingsManager.cs" />
-    <Compile Include="StartUp\ICompositionTask.cs" />
-    <Compile Include="UI\Behaviors\BubbleScrollEvent.cs" />
-    <Compile Include="UI\Behaviors\ExpandRowAction.cs" />
-    <Compile Include="UI\Behaviors\DependencyObjectExtensions.cs" />
-    <Compile Include="UI\Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="UI\Converters\BooleanConverter.cs" />
-    <Compile Include="UI\Converters\NullToVisibleConverter.cs" />
-    <Compile Include="UI\Converters\TruncateConverter.cs" />
-    <Compile Include="UI\Converters\EnumNameConverter.cs" />
-    <Compile Include="UI\Converters\HeroKeyToImageConverter.cs" />
-    <Compile Include="UI\Converters\InvertBooleanConverter.cs" />
-    <Compile Include="UI\Converters\NullToBooleanConverter.cs" />
-    <Compile Include="UI\Converters\VisbilityToBooleanConverter.cs" />
-    <Compile Include="Util\AsyncLock.cs" />
-    <Compile Include="Util\ImageHelper.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\MoveThumb.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\OverlayRegionModel.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\RegionModel.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\RegionMovingEventArgs.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\RegionResizingEventArgs.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\ResizeThumb.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\ScanAreaModel.cs" />
-    <Compile Include="Features\Diagnostics\AreaDesigner\ScanAreasModel.cs" />
-    <Compile Include="Features\Diagnostics\CaptureEngineEventsHandler.cs" />
-    <Compile Include="UI\Controls\ListViewBehavior.cs" />
-    <Compile Include="Features\Diagnostics\LogMessageModel.cs" />
-    <Compile Include="Framework\Validation\DomainValidator.cs" />
-    <Compile Include="Framework\Validation\EmailValidator.cs" />
-    <Compile Include="Framework\Validation\IValidationControl.cs" />
-    <Compile Include="Framework\Validation\LabelDescriptionAttribute.cs" />
-    <Compile Include="Framework\Validation\MultipleEmailValidator.cs" />
-    <Compile Include="Framework\Validation\PathValidator.cs" />
-    <Compile Include="Framework\Validation\RequiredEx.cs" />
-    <Compile Include="Framework\Validation\StrongPasswordValidator.cs" />
-    <Compile Include="Framework\Validation\ValidatingScreen.cs" />
-    <Compile Include="Framework\Validation\ValidationGroupAttribute.cs" />
-    <Compile Include="Shell\CommandBar\CommandBarItemViewModel.cs" />
-    <Compile Include="Shell\CommandBar\ICommandBarItem.cs" />
-    <Compile Include="Shell\Flyouts\ToggleFlyoutCommand.cs" />
-    <Compile Include="Features\Settings\ToggleSettingsCommand.cs" />
-    <Compile Include="Features\Settings\SettingsWindowCommandViewModel.cs" />
-    <Compile Include="Shell\Theme\IThemeManager.cs" />
-    <Compile Include="Shell\Theme\IViewLocator.cs" />
-    <Compile Include="Shell\Theme\StartupTasks.cs" />
-    <Compile Include="Shell\Theme\ThemeManager.cs" />
-    <Compile Include="Shell\Theme\ViewLocator.cs" />
-    <Compile Include="Shell\WindowCommands\IWindowCommand.cs" />
-    <Compile Include="Shell\WindowCommands\WindowCommandViewModel.cs" />
-    <Compile Include="Framework\BusyWatcher.cs" />
-    <Compile Include="Framework\IBusyWatcher.cs" />
-    <Compile Include="Framework\QueryResult.cs" />
-    <Compile Include="Framework\QueryResultExtensions.cs" />
-    <Compile Include="StartUp\AppBootstrapper.cs" />
-    <Compile Include="Shell\Flyouts\IFlyout.cs" />
-    <Compile Include="Shell\Tabs\TabViewModel.cs" />
-    <Compile Include="Shell\Tabs\ITab.cs" />
-    <Compile Include="StartUp\StartupTask.cs" />
-    <Compile Include="UI\Controls\DynamicTemplateSelector.cs" />
-    <Compile Include="UI\Controls\CustomTransitionControl.cs" />
-    <Compile Include="UI\Converters\CanvasToImageSourceConverter.cs" />
-    <Compile Include="UI\Converters\NullToCollapsedConverter.cs" />
-    <Compile Include="Shell\Dialogs\IDialogManager.cs" />
-    <Compile Include="Shell\Dialogs\IMessageBox.cs" />
-    <Compile Include="Shell\Dialogs\MessageBoxOptions.cs" />
-    <Compile Include="Features\ThemeSettings\AccentViewModel.cs" />
-    <Compile Include="Features\Diagnostics\DiagnosisViewModel.cs" />
-    <Compile Include="Features\Settings\SettingsViewModel.cs" />
-    <Compile Include="Features\Settings\ISettingsScreen.cs" />
-    <Compile Include="Features\ThemeSettings\ThemeSettingsViewModel.cs" />
-    <Compile Include="Shell\Dialogs\DialogConductorView.xaml.cs">
-      <DependentUpon>DialogConductorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Shell\Dialogs\DialogConductorViewModel.cs" />
-    <Compile Include="Composition\IServiceLocator.cs" />
-    <Compile Include="Composition\MefServiceLocator.cs" />
-    <Compile Include="Shell\Flyouts\StartupFlyouts.cs" />
-    <Compile Include="StartUp\ApplicationDeActivatedEvent.cs" />
-    <Compile Include="StartUp\ApplicationActivatedEvent.cs" />
-    <Compile Include="Shell\Flyouts\FlyoutViewModel.cs" />
-    <Compile Include="Shell\IShell.cs" />
-    <Compile Include="Features\Statistics\StatisticsViewModel.cs" />
-    <Compile Include="Shell\ShellViewModel.cs" />
-    <Compile Include="UI\Converters\BitmapConverter.cs" />
-    <Compile Include="Shell\Dialogs\MessageBoxViewModel.cs" />
-    <Page Include="Features\About\DonateCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\About\AboutCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\About\AboutView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Analytics\UsageSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ArenaSessions\ArenaSessionsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ArenaSessions\CurrentSessionCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ArenaSessions\AddArenaView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ArenaSessions\CurrentSessionFlyoutView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ArenaSessions\Statistics\FilteredStatsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\AutoUpdate\UpdateView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Charts\CommonChartsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Charts\ImprovementChartsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Decks\DecksCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Decks\DeckSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Diagnostics\Tests\TestsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Games\Balloons\GameStartedBalloonView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\StartHearthstone\StartHearthstoneView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\SlowOpponent\SlowOpponentSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\StartupSettings\StartupSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\BalloonSettings\BalloonSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Dashboard\DashboardView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Games\Balloons\GameResultBalloonView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Diagnostics\Tests\LogCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Games\CurrentGame\CurrentGameFlyoutView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Diagnostics\AreaDesigner\AreaDesignerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Diagnostics\LogFlyout\LogCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Diagnostics\LogFlyout\LogFlyoutView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\EngineControl\StartStopCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Games\AddGame\AddGameCommandBarView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Games\EditGame\EditGameFlyoutView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Games\LatestGames\LatestGamesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Games\Statistics\FilteredStatsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Settings\SettingsWindowCommandView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\EngineSettings\EngineSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Charts\ChartsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Statistics\DecksStatView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Statistics\HeroStatView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Statistics\StatisticsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Status\StatusView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Support\SupportCommandBarView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Support\SupportView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\TextFiles\TextFilesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\WebApi\Generic\GenericWebApiProviderSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\WebApi\HearthstoneTracker\ProviderSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\WebApi\Twitter\TwitterSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\WebApi\ValueBot\ProviderSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\WebApi\WebApiSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Buttons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Charts.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Converters.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\FilterStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Tooltips.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\IntegerUpDown.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\DateTimePicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\hccFormStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\HeroListbox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Theme.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Servers\ChooseServerDialogView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Shell\Dialogs\DialogConductorView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\Settings\SettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Features\Diagnostics\DiagnosisView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Shell\Dialogs\MessageBoxView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Features\ThemeSettings\ThemeSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Shell\Notifications\Notification\Info.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Shell\Notifications\NotificationsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Shell\ShellView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Shell\StartupView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Shell\TrayIcon\DefaultBalloonTip.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Shell\TrayIcon\TrayIconView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="costura32\HearthCapLoader.dll" />
-    <Resource Include="Resources\Entypo.ttf" />
-    <Resource Include="Resources\hearthstone_icon.ico" />
-    <Resource Include="Resources\Bulb.ico" />
-    <Resource Include="Resources\hearthstone_icon16.ico" />
-    <Resource Include="costura32\placeholder.txt" />
-    <Content Include="LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Resources\btn_donate_SM.gif" />
-    <Resource Include="Resources\logo3.png" />
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-    <Resource Include="Resources\Entypo-license.txt" />
-    <Content Include="update.xml" />
-    <Content Include="Version.txt" />
-    <Resource Include="FodyWeavers.xml" />
-    <Content Include="HearthCap.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Resources\logo1.png" />
-    <Resource Include="Resources\logo2.png" />
-    <None Include="app.manifest" />
-    <Resource Include="Resources\Heroes\druid.png" />
-    <Resource Include="Resources\Heroes\hunter.png" />
-    <Resource Include="Resources\Heroes\mage.png" />
-    <Resource Include="Resources\Heroes\paladin.png" />
-    <Resource Include="Resources\Heroes\priest.png" />
-    <Resource Include="Resources\Heroes\rogue.png" />
-    <Resource Include="Resources\Heroes\shaman.png" />
-    <Resource Include="Resources\Heroes\warlock.png" />
-    <Resource Include="Resources\Heroes\warrior.png" />
-    <Resource Include="Resources\hearthstone_icon.png" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="App.Release.config">
-      <DependentUpon>App.config</DependentUpon>
-    </Content>
-    <Content Include="App.Debug.config">
-      <DependentUpon>App.config</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HearthCap.Core\HearthCap.Core.csproj">
-      <Project>{9A35DBB0-2892-4257-BB58-B6E383D8F408}</Project>
-      <Name>HearthCap.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HearthCap.Data\HearthCap.Data.csproj">
-      <Project>{DE8E519E-B0AF-4605-8076-37D59651A775}</Project>
-      <Name>HearthCap.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\HearthCap.Updater\HearthCap.Updater.csproj">
-      <Project>{88c71d4b-f157-49b5-9c4f-48264810f4a1}</Project>
-      <Name>HearthCap.Updater</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PHash.AForge\PHash.AForge.csproj">
-      <Project>{F9C10B21-24D7-4741-88B9-B99E77033295}</Project>
-      <Name>PHash.AForge</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PHash\PHash.csproj">
-      <Project>{8CB58721-58DF-4E3D-8814-682275982EBF}</Project>
-      <Name>PHash</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Features\WebApi\Models\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
-if not exist "$(ProjectDir)\costura64" md "$(ProjectDir)\costura64"
-xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"
-</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
-xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
-if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
-xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{9A838E34-5AA7-4BDC-B730-6A59C3F02054}</ProjectGuid>
+        <OutputType>WinExe</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>HearthCap</RootNamespace>
+        <AssemblyName>HearthCap</AssemblyName>
+        <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+        <WarningLevel>4</WarningLevel>
+        <IsWebBootstrapper>true</IsWebBootstrapper>
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+        <RestorePackages>true</RestorePackages>
+        <NuGetPackageImportStamp>
+        </NuGetPackageImportStamp>
+        <TargetFrameworkProfile />
+        <PublishUrl>ftp://waws-prod-am2-001.ftp.azurewebsites.windows.net/site/wwwroot/install/</PublishUrl>
+        <Install>true</Install>
+        <InstallFrom>Web</InstallFrom>
+        <UpdateEnabled>true</UpdateEnabled>
+        <UpdateMode>Foreground</UpdateMode>
+        <UpdateInterval>7</UpdateInterval>
+        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+        <UpdatePeriodically>false</UpdatePeriodically>
+        <UpdateRequired>false</UpdateRequired>
+        <MapFileExtensions>true</MapFileExtensions>
+        <InstallUrl>http://hearthstonetracker.com/install/</InstallUrl>
+        <SupportUrl>http://hearthstonetracker.com</SupportUrl>
+        <ProductName>HearthstoneTracker</ProductName>
+        <PublisherName>HearthstoneTracker.com</PublisherName>
+        <SuiteName>HearthstoneTracker.com</SuiteName>
+        <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+        <WebPage>publish.html</WebPage>
+        <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+        <ApplicationRevision>11</ApplicationRevision>
+        <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
+        <UseApplicationTrust>true</UseApplicationTrust>
+        <CreateDesktopShortcut>true</CreateDesktopShortcut>
+        <PublishWizardCompleted>true</PublishWizardCompleted>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>bin\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <UseVSHostingProcess>true</UseVSHostingProcess>
+        <NoWarn>
+        </NoWarn>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>bin\Release\</OutputPath>
+        <DefineConstants>
+        </DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <AllowedReferenceRelatedFileExtensions>
+            none
+        </AllowedReferenceRelatedFileExtensions>
+        <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+        <UseVSHostingProcess>false</UseVSHostingProcess>
+        <NoWarn>
+        </NoWarn>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+        <DebugSymbols>true</DebugSymbols>
+        <OutputPath>bin\x86\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <DebugType>full</DebugType>
+        <PlatformTarget>x86</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+        <OutputPath>bin\x86\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+        <PlatformTarget>x86</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+        <DebugSymbols>true</DebugSymbols>
+        <OutputPath>bin\x64\Debug\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <DebugType>full</DebugType>
+        <PlatformTarget>x64</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+        <OutputPath>bin\x64\Release\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+        <PlatformTarget>x64</PlatformTarget>
+        <ErrorReport>prompt</ErrorReport>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Prefer32Bit>true</Prefer32Bit>
+    </PropertyGroup>
+    <PropertyGroup>
+        <StartupObject>
+        </StartupObject>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ManifestCertificateThumbprint>7AD1B40C8B6F39B99E7745E33E6CF6C3291006BE</ManifestCertificateThumbprint>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ManifestKeyFile>HearthCap_TemporaryKey.pfx</ManifestKeyFile>
+    </PropertyGroup>
+    <PropertyGroup>
+        <GenerateManifests>true</GenerateManifests>
+    </PropertyGroup>
+    <PropertyGroup>
+        <SignManifests>false</SignManifests>
+    </PropertyGroup>
+    <PropertyGroup />
+    <PropertyGroup />
+    <PropertyGroup />
+    <PropertyGroup>
+        <ApplicationIcon>HearthCap.ico</ApplicationIcon>
+    </PropertyGroup>
+    <PropertyGroup>
+        <NoWin32Manifest>true</NoWin32Manifest>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Caliburn.Micro, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+            <HintPath>..\packages\Caliburn.Micro.Core.2.0.2\lib\net45\Caliburn.Micro.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Caliburn.Micro.Platform, Version=2.0.2.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
+            <HintPath>..\packages\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Caliburn.Micro.Recipes.Filters.NET45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\lib\Caliburn\Caliburn.Micro.Recipes.Filters.NET45.dll</HintPath>
+        </Reference>
+        <Reference Include="De.TorstenMandelkow.MetroChart">
+            <HintPath>..\lib\De.TorstenMandelkow.MetroChart.dll</HintPath>
+        </Reference>
+        <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+            <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+            <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+            <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.3\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="GoogleAnalyticsTracker.Core, Version=4.0.6.0, Culture=neutral, PublicKeyToken=04ab204e84b117c0, processorArchitecture=MSIL">
+            <HintPath>..\packages\GoogleAnalyticsTracker.Core.4.0.6\lib\portable-net45+win+wp80\GoogleAnalyticsTracker.Core.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\lib\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+        </Reference>
+        <Reference Include="HearthCap.Logger.Interface">
+            <HintPath>..\lib\HearthCap\HearthCap.Logger.Interface.dll</HintPath>
+        </Reference>
+        <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+            <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\MahApps.Metro.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\lib\Expression\Microsoft.Expression.Drawing.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\lib\Expression\Microsoft.Expression.Interactions.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+            <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+            <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Omu.ValueInjecter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=c7694541b0ac80e4, processorArchitecture=MSIL">
+            <HintPath>..\packages\valueinjecter.3.1\lib\net45\Omu.ValueInjecter.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="OxyPlot, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+            <HintPath>..\packages\OxyPlot.Core.2014.1.546\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="OxyPlot.Wpf, Version=2014.1.546.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+            <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Wpf.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System" />
+        <Reference Include="System.ComponentModel.Composition" />
+        <Reference Include="System.ComponentModel.Composition.Registration" />
+        <Reference Include="System.ComponentModel.DataAnnotations" />
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Data" />
+        <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+            <Private>True</Private>
+            <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.IO.Compression" />
+        <Reference Include="System.IO.Compression.FileSystem" />
+        <Reference Include="System.Linq.Dynamic, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+            <HintPath>..\packages\System.Linq.Dynamic.1.0.4\lib\net40\System.Linq.Dynamic.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Management" />
+        <Reference Include="System.Net">
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Numerics" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Reflection.Context" />
+        <Reference Include="System.Web.Extensions" />
+        <Reference Include="System.Windows, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="System.Xml" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="System.Xaml">
+            <RequiredTargetFramework>4.0</RequiredTargetFramework>
+        </Reference>
+        <Reference Include="UserVoice">
+            <HintPath>..\packages\UserVoice.0.0.4\lib\UserVoice.dll</HintPath>
+        </Reference>
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
+        <Reference Include="WindowsBase" />
+        <Reference Include="Xceed.Wpf.Toolkit, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+            <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <ApplicationDefinition Include="App.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </ApplicationDefinition>
+        <Compile Include="Features\About\DonateCommandBarViewModel.cs" />
+        <Compile Include="Features\About\AboutViewModel.cs" />
+        <Compile Include="Features\About\WelcomeNotification.cs" />
+        <Compile Include="Features\Analytics\AnalyticsCookie.cs" />
+        <Compile Include="Features\Analytics\AnalyticsRegistrySettings.cs" />
+        <Compile Include="Features\Analytics\HsTracker.cs" />
+        <Compile Include="Features\Analytics\HsTrackerEnvironment.cs" />
+        <Compile Include="Features\Analytics\UsageSettingsViewModel.cs" />
+        <Compile Include="Features\Analytics\HsAnalyticsSession.cs" />
+        <Compile Include="Features\Analytics\Tracker.cs" />
+        <Compile Include="Features\Analytics\TrackStartup.cs" />
+        <Compile Include="Features\ArenaSessions\AddArenaViewModel.cs" />
+        <Compile Include="Features\ArenaSessions\ArenaSessionTotalsModel.cs" />
+        <Compile Include="Features\ArenaSessions\Statistics\FilteredStatsViewModel.cs" />
+        <Compile Include="Features\ArenaSessions\Statistics\StatModel.cs" />
+        <Compile Include="Features\AutoUpdate\UpdateViewModel.cs" />
+        <Compile Include="Features\BalloonSettings\BalloonRegistrySettings.cs" />
+        <Compile Include="Features\BalloonSettings\BalloonSettings.cs" />
+        <Compile Include="Features\Charts\ImprovementChartsView.xaml.cs">
+            <DependentUpon>ImprovementChartsView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Charts\ImprovementChartsViewModel.cs" />
+        <Compile Include="Features\Charts\CommonChartsViewModel.cs" />
+        <Compile Include="Features\Charts\CommonChartsView.xaml.cs">
+            <DependentUpon>CommonChartsView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Charts\IChartTab.cs" />
+        <Compile Include="Features\Core\BindableServerCollection.cs" />
+        <Compile Include="Features\Core\ServerChanged.cs" />
+        <Compile Include="Features\Decks\AvailableDecksModel.cs" />
+        <Compile Include="Features\Decks\DecksCommandBarViewModel.cs" />
+        <Compile Include="Features\Decks\DeckSettingsViewModel.cs" />
+        <Compile Include="Features\Decks\DeckUpdated.cs" />
+        <Compile Include="Features\Decks\EditDeckViewModel.cs" />
+        <Compile Include="Features\Diagnostics\Tests\TestsView.cs" />
+        <Compile Include="Features\EngineControl\EngineRegistrySettings.cs" />
+        <Compile Include="Features\EngineControl\EngineRegistrySettingsChanged.cs" />
+        <Compile Include="Features\GameManager\Events\CorrectLastGameResult.cs" />
+        <Compile Include="Features\Games\Balloons\GameStartedBalloonViewModel.cs" />
+        <Compile Include="Features\Core\HeroExtensions.cs" />
+        <Compile Include="Features\Core\GlobalLocks.cs" />
+        <Compile Include="Features\Core\DateFilter.cs" />
+        <Compile Include="Features\Decks\SelectDeck.cs" />
+        <Compile Include="Features\IncompatibleHooks\IncompatibleHookNotify.cs" />
+        <Compile Include="Features\SlowOpponent\CommonSettings.cs" />
+        <Compile Include="Features\SlowOpponent\SlowOpponentSettingsViewModel.cs" />
+        <Compile Include="Features\Charts\ChartsViewModel.cs" />
+        <Compile Include="Features\Core\GameModesStringCollection.cs" />
+        <Compile Include="GlobalSuppressions.cs" />
+        <Compile Include="Shell\Flyouts\FlyoutAttribute.cs" />
+        <Compile Include="Shell\Flyouts\FlyoutRegistrySettings.cs" />
+        <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropBehavior.cs" />
+        <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropDirection.cs" />
+        <Compile Include="UI\Behaviors\DragDrop\DataGridDragDropEventArgs.cs" />
+        <Compile Include="UI\Behaviors\DragDrop\UIHelper.cs" />
+        <Compile Include="UI\Behaviors\DragDrop\WeakEventListener.cs" />
+        <Compile Include="UI\Behaviors\TwoListSynchronizer.cs" />
+        <Compile Include="UI\Behaviors\InputBindingTrigger.cs" />
+        <Compile Include="UI\Behaviors\FixedWidthColumn.cs" />
+        <Compile Include="UI\Behaviors\GridViewColumnResize.cs" />
+        <Compile Include="UI\Behaviors\SelectingItemAttachedProperty.cs" />
+        <Compile Include="UI\Converters\PercentToColorConverter.cs" />
+        <Compile Include="UI\Converters\PositionToIntegerConverter.cs" />
+        <Compile Include="UI\Converters\ValueAboveThreshold.cs" />
+        <Compile Include="UI\Converters\ValueBelowThreshold.cs" />
+        <Compile Include="Util\Hotkey.cs" />
+        <Compile Include="Util\PredicateBuilder.cs" />
+        <Compile Include="Features\Games\Statistics\StatModel.cs" />
+        <Compile Include="Features\StartHearthstone\StartHearthstoneViewModel.cs" />
+        <Compile Include="Features\StartupSettings\StartupSettingsViewModel.cs">
+            <DependentUpon>StartupSettingsView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\BalloonSettings\BalloonSettingsViewModel.cs" />
+        <Compile Include="Features\Dashboard\DashboardViewModel.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\CaptureTarget.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\ColorRule.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\LogReceivedEventArgs.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\LogStyleSelector.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\LogTemplateSelector.cs" />
+        <Compile Include="Features\Games\Balloons\GameResultBalloonViewModel.cs" />
+        <Compile Include="Features\Diagnostics\Tests\LogCommandBarViewModel.cs" />
+        <Compile Include="Features\Games\LatestGames\GameResultTotalsModel.cs" />
+        <Compile Include="Features\Statistics\HeroStatViewModel.cs" />
+        <Compile Include="Features\Statistics\DecksStatViewModel.cs" />
+        <Compile Include="Features\Statistics\StatModel.cs" />
+        <Compile Include="Features\Statistics\StatRegistrySettings.cs" />
+        <Compile Include="Features\Statistics\StatViewModelBase.cs" />
+        <Compile Include="Features\Status\StatusView.xaml.cs">
+            <DependentUpon>StatusView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Status\StatusViewModel.cs">
+            <DependentUpon>StatusView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Support\SupportCommandBarViewModel.cs" />
+        <Compile Include="Features\Support\SupportView.xaml.cs">
+            <DependentUpon>SupportView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Support\SupportViewModel.cs" />
+        <Compile Include="Features\WebApi\Generic\WebApiProviderSettings.cs" />
+        <Compile Include="Features\WebApi\HearthstoneTracker\AddUserAgentHandler.cs" />
+        <Compile Include="Features\WebApi\HearthstoneTracker\HearthstoneTrackerWebApiEventsHandler.cs" />
+        <Compile Include="Features\WebApi\HearthstoneTracker\ProviderSettingsViewModel.cs" />
+        <Compile Include="Features\WebApi\HearthstoneTracker\HearthstoneTrackerWebApiProvider.cs" />
+        <Compile Include="Features\WebApi\ProviderSettings.cs" />
+        <Compile Include="Features\WebApi\Twitter\TwitterApiEventsHandler.cs" />
+        <Compile Include="Features\WebApi\Twitter\TwitterSettingsViewModel.cs" />
+        <Compile Include="Features\WebApi\Twitter\TwitterApiProvider.cs" />
+        <Compile Include="Features\WebApi\ValueBot\ProviderSettingsViewModel.cs" />
+        <Compile Include="Features\WebApi\WebApiProviderSettingsViewModel.cs" />
+        <Compile Include="Features\WebApi\Hmac\CanonicalRepresentationBuilder.cs" />
+        <Compile Include="Features\WebApi\Hmac\Configuration.cs" />
+        <Compile Include="Features\WebApi\Generic\GenericWebApiEventsHandler.cs" />
+        <Compile Include="Features\WebApi\Generic\GenericWebApiProviderSettingsViewModel.cs" />
+        <Compile Include="Features\WebApi\Hmac\HmacSignatureCalculator.cs" />
+        <Compile Include="Features\WebApi\Hmac\HmacSigningHandler.cs" />
+        <Compile Include="Features\WebApi\Hmac\IBuildMessageRepresentation.cs" />
+        <Compile Include="Features\WebApi\Hmac\ICalculteSignature.cs" />
+        <Compile Include="Features\WebApi\IWebApiEventsHandler.cs" />
+        <Compile Include="Features\WebApi\IWebApiProviderDescriptor.cs" />
+        <Compile Include="Features\WebApi\IWebApiProviderScreen.cs" />
+        <Compile Include="Features\WebApi\Hmac\MessageRepresentation.cs" />
+        <Compile Include="Features\WebApi\Hmac\RequestContentMd5Handler.cs" />
+        <Compile Include="Features\WebApi\ValueBot\ValueBotWebApiProvider.cs" />
+        <Compile Include="Features\WebApi\WebApiManager.cs" />
+        <Compile Include="Features\WebApi\WebApiProviderDescriptor.cs" />
+        <Compile Include="Features\WebApi\WebApiSettingsViewModel.cs" />
+        <Compile Include="Logging\AppDataFolderManager.cs" />
+        <Compile Include="Logging\DataDirectorySettings.cs" />
+        <Compile Include="Features\Servers\ChooseServerDialogView.xaml.cs">
+            <DependentUpon>ChooseServerDialogView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Servers\ChooseServerDialogViewModel.cs" />
+        <Compile Include="Shell\CustomWindowManager.cs" />
+        <Compile Include="Features\Core\ServerItemModel.cs" />
+        <Compile Include="Shell\Events\RefreshAll.cs" />
+        <Compile Include="Shell\StartupViewModel.cs" />
+        <Compile Include="Shell\Commands\RestoreWindowCommand.cs" />
+        <Compile Include="Shell\Theme\ThemeRegistrySettings.cs" />
+        <Compile Include="Shell\UserPreferences\ApplicationRegistrySettings.cs" />
+        <Compile Include="Shell\UserPreferences\RegistrySettings.cs" />
+        <Compile Include="Shell\UserPreferences\UserPreferences.cs" />
+        <Compile Include="Shell\UserPreferences\WindowRegistrySettings.cs" />
+        <Compile Include="UI\Behaviors\ActualSizeBehavior.cs" />
+        <Compile Include="UI\Behaviors\DatePickerWatermarkBehaviour.cs" />
+        <Compile Include="UI\Behaviors\TextBoxInputRegExBehaviour.cs" />
+        <Compile Include="UI\Converters\HeroKeyToBrushConverter.cs" />
+        <Compile Include="UI\Converters\RemoveNewLinesConverter.cs" />
+        <Compile Include="UI\Converters\PositionToBooleanConverter.cs" />
+        <Compile Include="UI\Converters\ValueToBooleanInverseConverter.cs" />
+        <Compile Include="Util\DateTimeExtensions.cs" />
+        <Compile Include="Features\Settings\SettingKeys.cs" />
+        <Compile Include="Features\Settings\SettingModel.cs" />
+        <Compile Include="Features\Flyouts.cs" />
+        <Compile Include="Features\Games\Models\ArenaSessionModel.cs" />
+        <Compile Include="Features\Games\Models\GameResultModel.cs" />
+        <Compile Include="Features\Games\Models\ModelMapperExtensions.cs" />
+        <Compile Include="Features\Games\Statistics\FilteredStatsViewModel.cs" />
+        <Compile Include="Features\Statistics\IStatsViewModel.cs" />
+        <Compile Include="Features\TextFiles\TextFilesManager.cs" />
+        <Compile Include="Features\TextFiles\Listeners\WinrateEventsListener.cs" />
+        <Compile Include="Features\TextFiles\Listeners\ArenaEventsListener.cs" />
+        <Compile Include="Features\TextFiles\TextFileModel.cs" />
+        <Compile Include="Features\TextFiles\TextFilesEventsListener.cs" />
+        <Compile Include="Features\TextFiles\TextFilesListenerCollection.cs" />
+        <Compile Include="Features\TextFiles\TextFilesViewModel.cs" />
+        <Compile Include="Shell\Events\WindowStateChanged.cs" />
+        <Compile Include="Logging\NLogger.cs" />
+        <Compile Include="Logging\RingTarget.cs" />
+        <Compile Include="Logging\AppLogManager.cs" />
+        <Compile Include="Properties\CommonAssemblyInfo.cs" />
+        <Compile Include="Shell\Notifications\NotificationsViewModel.cs" />
+        <Compile Include="Shell\Notifications\NotificationViewModel.cs" />
+        <Compile Include="Shell\Notifications\SendNotification.cs" />
+        <Compile Include="Shell\TrayIcon\CommandEvent.cs" />
+        <Compile Include="Shell\TrayIcon\DefaultBalloonTip.xaml.cs">
+            <DependentUpon>DefaultBalloonTip.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Shell\TrayIcon\DefaultBalloonTipViewModel.cs" />
+        <Compile Include="Shell\TrayIcon\PublishCommand.cs" />
+        <Compile Include="Shell\TrayIcon\TrayIconDoubleClick.cs" />
+        <Compile Include="Shell\TrayIcon\TrayIconLeftClick.cs" />
+        <Compile Include="Shell\TrayIcon\TrayIconViewModel.cs" />
+        <Compile Include="Shell\TrayIcon\TrayNotification.cs" />
+        <Compile Include="StartUp\CrashManager.cs" />
+        <Compile Include="Logging\IAppLogManager.cs" />
+        <Compile Include="UI\Behaviors\RoutedEventTrigger.cs" />
+        <Compile Include="UI\Behaviors\ListBoxBehaviour.cs" />
+        <Compile Include="UI\Controls\DelayedSplashScreen.cs" />
+        <Compile Include="UI\Converters\StringToBrushConverter.cs" />
+        <Compile Include="UI\Converters\ValueToCollapsedConverter.cs" />
+        <Compile Include="UI\Converters\ValueToVisibleConverter.cs" />
+        <Compile Include="Util\PauseNotify.cs" />
+        <Compile Include="Shell\Commands\VisitWebsiteCommand.cs" />
+        <Compile Include="Features\About\AboutCommandBarViewModel.cs" />
+        <Compile Include="Features\GameManager\Events\ArenaSessionAdded.cs" />
+        <Compile Include="Features\GameManager\Events\ArenaSessionDeleted.cs" />
+        <Compile Include="Features\ArenaSessions\ArenaSessionsViewModel.cs" />
+        <Compile Include="Features\GameManager\Events\ArenaSessionUpdated.cs" />
+        <Compile Include="Features\ArenaSessions\CurrentSessionCommandBarViewModel.cs" />
+        <Compile Include="Features\ArenaSessions\CurrentSessionFlyoutViewModel.cs" />
+        <Compile Include="Features\ArenaSessions\SelectedArenaSessionChanged.cs" />
+        <Compile Include="Features\Configuration.cs" />
+        <Compile Include="Features\Core\GlobalData.cs" />
+        <Compile Include="Features\Games\CurrentGame\CurrentGameFlyoutViewModel.cs" />
+        <Compile Include="Features\GameManager\Events\GameResultAdded.cs" />
+        <Compile Include="Features\GameManager\Events\GameResultUpdated.cs" />
+        <Compile Include="Features\Decks\DeckManager.cs" />
+        <Compile Include="Features\Decks\IDeckManager.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\AreaDesignerViewModel.cs" />
+        <Compile Include="Features\Diagnostics\EventCaptureEngineLogger.cs" />
+        <Compile Include="Features\Diagnostics\LogExtensions.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\LogCommandBarViewModel.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\LogFlyoutViewModel.cs" />
+        <Compile Include="Features\Diagnostics\LogFlyout\ToggleAddGameCommand.cs" />
+        <Compile Include="Features\EngineControl\StartStopCommandBarViewModel.cs" />
+        <Compile Include="Features\EngineControl\EngineSettingsViewModel.cs">
+            <DependentUpon>EngineSettingsView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Features\Games\AddGame\AddGameCommandBarViewModel.cs">
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="Features\Games\CreateNewGame.cs" />
+        <Compile Include="Features\Decks\DeckModel.cs" />
+        <Compile Include="Features\Decks\ModelMappers\DeckModelMapper.cs" />
+        <Compile Include="Features\Games\EditGame\EditGameFlyoutViewModel.cs" />
+        <Compile Include="Features\GameManager\GameManager.cs" />
+        <Compile Include="Features\GameManager\Events\GameResultDeleted.cs" />
+        <Compile Include="Features\Games\GameModesCollection.cs" />
+        <Compile Include="Features\Games\LatestGames\LatestGamesViewModel.cs" />
+        <Compile Include="Features\Games\ListExtensions.cs" />
+        <Compile Include="Features\Games\SelectedGameChanged.cs" />
+        <Compile Include="Features\PHash\RegisterAforgePHash.cs" />
+        <Compile Include="Features\Settings\SettingsScreen.cs" />
+        <Compile Include="Shell\Events\ShellInitialized.cs" />
+        <Compile Include="Shell\Events\ShellReady.cs" />
+        <Compile Include="Features\EngineControl\Startup.cs" />
+        <Compile Include="Shell\Settings\SettingsManager.cs" />
+        <Compile Include="StartUp\ICompositionTask.cs" />
+        <Compile Include="UI\Behaviors\BubbleScrollEvent.cs" />
+        <Compile Include="UI\Behaviors\ExpandRowAction.cs" />
+        <Compile Include="UI\Behaviors\DependencyObjectExtensions.cs" />
+        <Compile Include="UI\Converters\BooleanToVisibilityConverter.cs" />
+        <Compile Include="UI\Converters\BooleanConverter.cs" />
+        <Compile Include="UI\Converters\NullToVisibleConverter.cs" />
+        <Compile Include="UI\Converters\TruncateConverter.cs" />
+        <Compile Include="UI\Converters\EnumNameConverter.cs" />
+        <Compile Include="UI\Converters\HeroKeyToImageConverter.cs" />
+        <Compile Include="UI\Converters\InvertBooleanConverter.cs" />
+        <Compile Include="UI\Converters\NullToBooleanConverter.cs" />
+        <Compile Include="UI\Converters\VisbilityToBooleanConverter.cs" />
+        <Compile Include="Util\AsyncLock.cs" />
+        <Compile Include="Util\ImageHelper.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\MoveThumb.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\OverlayRegionModel.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\RegionModel.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\RegionMovingEventArgs.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\RegionResizingEventArgs.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\ResizeThumb.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\ScanAreaModel.cs" />
+        <Compile Include="Features\Diagnostics\AreaDesigner\ScanAreasModel.cs" />
+        <Compile Include="Features\Diagnostics\CaptureEngineEventsHandler.cs" />
+        <Compile Include="UI\Controls\ListViewBehavior.cs" />
+        <Compile Include="Features\Diagnostics\LogMessageModel.cs" />
+        <Compile Include="Framework\Validation\DomainValidator.cs" />
+        <Compile Include="Framework\Validation\EmailValidator.cs" />
+        <Compile Include="Framework\Validation\IValidationControl.cs" />
+        <Compile Include="Framework\Validation\LabelDescriptionAttribute.cs" />
+        <Compile Include="Framework\Validation\MultipleEmailValidator.cs" />
+        <Compile Include="Framework\Validation\PathValidator.cs" />
+        <Compile Include="Framework\Validation\RequiredEx.cs" />
+        <Compile Include="Framework\Validation\StrongPasswordValidator.cs" />
+        <Compile Include="Framework\Validation\ValidatingScreen.cs" />
+        <Compile Include="Framework\Validation\ValidationGroupAttribute.cs" />
+        <Compile Include="Shell\CommandBar\CommandBarItemViewModel.cs" />
+        <Compile Include="Shell\CommandBar\ICommandBarItem.cs" />
+        <Compile Include="Shell\Flyouts\ToggleFlyoutCommand.cs" />
+        <Compile Include="Features\Settings\ToggleSettingsCommand.cs" />
+        <Compile Include="Features\Settings\SettingsWindowCommandViewModel.cs" />
+        <Compile Include="Shell\Theme\IThemeManager.cs" />
+        <Compile Include="Shell\Theme\IViewLocator.cs" />
+        <Compile Include="Shell\Theme\StartupTasks.cs" />
+        <Compile Include="Shell\Theme\ThemeManager.cs" />
+        <Compile Include="Shell\Theme\ViewLocator.cs" />
+        <Compile Include="Shell\WindowCommands\IWindowCommand.cs" />
+        <Compile Include="Shell\WindowCommands\WindowCommandViewModel.cs" />
+        <Compile Include="Framework\BusyWatcher.cs" />
+        <Compile Include="Framework\IBusyWatcher.cs" />
+        <Compile Include="Framework\QueryResult.cs" />
+        <Compile Include="Framework\QueryResultExtensions.cs" />
+        <Compile Include="StartUp\AppBootstrapper.cs" />
+        <Compile Include="Shell\Flyouts\IFlyout.cs" />
+        <Compile Include="Shell\Tabs\TabViewModel.cs" />
+        <Compile Include="Shell\Tabs\ITab.cs" />
+        <Compile Include="StartUp\StartupTask.cs" />
+        <Compile Include="UI\Controls\DynamicTemplateSelector.cs" />
+        <Compile Include="UI\Controls\CustomTransitionControl.cs" />
+        <Compile Include="UI\Converters\CanvasToImageSourceConverter.cs" />
+        <Compile Include="UI\Converters\NullToCollapsedConverter.cs" />
+        <Compile Include="Shell\Dialogs\IDialogManager.cs" />
+        <Compile Include="Shell\Dialogs\IMessageBox.cs" />
+        <Compile Include="Shell\Dialogs\MessageBoxOptions.cs" />
+        <Compile Include="Features\ThemeSettings\AccentViewModel.cs" />
+        <Compile Include="Features\Diagnostics\DiagnosisViewModel.cs" />
+        <Compile Include="Features\Settings\SettingsViewModel.cs" />
+        <Compile Include="Features\Settings\ISettingsScreen.cs" />
+        <Compile Include="Features\ThemeSettings\ThemeSettingsViewModel.cs" />
+        <Compile Include="Shell\Dialogs\DialogConductorView.xaml.cs">
+            <DependentUpon>DialogConductorView.xaml</DependentUpon>
+        </Compile>
+        <Compile Include="Shell\Dialogs\DialogConductorViewModel.cs" />
+        <Compile Include="Composition\IServiceLocator.cs" />
+        <Compile Include="Composition\MefServiceLocator.cs" />
+        <Compile Include="Shell\Flyouts\StartupFlyouts.cs" />
+        <Compile Include="StartUp\ApplicationDeActivatedEvent.cs" />
+        <Compile Include="StartUp\ApplicationActivatedEvent.cs" />
+        <Compile Include="Shell\Flyouts\FlyoutViewModel.cs" />
+        <Compile Include="Shell\IShell.cs" />
+        <Compile Include="Features\Statistics\StatisticsViewModel.cs" />
+        <Compile Include="Shell\ShellViewModel.cs" />
+        <Compile Include="UI\Converters\BitmapConverter.cs" />
+        <Compile Include="Shell\Dialogs\MessageBoxViewModel.cs" />
+        <Page Include="Features\About\DonateCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\About\AboutCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\About\AboutView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Analytics\UsageSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ArenaSessions\ArenaSessionsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ArenaSessions\CurrentSessionCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ArenaSessions\AddArenaView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ArenaSessions\CurrentSessionFlyoutView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ArenaSessions\Statistics\FilteredStatsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\AutoUpdate\UpdateView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Charts\CommonChartsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Charts\ImprovementChartsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Decks\DecksCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Decks\DeckSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Diagnostics\Tests\TestsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Games\Balloons\GameStartedBalloonView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\StartHearthstone\StartHearthstoneView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\SlowOpponent\SlowOpponentSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\StartupSettings\StartupSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\BalloonSettings\BalloonSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Dashboard\DashboardView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Games\Balloons\GameResultBalloonView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Diagnostics\Tests\LogCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Games\CurrentGame\CurrentGameFlyoutView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Diagnostics\AreaDesigner\AreaDesignerView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Diagnostics\LogFlyout\LogCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Diagnostics\LogFlyout\LogFlyoutView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\EngineControl\StartStopCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Games\AddGame\AddGameCommandBarView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Games\EditGame\EditGameFlyoutView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Games\LatestGames\LatestGamesView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Games\Statistics\FilteredStatsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Settings\SettingsWindowCommandView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\EngineControl\EngineSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Charts\ChartsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Statistics\DecksStatView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Statistics\HeroStatView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Statistics\StatisticsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Status\StatusView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Support\SupportCommandBarView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Support\SupportView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\TextFiles\TextFilesView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\WebApi\Generic\GenericWebApiProviderSettingsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\WebApi\HearthstoneTracker\ProviderSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\WebApi\Twitter\TwitterSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\WebApi\ValueBot\ProviderSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\WebApi\WebApiSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\Buttons.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Resources\Charts.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Resources\Converters.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\FilterStyles.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Resources\Icons.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\Tooltips.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\IntegerUpDown.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\DateTimePicker.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\hccFormStyles.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\HeroListbox.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\Theme.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Servers\ChooseServerDialogView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Shell\Dialogs\DialogConductorView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\Settings\SettingsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Features\Diagnostics\DiagnosisView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Compile Include="App.xaml.cs">
+            <DependentUpon>App.xaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Page Include="Shell\Dialogs\MessageBoxView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Features\ThemeSettings\ThemeSettingsView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Shell\Notifications\Notification\Info.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Shell\Notifications\NotificationsView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Shell\ShellView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Shell\StartupView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Shell\TrayIcon\DefaultBalloonTip.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Include="Shell\TrayIcon\TrayIconView.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Properties\AssemblyInfo.cs">
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Include="Properties\Resources.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
+        <Compile Include="Properties\Settings.Designer.cs">
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Settings.settings</DependentUpon>
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        </Compile>
+        <Resource Include="Resources\Entypo.ttf" />
+        <Resource Include="Resources\hearthstone_icon.ico" />
+        <Resource Include="Resources\Bulb.ico" />
+        <Resource Include="Resources\hearthstone_icon16.ico" />
+        <Resource Include="costura32\placeholder.txt" />
+        <Resource Include="costura64\placeholder.txt" />
+        <EmbeddedResource Include="costura32\HearthCapLoader.dll" />
+        <Content Include="LICENSE.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Resource Include="Resources\btn_donate_SM.gif" />
+        <Resource Include="Resources\logo3.png" />
+        <Resource Include="Resources\WindowsIcons-license.txt" />
+        <Resource Include="Resources\Entypo-license.txt" />
+        <Content Include="update.xml" />
+        <Content Include="Version.txt" />
+        <Resource Include="FodyWeavers.xml">
+            <SubType>Designer</SubType>
+        </Resource>
+        <Content Include="HearthCap.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Resource Include="Resources\logo1.png" />
+        <Resource Include="Resources\logo2.png" />
+        <None Include="app.manifest" />
+        <Resource Include="Resources\Heroes\druid.png" />
+        <Resource Include="Resources\Heroes\hunter.png" />
+        <Resource Include="Resources\Heroes\mage.png" />
+        <Resource Include="Resources\Heroes\paladin.png" />
+        <Resource Include="Resources\Heroes\priest.png" />
+        <Resource Include="Resources\Heroes\rogue.png" />
+        <Resource Include="Resources\Heroes\shaman.png" />
+        <Resource Include="Resources\Heroes\warlock.png" />
+        <Resource Include="Resources\Heroes\warrior.png" />
+        <Resource Include="Resources\hearthstone_icon.png" />
+        <EmbeddedResource Include="Properties\Resources.resx">
+            <Generator>PublicResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <None Include="packages.config">
+            <SubType>Designer</SubType>
+        </None>
+        <None Include="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+        <AppDesigner Include="Properties\" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="App.config">
+            <SubType>Designer</SubType>
+        </Content>
+        <Content Include="App.Release.config">
+            <DependentUpon>App.config</DependentUpon>
+        </Content>
+        <Content Include="App.Debug.config">
+            <DependentUpon>App.config</DependentUpon>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\HearthCap.Core\HearthCap.Core.csproj">
+            <Project>{9A35DBB0-2892-4257-BB58-B6E383D8F408}</Project>
+            <Name>HearthCap.Core</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\HearthCap.Data\HearthCap.Data.csproj">
+            <Project>{DE8E519E-B0AF-4605-8076-37D59651A775}</Project>
+            <Name>HearthCap.Data</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\HearthCap.Updater\HearthCap.Updater.csproj">
+            <Project>{88c71d4b-f157-49b5-9c4f-48264810f4a1}</Project>
+            <Name>HearthCap.Updater</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\PHash.AForge\PHash.AForge.csproj">
+            <Project>{F9C10B21-24D7-4741-88B9-B99E77033295}</Project>
+            <Name>PHash.AForge</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\PHash\PHash.csproj">
+            <Project>{8CB58721-58DF-4E3D-8814-682275982EBF}</Project>
+            <Name>PHash</Name>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
+        <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+            <Visible>False</Visible>
+            <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Features\WebApi\Models\" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <PropertyGroup>
+        <PreBuildEvent>
+            if not exist "$(ProjectDir)\costura32" md "$(ProjectDir)\costura32"
+            if not exist "$(ProjectDir)\costura64" md "$(ProjectDir)\costura64"
+            xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLoader.dll" "$(ProjectDir)\costura32"
+        </PreBuildEvent>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PostBuildEvent>
+            if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+            xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+            if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+            xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"
 
-xcopy /s /y "$(SolutionDir)lib\Mono\System.Runtime.*.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\D3DX9_43.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook32.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad32.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64.dll" "$(TargetDir)"
-xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad64.dll" "$(TargetDir)"
-</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
-  </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Import Project="$(SolutionDir)\.build\MSBuild.Community.Tasks.Targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+            xcopy /s /y "$(SolutionDir)lib\Mono\System.Runtime.*.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\D3DX9_43.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\HearthCap\HearthCapLogger.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook32.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad32.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyHook64.dll" "$(TargetDir)"
+            xcopy /s /y "$(SolutionDir)lib\EasyHook\EasyLoad64.dll" "$(TargetDir)"
+        </PostBuildEvent>
+    </PropertyGroup>
+    <PropertyGroup>
+        <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
+    </PropertyGroup>
+    <Import Project="$(SolutionDir)\.build\MSBuild.Community.Tasks.Targets" />
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   -->
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-  <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
-  <Target Name="AfterCompile" Condition="exists('App.$(Configuration).config')">
-    <!-- Generate transformed app config in the intermediate directory -->
-    <TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
-    <!-- Force build process to use the transformed configuration file from now on. -->
-    <ItemGroup>
-      <AppConfigWithTargetPath Remove="App.config" />
-      <AppConfigWithTargetPath Include="$(IntermediateOutputPath)$(TargetFileName).config">
-        <TargetPath>$(TargetFileName).config</TargetPath>
-      </AppConfigWithTargetPath>
-    </ItemGroup>
-  </Target>
-  <Target Name="BeforeBuild" BeforeTargets="Build">
-    <CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />
-    <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt">
-      <Output TaskParameter="Major" PropertyName="VersionMajor" />
-      <Output TaskParameter="Minor" PropertyName="VersionMinor" />
-      <Output TaskParameter="Build" PropertyName="VersionBuild" />
-      <Output TaskParameter="Revision" PropertyName="VersionRevision" />
-    </Version>
-    <AssemblyInfo CodeLanguage="CS" OutputFile="$(MSBuildProjectDirectory)\Properties\CommonAssemblyInfo.cs" AssemblyTitle="HearthstoneTracker" AssemblyDescription="HearthstoneTracker.com" AssemblyConfiguration="" AssemblyCompany="HearthstoneTracker.com" AssemblyProduct="HearthstoneTracker" AssemblyCopyright="Copyright © 2014 - HearthstoneTracker.com" AssemblyTrademark="HearthstoneTracker.com" ComVisible="false" CLSCompliant="false" Guid="51e88eaa-dc6b-4fbb-b6bf-046b04584e69" AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
-  </Target>
-  <Target Name="AfterBuild" AfterTargets="Build">
-  </Target>
-  <Target Name="CreateZipPackage">
-    <ItemGroup>
-      <ZipFiles Include="$(TargetDir)\**\*.*" Exclude="$(TargetDir)\*vshost.*;$(TargetDir)\*.application;$(TargetDir)\*.manifest;$(TargetDir)\*.pdb;$(TargetDir)\*.lib;$(TargetDir)\*.exp" />
-    </ItemGroup>
-    <MakeDir Directories="$(SolutionDir)\package" />
-    <MakeDir Directories="$(SolutionDir)\package\packages" />
-    <!--
+    <PropertyGroup>
+        <ToolsVersion Condition="'$(ToolsVersion)' == ''">12.0</ToolsVersion>
+        <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(ToolsVersion)</VSToolsPath>
+    </PropertyGroup>
+    <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(ToolsVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
+    <Target Name="AfterCompile" Condition="exists('App.$(Configuration).config')">
+        <!-- Generate transformed app config in the intermediate directory -->
+        <TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
+        <!-- Force build process to use the transformed configuration file from now on. -->
+        <ItemGroup>
+            <AppConfigWithTargetPath Remove="App.config" />
+            <AppConfigWithTargetPath Include="$(IntermediateOutputPath)$(TargetFileName).config">
+                <TargetPath>$(TargetFileName).config</TargetPath>
+            </AppConfigWithTargetPath>
+        </ItemGroup>
+    </Target>
+    <Target Name="BeforeBuild" BeforeTargets="Build">
+        <CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />
+        <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt">
+            <Output TaskParameter="Major" PropertyName="VersionMajor" />
+            <Output TaskParameter="Minor" PropertyName="VersionMinor" />
+            <Output TaskParameter="Build" PropertyName="VersionBuild" />
+            <Output TaskParameter="Revision" PropertyName="VersionRevision" />
+        </Version>
+		<CreateProperty Condition="'$(APPVEYOR_BUILD_NUMBER)' != ''" Value="$(APPVEYOR_BUILD_NUMBER)">
+			<Output PropertyName="VersionBuild" TaskParameter="Value"/>
+		</CreateProperty>
+        <AssemblyInfo CodeLanguage="CS" OutputFile="$(MSBuildProjectDirectory)\Properties\CommonAssemblyInfo.cs" AssemblyTitle="HearthstoneTracker" AssemblyDescription="HearthstoneTracker.com" AssemblyConfiguration="" AssemblyCompany="HearthstoneTracker.com" AssemblyProduct="HearthstoneTracker" AssemblyCopyright="Copyright © 2015 - HearthstoneTracker.com" AssemblyTrademark="HearthstoneTracker.com" ComVisible="false" CLSCompliant="false" Guid="51e88eaa-dc6b-4fbb-b6bf-046b04584e69" AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
+    </Target>
+    <Target Name="AfterBuild" AfterTargets="Build">
+    </Target>
+    <Target Name="CreateZipPackage">
+        <ItemGroup>
+            <ZipFiles Include="$(TargetDir)\**\*.*" Exclude="$(TargetDir)\*vshost.*;$(TargetDir)\*.application;$(TargetDir)\*.manifest;$(TargetDir)\*.pdb;$(TargetDir)\*.lib;$(TargetDir)\*.exp" />
+        </ItemGroup>
+        <MakeDir Directories="$(SolutionDir)\package" />
+        <MakeDir Directories="$(SolutionDir)\package\packages" />
+        <!--
     <FormatVersion Version="$(ApplicationVersion)" Revision="$(ApplicationRevision)">
       <Output PropertyName="TheApplicationVersion" TaskParameter="OutputVersion" />
     </FormatVersion>
 	-->
-    <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" ZipLevel="9" />
-    <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild)" />
-    <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
-    <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="packages/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
-    <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
-    <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />
-  </Target>
-  <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
-    <ItemGroup>
-      <ExcludedCosturaFiles Include="**\Capture.dll" />
-      <ExcludedCosturaFiles Include="**\EasyHook.dll" />
-      <ExcludedCosturaFiles Include="**\EasyHook32.dll" />
-      <ExcludedCosturaFiles Include="**\EasyHook64.dll" />
-      <ExcludedCosturaFiles Include="**\EasyLoad32.dll" />
-      <ExcludedCosturaFiles Include="**\EasyLoad64.dll" />
-      <ExcludedCosturaFiles Include="**\HearthCap.Updater.exe" />
-      <ExcludedCosturaFiles Include="**\HearthCapLogger.dll" />
-      <ExcludedCosturaFiles Include="**\HearthCap.Logger.Interface.dll" />
-      <ReferenceCopyLocalPathsReal Include="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Exclude="@(ExcludedCosturaFiles)" />
-    </ItemGroup>
-    <Delete Files="@(ReferenceCopyLocalPathsReal->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Condition="'$(Configuration)' == 'Release' " />
-    <CallTarget Targets="CreateZipPackage" Condition="'$(Configuration)' == 'Release' " />
-  </Target>
-  <Target Name="IncrementVersion">
-    <Version VersionFile="Version.txt" StartDate="January 1, 2014" BuildType="Increment" RevisionType="Automatic">
-      <Output TaskParameter="Major" PropertyName="VersionMajor" />
-      <Output TaskParameter="Minor" PropertyName="VersionMinor" />
-      <Output TaskParameter="Build" PropertyName="VersionBuild" />
-      <Output TaskParameter="Revision" PropertyName="VersionRevision" />
-    </Version>
-  </Target>
-  <Import Project="..\packages\Fody.1.25.0\build\Fody.targets" Condition="Exists('..\packages\Fody.1.25.0\build\Fody.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.25.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.25.0\build\Fody.targets'))" />
-  </Target>
+        <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" ZipLevel="9" />
+        <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild)" />
+        <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
+        <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="packages/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
+        <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
+        <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />
+    </Target>
+    <Target AfterTargets="AfterBuild;NonWinFodyTarget" Name="CleanReferenceCopyLocalPaths">
+        <ItemGroup>
+            <ExcludedCosturaFiles Include="**\Capture.dll" />
+            <ExcludedCosturaFiles Include="**\EasyHook.dll" />
+            <ExcludedCosturaFiles Include="**\EasyHook32.dll" />
+            <ExcludedCosturaFiles Include="**\EasyHook64.dll" />
+            <ExcludedCosturaFiles Include="**\EasyLoad32.dll" />
+            <ExcludedCosturaFiles Include="**\EasyLoad64.dll" />
+            <ExcludedCosturaFiles Include="**\HearthCap.Updater.exe" />
+            <ExcludedCosturaFiles Include="**\HearthCapLogger.dll" />
+            <ExcludedCosturaFiles Include="**\HearthCap.Logger.Interface.dll" />
+            <ExcludedCosturaFiles Include="**\System.Runtime.Remoting" />
+            <ExcludedCosturaFiles Include="**\System.Runtime.Serialization.Formatters.Soap" />
+            <ReferenceCopyLocalPathsReal Include="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Exclude="@(ExcludedCosturaFiles)" />
+        </ItemGroup>
+        <Delete Files="@(ReferenceCopyLocalPathsReal->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Condition="'$(Configuration)' == 'Release' " />
+        <CallTarget Targets="CreateZipPackage" Condition="'$(Configuration)' == 'Release' " />
+    </Target>
+    <Target Name="IncrementVersion">
+        <Version VersionFile="Version.txt" StartDate="January 1, 2014" BuildType="Increment" RevisionType="Automatic">
+            <Output TaskParameter="Major" PropertyName="VersionMajor" />
+            <Output TaskParameter="Minor" PropertyName="VersionMinor" />
+            <Output TaskParameter="Build" PropertyName="VersionBuild" />
+            <Output TaskParameter="Revision" PropertyName="VersionRevision" />
+        </Version>
+    </Target>
+    <Import Project="..\packages\Fody.1.29.3\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+        </PropertyGroup>
+        <Error Condition="!Exists('..\packages\Fody.1.29.3\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\dotnet\Fody.targets'))" />
+    </Target>
 </Project>

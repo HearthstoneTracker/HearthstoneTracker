@@ -5,10 +5,10 @@ namespace HearthCap.StartUp
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
     using System.ComponentModel.Composition.Primitives;
-    using System.Configuration;
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Markup;
@@ -21,17 +21,14 @@ namespace HearthCap.StartUp
     using HearthCap.Logging;
     using HearthCap.Shell;
     using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.TrayIcon;
 
     using Configuration = HearthCap.Data.Migrations.Configuration;
 
-    public class AppBootstrapper : BootstrapperBase, IDisposable
+    public sealed class AppBootstrapper : BootstrapperBase, IDisposable
     {
-        private string applicationDataDirectory;
-
         private static CompositionContainer container;
 
-        private IAppLogManager logManager;
+        private IAppLogManager _logManager;
 
         public AppBootstrapper()
         {
@@ -53,10 +50,10 @@ namespace HearthCap.StartUp
                 Container.Dispose();
             }
 
-            if (this.logManager != null)
+            if (_logManager != null)
             {
-                this.logManager.Flush();
-                this.logManager.Dispose();
+                _logManager.Flush();
+                _logManager.Dispose();
             }
         }
 
@@ -64,42 +61,59 @@ namespace HearthCap.StartUp
         {
             InitializeApplicationDataDirectory();
 
+            var composeTask = Task.Factory.StartNew(() =>
+                {
+                    // var aggregateCatalog = new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)));
+                    var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
+                                                                    {
+                                                                new AssemblyCatalog(GetType().Assembly),
+                                                                new AssemblyCatalog(typeof(AutoCaptureEngine).Assembly),
+                                                                new AssemblyCatalog(typeof(IRepository<>).Assembly),
+                                                                    });
+                    container = new CompositionContainer(aggregateCatalog);
+                    var batch = new CompositionBatch();
+                    batch.AddExportedValue(container);
+                    batch.AddExportedValue<IEventAggregator>(new EventAggregator());
+                    batch.AddExportedValue<IWindowManager>(new CustomWindowManager());
+                    batch.AddExportedValue<Func<IMessageBox>>(() => container.GetExportedValue<IMessageBox>());
+                    batch.AddExportedValue<Func<HearthStatsDbContext>>(() => new HearthStatsDbContext());
+
+                    // batch.AddExportedValue<IWindowManager>(new AppWindowManager());
+                    // batch.AddExportedValue(MessageBus.Current);
+
+                    var compose = container.GetExportedValue<CompositionBuilder>();
+                    compose.Compose(batch);
+                    // var composeTasks = this.GetAllInstances<ICompositionTask>();
+                    // composeTasks.Apply(s => s.Compose(batch));
+                    container.Compose(batch);
+                });
+
+            var initDbTask = Task.Factory.StartNew(InitializeDatabase);
+
+            Task.WaitAll(composeTask, initDbTask);
+
+            var logPath = Path.Combine((string)AppDomain.CurrentDomain.GetData("DataDirectory"), "logs");
+            _logManager = container.GetExportedValue<IAppLogManager>();
+            _logManager.Initialize(logPath);
+            container.GetExportedValue<CrashManager>().WireUp();
+
+            // Apply xaml/wpf fixes
+            var currentUICult = Thread.CurrentThread.CurrentUICulture.Name;
+            var currentCult = Thread.CurrentThread.CurrentCulture.Name;
+
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(currentUICult);
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(currentCult);
+
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
-            // var aggregateCatalog = new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)));
-            var aggregateCatalog = new AggregateCatalog(new ComposablePartCatalog[]
-                                                            {
-                                                                new AssemblyCatalog(this.GetType().Assembly), 
-                                                                new AssemblyCatalog(typeof(AutoCaptureEngine).Assembly), 
-                                                                new AssemblyCatalog(typeof(IRepository<>).Assembly), 
-                                                            });
-            container = new CompositionContainer(aggregateCatalog);
-            var batch = new CompositionBatch();
-            batch.AddExportedValue(container);
-            batch.AddExportedValue<IEventAggregator>(new EventAggregator());
-            batch.AddExportedValue<IWindowManager>(new CustomWindowManager());
-            batch.AddExportedValue<Func<IMessageBox>>(() => container.GetExportedValue<IMessageBox>());
-            batch.AddExportedValue<Func<HearthStatsDbContext>>(() => new HearthStatsDbContext());
-
-            // batch.AddExportedValue<IWindowManager>(new AppWindowManager());
-            // batch.AddExportedValue(MessageBus.Current);
-
-            var compose = container.GetExportedValue<CompositionBuilder>();
-            compose.Compose(batch);
-            // var composeTasks = this.GetAllInstances<ICompositionTask>();
-            // composeTasks.Apply(s => s.Compose(batch));
-            container.Compose(batch);
-
+            // Hook caliburn filter
             FilterFrameworkCoreCustomization.Hook();
 
-            var logPath = Path.Combine((string)AppDomain.CurrentDomain.GetData("DataDirectory"), "logs");
-            container.GetExportedValue<IAppLogManager>().Initialize(logPath);
-            container.GetExportedValue<CrashManager>().WireUp();
-
-            this.Application.Activated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
-            this.Application.Deactivated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
+            // Hook application events
+            Application.Activated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationActivatedEvent());
+            Application.Deactivated += (s, e) => container.GetExportedValue<IEventAggregator>().PublishOnCurrentThread(new ApplicationDeActivatedEvent());
         }
 
         private void InitializeApplicationDataDirectory()
@@ -135,11 +149,6 @@ namespace HearthCap.StartUp
             return container.GetExportedValues<object>(AttributedModelServices.GetContractName(serviceType));
         }
 
-        protected IEnumerable<T> GetAllInstances<T>()
-        {
-            return container.GetExportedValues<T>();
-        }
-
         protected override object GetInstance(Type serviceType, string key)
         {
             var str = String.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
@@ -161,19 +170,11 @@ namespace HearthCap.StartUp
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            var currentUICult = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-            var currentCult = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(currentUICult);
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(currentCult);
-
-            InitializeDatabase();
-
-            var startupTasks = this.GetAllInstances(typeof(IStartupTask)).Cast<IStartupTask>();
+            var startupTasks = GetAllInstances(typeof(IStartupTask)).Cast<IStartupTask>();
             startupTasks.Apply(s => s.Run());
 
             // var userSettings = (UserPreferences)GetInstance(typeof(UserPreferences), null);
-            var trayIcon = (TrayIconViewModel)GetInstance(typeof(TrayIconViewModel), null);
+            // var trayIcon = (TrayIconViewModel)GetInstance(typeof(TrayIconViewModel), null);
             var windowManager = (CustomWindowManager)GetInstance(typeof(CustomWindowManager), null);
             var start = windowManager.MainWindow<StartupViewModel>();
             start.Show();
@@ -202,13 +203,10 @@ namespace HearthCap.StartUp
             }
             else
             {
-                Task.Run(
-                    () =>
-                    {
-                        using (var context = new HearthStatsDbContext())
-                        {
-                        }
-                    });
+                using (var context = new HearthStatsDbContext())
+                {
+                    var settings = context.Settings.FirstOrDefault();
+                }
             }
         }
     }
@@ -216,17 +214,17 @@ namespace HearthCap.StartUp
     [Export(typeof(CompositionBuilder))]
     public class CompositionBuilder
     {
-        private readonly IEnumerable<ICompositionTask> tasks;
+        private readonly IEnumerable<ICompositionTask> _tasks;
 
         [ImportingConstructor]
         public CompositionBuilder([ImportMany]IEnumerable<ICompositionTask> tasks)
         {
-            this.tasks = tasks;
+            _tasks = tasks;
         }
 
         public void Compose(CompositionBatch batch)
         {
-            tasks.Apply(s => s.Compose(batch));
+            _tasks.Apply(s => s.Compose(batch));
         }
     }
 }

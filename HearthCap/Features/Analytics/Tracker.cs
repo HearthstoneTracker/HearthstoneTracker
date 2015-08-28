@@ -9,6 +9,7 @@
     using System.Windows.Forms;
 
     using GoogleAnalyticsTracker.Core;
+    using GoogleAnalyticsTracker.Core.TrackerParameters;
 
     using NLog;
 
@@ -24,13 +25,11 @@
         {
             Version = Assembly.GetEntryAssembly().GetName().Version;
             ExtraParameters = new Dictionary<string, string>();
-            ExtraParameters[BeaconParameter.Browser.ScreenResolution] = String.Format(
+            ScreenResolution = String.Format(
                     "{0}x{1}",
                     System.Windows.SystemParameters.PrimaryScreenWidth,
                     System.Windows.SystemParameters.PrimaryScreenHeight);
-            ExtraParameters[BeaconParameter.Browser.ScreenColorDepth] = String.Format(
-                    "{0}-bit",
-                    Screen.PrimaryScreen.BitsPerPixel);
+            ScreenColors = String.Format("{0}-bit", Screen.PrimaryScreen.BitsPerPixel);
 
             var osPlatform = Environment.OSVersion.Platform.ToString();
             var osVersion = Environment.OSVersion.Version.ToString();
@@ -50,6 +49,10 @@
                 isEnabled = reg.ShareUsageStatistics;
             }
         }
+
+        public static string ScreenColors { get; set; }
+
+        public static string ScreenResolution { get; set; }
 
         public const string CommonCategory = "Common";
 
@@ -100,19 +103,38 @@
             if (!IsEnabled) return;
             LastPageTitle = pageTitle;
             LastPageUrl = pageUrl;
-            Instance.TrackPageViewAsync(pageTitle, pageUrl);
+            TrackLastPageViewAsync();
         }
 
-        public static async Task TrackLastPageViewAsync()
+        public static void TrackLastPageViewAsync()
         {
             if (!IsEnabled) return;
-            await Instance.TrackPageViewAsync(LastPageTitle, LastPageUrl, ExtraParameters, UserAgent);
+            var pageView = new PageView();
+            FillParameters(pageView);
+            Instance.TrackPageViewAsync(pageView);
         }
 
-        public static async Task TrackEventAsync(string category, string action, string label, int value = 1)
+        public static void TrackEventAsync(string category, string action, string label, int value = 1)
         {
             if (!IsEnabled) return;
-            await instance.TrackEventAsync(category, action, label, value, false, ExtraParameters, UserAgent);
+            var pageView = new EventTracking()
+                {
+                    Category = category,
+                    Action = action,
+                    Label = label,
+                    Value = value,
+                };
+            FillParameters(pageView);
+            instance.TrackEventAsync(pageView);
+        }
+
+        private static void FillParameters(GeneralParameters parameters)
+        {
+            parameters.UserAgent = UserAgent;
+            parameters.ScreenColors = ScreenColors;
+            parameters.ScreenResolution = ScreenResolution;
+            parameters.DocumentTitle = LastPageTitle;
+            parameters.DocumentLocationUrl = LastPageUrl;
         }
     }
 }

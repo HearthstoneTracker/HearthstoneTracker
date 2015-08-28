@@ -9,6 +9,7 @@ namespace HearthCap.Data
         Practice = 4,
         Arena = 5,
         Challenge = 6,
-        Mission = 7
+        Mission = 7,
+        TavernBrawl
     }
 }

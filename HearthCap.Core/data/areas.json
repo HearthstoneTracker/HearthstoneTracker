@@ -975,7 +975,7 @@
         "Y": 42,
         "Height": 63,
         "Width": 68,
-        "Hash": 3456277233999808756,
+        "Hash": 1150401235142314742,
         "Image": null,
         "BaseResolution": 0,
         "Mostly": "Red"
@@ -986,7 +986,7 @@
         "Y": 0,
         "Height": 90,
         "Width": 48,
-        "Hash": 283974106150120085,
+        "Hash": 2554994670503242581,
         "Image": null,
         "BaseResolution": 0,
         "Mostly": "Red"
@@ -1000,6 +1000,17 @@
         "Hash": 0,
         "Image": null,
         "BaseResolution": 0
+      },
+      {
+        "Key": "mode_brawl",
+        "X": 1126,
+        "Y": 591,
+        "Height": 64,
+        "Width": 64,
+        "Hash": 11586411709140126967,
+        "Image": null,
+        "BaseResolution": 0,
+        "Mostly": "Blue"        
       }
     ]
   }

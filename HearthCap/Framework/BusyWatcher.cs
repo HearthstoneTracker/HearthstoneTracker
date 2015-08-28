@@ -19,7 +19,7 @@
             }
         }
 
-        public BusyWatcherTicket GetTicket()
+        public IDisposable GetTicket()
         {
             return new BusyWatcherTicket(this);
         }
@@ -40,19 +40,19 @@
             }
         }
 
-        public class BusyWatcherTicket : IDisposable
+        private sealed class BusyWatcherTicket : IDisposable
         {
-            private readonly IBusyWatcher parent;
+            private readonly IBusyWatcher _parent;
 
             public BusyWatcherTicket(IBusyWatcher parent)
             {
-                this.parent = parent;
-                this.parent.AddWatch();
+                this._parent = parent;
+                this._parent.AddWatch();
             }
 
             public void Dispose()
             {
-                this.parent.RemoveWatch();
+                _parent.RemoveWatch();
             }
         }
     }

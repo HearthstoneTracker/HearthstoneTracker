@@ -172,12 +172,5 @@
             file = dlg.FileName;
             return result;
         }
-
-        /// <summary>
-        /// Called when initializing.
-        /// </summary>
-        protected override async void OnInitialize()
-        {
-        }
     }
 }

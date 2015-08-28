@@ -15,7 +15,8 @@ namespace HearthCap.Features.WebApi.Generic
         IHandle<GameStarted>,
         IHandle<GameEnded>,
         IHandle<ArenaSessionStarted>,
-        IHandle<ArenaSessionEnded>
+        IHandle<ArenaSessionEnded>,
+        IDisposable
     {
         private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -24,6 +25,8 @@ namespace HearthCap.Features.WebApi.Generic
         private HttpClient client;
 
         private string baseUrl;
+
+        private bool _disposed;
 
         public GenericWebApiEventsHandler()
         {
@@ -98,6 +101,31 @@ namespace HearthCap.Features.WebApi.Generic
             {
                 Log.Error(ex);
             }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                if (client != null)
+                {
+                    client.Dispose();
+                }
+            }
+
+            _disposed = true;
         }
     }
 }

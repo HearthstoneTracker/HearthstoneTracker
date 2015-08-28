@@ -18,7 +18,7 @@
     using MahApps.Metro.Controls;
 
     [Export(typeof(TrayIconViewModel))]
-    public class TrayIconViewModel : Screen,
+    public sealed class TrayIconViewModel : Screen,
         IDisposable,
         IHandle<TrayNotification>
     {
@@ -51,9 +51,9 @@
             }
         }
 
-        public ICommand LeftClickCommand { get; protected set; }
+        public ICommand LeftClickCommand { get; private set; }
 
-        public ICommand DoubleClickCommand { get; protected set; }
+        public ICommand DoubleClickCommand { get; private set; }
 
         public TaskbarIcon TaskbarIcon
         {
@@ -188,7 +188,7 @@
         /// </summary>
         public void Dispose()
         {
-            TaskbarIcon.Dispose();
+            taskbarIcon.Dispose();
         }
     }
 }

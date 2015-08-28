@@ -39,8 +39,8 @@
         /// <param name="message">The message.</param>
         public void Handle(RequestDecksResponse message)
         {
-            int dummy;
-            var deckids = message.DeckIds.ToArray();
+            // int dummy;
+            // var deckids = message.DeckIds.ToArray();
         }
     }
 }

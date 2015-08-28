@@ -1,85 +1,147 @@
 ﻿namespace HearthCap.Features.EngineControl
 {
+    using System;
     using System.ComponentModel.Composition;
 
     using Caliburn.Micro;
 
     using HearthCap.Core.GameCapture;
-    using HearthCap.Core.GameCapture.EngineEvents;
     using HearthCap.Shell.CommandBar;
-    using HearthCap.Shell.Dialogs;
 
-    // [Export(typeof(ICommandBarItem))]
+    [Export(typeof(ICommandBarItem))]
     public class StartStopCommandBarViewModel : CommandBarItemViewModel,
-        IHandle<CaptureEngineStarted>,
-        IHandle<CaptureEngineStopped>
+        IHandle<EngineRegistrySettingsChanged>
     {
-        private readonly IDialogManager dialogManager;
+        private readonly ICaptureEngine _captureEngine;
 
-        private readonly IEventAggregator events;
+        private bool _isStarted;
 
-        private readonly ICaptureEngine captureEngine;
+        private bool _isStopping;
 
-        private bool isStarted;
+        private bool _isStarting;
+
+        private bool _showControls;
 
         [ImportingConstructor]
         public StartStopCommandBarViewModel(
-            IDialogManager dialogManager,
             IEventAggregator eventAggregator,
             ICaptureEngine captureEngine)
         {
-            this.Order = -2;
-            this.dialogManager = dialogManager;
-            this.events = eventAggregator;
-            this.captureEngine = captureEngine;
-            this.events.Subscribe(this);
-            // lol
-            this.IsStarted = captureEngine.IsRunning;
+            Order = -2;
+            _captureEngine = captureEngine;
+            _captureEngine.Started += CaptureEngine_Started;
+            _captureEngine.Stopped += CaptureEngine_Stopped;
+            eventAggregator.Subscribe(this);
+            IsStarted = captureEngine.IsRunning;
+
+            using (var reg = new EngineRegistrySettings())
+            {
+                ShowControls = reg.GetOrCreate("ShowControls", true);
+            }
+        }
+
+        private void CaptureEngine_Stopped(object sender, EventArgs e)
+        {
+            IsStarted = false;
+            IsStopping = false;
+        }
+
+        private void CaptureEngine_Started(object sender, EventArgs e)
+        {
+            IsStarted = true;
+            IsStarting = false;
         }
 
         public bool IsStarted
         {
             get
             {
-                return this.isStarted;
+                return _isStarted;
             }
             set
             {
-                if (value.Equals(this.isStarted))
+                if (value.Equals(_isStarted))
                 {
                     return;
                 }
-                this.isStarted = value;
-                this.NotifyOfPropertyChange(() => this.IsStarted);
+                _isStarted = value;
+                NotifyOfPropertyChange(() => IsStarted);
+            }
+        }
+
+        public bool IsStarting
+        {
+            get
+            {
+                return _isStarting;
+            }
+            set
+            {
+                if (value.Equals(_isStarting))
+                {
+                    return;
+                }
+                _isStarting = value;
+                NotifyOfPropertyChange(() => IsStarting);
+            }
+        }
+
+        public bool IsStopping
+        {
+            get
+            {
+                return _isStopping;
+            }
+            set
+            {
+                if (value.Equals(_isStopping))
+                {
+                    return;
+                }
+                _isStopping = value;
+                NotifyOfPropertyChange(() => IsStopping);
+            }
+        }
+
+        public bool ShowControls
+        {
+            get
+            {
+                return _showControls;
+            }
+            set
+            {
+                if (value.Equals(_showControls))
+                {
+                    return;
+                }
+                _showControls = value;
+                NotifyOfPropertyChange(() => ShowControls);
             }
         }
 
         public void StartEngine()
         {
-            this.captureEngine.StartAsync();
+            IsStarting = true;
+            _captureEngine.StartAsync();
         }
 
         public void StopEngine()
         {
-            this.captureEngine.Stop();
+            IsStopping = true;
+            _captureEngine.Stop();
         }
 
         /// <summary>
         /// Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
-        public void Handle(CaptureEngineStarted message)
+        public void Handle(EngineRegistrySettingsChanged message)
         {
-            IsStarted = true;
-        }
-
-        /// <summary>
-        /// Handles the message.
-        /// </summary>
-        /// <param name="message">The message.</param>
-        public void Handle(CaptureEngineStopped message)
-        {
-            IsStarted = false;
+            using (var reg = new EngineRegistrySettings())
+            {
+                ShowControls = reg.GetOrCreate("ShowControls", true);
+            }
         }
     }
 }

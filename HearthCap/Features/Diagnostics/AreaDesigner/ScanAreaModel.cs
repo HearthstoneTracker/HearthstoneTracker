@@ -219,23 +219,5 @@
                 this.NotifyOfPropertyChange(() => this.Mostly);
             }
         }
-
-        private static Image GetAreaImageDef(string key)
-        {
-            string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
-            baseDir = Path.Combine(baseDir, "images");
-            var filename = key + ".png";
-            filename = Path.Combine(baseDir, filename);
-            Image result = null;
-            try
-            {
-                result = Image.FromFile(filename);
-            }
-            catch (Exception ex)
-            {
-                
-            }
-            return result;
-        }
     }
 }

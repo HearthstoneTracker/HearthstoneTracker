@@ -27,8 +27,6 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
 
         private BindableCollection<LogMessageModel> logMessages = new BindableCollection<LogMessageModel>();
 
-        private bool loggingEnabled;
-
         private bool debugEnabled;
 
         private bool diagEnabled;
@@ -266,10 +264,12 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
         {
             get
             {
+#pragma warning disable 162 // unreachable code detected
 #if DEBUG
                 return true;
 #endif
                 return false;
+#pragma warning restore 162
             }
         }
 

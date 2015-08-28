@@ -1,13 +1,14 @@
 namespace HearthCap.Features.WebApi.HearthstoneTracker
 {
+    using System;
     using System.ComponentModel.Composition;
 
     using HearthCap.Features.WebApi.Generic;
 
     [Export(typeof(IWebApiProviderDescriptor))]
-    public class HearthstoneTrackerWebApiProvider : WebApiProviderDescriptor
+    public sealed class HearthstoneTrackerWebApiProvider : WebApiProviderDescriptor, IDisposable
     {
-        private IWebApiEventsHandler eventsHandler;
+        private HearthstoneTrackerWebApiEventsHandler eventsHandler;
         private IWebApiProviderScreen settings;
 
         [ImportingConstructor]
@@ -32,6 +33,17 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             get
             {
                 return this.eventsHandler;
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (eventsHandler != null)
+            {
+                eventsHandler.Dispose();
             }
         }
     }

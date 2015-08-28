@@ -25,8 +25,6 @@
 
         private int duration;
 
-        private string deckKey;
-
         private GameMode gameMode;
 
         private string notes;

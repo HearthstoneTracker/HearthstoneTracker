@@ -16,10 +16,6 @@
     [Export(typeof(FilteredStatsViewModel))]
     public class FilteredStatsViewModel : Screen
     {
-        private readonly Func<HearthStatsDbContext> dbContext;
-
-        private readonly LatestGamesViewModel parentViewModel;
-
         private bool initialized;
         private readonly BindableCollection<StatModel> winsAndLosses = new BindableCollection<StatModel>();
         private readonly BindableCollection<StatModel> wins = new BindableCollection<StatModel>();
@@ -56,9 +52,8 @@
         private decimal last30DaysRatioLoss;
 
         [ImportingConstructor]
-        public FilteredStatsViewModel(Func<HearthStatsDbContext> dbContext)
+        public FilteredStatsViewModel()
         {
-            this.dbContext = dbContext;
             if (Execute.InDesignMode)
             {
                 AddDesignModeData();

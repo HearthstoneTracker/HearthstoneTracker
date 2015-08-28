@@ -13,10 +13,8 @@ namespace HearthCap.Logging
     using LogManager = NLog.LogManager;
 
     [Export(typeof(IAppLogManager))]
-    public class AppLogManager : IAppLogManager
+    public sealed class AppLogManager : IAppLogManager
     {
-        private FileTarget logfile;
-
         [ImportingConstructor]
         public AppLogManager()
         {
@@ -26,7 +24,7 @@ namespace HearthCap.Logging
         {
             var config = new LoggingConfiguration();
 
-            this.logfile = new FileTarget();
+            var logfile = new FileTarget();
             var logfilename = Path.Combine(logFilesDirectory, "${date:format=yyyy-MM-dd}.txt");
             logfile.FileName = logfilename;
             logfile.CreateDirs = true;
@@ -72,22 +70,17 @@ namespace HearthCap.Logging
         {
             try
             {
-                NLog.LogManager.Shutdown();
+                LogManager.Shutdown();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                // TODO: check, swallow exceptions during shutdown/dispose
             }
         }
 
         public void Flush()
         {
-            try
-            {
-                logfile.Flush(ex => { });
-            }
-            catch (Exception ex)
-            {
-            }
+            LogManager.Flush();
         }
     }
 }

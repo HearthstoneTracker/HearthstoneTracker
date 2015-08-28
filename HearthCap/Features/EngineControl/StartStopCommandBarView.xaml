@@ -15,10 +15,11 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Horizontal" Visibility="{Binding ShowControls, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button Margin="0"
                 cal:Message.Attach="StartEngine"
                 Visibility="{Binding IsStarted, Converter={StaticResource booleanToVisibilityInverse}}"
+                IsEnabled="{Binding IsStarting, Converter={StaticResource invertBoolean}}"
                 Style="{DynamicResource ToolbarButton}">
             <StackPanel Orientation="Horizontal">
                 <Rectangle Width="18"
@@ -26,7 +27,7 @@
                            Fill="{DynamicResource BlackBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{StaticResource appbar_play}" />
+                                     Visual="{StaticResource appbar_control_play}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
@@ -39,6 +40,7 @@
         <Button Margin="0"
                 cal:Message.Attach="StopEngine"
                 Visibility="{Binding IsStarted, Converter={StaticResource booleanToVisibility}}"
+                IsEnabled="{Binding IsStopping, Converter={StaticResource invertBoolean}}"
                 Style="{DynamicResource ToolbarButton}">
             <StackPanel Orientation="Horizontal">
                 <Rectangle Width="18"
@@ -46,7 +48,7 @@
                            Fill="{DynamicResource BlackBrush}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Fill"
-                                     Visual="{StaticResource appbar_pause}" />
+                                     Visual="{StaticResource appbar_control_pause}" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"

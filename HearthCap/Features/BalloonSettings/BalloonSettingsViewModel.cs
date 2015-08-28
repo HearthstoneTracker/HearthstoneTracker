@@ -28,13 +28,9 @@
 
         private readonly BalloonSettings balloonSettings;
 
-        private bool showBalloons;
-
         private bool minimizeToTray;
 
         private IEventAggregator events;
-
-        private bool canpublish;
 
         private IDeckManager deckManager;
 

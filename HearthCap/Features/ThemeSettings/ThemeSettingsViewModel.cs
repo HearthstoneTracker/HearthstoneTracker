@@ -228,12 +228,5 @@
             var accent = ThemeManager.Accents.First(x => x.Name == accentVm.Name);
             this.themeManager.ChangeAccent(accent);
         }
-
-        /// <summary>
-        /// Called when initializing.
-        /// </summary>
-        protected override async void OnInitialize()
-        {
-        }
     }
 }

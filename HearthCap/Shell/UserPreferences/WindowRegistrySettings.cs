@@ -1,5 +1,6 @@
 namespace HearthCap.Shell.UserPreferences
 {
+    using System;
     using System.Windows;
 
     public class WindowRegistrySettings : RegistrySettings
@@ -91,6 +92,6 @@ namespace HearthCap.Shell.UserPreferences
             {
                 this.SetValue("MinimizeToTray", value ? 1 : 0);
             }
-        }
+        }        
     }
 }

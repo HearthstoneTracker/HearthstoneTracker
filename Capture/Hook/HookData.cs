@@ -19,7 +19,7 @@
         public HookData(IntPtr func, Delegate inNewProc, object owner)
             : base(func, inNewProc, owner)
         {
-            this.original = (T)(object)Marshal.GetDelegateForFunctionPointer(func, typeof(T));
+            original = (T)(object)Marshal.GetDelegateForFunctionPointer(func, typeof(T));
         }
 
         #endregion
@@ -30,7 +30,7 @@
         {
             get
             {
-                return this.original;
+                return original;
             }
         }
 
@@ -60,7 +60,7 @@
             this.func = func;
             this.inNewProc = inNewProc;
             this.owner = owner;
-            this.CreateHook();
+            CreateHook();
         }
 
         #endregion
@@ -71,7 +71,7 @@
         {
             get
             {
-                return this.localHook;
+                return localHook;
             }
         }
 
@@ -81,21 +81,21 @@
 
         public void CreateHook()
         {
-            if (this.localHook != null)
+            if (localHook != null)
             {
                 return;
             }
-            this.localHook = LocalHook.Create(this.func, this.inNewProc, this.owner);
+            localHook = LocalHook.Create(func, inNewProc, owner);
         }
 
         public void ReHook()
         {
-            if (this.isHooked)
+            if (isHooked)
             {
                 return;
             }
-            this.isHooked = true;
-            this.Hook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+            isHooked = true;
+            Hook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
         }
 
         public void UnHook()

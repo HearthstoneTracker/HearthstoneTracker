@@ -31,6 +31,7 @@ HearthCap/HearthCap_TemporaryKey.pfx
 HearthCap/costura32/*.dll
 HearthCap/Properties/CommonAssemblyInfo.cs
 packages/*
+!packages/*.targets
 !/lib/**
 HearthCap.jtconfig
 HearthCap.Installer/HearthCap.Installer/Express/*
@@ -40,3 +41,5 @@ installer/Version.nsh
 HearthCap.sdf
 *.opensdf
 ipch/*
+NDependOut/*
+.vs/*

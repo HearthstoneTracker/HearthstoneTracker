@@ -33,5 +33,17 @@
                 SetValue("Speed", value);
             }
         }
+
+        public bool AutoStart
+        {
+            get
+            {
+                return this.GetOrCreate("AutoStart", 1) == 1;
+            }
+            set
+            {
+                this.SetValue("AutoStart", value ? 1 : 0);
+            }
+        }
     }
 }

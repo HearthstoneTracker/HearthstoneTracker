@@ -14,8 +14,6 @@ namespace HearthCap.Features.Settings
     [Export(typeof(IFlyout))]
     public class SettingsViewModel : FlyoutViewModel<ISettingsScreen>.Collection.AllActive
     {
-        private readonly BindableCollection<ISettingsScreen> settingsScreens;
-
         private bool firstTime = true;
 
         [ImportingConstructor]
@@ -34,14 +32,6 @@ namespace HearthCap.Features.Settings
                 }
             };
         }
-
-        //public IObservableCollection<ISettingsScreen> SettingsScreens
-        //{
-        //    get
-        //    {
-        //        return this.settingsScreens;
-        //    }
-        //}
 
         /// <summary>
         /// Called when activating.

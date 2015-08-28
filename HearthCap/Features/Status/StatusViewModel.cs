@@ -194,9 +194,11 @@
         {
             get
             {
-                return GameMode != GameMode.Arena && 
-                    GameMode != GameMode.Unknown  &&
-                    WindowFound;
+                return WindowFound &&
+                    (GameMode == GameMode.Casual ||
+                    GameMode == GameMode.Challenge ||
+                    GameMode == GameMode.Practice || 
+                    GameMode == GameMode.Ranked);
             }
         }
 

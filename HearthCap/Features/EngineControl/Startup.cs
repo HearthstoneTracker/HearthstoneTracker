@@ -2,14 +2,12 @@
 {
     using System;
     using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
     using System.Windows;
 
     using Caliburn.Micro;
 
     using HearthCap.Core.GameCapture;
     using HearthCap.Shell.Events;
-    using HearthCap.Shell.Settings;
     using HearthCap.StartUp;
 
     [Export(typeof(IStartupTask))]
@@ -18,35 +16,18 @@
     {
         private readonly IEventAggregator events;
 
-        private readonly SettingsManager settingsManager;
-
         private readonly ICaptureEngine captureEngine;
-
-        private readonly ILogCaptureEngine logCaptureEngine;
-
-        private CrashManager crashManager;
 
         [ImportingConstructor]
         public Startup(
             IEventAggregator events,
-            SettingsManager settingsManager,
             ICaptureEngine captureEngine,
-            ILogCaptureEngine logCaptureEngine,
             CrashManager crashManager)
         {
             this.events = events;
-            this.settingsManager = settingsManager;
             this.captureEngine = captureEngine;
-            this.logCaptureEngine = logCaptureEngine;
-            this.crashManager = crashManager;
-            captureEngine.UnhandledException += this.OnUnhandledException;
+            captureEngine.UnhandledException += (s, e) => crashManager.HandleException(e.ExceptionObject as Exception);
             Application.Current.Exit += CurrentOnExit;
-        }
-
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-
-            crashManager.HandleException((Exception)e.ExceptionObject);
         }
 
         public void Run()
@@ -60,13 +41,18 @@
         /// <param name="message">The message.</param>
         public void Handle(ShellReady message)
         {
+            bool autoStart;
             using (var reg = new EngineRegistrySettings())
             {
                 captureEngine.CaptureMethod = reg.CaptureMethod;
                 captureEngine.Speed = (int)reg.Speed;
+                autoStart = reg.AutoStart;
             }
 
-            this.captureEngine.StartAsync();
+            if (autoStart)
+            {
+                captureEngine.StartAsync();
+            }
         }
 
         private void CurrentOnExit(object sender, ExitEventArgs exitEventArgs)

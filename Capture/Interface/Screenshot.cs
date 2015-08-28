@@ -11,11 +11,11 @@
     {
         #region Fields
 
-        private byte[] _capturedBitmap;
+        private readonly byte[] _capturedBitmap;
 
         private bool _disposed;
 
-        private Guid _requestId;
+        private readonly Guid _requestId;
 
         #endregion
 
@@ -23,22 +23,22 @@
 
         public Screenshot(Guid requestId, byte[] capturedBitmap)
         {
-            this._requestId = requestId;
-            this._capturedBitmap = capturedBitmap;
+            _requestId = requestId;
+            _capturedBitmap = capturedBitmap;
         }
 
         public Screenshot(Guid requestId, byte[] capturedBitmap, int width, int height, int pitch)
         {
-            this.Width = width;
-            this.Height = height;
-            this.Pitch = pitch;
-            this._requestId = requestId;
-            this._capturedBitmap = capturedBitmap;
+            Width = width;
+            Height = height;
+            Pitch = pitch;
+            _requestId = requestId;
+            _capturedBitmap = capturedBitmap;
         }
 
         ~Screenshot()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -49,7 +49,7 @@
         {
             get
             {
-                return this._capturedBitmap;
+                return _capturedBitmap;
             }
         }
 
@@ -61,7 +61,7 @@
         {
             get
             {
-                return this._requestId;
+                return _requestId;
             }
         }
 
@@ -73,7 +73,7 @@
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -112,13 +112,13 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
-                    this.Disconnect();
+                    Disconnect();
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
 

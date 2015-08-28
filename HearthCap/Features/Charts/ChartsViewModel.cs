@@ -330,7 +330,7 @@
             Tracker.TrackPageViewAsync("Statistics (charts)", "Statistics_Charts");
         }
 
-        protected override async void OnViewLoaded(object view)
+        protected override void OnViewLoaded(object view)
         {
             if (this.initialized) return;
             this.initialized = true;

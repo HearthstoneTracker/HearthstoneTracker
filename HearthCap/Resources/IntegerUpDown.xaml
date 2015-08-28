@@ -9,7 +9,7 @@
            x:Key="UpDownMetroStyle">
         <Setter Property="ContextMenu"
                 Value="{DynamicResource TextBoxMetroContextMenu}" />
-        <Setter Property="metro:TextboxHelper.IsMonitoring"
+        <Setter Property="metro:TextBoxHelper.IsMonitoring"
                 Value="True" />
         <Setter Property="metro:ControlsHelper.ButtonWidth"
                 Value="22" />
@@ -31,9 +31,9 @@
                 Value="0" />
         <Setter Property="BorderBrush"
                 Value="{DynamicResource TextBoxBorderBrush}" />
-        <Setter Property="metro:TextboxHelper.FocusBorderBrush"
+        <Setter Property="metro:ControlsHelper.FocusBorderBrush"
                 Value="{DynamicResource TextBoxFocusBorderBrush}" />
-        <Setter Property="metro:TextboxHelper.MouseOverBorderBrush"
+        <Setter Property="metro:ControlsHelper.MouseOverBorderBrush"
                 Value="{DynamicResource TextBoxMouseOverBorderBrush}" />
         <!-- change SnapsToDevicePixels to True to view a better border and validation error -->
         <Setter Property="SnapsToDevicePixels"
@@ -66,6 +66,7 @@
                                                IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
                                                MinWidth="20"
                                                Padding="{TemplateBinding Padding}"
+                                               AutoSelectBehavior="{Binding AutoSelectBehavior, RelativeSource={RelativeSource TemplatedParent}}"
                                                SelectAllOnGotFocus="{Binding SelectAllOnGotFocus, RelativeSource={RelativeSource TemplatedParent}}"
                                                TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}"
                                                TextWrapping="NoWrap"

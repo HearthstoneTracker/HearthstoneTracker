@@ -11,11 +11,12 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
 
     using NLog;
 
-    public class HearthstoneTrackerWebApiEventsHandler : IWebApiEventsHandler,
+    public sealed class HearthstoneTrackerWebApiEventsHandler : IWebApiEventsHandler,
         IHandleWithTask<GameStarted>,
         IHandleWithTask<GameEnded>,
         IHandleWithTask<ArenaSessionStarted>,
-        IHandleWithTask<ArenaSessionEnded>
+        IHandleWithTask<ArenaSessionEnded>,
+        IDisposable
     {
         private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -101,6 +102,17 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             catch (Exception ex)
             {
                 Log.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (client != null)
+            {
+                client.Dispose();
             }
         }
     }

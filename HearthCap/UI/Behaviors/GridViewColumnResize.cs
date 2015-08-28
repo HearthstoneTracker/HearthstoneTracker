@@ -193,7 +193,7 @@ namespace HearthCap.UI.Behaviors
         /// <summary>
         /// ListViewResizeBehavior class that gets attached to the ListView control
         /// </summary>
-        public class ListViewResizeBehavior
+        public class ListViewResizeBehavior : IDisposable
         {
             private const int Margin = 25;
             private const long RefreshTime = Timeout.Infinite;
@@ -201,6 +201,8 @@ namespace HearthCap.UI.Behaviors
 
             private readonly ListView _element;
             private readonly Timer _timer;
+
+            private bool disposed;
 
             public ListViewResizeBehavior(ListView element)
             {
@@ -229,6 +231,8 @@ namespace HearthCap.UI.Behaviors
 
             private void OnSizeChanged(object sender, SizeChangedEventArgs e)
             {
+                if (disposed) return;
+                
                 if (e.WidthChanged)
                 {
                     _element.SizeChanged -= OnSizeChanged;
@@ -288,6 +292,37 @@ namespace HearthCap.UI.Behaviors
                     }
                 }
                 return totalWidth;
+            }
+
+            /// <summary>
+            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            /// </summary>
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (disposed)
+                    return;
+
+                if (disposing)
+                {
+                    var timer = _timer;
+                    if (timer != null)
+                    {
+                        timer.Dispose();
+                    }
+                }
+
+                disposed = true;
+            }
+
+            ~ListViewResizeBehavior()
+            {
+                Dispose(false);
             }
         }
 

@@ -19,13 +19,13 @@
 
         public ScreenshotRequest(Guid requestId, Rectangle region)
         {
-            this.RequestId = requestId;
-            this.RegionToCapture = region;
+            RequestId = requestId;
+            RegionToCapture = region;
         }
 
         ~ScreenshotRequest()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -40,7 +40,7 @@
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -52,13 +52,13 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     RemotingServices.Disconnect(this);
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
     }

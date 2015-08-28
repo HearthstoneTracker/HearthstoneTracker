@@ -18,7 +18,7 @@
 
         ~ClientCaptureInterfaceEventProxy()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -41,15 +41,15 @@
 
         public void DisconnectedProxyHandler()
         {
-            if (this.Disconnected != null)
+            if (Disconnected != null)
             {
-                this.Disconnected();
+                Disconnected();
             }
         }
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -62,9 +62,9 @@
 
         public void ScreenshotRequestedProxyHandler(ScreenshotRequest request)
         {
-            if (this.ScreenshotRequested != null)
+            if (ScreenshotRequested != null)
             {
-                this.ScreenshotRequested(request);
+                ScreenshotRequested(request);
             }
         }
 
@@ -74,13 +74,13 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     RemotingServices.Disconnect(this);
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
 

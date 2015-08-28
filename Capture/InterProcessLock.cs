@@ -16,18 +16,18 @@ namespace Capture
             bool created;
             var security = new MutexSecurity();
             security.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.Synchronize | MutexRights.Modify, AccessControlType.Allow));
-            this.Mutex = new Mutex(false, name, out created, security);
-            this.IsAcquired = this.Mutex.WaitOne(timeout);
+            Mutex = new Mutex(false, name, out created, security);
+            IsAcquired = Mutex.WaitOne(timeout);
         }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            if (this.IsAcquired)
+            if (IsAcquired)
             {
-                this.Mutex.ReleaseMutex();
-                this.IsAcquired = false;
+                Mutex.ReleaseMutex();
+                IsAcquired = false;
             }
         }
 
