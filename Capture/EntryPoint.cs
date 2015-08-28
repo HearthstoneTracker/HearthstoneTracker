@@ -20,13 +20,13 @@
 
         private Task _checkAlive;
 
-        private ClientCaptureInterfaceEventProxy _clientEventProxy = new ClientCaptureInterfaceEventProxy();
+        private readonly ClientCaptureInterfaceEventProxy _clientEventProxy = new ClientCaptureInterfaceEventProxy();
 
-        private IpcServerChannel _clientServerChannel = null;
+        private readonly IpcServerChannel _clientServerChannel = null;
 
         private IDXHook _directXHook;
 
-        private CaptureInterface _interface;
+        private readonly CaptureInterface _interface;
 
         private ManualResetEvent _runWait;
 

@@ -24,71 +24,70 @@
         #endregion
 
         #region Fields
-        private CopyData copyData;
+        private CopyData _copyData;
 
-        private readonly int copyDataSize = Marshal.SizeOf(typeof(CopyData));
-        private MemoryMappedFile[] sharedTextures = new MemoryMappedFile[2];
-        private MemoryMappedViewAccessor[] sharedTexturesAccess = new MemoryMappedViewAccessor[2];
-        private byte*[] sharedTexturesPtr = { (byte*)0, (byte*)0 };
+        private readonly MemoryMappedFile[] _sharedTextures = new MemoryMappedFile[2];
+        private readonly MemoryMappedViewAccessor[] _sharedTexturesAccess = new MemoryMappedViewAccessor[2];
+        private readonly byte*[] _sharedTexturesPtr = { (byte*)0, (byte*)0 };
 
-        private MemoryMappedFile copyDataMem;
-        private MemoryMappedViewAccessor copyDataMemAccess;
-        private byte* copyDataMemPtr = (byte*)0;
+        private MemoryMappedFile _copyDataMem;
+        private MemoryMappedViewAccessor _copyDataMemAccess;
+        private byte* _copyDataMemPtr = (byte*)0;
 
-        private readonly ManualResetEventSlim copyReadySignal = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _copyReadySignal = new ManualResetEventSlim(false);
 
-        private readonly object[] surfaceLocks = new object[BUFFERS];
+        private readonly object[] _surfaceLocks = new object[BUFFERS];
 
-        private HookData<Direct3D9DeviceEx_PresentExDelegate> Direct3DDeviceEx_PresentExHook = null;
+        private HookData<Direct3D9DeviceEx_PresentExDelegate> _direct3DDeviceExPresentExHook;
 
-        private HookData<Direct3D9DeviceEx_ResetExDelegate> Direct3DDeviceEx_ResetExHook = null;
+        private HookData<Direct3D9DeviceEx_ResetExDelegate> _direct3DDeviceExResetExHook;
 
-        private HookData<Direct3D9Device_EndSceneDelegate> Direct3DDevice_EndSceneHook = null;
+        private HookData<Direct3D9Device_EndSceneDelegate> _direct3DDeviceEndSceneHook;
 
-        private HookData<Direct3D9Device_PresentDelegate> Direct3DDevice_PresentHook = null;
+        private HookData<Direct3D9Device_PresentDelegate> _direct3DDevicePresentHook;
 
-        private HookData<Direct3D9Device_ResetDelegate> Direct3DDevice_ResetHook = null;
+        private HookData<Direct3D9Device_ResetDelegate> _direct3DDeviceResetHook;
 
-        private IntPtr currentDevice;
+        private IntPtr _currentDevice;
 
-        private bool hooksStarted;
+        private bool _hooksStarted;
 
-        private List<IntPtr> id3dDeviceFunctionAddresses = new List<IntPtr>();
+        private readonly List<IntPtr> _id3DDeviceFunctionAddresses = new List<IntPtr>();
 
-        private bool killThread;
+        private bool _killThread;
 
-        private Query[] queries = new Query[BUFFERS];
+        private readonly Query[] _queries = new Query[BUFFERS];
 
-        private bool[] issuedQueries = new bool[BUFFERS];
+        private readonly bool[] _issuedQueries = new bool[BUFFERS];
 
-        private Surface[] copySurfaces = new Surface[BUFFERS];
+        private readonly Surface[] _copySurfaces = new Surface[BUFFERS];
 
-        private Thread retrieveThread;
+        private Thread _retrieveThread;
 
-        private bool supportsDirect3DEx = false;
+        private bool _supportsDirect3DEx;
 
-        private Surface[] surfaces = new Surface[BUFFERS];
+        private readonly Surface[] _surfaces = new Surface[BUFFERS];
 
-        private IntPtr surfaceDataPointer;
+        private IntPtr _surfaceDataPointer;
 
-        private bool[] surfaceLocked = new bool[BUFFERS];
+        private readonly bool[] _surfaceLocked = new bool[BUFFERS];
 
-        private Mutex[] sharedMemMutexes;
+        private readonly Mutex[] _sharedMemMutexes;
 
-        private bool surfacesSetup;
+        private bool _surfacesSetup;
 
-        private int presentHookRecurse;
+        private int _presentHookRecurse;
 
-        private int curCapture;
+        private int _curCapture;
 
-        private int copyWait;
+        private int _copyWait;
 
-        private int currentSurface;
+        private int _currentSurface;
 
         private const int BUFFERS = 3;
 
-        private EventWaitHandle captureWaitHandle;
-        private EventWaitHandle hookReadyWaitHandle;
+        private readonly EventWaitHandle _captureWaitHandle;
+        private readonly EventWaitHandle _hookReadyWaitHandle;
 
         #endregion
 
@@ -100,15 +99,15 @@
             var security = new MutexSecurity();
             security.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.Synchronize | MutexRights.Modify, AccessControlType.Allow));
             bool created;
-            sharedMemMutexes = new[]
+            _sharedMemMutexes = new[]
             {
                 new Mutex(false, "Global\\DXHookD3D9Shared0", out created, security),
                 new Mutex(false, "Global\\DXHookD3D9Shared1", out created, security)
             };
             var ewsecurity = new EventWaitHandleSecurity();
             ewsecurity.AddAccessRule(new EventWaitHandleAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), EventWaitHandleRights.FullControl, AccessControlType.Allow));
-            captureWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9Capture", out created, ewsecurity);
-            hookReadyWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9CaptureReady", out created, ewsecurity);
+            _captureWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9Capture", out created, ewsecurity);
+            _hookReadyWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9CaptureReady", out created, ewsecurity);
         }
 
         #endregion
@@ -119,7 +118,7 @@
         #region Delegates
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private unsafe delegate int Direct3D9DeviceEx_PresentExDelegate(
+        private delegate int Direct3D9DeviceEx_PresentExDelegate(
             IntPtr devicePtr,
             Rectangle* pSourceRect,
             Rectangle* pDestRect,
@@ -139,7 +138,7 @@
         private delegate int Direct3D9Device_EndSceneDelegate(IntPtr device);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private unsafe delegate int Direct3D9Device_PresentDelegate(
+        private delegate int Direct3D9Device_PresentDelegate(
             IntPtr devicePtr,
             Rectangle* pSourceRect,
             Rectangle* pDestRect,
@@ -176,107 +175,100 @@
             // ClearData();
         }
 
-        public override unsafe void Hook()
+        public override void Hook()
         {
-            this.DebugMessage("Hook: Begin");
+            DebugMessage("Hook: Begin");
 
-            this.DebugMessage("Hook: Before device creation");
-            using (var d3d = new Direct3D())
+            DebugMessage("Hook: Before device creation");
+            using (var d3D = new Direct3D())
             {
-                this.DebugMessage("Hook: Direct3D created");
+                DebugMessage("Hook: Direct3D created");
                 using (
                     var device = new Device(
-                        d3d,
+                        d3D,
                         0,
                         DeviceType.NullReference,
                         IntPtr.Zero,
                         CreateFlags.HardwareVertexProcessing,
                         new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 }))
                 {
-                    this.id3dDeviceFunctionAddresses.AddRange(this.GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
+                    _id3DDeviceFunctionAddresses.AddRange(GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
                 }
             }
 
-            try
+            using (var d3DEx = new Direct3DEx())
             {
-                using (var d3dEx = new Direct3DEx())
+                DebugMessage("Hook: Try Direct3DEx...");
+                using (
+                    var deviceEx = new DeviceEx(
+                        d3DEx,
+                        0,
+                        DeviceType.NullReference,
+                        IntPtr.Zero,
+                        CreateFlags.HardwareVertexProcessing,
+                        new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
+                        new DisplayModeEx() { Width = 800, Height = 600 }))
                 {
-                    this.DebugMessage("Hook: Try Direct3DEx...");
-                    using (
-                        var deviceEx = new DeviceEx(
-                            d3dEx,
-                            0,
-                            DeviceType.NullReference,
-                            IntPtr.Zero,
-                            CreateFlags.HardwareVertexProcessing,
-                            new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
-                            new DisplayModeEx() { Width = 800, Height = 600 }))
-                    {
-                        this.id3dDeviceFunctionAddresses.AddRange(
-                            this.GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
-                        this.supportsDirect3DEx = true;
-                    }
+                    _id3DDeviceFunctionAddresses.AddRange(
+                        GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
+                    _supportsDirect3DEx = true;
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
 
-            this.DebugMessage("Setting up Direct3D hooks...");
-            this.Direct3DDevice_EndSceneHook =
+            DebugMessage("Setting up Direct3D hooks...");
+            _direct3DDeviceEndSceneHook =
                 new HookData<Direct3D9Device_EndSceneDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene],
-                    new Direct3D9Device_EndSceneDelegate(this.EndSceneHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene],
+                    new Direct3D9Device_EndSceneDelegate(EndSceneHook),
                     this);
 
-            this.Direct3DDevice_EndSceneHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_EndSceneHook.Hook);
+            _direct3DDeviceEndSceneHook.ReHook();
+            Hooks.Add(_direct3DDeviceEndSceneHook.Hook);
 
-            this.Direct3DDevice_PresentHook =
+            _direct3DDevicePresentHook =
                 new HookData<Direct3D9Device_PresentDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present],
-                    new Direct3D9Device_PresentDelegate(this.PresentHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present],
+                    new Direct3D9Device_PresentDelegate(PresentHook),
                     this);
 
-            this.Direct3DDevice_ResetHook =
+            _direct3DDeviceResetHook =
                 new HookData<Direct3D9Device_ResetDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset],
-                    new Direct3D9Device_ResetDelegate(this.ResetHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset],
+                    new Direct3D9Device_ResetDelegate(ResetHook),
                     this);
 
-            if (this.supportsDirect3DEx)
+            if (_supportsDirect3DEx)
             {
-                this.DebugMessage("Setting up Direct3DEx hooks...");
-                this.Direct3DDeviceEx_PresentExHook =
+                DebugMessage("Setting up Direct3DEx hooks...");
+                _direct3DDeviceExPresentExHook =
                     new HookData<Direct3D9DeviceEx_PresentExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx],
-                        new Direct3D9DeviceEx_PresentExDelegate(this.PresentExHook),
+                        _id3DDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx],
+                        new Direct3D9DeviceEx_PresentExDelegate(PresentExHook),
                         this);
 
-                this.Direct3DDeviceEx_ResetExHook =
+                _direct3DDeviceExResetExHook =
                     new HookData<Direct3D9DeviceEx_ResetExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx],
-                        new Direct3D9DeviceEx_ResetExDelegate(this.ResetExHook),
+                        _id3DDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx],
+                        new Direct3D9DeviceEx_ResetExDelegate(ResetExHook),
                         this);
             }
 
-            this.Direct3DDevice_ResetHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_ResetHook.Hook);
+            _direct3DDeviceResetHook.ReHook();
+            Hooks.Add(_direct3DDeviceResetHook.Hook);
 
-            this.Direct3DDevice_PresentHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_PresentHook.Hook);
+            _direct3DDevicePresentHook.ReHook();
+            Hooks.Add(_direct3DDevicePresentHook.Hook);
 
-            if (this.supportsDirect3DEx)
+            if (_supportsDirect3DEx)
             {
-                this.Direct3DDeviceEx_PresentExHook.ReHook();
-                this.Hooks.Add(this.Direct3DDeviceEx_PresentExHook.Hook);
+                _direct3DDeviceExPresentExHook.ReHook();
+                Hooks.Add(_direct3DDeviceExPresentExHook.Hook);
 
-                this.Direct3DDeviceEx_ResetExHook.ReHook();
-                this.Hooks.Add(this.Direct3DDeviceEx_ResetExHook.Hook);
+                _direct3DDeviceExResetExHook.ReHook();
+                Hooks.Add(_direct3DDeviceExResetExHook.Hook);
             }
 
-            this.DebugMessage("Hook: End");
+            DebugMessage("Hook: End");
         }
 
         #endregion
@@ -289,10 +281,12 @@
             {
                 try
                 {
-                    this.ClearData();
+                    ClearData();
                 }
+                // ReSharper disable once CatchAllClause
                 catch
                 {
+                    // We don't care
                 }
             }
             base.Dispose(disposing);
@@ -300,59 +294,59 @@
 
         private void ClearData()
         {
-            this.DebugMessage("ClearData called");
-            hookReadyWaitHandle.Reset();
+            DebugMessage("ClearData called");
+            _hookReadyWaitHandle.Reset();
 
-            if (this.retrieveThread != null)
+            if (_retrieveThread != null)
             {
-                this.killThread = true;
-                this.copyReadySignal.Set();
+                _killThread = true;
+                _copyReadySignal.Set();
 
-                if (!this.retrieveThread.Join(500))
+                if (!_retrieveThread.Join(500))
                 {
-                    this.retrieveThread.Abort();
+                    _retrieveThread.Abort();
                 }
 
-                this.copyReadySignal.Reset();
-                this.retrieveThread = null;
+                _copyReadySignal.Reset();
+                _retrieveThread = null;
             }
 
             // currentDevice = null;
-            if (this.Request != null)
+            if (Request != null)
             {
-                this.Request.Dispose();
-                this.Request = null;
+                Request.Dispose();
+                Request = null;
             }
 
             for (int i = 0; i < BUFFERS; i++)
             {
-                if (this.surfaceLocked[i])
+                if (_surfaceLocked[i])
                 {
-                    lock (this.surfaceLocks[i])
+                    lock (_surfaceLocks[i])
                     {
-                        this.surfaces[i].UnlockRectangle();
-                        this.surfaceLocked[i] = false;
+                        _surfaces[i].UnlockRectangle();
+                        _surfaceLocked[i] = false;
                     }
                 }
-                this.issuedQueries[i] = false;
-                if (this.surfaces[i] != null)
+                _issuedQueries[i] = false;
+                if (_surfaces[i] != null)
                 {
-                    this.surfaces[i].Dispose();
-                    this.surfaces[i] = null;
+                    _surfaces[i].Dispose();
+                    _surfaces[i] = null;
                 }
-                if (this.copySurfaces[i] != null)
+                if (_copySurfaces[i] != null)
                 {
-                    this.copySurfaces[i].Dispose();
-                    this.copySurfaces[i] = null;
+                    _copySurfaces[i].Dispose();
+                    _copySurfaces[i] = null;
                 }
-                if (this.queries[i] != null)
+                if (_queries[i] != null)
                 {
-                    this.queries[i].Dispose();
-                    this.queries[i] = null;
+                    _queries[i].Dispose();
+                    _queries[i] = null;
                 }
-                lock (this.surfaceLocks[i])
+                lock (_surfaceLocks[i])
                 {
-                    this.surfaces[i] = null;
+                    _surfaces[i] = null;
                 }
                 //if (Monitor.TryEnter(this.surfaceLocks[i]))
                 //{
@@ -363,52 +357,52 @@
 
             for (int i = 0; i < 2; i++)
             {
-                if (this.sharedTexturesAccess[i] != null)
+                if (_sharedTexturesAccess[i] != null)
                 {
-                    this.sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
-                    this.sharedTexturesPtr[i] = (byte*)0;
-                    this.sharedTexturesAccess[i].Dispose();
-                    this.sharedTexturesAccess[i] = null;
+                    _sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
+                    _sharedTexturesPtr[i] = (byte*)0;
+                    _sharedTexturesAccess[i].Dispose();
+                    _sharedTexturesAccess[i] = null;
                 }
 
-                if (this.sharedTextures[i] != null)
+                if (_sharedTextures[i] != null)
                 {
-                    this.sharedTextures[i].Dispose();
-                    this.sharedTextures[i] = null;
+                    _sharedTextures[i].Dispose();
+                    _sharedTextures[i] = null;
                 }
             }
 
-            this.copyData.width = 0;
-            this.copyData.height = 0;
-            this.copyData.pitch = 0;
-            this.copyData.lastRendered = 0;
-            this.copyData.textureId = Guid.Empty;
+            _copyData.width = 0;
+            _copyData.height = 0;
+            _copyData.pitch = 0;
+            _copyData.lastRendered = 0;
+            _copyData.textureId = Guid.Empty;
 
-            if (copyDataMemAccess != null)
+            if (_copyDataMemAccess != null)
             {
-                copyDataMemAccess.Write(0, ref copyData);
-                copyDataMemAccess.Flush();
+                _copyDataMemAccess.Write(0, ref _copyData);
+                _copyDataMemAccess.Flush();
 
-                copyDataMemAccess.SafeMemoryMappedViewHandle.ReleasePointer();
-                copyDataMemPtr = (byte*)0;
-                copyDataMemAccess.Dispose();
-                copyDataMemAccess = null;
+                _copyDataMemAccess.SafeMemoryMappedViewHandle.ReleasePointer();
+                _copyDataMemPtr = (byte*)0;
+                _copyDataMemAccess.Dispose();
+                _copyDataMemAccess = null;
                 // copyDataMemPtr = (byte*)0;
             }
 
-            if (copyDataMem != null)
+            if (_copyDataMem != null)
             {
-                copyDataMem.Dispose();
-                copyDataMem = null;
+                _copyDataMem.Dispose();
+                _copyDataMem = null;
             }
 
-            this.captureWaitHandle.Reset();
-            this.hooksStarted = false;
-            this.surfacesSetup = false;
-            this.copyWait = 0;
-            this.curCapture = 0;
-            this.currentSurface = 0;
-            surfaceDataPointer = IntPtr.Zero;
+            _captureWaitHandle.Reset();
+            _hooksStarted = false;
+            _surfacesSetup = false;
+            _copyWait = 0;
+            _curCapture = 0;
+            _currentSurface = 0;
+            _surfaceDataPointer = IntPtr.Zero;
         }
 
         /// <summary>
@@ -419,28 +413,28 @@
         {
             try
             {
-                if (!this.surfacesSetup)
+                if (!_surfacesSetup)
                 {
                     using (Surface backbuffer = device.GetRenderTarget(0))
                     {
-                        copyData.format = (int)backbuffer.Description.Format;
-                        copyData.width = backbuffer.Description.Width;
-                        copyData.height = backbuffer.Description.Height;
+                        _copyData.format = (int)backbuffer.Description.Format;
+                        _copyData.width = backbuffer.Description.Width;
+                        _copyData.height = backbuffer.Description.Height;
                     }
 
-                    this.SetupSurfaces(device);
+                    SetupSurfaces(device);
                 }
 
-                if (!this.surfacesSetup)
+                if (!_surfacesSetup)
                 {
                     return;
                 }
 
-                this.HandleCaptureRequest(device);
+                HandleCaptureRequest(device);
             }
             catch (Exception e)
             {
-                this.DebugMessage(e.ToString());
+                DebugMessage(e.ToString());
             }
         }
 
@@ -456,17 +450,17 @@
             var device = (Device)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    this.DebugMessage("EndSceneHook: hooks not started");
-                    this.SetupData(device);
+                    DebugMessage("EndSceneHook: hooks not started");
+                    SetupData(device);
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
-            hresult = this.Direct3DDevice_EndSceneHook.Original(devicePtr);
+            hresult = _direct3DDeviceEndSceneHook.Original(devicePtr);
             return hresult;
         }
 
@@ -474,51 +468,51 @@
         {
             try
             {
-                if (killThread)
+                if (_killThread)
                     return;
 
                 for (int i = 0; i < BUFFERS; i++)
                 {
                     bool tmp;
-                    if (this.issuedQueries[i] && this.queries[i].GetData(out tmp, false))
+                    if (_issuedQueries[i] && _queries[i].GetData(out tmp, false))
                     {
-                        this.issuedQueries[i] = false;
-                        var lockedRect = this.surfaces[i].LockRectangle(LockFlags.ReadOnly);
-                        this.surfaceDataPointer = lockedRect.DataPointer;
-                        this.currentSurface = i;
-                        this.surfaceLocked[i] = true;
+                        _issuedQueries[i] = false;
+                        var lockedRect = _surfaces[i].LockRectangle(LockFlags.ReadOnly);
+                        _surfaceDataPointer = lockedRect.DataPointer;
+                        _currentSurface = i;
+                        _surfaceLocked[i] = true;
 
-                        this.copyReadySignal.Set();
+                        _copyReadySignal.Set();
                     }
                 }
 
-                if (captureWaitHandle.WaitOne(0) || copyWait < BUFFERS - 1)
+                if (_captureWaitHandle.WaitOne(0) || _copyWait < BUFFERS - 1)
                 {
-                    int nextCapture = (curCapture == BUFFERS - 1) ? 0 : (curCapture + 1);
+                    int nextCapture = (_curCapture == BUFFERS - 1) ? 0 : (_curCapture + 1);
 
                     try
                     {
                         using (var backbuffer = device.GetBackBuffer(0, 0))
                         {
-                            var sourceTexture = copySurfaces[curCapture];
+                            var sourceTexture = _copySurfaces[_curCapture];
                             device.StretchRectangle(backbuffer, sourceTexture, TextureFilter.None);
                         }
 
-                        if (copyWait < BUFFERS - 1)
+                        if (_copyWait < BUFFERS - 1)
                         {
-                            copyWait++;
+                            _copyWait++;
                         }
                         else
                         {
-                            var prevSourceTexture = copySurfaces[nextCapture];
-                            var targetTexture = surfaces[nextCapture];
+                            var prevSourceTexture = _copySurfaces[nextCapture];
+                            var targetTexture = _surfaces[nextCapture];
 
-                            if (this.surfaceLocked[nextCapture])
+                            if (_surfaceLocked[nextCapture])
                             {
-                                lock (this.surfaceLocks[nextCapture])
+                                lock (_surfaceLocks[nextCapture])
                                 {
-                                    this.surfaces[nextCapture].UnlockRectangle();
-                                    this.surfaceLocked[nextCapture] = false;
+                                    _surfaces[nextCapture].UnlockRectangle();
+                                    _surfaceLocked[nextCapture] = false;
                                 }
                             }
 
@@ -531,25 +525,25 @@
                                 DebugMessage(ex.ToString());
                             }
 
-                            this.queries[nextCapture].Issue(Issue.End);
-                            this.issuedQueries[nextCapture] = true;
+                            _queries[nextCapture].Issue(Issue.End);
+                            _issuedQueries[nextCapture] = true;
                         }
                     }
                     catch (Exception ex)
                     {
-                        this.DebugMessage(ex.ToString());
+                        DebugMessage(ex.ToString());
                     }
                     finally
                     {
-                        captureWaitHandle.Reset();
-                        curCapture = nextCapture;                        
+                        _captureWaitHandle.Reset();
+                        _curCapture = nextCapture;
                     }
                 }
 
             }
             catch (Exception e)
             {
-                this.DebugMessage(e.ToString());
+                DebugMessage(e.ToString());
             }
         }
 
@@ -558,18 +552,18 @@
             request.Dispose();
         }
 
-        private unsafe void RetrieveImageDataThread()
+        private void RetrieveImageDataThread()
         {
             int sharedMemId = 0;
             while (true)
             {
-                this.copyReadySignal.Wait();
-                this.copyReadySignal.Reset();
+                _copyReadySignal.Wait();
+                _copyReadySignal.Reset();
 
-                if (killThread)
+                if (_killThread)
                     break;
 
-                if (this.surfaceDataPointer == IntPtr.Zero)
+                if (_surfaceDataPointer == IntPtr.Zero)
                 {
                     continue;
                 }
@@ -577,21 +571,21 @@
                 int nextSharedMemId = sharedMemId == 0 ? 1 : 0;
                 try
                 {
-                    lock (this.surfaceLocks[currentSurface])
+                    lock (_surfaceLocks[_currentSurface])
                     {
                         int lastRendered = -1;
                         int lastKnown = -1;
                         try
                         {
                             lastKnown = sharedMemId;
-                            if (this.sharedMemMutexes[sharedMemId].WaitOne(0))
+                            if (_sharedMemMutexes[sharedMemId].WaitOne(0))
                             {
                                 lastRendered = sharedMemId;
                             }
                             else
                             {
                                 lastKnown = nextSharedMemId;
-                                if (this.sharedMemMutexes[nextSharedMemId].WaitOne(0))
+                                if (_sharedMemMutexes[nextSharedMemId].WaitOne(0))
                                 {
                                     lastRendered = nextSharedMemId;
                                 }
@@ -599,29 +593,29 @@
                         }
                         catch (AbandonedMutexException)
                         {
-                            sharedMemMutexes[lastKnown].ReleaseMutex();
+                            _sharedMemMutexes[lastKnown].ReleaseMutex();
                             continue;
                         }
 
                         if (lastRendered != -1)
                         {
-                            var src = this.surfaceDataPointer;
+                            var src = _surfaceDataPointer;
 
                             if (src == IntPtr.Zero)
                             {
                                 continue;
                             }
 
-                            if (this.killThread)
+                            if (_killThread)
                                 break;
 
-                            var size = this.copyData.height * this.copyData.pitch;
-                            memcpy(new IntPtr(sharedTexturesPtr[lastRendered]), src, new UIntPtr((uint)size));
+                            var size = _copyData.height * _copyData.pitch;
+                            memcpy(new IntPtr(_sharedTexturesPtr[lastRendered]), src, new UIntPtr((uint)size));
 
-                            this.copyData.lastRendered = lastRendered;
-                            
-                            Marshal.StructureToPtr(this.copyData, new IntPtr(copyDataMemPtr), false);
-                            this.sharedMemMutexes[lastRendered].ReleaseMutex();
+                            _copyData.lastRendered = lastRendered;
+
+                            Marshal.StructureToPtr(_copyData, new IntPtr(_copyDataMemPtr), false);
+                            _sharedMemMutexes[lastRendered].ReleaseMutex();
                             sharedMemId = nextSharedMemId;
                         }
                     }
@@ -641,35 +635,35 @@
             IntPtr pDirtyRegion,
             Present dwFlags)
         {
-            int hresult = Result.Ok.Code;
+            int hresult;
             var device = (DeviceEx)devicePtr;
-            if (!this.hooksStarted)
+            if (!_hooksStarted)
             {
-                hresult = this.Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
+                hresult = _direct3DDeviceExPresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
                 return hresult;
             }
 
             try
             {
-                if (presentHookRecurse == 0)
+                if (_presentHookRecurse == 0)
                 {
-                    this.DoCaptureRenderTarget(device, "PresentEx");
+                    DoCaptureRenderTarget(device, "PresentEx");
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             finally
             {
-                this.presentHookRecurse++;
-                hresult = this.Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
-                presentHookRecurse--;
+                _presentHookRecurse++;
+                hresult = _direct3DDeviceExPresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
+                _presentHookRecurse--;
             }
             return hresult;
         }
 
-        private unsafe int PresentHook(
+        private int PresentHook(
             IntPtr devicePtr,
             Rectangle* pSourceRect,
             Rectangle* pDestRect,
@@ -678,27 +672,27 @@
         {
             int hresult;
             var device = (Device)devicePtr;
-            if (!this.hooksStarted)
+            if (!_hooksStarted)
             {
-                hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+                hresult = _direct3DDevicePresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
                 return hresult;
             }
             try
             {
-                if (presentHookRecurse == 0)
+                if (_presentHookRecurse == 0)
                 {
-                    this.DoCaptureRenderTarget(device, "PresentHook");
+                    DoCaptureRenderTarget(device, "PresentHook");
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             finally
             {
-                this.presentHookRecurse++;
-                hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
-                this.presentHookRecurse--;
+                _presentHookRecurse++;
+                hresult = _direct3DDevicePresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+                _presentHookRecurse--;
             }
             return hresult;
         }
@@ -716,28 +710,27 @@
         private int ResetExHook(IntPtr devicePtr, ref PresentParameters presentparameters, DisplayModeEx displayModeEx)
         {
             int hresult = Result.Ok.Code;
-            DeviceEx device = (DeviceEx)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    hresult = this.Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
+                    hresult = _direct3DDeviceExResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
                     return hresult;
                 }
 
-                this.ClearData();
+                ClearData();
 
-                hresult = this.Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
+                hresult = _direct3DDeviceExResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
 
-                if (this.currentDevice != devicePtr)
+                if (_currentDevice != devicePtr)
                 {
-                    this.hooksStarted = false;
-                    this.currentDevice = devicePtr;
+                    _hooksStarted = false;
+                    _currentDevice = devicePtr;
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             return hresult;
         }
@@ -751,47 +744,46 @@
         private int ResetHook(IntPtr devicePtr, ref PresentParameters presentParameters)
         {
             int hresult = Result.Ok.Code;
-            Device device = (Device)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    hresult = this.Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
+                    hresult = _direct3DDeviceResetHook.Original(devicePtr, ref presentParameters);
                     return hresult;
                 }
 
-                this.ClearData();
+                ClearData();
 
-                hresult = this.Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
+                hresult = _direct3DDeviceResetHook.Original(devicePtr, ref presentParameters);
 
-                if (this.currentDevice != devicePtr)
+                if (_currentDevice != devicePtr)
                 {
-                    this.hooksStarted = false;
-                    this.currentDevice = devicePtr;
+                    _hooksStarted = false;
+                    _currentDevice = devicePtr;
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             return hresult;
         }
 
         private void SetupData(Device device)
         {
-            this.DebugMessage("SetupData called");
+            DebugMessage("SetupData called");
 
             using (SwapChain swapChain = device.GetSwapChain(0))
             {
                 PresentParameters pp = swapChain.PresentParameters;
-                this.copyData.width = pp.BackBufferWidth;
-                this.copyData.height = pp.BackBufferHeight;
-                this.copyData.format = (int)pp.BackBufferFormat;
+                _copyData.width = pp.BackBufferWidth;
+                _copyData.height = pp.BackBufferHeight;
+                _copyData.format = (int)pp.BackBufferFormat;
 
-                this.DebugMessage(string.Format("D3D9 Setup: w: {0} h: {1} f: {2}", this.copyData.width, this.copyData.height, pp.BackBufferFormat));
+                DebugMessage(string.Format("D3D9 Setup: w: {0} h: {1} f: {2}", _copyData.width, _copyData.height, pp.BackBufferFormat));
             }
 
-            this.hooksStarted = true;
+            _hooksStarted = true;
         }
 
         private void SetupSurfaces(Device device)
@@ -800,22 +792,22 @@
             {
                 for (int i = 0; i < BUFFERS; i++)
                 {
-                    this.surfaces[i] = Surface.CreateOffscreenPlain(device, this.copyData.width, this.copyData.height, (Format)this.copyData.format, Pool.SystemMemory);
-                    var lockedRect = this.surfaces[i].LockRectangle(LockFlags.ReadOnly);
-                    this.copyData.pitch = lockedRect.Pitch;
-                    this.surfaces[i].UnlockRectangle();
+                    _surfaces[i] = Surface.CreateOffscreenPlain(device, _copyData.width, _copyData.height, (Format)_copyData.format, Pool.SystemMemory);
+                    var lockedRect = _surfaces[i].LockRectangle(LockFlags.ReadOnly);
+                    _copyData.pitch = lockedRect.Pitch;
+                    _surfaces[i].UnlockRectangle();
 
-                    this.copySurfaces[i] = Surface.CreateRenderTarget(device, this.copyData.width, this.copyData.height, (Format)this.copyData.format, MultisampleType.None, 0, false);
-                    this.queries[i] = new Query(device, QueryType.Event);
+                    _copySurfaces[i] = Surface.CreateRenderTarget(device, _copyData.width, _copyData.height, (Format)_copyData.format, MultisampleType.None, 0, false);
+                    _queries[i] = new Query(device, QueryType.Event);
 
-                    this.surfaceLocks[i] = new object();
+                    _surfaceLocks[i] = new object();
                 }
 
-                this.copyDataMem = MemoryMappedFile.CreateOrOpen("CaptureHookSharedMemData", Marshal.SizeOf(typeof(CopyData)));
-                this.copyDataMemAccess = this.copyDataMem.CreateViewAccessor(0, Marshal.SizeOf(typeof(CopyData)));
-                this.copyDataMemAccess.SafeMemoryMappedViewHandle.AcquirePointer(ref copyDataMemPtr);
+                _copyDataMem = MemoryMappedFile.CreateOrOpen("CaptureHookSharedMemData", Marshal.SizeOf(typeof(CopyData)));
+                _copyDataMemAccess = _copyDataMem.CreateViewAccessor(0, Marshal.SizeOf(typeof(CopyData)));
+                _copyDataMemAccess.SafeMemoryMappedViewHandle.AcquirePointer(ref _copyDataMemPtr);
 
-                copyData.textureId = Guid.NewGuid();
+                _copyData.textureId = Guid.NewGuid();
 
                 for (int i = 0; i < 2; i++)
                 {
@@ -824,7 +816,7 @@
                     {
                         try
                         {
-                            locked = this.sharedMemMutexes[i].WaitOne(0);
+                            locked = _sharedMemMutexes[i].WaitOne(0);
                         }
                         catch (AbandonedMutexException)
                         {
@@ -835,35 +827,35 @@
                             DebugMessage("shared mem mutex still locked");
                         }
 
-                        this.sharedTextures[i] = MemoryMappedFile.CreateOrOpen(
-                            copyData.textureId.ToString() + i,
-                            copyData.pitch * copyData.height,
+                        _sharedTextures[i] = MemoryMappedFile.CreateOrOpen(
+                            _copyData.textureId.ToString() + i,
+                            _copyData.pitch * _copyData.height,
                             MemoryMappedFileAccess.ReadWrite);
-                        this.sharedTexturesAccess[i] = this.sharedTextures[i].CreateViewAccessor(0, copyData.pitch * copyData.height, MemoryMappedFileAccess.ReadWrite);
-                        this.sharedTexturesAccess[i].SafeMemoryMappedViewHandle.AcquirePointer(ref this.sharedTexturesPtr[i]);
+                        _sharedTexturesAccess[i] = _sharedTextures[i].CreateViewAccessor(0, _copyData.pitch * _copyData.height, MemoryMappedFileAccess.ReadWrite);
+                        _sharedTexturesAccess[i].SafeMemoryMappedViewHandle.AcquirePointer(ref _sharedTexturesPtr[i]);
                     }
                     finally
                     {
                         if (locked)
                         {
-                            this.sharedMemMutexes[i].ReleaseMutex();
+                            _sharedMemMutexes[i].ReleaseMutex();
                         }
                     }
                 }
 
-                killThread = false;
-                this.surfacesSetup = true;
+                _killThread = false;
+                _surfacesSetup = true;
 
-                Marshal.StructureToPtr(this.copyData, new IntPtr(copyDataMemPtr), false);
+                Marshal.StructureToPtr(_copyData, new IntPtr(_copyDataMemPtr), false);
 
-                this.retrieveThread = new Thread(this.RetrieveImageDataThread);
-                retrieveThread.IsBackground = true;
-                this.retrieveThread.Start();
-                hookReadyWaitHandle.Set();
+                _retrieveThread = new Thread(RetrieveImageDataThread);
+                _retrieveThread.IsBackground = true;
+                _retrieveThread.Start();
+                _hookReadyWaitHandle.Set();
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
                 ClearData();
             }
         }

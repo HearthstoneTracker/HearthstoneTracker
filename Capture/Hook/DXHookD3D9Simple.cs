@@ -22,67 +22,67 @@
 
         #region Fields
 
-        private readonly ManualResetEventSlim copyEvent = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _copyEvent = new ManualResetEventSlim(false);
 
-        private readonly ManualResetEventSlim copyReadySignal = new ManualResetEventSlim(false);
+        private readonly ManualResetEventSlim _copyReadySignal = new ManualResetEventSlim(false);
 
-        private readonly object endSceneLock = new object();
+        private readonly object _endSceneLock = new object();
 
-        private readonly object renderTargetLock = new object();
+        private readonly object _renderTargetLock = new object();
 
-        private readonly object surfaceLock = new object();
+        private readonly object _surfaceLock = new object();
 
-        private HookData<Direct3D9DeviceEx_PresentExDelegate> Direct3DDeviceEx_PresentExHook = null;
+        private HookData<Direct3D9DeviceEx_PresentExDelegate> Direct3DDeviceEx_PresentExHook;
 
-        private HookData<Direct3D9DeviceEx_ResetExDelegate> Direct3DDeviceEx_ResetExHook = null;
+        private HookData<Direct3D9DeviceEx_ResetExDelegate> Direct3DDeviceEx_ResetExHook;
 
-        private HookData<Direct3D9Device_EndSceneDelegate> Direct3DDevice_EndSceneHook = null;
+        private HookData<Direct3D9Device_EndSceneDelegate> Direct3DDevice_EndSceneHook;
 
-        private HookData<Direct3D9Device_PresentDelegate> Direct3DDevice_PresentHook = null;
+        private HookData<Direct3D9Device_PresentDelegate> Direct3DDevice_PresentHook;
 
-        private HookData<Direct3D9Device_ResetDelegate> Direct3DDevice_ResetHook = null;
+        private HookData<Direct3D9Device_ResetDelegate> Direct3DDevice_ResetHook;
 
-        private Thread copyThread;
+        private Thread _copyThread;
 
-        private IntPtr currentDevice;
+        private IntPtr _currentDevice;
 
-        private Format format;
+        private Format _format;
 
-        private int height;
+        private int _height;
 
-        private bool hooksStarted;
+        private bool _hooksStarted;
 
-        private List<IntPtr> id3dDeviceFunctionAddresses = new List<IntPtr>();
+        private readonly List<IntPtr> _id3DDeviceFunctionAddresses = new List<IntPtr>();
 
-        private bool killThread;
+        private bool _killThread;
 
-        private int pitch;
+        private int _pitch;
 
-        private Query query;
+        private Query _query;
 
-        private bool queryIssued;
+        private bool _queryIssued;
 
-        private Surface renderTarget;
+        private Surface _renderTarget;
 
-        private RetrieveImageDataParams? retrieveParams;
+        private RetrieveImageDataParams? _retrieveParams;
 
-        private Thread retrieveThread;
+        private Thread _retrieveThread;
 
-        private bool supportsDirect3DEx = false;
+        private bool _supportsDirect3DEx;
 
-        private Surface surface;
+        private Surface _surface;
 
-        private IntPtr surfaceDataPointer;
+        private IntPtr _surfaceDataPointer;
 
-        private bool surfaceLocked;
+        private bool _surfaceLocked;
 
-        private bool surfacesSetup;
+        private bool _surfacesSetup;
 
-        private int width;
+        private int _width;
 
-        private int presentHookRecurse;
+        private int _presentHookRecurse;
 
-        private Guid? lastRequestId;
+        private Guid? _lastRequestId;
 
         #endregion
 
@@ -157,12 +157,12 @@
 
         public override unsafe void Hook()
         {
-            this.DebugMessage("Hook: Begin");
+            DebugMessage("Hook: Begin");
 
-            this.DebugMessage("Hook: Before device creation");
+            DebugMessage("Hook: Before device creation");
             using (var d3d = new Direct3D())
             {
-                this.DebugMessage("Hook: Direct3D created");
+                DebugMessage("Hook: Direct3D created");
                 using (
                     var device = new Device(
                         d3d,
@@ -172,7 +172,7 @@
                         CreateFlags.HardwareVertexProcessing,
                         new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 }))
                 {
-                    this.id3dDeviceFunctionAddresses.AddRange(this.GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
+                    _id3DDeviceFunctionAddresses.AddRange(GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
                 }
             }
 
@@ -180,7 +180,7 @@
             {
                 using (var d3dEx = new Direct3DEx())
                 {
-                    this.DebugMessage("Hook: Try Direct3DEx...");
+                    DebugMessage("Hook: Try Direct3DEx...");
                     using (
                         var deviceEx = new DeviceEx(
                             d3dEx,
@@ -191,9 +191,9 @@
                             new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
                             new DisplayModeEx() { Width = 800, Height = 600 }))
                     {
-                        this.id3dDeviceFunctionAddresses.AddRange(
-                            this.GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
-                        this.supportsDirect3DEx = true;
+                        _id3DDeviceFunctionAddresses.AddRange(
+                            GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
+                        _supportsDirect3DEx = true;
                     }
                 }
             }
@@ -202,60 +202,60 @@
                 throw;
             }
 
-            this.DebugMessage("Setting up Direct3D hooks...");
-            this.Direct3DDevice_EndSceneHook =
+            DebugMessage("Setting up Direct3D hooks...");
+            Direct3DDevice_EndSceneHook =
                 new HookData<Direct3D9Device_EndSceneDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene],
-                    new Direct3D9Device_EndSceneDelegate(this.EndSceneHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.EndScene],
+                    new Direct3D9Device_EndSceneDelegate(EndSceneHook),
                     this);
 
-            this.Direct3DDevice_EndSceneHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_EndSceneHook.Hook);
+            Direct3DDevice_EndSceneHook.ReHook();
+            Hooks.Add(Direct3DDevice_EndSceneHook.Hook);
 
-            this.Direct3DDevice_PresentHook =
+            Direct3DDevice_PresentHook =
                 new HookData<Direct3D9Device_PresentDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present],
-                    new Direct3D9Device_PresentDelegate(this.PresentHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Present],
+                    new Direct3D9Device_PresentDelegate(PresentHook),
                     this);
 
-            this.Direct3DDevice_ResetHook =
+            Direct3DDevice_ResetHook =
                 new HookData<Direct3D9Device_ResetDelegate>(
-                    this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset],
-                    new Direct3D9Device_ResetDelegate(this.ResetHook),
+                    _id3DDeviceFunctionAddresses[(int)Direct3DDevice9FunctionOrdinals.Reset],
+                    new Direct3D9Device_ResetDelegate(ResetHook),
                     this);
 
-            if (this.supportsDirect3DEx)
+            if (_supportsDirect3DEx)
             {
-                this.DebugMessage("Setting up Direct3DEx hooks...");
-                this.Direct3DDeviceEx_PresentExHook =
+                DebugMessage("Setting up Direct3DEx hooks...");
+                Direct3DDeviceEx_PresentExHook =
                     new HookData<Direct3D9DeviceEx_PresentExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx],
-                        new Direct3D9DeviceEx_PresentExDelegate(this.PresentExHook),
+                        _id3DDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.PresentEx],
+                        new Direct3D9DeviceEx_PresentExDelegate(PresentExHook),
                         this);
 
-                this.Direct3DDeviceEx_ResetExHook =
+                Direct3DDeviceEx_ResetExHook =
                     new HookData<Direct3D9DeviceEx_ResetExDelegate>(
-                        this.id3dDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx],
-                        new Direct3D9DeviceEx_ResetExDelegate(this.ResetExHook),
+                        _id3DDeviceFunctionAddresses[(int)Direct3DDevice9ExFunctionOrdinals.ResetEx],
+                        new Direct3D9DeviceEx_ResetExDelegate(ResetExHook),
                         this);
             }
 
-            this.Direct3DDevice_ResetHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_ResetHook.Hook);
+            Direct3DDevice_ResetHook.ReHook();
+            Hooks.Add(Direct3DDevice_ResetHook.Hook);
 
-            this.Direct3DDevice_PresentHook.ReHook();
-            this.Hooks.Add(this.Direct3DDevice_PresentHook.Hook);
+            Direct3DDevice_PresentHook.ReHook();
+            Hooks.Add(Direct3DDevice_PresentHook.Hook);
 
-            if (this.supportsDirect3DEx)
+            if (_supportsDirect3DEx)
             {
-                this.Direct3DDeviceEx_PresentExHook.ReHook();
-                this.Hooks.Add(this.Direct3DDeviceEx_PresentExHook.Hook);
+                Direct3DDeviceEx_PresentExHook.ReHook();
+                Hooks.Add(Direct3DDeviceEx_PresentExHook.Hook);
 
-                this.Direct3DDeviceEx_ResetExHook.ReHook();
-                this.Hooks.Add(this.Direct3DDeviceEx_ResetExHook.Hook);
+                Direct3DDeviceEx_ResetExHook.ReHook();
+                Hooks.Add(Direct3DDeviceEx_ResetExHook.Hook);
             }
 
-            this.DebugMessage("Hook: End");
+            DebugMessage("Hook: End");
         }
 
         #endregion
@@ -268,7 +268,7 @@
             {
                 try
                 {
-                    this.ClearData();
+                    ClearData();
                 }
                 catch
                 {
@@ -279,73 +279,73 @@
 
         private void ClearData()
         {
-            this.DebugMessage("ClearData called");
+            DebugMessage("ClearData called");
 
-            if (this.copyThread != null)
+            if (_copyThread != null)
             {
-                this.killThread = true;
-                this.copyEvent.Set();
+                _killThread = true;
+                _copyEvent.Set();
 
-                if (!this.copyThread.Join(500))
+                if (!_copyThread.Join(500))
                 {
-                    this.copyThread.Abort();
+                    _copyThread.Abort();
                 }
 
-                this.copyEvent.Reset();
-                this.copyThread = null;
+                _copyEvent.Reset();
+                _copyThread = null;
             }
 
-            if (this.retrieveThread != null)
+            if (_retrieveThread != null)
             {
-                this.killThread = true;
-                this.copyReadySignal.Set();
+                _killThread = true;
+                _copyReadySignal.Set();
 
-                if (this.retrieveThread.Join(500))
+                if (_retrieveThread.Join(500))
                 {
-                    this.retrieveThread.Abort();
+                    _retrieveThread.Abort();
                 }
 
-                this.copyReadySignal.Reset();
-                this.retrieveThread = null;
+                _copyReadySignal.Reset();
+                _retrieveThread = null;
             }
 
             // currentDevice = null;
-            if (this.Request != null)
+            if (Request != null)
             {
-                this.Request.Dispose();
-                this.Request = null;
+                Request.Dispose();
+                Request = null;
             }
 
-            this.width = 0;
-            this.height = 0;
-            this.pitch = 0;
-            if (this.surfaceLocked)
+            _width = 0;
+            _height = 0;
+            _pitch = 0;
+            if (_surfaceLocked)
             {
-                lock (this.surfaceLock)
+                lock (_surfaceLock)
                 {
-                    this.surface.UnlockRectangle();
-                    this.surfaceLocked = false;
+                    _surface.UnlockRectangle();
+                    _surfaceLocked = false;
                 }
             }
 
-            if (this.surface != null)
+            if (_surface != null)
             {
-                this.surface.Dispose();
-                this.surface = null;
+                _surface.Dispose();
+                _surface = null;
             }
-            if (this.renderTarget != null)
+            if (_renderTarget != null)
             {
-                this.renderTarget.Dispose();
-                this.renderTarget = null;
+                _renderTarget.Dispose();
+                _renderTarget = null;
             }
-            if (this.query != null)
+            if (_query != null)
             {
-                this.query.Dispose();
-                this.query = null;
-                this.queryIssued = false;
+                _query.Dispose();
+                _query = null;
+                _queryIssued = false;
             }
-            this.hooksStarted = false;
-            this.surfacesSetup = false;
+            _hooksStarted = false;
+            _surfacesSetup = false;
         }
 
         /// <summary>
@@ -356,29 +356,29 @@
         {
             try
             {
-                if (!this.surfacesSetup)
+                if (!_surfacesSetup)
                 {
                     using (Surface backbuffer = device.GetRenderTarget(0))
                     {
-                        this.format = backbuffer.Description.Format;
-                        this.width = backbuffer.Description.Width;
-                        this.height = backbuffer.Description.Height;
+                        _format = backbuffer.Description.Format;
+                        _width = backbuffer.Description.Width;
+                        _height = backbuffer.Description.Height;
                     }
 
-                    this.SetupSurfaces(device);
+                    SetupSurfaces(device);
                 }
 
-                if (!this.surfacesSetup)
+                if (!_surfacesSetup)
                 {
                     return;
                 }
 
-                if (this.Request != null)
+                if (Request != null)
                 {
                     try
                     {
-                        this.lastRequestId = Request.RequestId;
-                        this.HandleCaptureRequest(device);
+                        _lastRequestId = Request.RequestId;
+                        HandleCaptureRequest(device);
                     }
                     finally
                     {
@@ -389,7 +389,7 @@
             }
             catch (Exception e)
             {
-                this.DebugMessage(e.ToString());
+                DebugMessage(e.ToString());
             }
         }
 
@@ -405,17 +405,17 @@
             var device = (Device)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    this.DebugMessage("EndSceneHook: hooks not started");
-                    this.SetupData(device);
+                    DebugMessage("EndSceneHook: hooks not started");
+                    SetupData(device);
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
-            hresult = this.Direct3DDevice_EndSceneHook.Original(devicePtr);
+            hresult = Direct3DDevice_EndSceneHook.Original(devicePtr);
             return hresult;
         }
 
@@ -424,29 +424,29 @@
             try
             {
                 bool tmp;
-                if (this.queryIssued && this.query.GetData(out tmp, false))
+                if (_queryIssued && _query.GetData(out tmp, false))
                 {
-                    this.queryIssued = false;
-                    var lockedRect = this.surface.LockRectangle(LockFlags.ReadOnly);
-                    this.surfaceDataPointer = lockedRect.DataPointer;
-                    this.surfaceLocked = true;
+                    _queryIssued = false;
+                    var lockedRect = _surface.LockRectangle(LockFlags.ReadOnly);
+                    _surfaceDataPointer = lockedRect.DataPointer;
+                    _surfaceLocked = true;
 
-                    this.copyEvent.Set();
+                    _copyEvent.Set();
                 }
 
                 using (var backbuffer = device.GetBackBuffer(0, 0))
                 {
-                    device.StretchRectangle(backbuffer, this.renderTarget, TextureFilter.None);
+                    device.StretchRectangle(backbuffer, _renderTarget, TextureFilter.None);
                 }
 
-                if (this.surfaceLocked)
+                if (_surfaceLocked)
                 {
-                    lock (this.renderTargetLock)
+                    lock (_renderTargetLock)
                     {
-                        if (this.surfaceLocked)
+                        if (_surfaceLocked)
                         {
-                            this.surface.UnlockRectangle();
-                            this.surfaceLocked = false;
+                            _surface.UnlockRectangle();
+                            _surfaceLocked = false;
                         }
                     }
                 }
@@ -456,23 +456,23 @@
                     var cooplevel = device.TestCooperativeLevel();
                     if (cooplevel.Code == ResultCode.Success.Code)
                     {
-                        device.GetRenderTargetData(this.renderTarget, this.surface);
-                        this.query.Issue(Issue.End);
-                        this.queryIssued = true;
+                        device.GetRenderTargetData(_renderTarget, _surface);
+                        _query.Issue(Issue.End);
+                        _queryIssued = true;
                     }
                     else
                     {
-                        this.DebugMessage(string.Format("DirectX Error: TestCooperativeLevel = {0}", cooplevel.Code));
+                        DebugMessage(string.Format("DirectX Error: TestCooperativeLevel = {0}", cooplevel.Code));
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.DebugMessage(ex.ToString());
+                    DebugMessage(ex.ToString());
                 }
             }
             catch (Exception e)
             {
-                this.DebugMessage(e.ToString());
+                DebugMessage(e.ToString());
             }
         }
 
@@ -480,47 +480,47 @@
         {
             while (true)
             {
-                this.copyEvent.Wait();
-                this.copyEvent.Reset();
+                _copyEvent.Wait();
+                _copyEvent.Reset();
 
-                if (killThread)
+                if (_killThread)
                     break;
 
-                var requestId = this.lastRequestId;
-                if (requestId == null || this.surfaceDataPointer == IntPtr.Zero)
+                var requestId = _lastRequestId;
+                if (requestId == null || _surfaceDataPointer == IntPtr.Zero)
                 {
                     continue;
                 }
 
                 try
                 {
-                    lock (this.renderTargetLock)
+                    lock (_renderTargetLock)
                     {
-                        if (this.surfaceDataPointer == IntPtr.Zero)
+                        if (_surfaceDataPointer == IntPtr.Zero)
                         {
                             continue;
                         }
 
-                        var size = this.height * this.pitch;
+                        var size = _height * _pitch;
                         var bdata = new byte[size];
-                        Marshal.Copy(this.surfaceDataPointer, bdata, 0, size);
+                        Marshal.Copy(_surfaceDataPointer, bdata, 0, size);
                         // Marshal.FreeHGlobal(this.surfaceDataPointer);
 
-                        this.retrieveParams = new RetrieveImageDataParams()
+                        _retrieveParams = new RetrieveImageDataParams()
                         {
                             RequestId = requestId.Value,
                             Data = bdata,
-                            Width = this.width,
-                            Height = this.height,
-                            Pitch = this.pitch
+                            Width = _width,
+                            Height = _height,
+                            Pitch = _pitch
                         };
 
-                        this.copyReadySignal.Set();
+                        _copyReadySignal.Set();
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.DebugMessage(ex.ToString());
+                    DebugMessage(ex.ToString());
                 }
                 finally
                 {
@@ -532,23 +532,23 @@
         {
             while (true)
             {
-                this.copyReadySignal.Wait();
-                this.copyReadySignal.Reset();
+                _copyReadySignal.Wait();
+                _copyReadySignal.Reset();
 
-                if (killThread)
+                if (_killThread)
                     break;
 
-                if (this.retrieveParams == null)
+                if (_retrieveParams == null)
                 {
                     continue;
                 }
                 try
                 {
-                    this.ProcessCapture(this.retrieveParams.Value);
+                    ProcessCapture(_retrieveParams.Value);
                 }
                 finally
                 {
-                    this.retrieveParams = null;
+                    _retrieveParams = null;
                 }
             }
         }
@@ -563,28 +563,28 @@
         {
             int hresult = Result.Ok.Code;
             var device = (DeviceEx)devicePtr;
-            if (!this.hooksStarted)
+            if (!_hooksStarted)
             {
-                hresult = this.Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
+                hresult = Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
                 return hresult;
             }
 
             try
             {
-                if (presentHookRecurse == 0)
+                if (_presentHookRecurse == 0)
                 {
-                    this.DoCaptureRenderTarget(device, "PresentEx");
+                    DoCaptureRenderTarget(device, "PresentEx");
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             finally
             {
-                this.presentHookRecurse++;
-                hresult = this.Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
-                presentHookRecurse--;
+                _presentHookRecurse++;
+                hresult = Direct3DDeviceEx_PresentExHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, dwFlags);
+                _presentHookRecurse--;
             }
             return hresult;
         }
@@ -598,27 +598,27 @@
         {
             int hresult;
             var device = (Device)devicePtr;
-            if (!this.hooksStarted)
+            if (!_hooksStarted)
             {
-                hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+                hresult = Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
                 return hresult;
             }
             try
             {
-                if (presentHookRecurse == 0)
+                if (_presentHookRecurse == 0)
                 {
-                    this.DoCaptureRenderTarget(device, "PresentHook");
+                    DoCaptureRenderTarget(device, "PresentHook");
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             finally
             {
-                this.presentHookRecurse++;
-                hresult = this.Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
-                this.presentHookRecurse--;
+                _presentHookRecurse++;
+                hresult = Direct3DDevice_PresentHook.Original(devicePtr, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+                _presentHookRecurse--;
             }
             return hresult;
         }
@@ -639,25 +639,25 @@
             DeviceEx device = (DeviceEx)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    hresult = this.Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
+                    hresult = Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
                     return hresult;
                 }
 
-                this.ClearData();
+                ClearData();
 
-                hresult = this.Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
+                hresult = Direct3DDeviceEx_ResetExHook.Original(devicePtr, ref presentparameters, displayModeEx);
 
-                if (this.currentDevice != devicePtr)
+                if (_currentDevice != devicePtr)
                 {
-                    this.hooksStarted = false;
-                    this.currentDevice = devicePtr;
+                    _hooksStarted = false;
+                    _currentDevice = devicePtr;
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             return hresult;
         }
@@ -674,71 +674,71 @@
             Device device = (Device)devicePtr;
             try
             {
-                if (!this.hooksStarted)
+                if (!_hooksStarted)
                 {
-                    hresult = this.Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
+                    hresult = Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
                     return hresult;
                 }
 
-                this.ClearData();
+                ClearData();
 
-                hresult = this.Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
+                hresult = Direct3DDevice_ResetHook.Original(devicePtr, ref presentParameters);
 
-                if (this.currentDevice != devicePtr)
+                if (_currentDevice != devicePtr)
                 {
-                    this.hooksStarted = false;
-                    this.currentDevice = devicePtr;
+                    _hooksStarted = false;
+                    _currentDevice = devicePtr;
                 }
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
             }
             return hresult;
         }
 
         private void SetupData(Device device)
         {
-            this.DebugMessage("SetupData called");
+            DebugMessage("SetupData called");
 
             using (SwapChain swapChain = device.GetSwapChain(0))
             {
                 PresentParameters pp = swapChain.PresentParameters;
-                this.width = pp.BackBufferWidth;
-                this.height = pp.BackBufferHeight;
-                this.format = pp.BackBufferFormat;
+                _width = pp.BackBufferWidth;
+                _height = pp.BackBufferHeight;
+                _format = pp.BackBufferFormat;
 
-                this.DebugMessage(string.Format("D3D9 Setup: w: {0} h: {1} f: {2}", this.width, this.height, this.format));
+                DebugMessage(string.Format("D3D9 Setup: w: {0} h: {1} f: {2}", _width, _height, _format));
             }
 
-            this.hooksStarted = true;
+            _hooksStarted = true;
         }
 
         private void SetupSurfaces(Device device)
         {
             try
             {
-                this.surface = Surface.CreateOffscreenPlain(device, this.width, this.height, (Format)this.format, Pool.SystemMemory);
-                var lockedRect = this.surface.LockRectangle(LockFlags.ReadOnly);
-                this.pitch = lockedRect.Pitch;
-                this.surface.UnlockRectangle();
-                this.renderTarget = Surface.CreateRenderTarget(device, this.width, this.height, this.format, MultisampleType.None, 0, false);
-                this.query = new Query(device, QueryType.Event);
+                _surface = Surface.CreateOffscreenPlain(device, _width, _height, (Format)_format, Pool.SystemMemory);
+                var lockedRect = _surface.LockRectangle(LockFlags.ReadOnly);
+                _pitch = lockedRect.Pitch;
+                _surface.UnlockRectangle();
+                _renderTarget = Surface.CreateRenderTarget(device, _width, _height, _format, MultisampleType.None, 0, false);
+                _query = new Query(device, QueryType.Event);
 
-                killThread = false;
-                this.copyThread = new Thread(this.HandleCaptureRequestThread);
-                this.copyThread.IsBackground = true;
-                this.copyThread.Start();
+                _killThread = false;
+                _copyThread = new Thread(HandleCaptureRequestThread);
+                _copyThread.IsBackground = true;
+                _copyThread.Start();
 
-                this.retrieveThread = new Thread(this.RetrieveImageDataThread);
-                this.retrieveThread.IsBackground = true;
-                this.retrieveThread.Start();
+                _retrieveThread = new Thread(RetrieveImageDataThread);
+                _retrieveThread.IsBackground = true;
+                _retrieveThread.Start();
 
-                this.surfacesSetup = true;
+                _surfacesSetup = true;
             }
             catch (Exception ex)
             {
-                this.DebugMessage(ex.ToString());
+                DebugMessage(ex.ToString());
                 ClearData();
             }
         }

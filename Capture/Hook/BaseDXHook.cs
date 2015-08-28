@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
     using System.Runtime.InteropServices;
     using System.Runtime.Remoting;
     using System.Threading;
@@ -23,7 +20,7 @@
 
         private CaptureConfig _config;
 
-        private int _processId = 0;
+        private int _processId;
 
         private ScreenshotRequest _request;
 
@@ -33,14 +30,14 @@
 
         protected BaseDXHook(CaptureInterface ssInterface)
         {
-            this.Interface = ssInterface;
-            this.Interface.ScreenshotRequested += this.InterfaceEventProxy.ScreenshotRequestedProxyHandler;
-            this.InterfaceEventProxy.ScreenshotRequested += this.InterfaceEventProxy_ScreenshotRequested;
+            Interface = ssInterface;
+            Interface.ScreenshotRequested += InterfaceEventProxy.ScreenshotRequestedProxyHandler;
+            InterfaceEventProxy.ScreenshotRequested += InterfaceEventProxy_ScreenshotRequested;
         }
 
         ~BaseDXHook()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -51,11 +48,11 @@
         {
             get
             {
-                return this._config;
+                return _config;
             }
             set
             {
-                this._config = value;
+                _config = value;
             }
         }
 
@@ -65,11 +62,11 @@
         {
             get
             {
-                return this._request;
+                return _request;
             }
             set
             {
-                Interlocked.Exchange(ref this._request, value);
+                Interlocked.Exchange(ref _request, value);
             }
         }
 
@@ -91,11 +88,11 @@
         {
             get
             {
-                if (this._processId == 0)
+                if (_processId == 0)
                 {
-                    this._processId = RemoteHooking.GetCurrentProcessId();
+                    _processId = RemoteHooking.GetCurrentProcessId();
                 }
-                return this._processId;
+                return _processId;
             }
         }
 
@@ -107,7 +104,7 @@
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
         }
 
         public abstract void Hook();
@@ -121,7 +118,7 @@
             // TODO: enable #ifdebug again to avoid to much IPC comms
             try
             {
-                this.Interface.Message(MessageType.Debug, this.HookName + ": " + message);
+                Interface.Message(MessageType.Debug, HookName + ": " + message);
             }
             catch (RemotingException)
             {
@@ -137,30 +134,30 @@
                 try
                 {
                     // Uninstall Hooks
-                    if (this.Hooks.Count > 0)
+                    if (Hooks.Count > 0)
                     {
                         // First disable the hook (by excluding all threads) and wait long enough to ensure that all hooks are not active
-                        foreach (var hook in this.Hooks)
+                        foreach (var hook in Hooks)
                         {
                             // Lets ensure that no threads will be intercepted again
                             hook.ThreadACL.SetInclusiveACL(new int[] { 0 });
                         }
 
-                        System.Threading.Thread.Sleep(100);
+                        Thread.Sleep(100);
 
                         // Now we can dispose of the hooks (which triggers the removal of the hook)
-                        foreach (var hook in this.Hooks)
+                        foreach (var hook in Hooks)
                         {
                             hook.Dispose();
                         }
 
-                        this.Hooks.Clear();
+                        Hooks.Clear();
                     }
 
                     try
                     {
                         // Remove the event handlers
-                        this.Interface.ScreenshotRequested -= this.InterfaceEventProxy.ScreenshotRequestedProxyHandler;
+                        Interface.ScreenshotRequested -= InterfaceEventProxy.ScreenshotRequestedProxyHandler;
                     }
                     catch (RemotingException)
                     {
@@ -179,7 +176,7 @@
 
         protected IntPtr[] GetVTblAddresses(IntPtr pointer, int numberOfMethods)
         {
-            return this.GetVTblAddresses(pointer, 0, numberOfMethods);
+            return GetVTblAddresses(pointer, 0, numberOfMethods);
         }
 
         protected IntPtr[] GetVTblAddresses(IntPtr pointer, int startIndex, int numberOfMethods)
@@ -189,7 +186,7 @@
             IntPtr vTable = Marshal.ReadIntPtr(pointer);
             for (int i = startIndex; i < startIndex + numberOfMethods; i++)
             {
-                vtblAddresses.Add(this.GetVTblAddress(vTable, i));
+                vtblAddresses.Add(GetVTblAddress(vTable, i));
             }
 
             return vtblAddresses.ToArray();
@@ -201,7 +198,7 @@
             {
                 return;
             }
-            this.Request = request;
+            Request = request;
         }
 
         protected void ProcessCapture(RetrieveImageDataParams data)
@@ -209,21 +206,18 @@
             var screenshot = new Screenshot(data.RequestId, data.Data, data.Width, data.Height, data.Pitch);
             try
             {
-                this.Interface.SendScreenshotResponse(screenshot);
+                Interface.SendScreenshotResponse(screenshot);
             }
             catch (RemotingException ex)
             {
-                this.TraceMessage("RemotingException: " + ex.Message);
+                TraceMessage("RemotingException: " + ex.Message);
                 screenshot.Dispose();
                 // Ignore remoting exceptions
                 // .NET Remoting will throw an exception if the host application is unreachable
             }
             catch (Exception e)
             {
-                this.DebugMessage(e.ToString());
-            }
-            finally
-            {
+                DebugMessage(e.ToString());
             }
         }
 
@@ -232,7 +226,7 @@
 #if DEBUG
             try
             {
-                this.Interface.Message(MessageType.Trace, this.HookName + ": " + message);
+                Interface.Message(MessageType.Trace, HookName + ": " + message);
             }
             catch (RemotingException)
             {

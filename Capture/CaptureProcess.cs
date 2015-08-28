@@ -5,7 +5,6 @@
     using System.IO;
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Channels.Ipc;
-    using System.Threading;
 
     using Capture.Hook;
     using Capture.Interface;
@@ -19,13 +18,13 @@
         /// <summary>
         /// Must be null to allow a random channel name to be generated
         /// </summary>
-        private string _channelName = null;
+        private readonly string _channelName;
 
-        private bool _disposed = false;
+        private bool _disposed;
 
         private IpcServerChannel _screenshotServer;
 
-        private CaptureInterface _serverInterface;
+        private readonly CaptureInterface _serverInterface;
 
         #endregion
 
@@ -54,14 +53,14 @@
             }
 
             captureInterface.ProcessId = process.Id;
-            this._serverInterface = captureInterface;
+            _serverInterface = captureInterface;
             //_serverInterface = new CaptureInterface() { ProcessId = process.Id };
 
             // Initialise the IPC server (with our instance of _serverInterface)
-            this._screenshotServer = RemoteHooking.IpcCreateServer<CaptureInterface>(
-                ref this._channelName,
+            _screenshotServer = RemoteHooking.IpcCreateServer<CaptureInterface>(
+                ref _channelName,
                 WellKnownObjectMode.Singleton,
-                this._serverInterface);
+                _serverInterface);
 
             try
             {
@@ -77,7 +76,7 @@
                     location,
                     //"Capture.dll", // 64-bit version (the same because AnyCPU) could use different assembly that links to 64-bit C++ helper dll
                     // the optional parameter list...
-                    this._channelName,
+                    _channelName,
                     // The name of the IPC channel for the injected assembly to connect to
                     config
                     );
@@ -89,12 +88,12 @@
 
             HookManager.AddHookedProcess(process.Id);
 
-            this.Process = process;
+            Process = process;
         }
 
         ~CaptureProcess()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         #endregion
@@ -105,7 +104,7 @@
         {
             get
             {
-                return this._serverInterface;
+                return _serverInterface;
             }
         }
 
@@ -117,7 +116,7 @@
 
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -127,14 +126,14 @@
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposed)
+            if (!_disposed)
             {
                 if (disposing)
                 {
-                    this.CaptureInterface.Disconnect();
-                    HookManager.RemoveHookedProcess(this.Process.Id);
+                    CaptureInterface.Disconnect();
+                    HookManager.RemoveHookedProcess(Process.Id);
                 }
-                this._disposed = true;
+                _disposed = true;
             }
         }
 
