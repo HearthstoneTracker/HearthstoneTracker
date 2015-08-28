@@ -731,6 +731,7 @@
 
                 killThread = false;
                 this.retrieveThread = new Thread(this.RetrieveImageDataThread);
+                this.retrieveThread.IsBackground = true;
                 this.retrieveThread.Start();
 
                 this.surfacesSetup = true;

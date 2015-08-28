@@ -857,6 +857,7 @@
                 Marshal.StructureToPtr(this.copyData, new IntPtr(copyDataMemPtr), false);
 
                 this.retrieveThread = new Thread(this.RetrieveImageDataThread);
+                retrieveThread.IsBackground = true;
                 this.retrieveThread.Start();
                 hookReadyWaitHandle.Set();
             }
