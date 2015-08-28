@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PHash.AForge")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © 2015 - HearthstoneTracker.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
