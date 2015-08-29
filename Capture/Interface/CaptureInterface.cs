@@ -1,9 +1,9 @@
-﻿namespace Capture.Interface
-{
-    using System;
-    using System.Drawing;
-    using System.Threading;
+﻿using System;
+using System.Drawing;
+using System.Threading;
 
+namespace Capture.Interface
+{
     [Serializable]
     public delegate void MessageReceivedEvent(MessageReceivedEventArgs message);
 
@@ -31,17 +31,17 @@
         #region Public Events
 
         /// <summary>
-        /// Client event used to notify the hook to exit
+        ///     Client event used to notify the hook to exit
         /// </summary>
         public event DisconnectedEvent Disconnected;
 
         /// <summary>
-        /// Server event for sending debug and error information from the client to server
+        ///     Server event for sending debug and error information from the client to server
         /// </summary>
         public event MessageReceivedEvent RemoteMessage;
 
         /// <summary>
-        /// Client event used to communicate to the client that it is time to create a screenshot
+        ///     Client event used to communicate to the client that it is time to create a screenshot
         /// </summary>
         public event ScreenshotRequestedEvent ScreenshotRequested;
 
@@ -50,7 +50,7 @@
         #region Public Properties
 
         /// <summary>
-        /// The client process Id
+        ///     The client process Id
         /// </summary>
         public int ProcessId { get; set; }
 
@@ -66,7 +66,7 @@
         }
 
         /// <summary>
-        /// Tell the client process to disconnect
+        ///     Tell the client process to disconnect
         /// </summary>
         public void Disconnect()
         {
@@ -75,19 +75,16 @@
 
         public Screenshot EndGetScreenshot(IAsyncResult result)
         {
-            Func<Rectangle, TimeSpan, Screenshot> getScreenshot = result.AsyncState as Func<Rectangle, TimeSpan, Screenshot>;
+            var getScreenshot = result.AsyncState as Func<Rectangle, TimeSpan, Screenshot>;
             if (getScreenshot != null)
             {
                 return getScreenshot.EndInvoke(result);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         /// <summary>
-        /// Get a fullscreen screenshot with the default timeout of 2 seconds
+        ///     Get a fullscreen screenshot with the default timeout of 2 seconds
         /// </summary>
         public Screenshot GetScreenshot()
         {
@@ -95,7 +92,7 @@
         }
 
         /// <summary>
-        /// Get a screenshot of the specified region
+        ///     Get a screenshot of the specified region
         /// </summary>
         /// <param name="region">the region to capture (x=0,y=0 is top left corner)</param>
         /// <param name="timeout">maximum time to wait for the screenshot</param>
@@ -109,7 +106,7 @@
 
                 SafeInvokeScreenshotRequested(new ScreenshotRequest(_requestId.Value, region));
 
-                _completeScreenshot = (sc) =>
+                _completeScreenshot = sc =>
                     {
                         try
                         {
@@ -128,7 +125,7 @@
         }
 
         /// <summary>
-        /// Send a message to all handlers of <see cref="CaptureInterface.RemoteMessage"/>.
+        ///     Send a message to all handlers of <see cref="CaptureInterface.RemoteMessage" />.
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="format"></param>
@@ -149,7 +146,9 @@
 
         public void SendScreenshotResponse(Screenshot screenshot)
         {
-            if (_requestId != null && screenshot != null && screenshot.RequestId == _requestId.Value)
+            if (_requestId != null
+                && screenshot != null
+                && screenshot.RequestId == _requestId.Value)
             {
                 if (_completeScreenshot != null)
                 {
@@ -170,9 +169,9 @@
             }
 
             DisconnectedEvent listener = null;
-            Delegate[] dels = Disconnected.GetInvocationList();
+            var dels = Disconnected.GetInvocationList();
 
-            foreach (Delegate del in dels)
+            foreach (var del in dels)
             {
                 try
                 {
@@ -196,9 +195,9 @@
             }
 
             MessageReceivedEvent listener = null;
-            Delegate[] dels = RemoteMessage.GetInvocationList();
+            var dels = RemoteMessage.GetInvocationList();
 
-            foreach (Delegate del in dels)
+            foreach (var del in dels)
             {
                 try
                 {
@@ -222,9 +221,9 @@
             }
 
             ScreenshotRequestedEvent listener = null;
-            Delegate[] dels = ScreenshotRequested.GetInvocationList();
+            var dels = ScreenshotRequested.GetInvocationList();
 
-            foreach (Delegate del in dels)
+            foreach (var del in dels)
             {
                 try
                 {

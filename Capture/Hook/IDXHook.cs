@@ -1,9 +1,8 @@
-﻿namespace Capture.Hook
+﻿using System;
+using Capture.Interface;
+
+namespace Capture.Hook
 {
-    using System;
-
-    using Capture.Interface;
-
     internal interface IDXHook : IDisposable
     {
         #region Public Properties

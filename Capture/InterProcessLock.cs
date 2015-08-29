@@ -1,10 +1,10 @@
+using System;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
+
 namespace Capture
 {
-    using System;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
-    using System.Threading;
-
     public class InterProcessLock : IDisposable
     {
         public Mutex Mutex { get; private set; }

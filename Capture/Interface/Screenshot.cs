@@ -1,11 +1,11 @@
-﻿namespace Capture.Interface
-{
-    using System;
-    using System.Drawing;
-    using System.IO;
-    using System.Runtime.Remoting;
-    using System.Security.Permissions;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Runtime.Remoting;
+using System.Security.Permissions;
 
+namespace Capture.Interface
+{
     [Serializable]
     public class Screenshot : MarshalByRefObject, IDisposable
     {
@@ -47,10 +47,7 @@
 
         public byte[] CapturedBitmap
         {
-            get
-            {
-                return _capturedBitmap;
-            }
+            get { return _capturedBitmap; }
         }
 
         public int Height { get; protected set; }
@@ -59,10 +56,7 @@
 
         public Guid RequestId
         {
-            get
-            {
-                return _requestId;
-            }
+            get { return _requestId; }
         }
 
         public int Width { get; protected set; }
@@ -123,7 +117,7 @@
         }
 
         /// <summary>
-        /// Disconnects the remoting channel(s) of this object and all nested objects.
+        ///     Disconnects the remoting channel(s) of this object and all nested objects.
         /// </summary>
         private void Disconnect()
         {
@@ -139,11 +133,11 @@
 
         public static Bitmap ToBitmap(this byte[] imageBytes)
         {
-            using (MemoryStream ms = new MemoryStream(imageBytes))
+            using (var ms = new MemoryStream(imageBytes))
             {
                 try
                 {
-                    Bitmap image = (Bitmap)Image.FromStream(ms);
+                    var image = (Bitmap)Image.FromStream(ms);
                     return image;
                 }
                 catch

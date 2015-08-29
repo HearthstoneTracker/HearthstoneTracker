@@ -1,8 +1,8 @@
-﻿namespace Capture.Interface
-{
-    using System;
-    using System.Runtime.Remoting;
+﻿using System;
+using System.Runtime.Remoting;
 
+namespace Capture.Interface
+{
     [Serializable]
     public class MessageReceivedEventArgs : MarshalByRefObject, IDisposable
     {

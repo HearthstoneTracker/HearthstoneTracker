@@ -1,15 +1,13 @@
-﻿namespace Capture.Hook
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Capture.Interface;
+using SharpDX;
+using SharpDX.Direct3D9;
+
+namespace Capture.Hook
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
-    using System.Threading;
-
-    using Capture.Interface;
-
-    using SharpDX;
-    using SharpDX.Direct3D9;
-
     internal class DXHookD3D9Simple : BaseDXHook
     {
         #region Constants
@@ -110,7 +108,7 @@
         private delegate int Direct3D9DeviceEx_ResetExDelegate(IntPtr devicePtr, ref PresentParameters presentParameters, DisplayModeEx displayModeEx);
 
         /// <summary>
-        /// The IDirect3DDevice9.EndScene function definition
+        ///     The IDirect3DDevice9.EndScene function definition
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
@@ -126,7 +124,7 @@
             IntPtr pDirtyRegion);
 
         /// <summary>
-        /// The IDirect3DDevice9.Reset function definition
+        ///     The IDirect3DDevice9.Reset function definition
         /// </summary>
         /// <param name="device"></param>
         /// <param name="presentParameters"></param>
@@ -140,10 +138,7 @@
 
         protected override string HookName
         {
-            get
-            {
-                return "DXHookD3D9";
-            }
+            get { return "DXHookD3D9"; }
         }
 
         #endregion
@@ -170,7 +165,7 @@
                         DeviceType.NullReference,
                         IntPtr.Zero,
                         CreateFlags.HardwareVertexProcessing,
-                        new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 }))
+                        new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 }))
                 {
                     _id3DDeviceFunctionAddresses.AddRange(GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
                 }
@@ -188,8 +183,8 @@
                             DeviceType.NullReference,
                             IntPtr.Zero,
                             CreateFlags.HardwareVertexProcessing,
-                            new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
-                            new DisplayModeEx() { Width = 800, Height = 600 }))
+                            new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 },
+                            new DisplayModeEx { Width = 800, Height = 600 }))
                     {
                         _id3DDeviceFunctionAddresses.AddRange(
                             GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
@@ -349,7 +344,7 @@
         }
 
         /// <summary>
-        /// Implementation of capturing from the render target of the Direct3D9 Device (or DeviceEx)
+        ///     Implementation of capturing from the render target of the Direct3D9 Device (or DeviceEx)
         /// </summary>
         /// <param name="device"></param>
         private void DoCaptureRenderTarget(Device device, string hook)
@@ -358,7 +353,7 @@
             {
                 if (!_surfacesSetup)
                 {
-                    using (Surface backbuffer = device.GetRenderTarget(0))
+                    using (var backbuffer = device.GetRenderTarget(0))
                     {
                         _format = backbuffer.Description.Format;
                         _width = backbuffer.Description.Width;
@@ -394,14 +389,20 @@
         }
 
         /// <summary>
-        /// Hook for IDirect3DDevice9.EndScene
+        ///     Hook for IDirect3DDevice9.EndScene
         /// </summary>
-        /// <param name="devicePtr">Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as the first parameter.</param>
+        /// <param name="devicePtr">
+        ///     Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as
+        ///     the first parameter.
+        /// </param>
         /// <returns>The HRESULT of the original EndScene</returns>
-        /// <remarks>Remember that this is called many times a second by the Direct3D application - be mindful of memory and performance!</remarks>
+        /// <remarks>
+        ///     Remember that this is called many times a second by the Direct3D application - be mindful of memory and
+        ///     performance!
+        /// </remarks>
         private int EndSceneHook(IntPtr devicePtr)
         {
-            int hresult = Result.Ok.Code;
+            var hresult = Result.Ok.Code;
             var device = (Device)devicePtr;
             try
             {
@@ -484,10 +485,13 @@
                 _copyEvent.Reset();
 
                 if (_killThread)
+                {
                     break;
+                }
 
                 var requestId = _lastRequestId;
-                if (requestId == null || _surfaceDataPointer == IntPtr.Zero)
+                if (requestId == null
+                    || _surfaceDataPointer == IntPtr.Zero)
                 {
                     continue;
                 }
@@ -506,14 +510,14 @@
                         Marshal.Copy(_surfaceDataPointer, bdata, 0, size);
                         // Marshal.FreeHGlobal(this.surfaceDataPointer);
 
-                        _retrieveParams = new RetrieveImageDataParams()
-                        {
-                            RequestId = requestId.Value,
-                            Data = bdata,
-                            Width = _width,
-                            Height = _height,
-                            Pitch = _pitch
-                        };
+                        _retrieveParams = new RetrieveImageDataParams
+                            {
+                                RequestId = requestId.Value,
+                                Data = bdata,
+                                Width = _width,
+                                Height = _height,
+                                Pitch = _pitch
+                            };
 
                         _copyReadySignal.Set();
                     }
@@ -536,7 +540,9 @@
                 _copyReadySignal.Reset();
 
                 if (_killThread)
+                {
                     break;
+                }
 
                 if (_retrieveParams == null)
                 {
@@ -561,7 +567,7 @@
             IntPtr pDirtyRegion,
             Present dwFlags)
         {
-            int hresult = Result.Ok.Code;
+            var hresult = Result.Ok.Code;
             var device = (DeviceEx)devicePtr;
             if (!_hooksStarted)
             {
@@ -635,8 +641,8 @@
 
         private int ResetExHook(IntPtr devicePtr, ref PresentParameters presentparameters, DisplayModeEx displayModeEx)
         {
-            int hresult = Result.Ok.Code;
-            DeviceEx device = (DeviceEx)devicePtr;
+            var hresult = Result.Ok.Code;
+            var device = (DeviceEx)devicePtr;
             try
             {
                 if (!_hooksStarted)
@@ -663,15 +669,16 @@
         }
 
         /// <summary>
-        /// Reset the _renderTarget so that we are sure it will have the correct presentation parameters (required to support working across changes to windowed/fullscreen or resolution changes)
+        ///     Reset the _renderTarget so that we are sure it will have the correct presentation parameters (required to support
+        ///     working across changes to windowed/fullscreen or resolution changes)
         /// </summary>
         /// <param name="devicePtr"></param>
         /// <param name="presentParameters"></param>
         /// <returns></returns>
         private int ResetHook(IntPtr devicePtr, ref PresentParameters presentParameters)
         {
-            int hresult = Result.Ok.Code;
-            Device device = (Device)devicePtr;
+            var hresult = Result.Ok.Code;
+            var device = (Device)devicePtr;
             try
             {
                 if (!_hooksStarted)
@@ -701,9 +708,9 @@
         {
             DebugMessage("SetupData called");
 
-            using (SwapChain swapChain = device.GetSwapChain(0))
+            using (var swapChain = device.GetSwapChain(0))
             {
-                PresentParameters pp = swapChain.PresentParameters;
+                var pp = swapChain.PresentParameters;
                 _width = pp.BackBufferWidth;
                 _height = pp.BackBufferHeight;
                 _format = pp.BackBufferFormat;
@@ -718,7 +725,7 @@
         {
             try
             {
-                _surface = Surface.CreateOffscreenPlain(device, _width, _height, (Format)_format, Pool.SystemMemory);
+                _surface = Surface.CreateOffscreenPlain(device, _width, _height, _format, Pool.SystemMemory);
                 var lockedRect = _surface.LockRectangle(LockFlags.ReadOnly);
                 _pitch = lockedRect.Pitch;
                 _surface.UnlockRectangle();

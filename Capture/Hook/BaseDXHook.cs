@@ -1,15 +1,13 @@
-﻿namespace Capture.Hook
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
+using System.Threading;
+using Capture.Interface;
+using EasyHook;
+
+namespace Capture.Hook
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
-    using System.Runtime.Remoting;
-    using System.Threading;
-
-    using Capture.Interface;
-
-    using EasyHook;
-
     internal abstract class BaseDXHook : IDXHook
     {
         #region Fields
@@ -17,8 +15,6 @@
         protected readonly ClientCaptureInterfaceEventProxy InterfaceEventProxy = new ClientCaptureInterfaceEventProxy();
 
         protected List<LocalHook> Hooks = new List<LocalHook>();
-
-        private CaptureConfig _config;
 
         private int _processId;
 
@@ -44,30 +40,14 @@
 
         #region Public Properties
 
-        public CaptureConfig Config
-        {
-            get
-            {
-                return _config;
-            }
-            set
-            {
-                _config = value;
-            }
-        }
+        public CaptureConfig Config { get; set; }
 
         public CaptureInterface Interface { get; set; }
 
         public ScreenshotRequest Request
         {
-            get
-            {
-                return _request;
-            }
-            set
-            {
-                Interlocked.Exchange(ref _request, value);
-            }
+            get { return _request; }
+            set { Interlocked.Exchange(ref _request, value); }
         }
 
         #endregion
@@ -76,10 +56,7 @@
 
         protected virtual string HookName
         {
-            get
-            {
-                return "BaseDXHook";
-            }
+            get { return "BaseDXHook"; }
         }
 
         protected TimeSpan LastCaptureTime { get; set; }
@@ -140,7 +117,7 @@
                         foreach (var hook in Hooks)
                         {
                             // Lets ensure that no threads will be intercepted again
-                            hook.ThreadACL.SetInclusiveACL(new int[] { 0 });
+                            hook.ThreadACL.SetInclusiveACL(new[] { 0 });
                         }
 
                         Thread.Sleep(100);
@@ -181,10 +158,10 @@
 
         protected IntPtr[] GetVTblAddresses(IntPtr pointer, int startIndex, int numberOfMethods)
         {
-            List<IntPtr> vtblAddresses = new List<IntPtr>();
+            var vtblAddresses = new List<IntPtr>();
 
-            IntPtr vTable = Marshal.ReadIntPtr(pointer);
-            for (int i = startIndex; i < startIndex + numberOfMethods; i++)
+            var vTable = Marshal.ReadIntPtr(pointer);
+            for (var i = startIndex; i < startIndex + numberOfMethods; i++)
             {
                 vtblAddresses.Add(GetVTblAddress(vTable, i));
             }

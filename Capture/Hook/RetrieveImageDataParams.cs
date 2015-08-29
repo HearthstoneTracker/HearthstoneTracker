@@ -1,9 +1,9 @@
+using System;
+
 namespace Capture.Hook
 {
-    using System;
-
     /// <summary>
-    /// Used to hold the parameters to be passed to RetrieveImageData
+    ///     Used to hold the parameters to be passed to RetrieveImageData
     /// </summary>
     public struct RetrieveImageDataParams
     {

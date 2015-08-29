@@ -1,19 +1,17 @@
-﻿namespace Capture
+﻿using System;
+using System.Collections;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Ipc;
+using System.Runtime.Serialization.Formatters;
+using System.Threading;
+using System.Threading.Tasks;
+using Capture.Hook;
+using Capture.Interface;
+using EasyHook;
+
+namespace Capture
 {
-    using System;
-    using System.Collections;
-    using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Channels;
-    using System.Runtime.Remoting.Channels.Ipc;
-    using System.Runtime.Serialization.Formatters;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Capture.Hook;
-    using Capture.Interface;
-
-    using EasyHook;
-
     public class EntryPoint : IEntryPoint
     {
         #region Fields
@@ -56,11 +54,11 @@
             properties["portName"] = channelName + Guid.NewGuid().ToString("N");
             // random portName so no conflict with existing channels of channelName
 
-            BinaryServerFormatterSinkProvider binaryProv =
+            var binaryProv =
                 new BinaryServerFormatterSinkProvider();
             binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
 
-            IpcServerChannel _clientServerChannel =
+            var _clientServerChannel =
                 new IpcServerChannel(properties, binaryProv);
             ChannelServices.RegisterChannel(_clientServerChannel, false);
 
@@ -78,7 +76,7 @@
         {
             // When not using GAC there can be issues with remoting assemblies resolving correctly
             // this is a workaround that ensures that the current assembly is correctly associated
-            AppDomain currentDomain = AppDomain.CurrentDomain;
+            var currentDomain = AppDomain.CurrentDomain;
             currentDomain.AssemblyResolve +=
                 (sender, args) => { return GetType().Assembly.FullName == args.Name ? GetType().Assembly : null; };
 
@@ -123,7 +121,6 @@
             }
             finally
             {
-
                 // Dispose of the DXHook so any installed hooks are removed correctly
                 DisposeDirectXHook();
 
@@ -167,9 +164,9 @@
 
         private bool InitialiseDirectXHook(CaptureConfig config)
         {
-            Direct3DVersion version = config.Direct3DVersion;
+            var version = config.Direct3DVersion;
 
-            bool isX64Process = RemoteHooking.IsX64Process(RemoteHooking.GetCurrentProcessId());
+            var isX64Process = RemoteHooking.IsX64Process(RemoteHooking.GetCurrentProcessId());
             _interface.Message(MessageType.Information, "Remote process is a {0}-bit process.", isX64Process ? "64" : "32");
 
             try
@@ -179,15 +176,18 @@
                     // Attempt to determine the correct version based on loaded module.
                     // In most cases this will work fine, however it is perfectly ok for an application to use a D3D10 device along with D3D11 devices
                     // so the version might matched might not be the one you want to use
-                    IntPtr d3D9Loaded = IntPtr.Zero;
-                    IntPtr d3D10Loaded = IntPtr.Zero;
-                    IntPtr d3D10_1Loaded = IntPtr.Zero;
-                    IntPtr d3D11Loaded = IntPtr.Zero;
-                    IntPtr d3D11_1Loaded = IntPtr.Zero;
+                    var d3D9Loaded = IntPtr.Zero;
+                    var d3D10Loaded = IntPtr.Zero;
+                    var d3D10_1Loaded = IntPtr.Zero;
+                    var d3D11Loaded = IntPtr.Zero;
+                    var d3D11_1Loaded = IntPtr.Zero;
 
-                    int delayTime = 100;
-                    int retryCount = 0;
-                    while (d3D9Loaded == IntPtr.Zero && d3D10Loaded == IntPtr.Zero && d3D10_1Loaded == IntPtr.Zero && d3D11Loaded == IntPtr.Zero
+                    var delayTime = 100;
+                    var retryCount = 0;
+                    while (d3D9Loaded == IntPtr.Zero
+                           && d3D10Loaded == IntPtr.Zero
+                           && d3D10_1Loaded == IntPtr.Zero
+                           && d3D11Loaded == IntPtr.Zero
                            && d3D11_1Loaded == IntPtr.Zero)
                     {
                         retryCount++;
@@ -240,7 +240,7 @@
                         break;
                     case Direct3DVersion.Direct3D9Simple:
                         _directXHook = new DXHookD3D9Simple(_interface);
-                        break;                        //case Direct3DVersion.Direct3D9Obs:
+                        break; //case Direct3DVersion.Direct3D9Obs:
                     case Direct3DVersion.Direct3D9SharedMem:
                         _directXHook = new DXHookD3D9SharedMem(_interface);
                         break;
@@ -278,35 +278,35 @@
         }
 
         /// <summary>
-        /// Begin a background thread to check periodically that the host process is still accessible on its IPC channel
+        ///     Begin a background thread to check periodically that the host process is still accessible on its IPC channel
         /// </summary>
         private void StartCheckHostIsAliveThread()
         {
             _checkAlive = new Task(
                 () =>
-                {
-                    try
                     {
-                        while (Interlocked.Read(ref _stopCheckAlive) == 0)
+                        try
                         {
-                            Thread.Sleep(1000);
+                            while (Interlocked.Read(ref _stopCheckAlive) == 0)
+                            {
+                                Thread.Sleep(1000);
 
-                            // .NET Remoting exceptions will throw RemotingException
-                            _interface.Ping();
+                                // .NET Remoting exceptions will throw RemotingException
+                                _interface.Ping();
+                            }
                         }
-                    }
-                    catch // We will assume that any exception means that the hooks need to be removed. 
-                    {
-                        // Signal the Run method so that it can exit
-                        _runWait.Set();
-                    }
-                });
+                        catch // We will assume that any exception means that the hooks need to be removed. 
+                        {
+                            // Signal the Run method so that it can exit
+                            _runWait.Set();
+                        }
+                    });
 
             _checkAlive.Start();
         }
 
         /// <summary>
-        /// Tell the _checkAlive thread that it can exit if it hasn't already
+        ///     Tell the _checkAlive thread that it can exit if it hasn't already
         /// </summary>
         private void StopCheckHostIsAliveThread()
         {

@@ -1,7 +1,7 @@
 ﻿namespace Capture.Hook
 {
     /// <summary>
-    /// The full list of IDirect3DDevice9 functions with the correct index
+    ///     The full list of IDirect3DDevice9 functions with the correct index
     /// </summary>
     public enum Direct3DDevice9FunctionOrdinals : short
     {
@@ -241,7 +241,7 @@
 
         DeletePatch = 117,
 
-        CreateQuery = 118,
+        CreateQuery = 118
     }
 
     public enum Direct3DDevice9ExFunctionOrdinals : short
@@ -274,7 +274,7 @@
 
         ResetEx = 132,
 
-        GetDisplayModeEx = 133,
+        GetDisplayModeEx = 133
     }
 
     public enum Direct3DSwapChain9Ordinals : short

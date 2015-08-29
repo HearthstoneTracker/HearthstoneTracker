@@ -1,18 +1,16 @@
-﻿namespace Capture.Hook
+﻿using System;
+using System.Collections.Generic;
+using System.IO.MemoryMappedFiles;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
+using Capture.Interface;
+using SharpDX;
+using SharpDX.Direct3D9;
+
+namespace Capture.Hook
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO.MemoryMappedFiles;
-    using System.Runtime.InteropServices;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
-    using System.Threading;
-
-    using Capture.Interface;
-
-    using SharpDX;
-    using SharpDX.Direct3D9;
-
     internal unsafe class DXHookD3D9SharedMem : BaseDXHook
     {
         #region Constants
@@ -24,6 +22,7 @@
         #endregion
 
         #region Fields
+
         private CopyData _copyData;
 
         private readonly MemoryMappedFile[] _sharedTextures = new MemoryMappedFile[2];
@@ -100,10 +99,10 @@
             security.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.Synchronize | MutexRights.Modify, AccessControlType.Allow));
             bool created;
             _sharedMemMutexes = new[]
-            {
-                new Mutex(false, "Global\\DXHookD3D9Shared0", out created, security),
-                new Mutex(false, "Global\\DXHookD3D9Shared1", out created, security)
-            };
+                {
+                    new Mutex(false, "Global\\DXHookD3D9Shared0", out created, security),
+                    new Mutex(false, "Global\\DXHookD3D9Shared1", out created, security)
+                };
             var ewsecurity = new EventWaitHandleSecurity();
             ewsecurity.AddAccessRule(new EventWaitHandleAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), EventWaitHandleRights.FullControl, AccessControlType.Allow));
             _captureWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9Capture", out created, ewsecurity);
@@ -130,7 +129,7 @@
         private delegate int Direct3D9DeviceEx_ResetExDelegate(IntPtr devicePtr, ref PresentParameters presentParameters, DisplayModeEx displayModeEx);
 
         /// <summary>
-        /// The IDirect3DDevice9.EndScene function definition
+        ///     The IDirect3DDevice9.EndScene function definition
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
@@ -146,7 +145,7 @@
             IntPtr pDirtyRegion);
 
         /// <summary>
-        /// The IDirect3DDevice9.Reset function definition
+        ///     The IDirect3DDevice9.Reset function definition
         /// </summary>
         /// <param name="device"></param>
         /// <param name="presentParameters"></param>
@@ -160,10 +159,7 @@
 
         protected override string HookName
         {
-            get
-            {
-                return "DXHookD3D9";
-            }
+            get { return "DXHookD3D9"; }
         }
 
         #endregion
@@ -190,7 +186,7 @@
                         DeviceType.NullReference,
                         IntPtr.Zero,
                         CreateFlags.HardwareVertexProcessing,
-                        new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 }))
+                        new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 }))
                 {
                     _id3DDeviceFunctionAddresses.AddRange(GetVTblAddresses(device.NativePointer, D3D9_DEVICE_METHOD_COUNT));
                 }
@@ -206,8 +202,8 @@
                         DeviceType.NullReference,
                         IntPtr.Zero,
                         CreateFlags.HardwareVertexProcessing,
-                        new PresentParameters() { BackBufferWidth = 1, BackBufferHeight = 1 },
-                        new DisplayModeEx() { Width = 800, Height = 600 }))
+                        new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 },
+                        new DisplayModeEx { Width = 800, Height = 600 }))
                 {
                     _id3DDeviceFunctionAddresses.AddRange(
                         GetVTblAddresses(deviceEx.NativePointer, D3D9_DEVICE_METHOD_COUNT, D3D9Ex_DEVICE_METHOD_COUNT));
@@ -283,7 +279,7 @@
                 {
                     ClearData();
                 }
-                // ReSharper disable once CatchAllClause
+                    // ReSharper disable once CatchAllClause
                 catch
                 {
                     // We don't care
@@ -318,7 +314,7 @@
                 Request = null;
             }
 
-            for (int i = 0; i < BUFFERS; i++)
+            for (var i = 0; i < BUFFERS; i++)
             {
                 if (_surfaceLocked[i])
                 {
@@ -355,7 +351,7 @@
                 //}
             }
 
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 if (_sharedTexturesAccess[i] != null)
                 {
@@ -406,7 +402,7 @@
         }
 
         /// <summary>
-        /// Implementation of capturing from the render target of the Direct3D9 Device (or DeviceEx)
+        ///     Implementation of capturing from the render target of the Direct3D9 Device (or DeviceEx)
         /// </summary>
         /// <param name="device"></param>
         private void DoCaptureRenderTarget(Device device, string hook)
@@ -415,7 +411,7 @@
             {
                 if (!_surfacesSetup)
                 {
-                    using (Surface backbuffer = device.GetRenderTarget(0))
+                    using (var backbuffer = device.GetRenderTarget(0))
                     {
                         _copyData.format = (int)backbuffer.Description.Format;
                         _copyData.width = backbuffer.Description.Width;
@@ -439,14 +435,20 @@
         }
 
         /// <summary>
-        /// Hook for IDirect3DDevice9.EndScene
+        ///     Hook for IDirect3DDevice9.EndScene
         /// </summary>
-        /// <param name="devicePtr">Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as the first parameter.</param>
+        /// <param name="devicePtr">
+        ///     Pointer to the IDirect3DDevice9 instance. Note: object member functions always pass "this" as
+        ///     the first parameter.
+        /// </param>
         /// <returns>The HRESULT of the original EndScene</returns>
-        /// <remarks>Remember that this is called many times a second by the Direct3D application - be mindful of memory and performance!</remarks>
+        /// <remarks>
+        ///     Remember that this is called many times a second by the Direct3D application - be mindful of memory and
+        ///     performance!
+        /// </remarks>
         private int EndSceneHook(IntPtr devicePtr)
         {
-            int hresult = Result.Ok.Code;
+            var hresult = Result.Ok.Code;
             var device = (Device)devicePtr;
             try
             {
@@ -469,12 +471,15 @@
             try
             {
                 if (_killThread)
+                {
                     return;
+                }
 
-                for (int i = 0; i < BUFFERS; i++)
+                for (var i = 0; i < BUFFERS; i++)
                 {
                     bool tmp;
-                    if (_issuedQueries[i] && _queries[i].GetData(out tmp, false))
+                    if (_issuedQueries[i]
+                        && _queries[i].GetData(out tmp, false))
                     {
                         _issuedQueries[i] = false;
                         var lockedRect = _surfaces[i].LockRectangle(LockFlags.ReadOnly);
@@ -486,9 +491,10 @@
                     }
                 }
 
-                if (_captureWaitHandle.WaitOne(0) || _copyWait < BUFFERS - 1)
+                if (_captureWaitHandle.WaitOne(0)
+                    || _copyWait < BUFFERS - 1)
                 {
-                    int nextCapture = (_curCapture == BUFFERS - 1) ? 0 : (_curCapture + 1);
+                    var nextCapture = (_curCapture == BUFFERS - 1) ? 0 : (_curCapture + 1);
 
                     try
                     {
@@ -539,7 +545,6 @@
                         _curCapture = nextCapture;
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -554,27 +559,29 @@
 
         private void RetrieveImageDataThread()
         {
-            int sharedMemId = 0;
+            var sharedMemId = 0;
             while (true)
             {
                 _copyReadySignal.Wait();
                 _copyReadySignal.Reset();
 
                 if (_killThread)
+                {
                     break;
+                }
 
                 if (_surfaceDataPointer == IntPtr.Zero)
                 {
                     continue;
                 }
 
-                int nextSharedMemId = sharedMemId == 0 ? 1 : 0;
+                var nextSharedMemId = sharedMemId == 0 ? 1 : 0;
                 try
                 {
                     lock (_surfaceLocks[_currentSurface])
                     {
-                        int lastRendered = -1;
-                        int lastKnown = -1;
+                        var lastRendered = -1;
+                        var lastKnown = -1;
                         try
                         {
                             lastKnown = sharedMemId;
@@ -607,7 +614,9 @@
                             }
 
                             if (_killThread)
+                            {
                                 break;
+                            }
 
                             var size = _copyData.height * _copyData.pitch;
                             memcpy(new IntPtr(_sharedTexturesPtr[lastRendered]), src, new UIntPtr((uint)size));
@@ -627,7 +636,7 @@
             }
         }
 
-        private unsafe int PresentExHook(
+        private int PresentExHook(
             IntPtr devicePtr,
             Rectangle* pSourceRect,
             Rectangle* pDestRect,
@@ -709,7 +718,7 @@
 
         private int ResetExHook(IntPtr devicePtr, ref PresentParameters presentparameters, DisplayModeEx displayModeEx)
         {
-            int hresult = Result.Ok.Code;
+            var hresult = Result.Ok.Code;
             try
             {
                 if (!_hooksStarted)
@@ -736,14 +745,15 @@
         }
 
         /// <summary>
-        /// Reset the _renderTarget so that we are sure it will have the correct presentation parameters (required to support working across changes to windowed/fullscreen or resolution changes)
+        ///     Reset the _renderTarget so that we are sure it will have the correct presentation parameters (required to support
+        ///     working across changes to windowed/fullscreen or resolution changes)
         /// </summary>
         /// <param name="devicePtr"></param>
         /// <param name="presentParameters"></param>
         /// <returns></returns>
         private int ResetHook(IntPtr devicePtr, ref PresentParameters presentParameters)
         {
-            int hresult = Result.Ok.Code;
+            var hresult = Result.Ok.Code;
             try
             {
                 if (!_hooksStarted)
@@ -773,9 +783,9 @@
         {
             DebugMessage("SetupData called");
 
-            using (SwapChain swapChain = device.GetSwapChain(0))
+            using (var swapChain = device.GetSwapChain(0))
             {
-                PresentParameters pp = swapChain.PresentParameters;
+                var pp = swapChain.PresentParameters;
                 _copyData.width = pp.BackBufferWidth;
                 _copyData.height = pp.BackBufferHeight;
                 _copyData.format = (int)pp.BackBufferFormat;
@@ -790,7 +800,7 @@
         {
             try
             {
-                for (int i = 0; i < BUFFERS; i++)
+                for (var i = 0; i < BUFFERS; i++)
                 {
                     _surfaces[i] = Surface.CreateOffscreenPlain(device, _copyData.width, _copyData.height, (Format)_copyData.format, Pool.SystemMemory);
                     var lockedRect = _surfaces[i].LockRectangle(LockFlags.ReadOnly);
@@ -809,9 +819,9 @@
 
                 _copyData.textureId = Guid.NewGuid();
 
-                for (int i = 0; i < 2; i++)
+                for (var i = 0; i < 2; i++)
                 {
-                    bool locked = false;
+                    var locked = false;
                     try
                     {
                         try

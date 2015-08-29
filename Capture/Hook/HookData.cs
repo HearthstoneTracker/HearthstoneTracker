@@ -1,10 +1,9 @@
-﻿namespace Capture.Hook
+﻿using System;
+using System.Runtime.InteropServices;
+using EasyHook;
+
+namespace Capture.Hook
 {
-    using System;
-    using System.Runtime.InteropServices;
-
-    using EasyHook;
-
     public class HookData<T> : HookData
         where T : class
     {
@@ -28,10 +27,7 @@
 
         public T Original
         {
-            get
-            {
-                return original;
-            }
+            get { return original; }
         }
 
         #endregion
@@ -49,8 +45,6 @@
 
         private bool isHooked;
 
-        private LocalHook localHook;
-
         #endregion
 
         #region Constructors and Destructors
@@ -67,13 +61,7 @@
 
         #region Public Properties
 
-        public LocalHook Hook
-        {
-            get
-            {
-                return localHook;
-            }
-        }
+        public LocalHook Hook { get; private set; }
 
         #endregion
 
@@ -81,11 +69,11 @@
 
         public void CreateHook()
         {
-            if (localHook != null)
+            if (Hook != null)
             {
                 return;
             }
-            localHook = LocalHook.Create(func, inNewProc, owner);
+            Hook = LocalHook.Create(func, inNewProc, owner);
         }
 
         public void ReHook()
@@ -95,7 +83,7 @@
                 return;
             }
             isHooked = true;
-            Hook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+            Hook.ThreadACL.SetExclusiveACL(new[] { 0 });
         }
 
         public void UnHook()

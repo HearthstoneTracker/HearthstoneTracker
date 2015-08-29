@@ -1,9 +1,9 @@
-﻿namespace Capture
-{
-    using System;
+﻿using System;
 
+namespace Capture
+{
     /// <summary>
-    /// Indicates that the provided process does not have a window handle.
+    ///     Indicates that the provided process does not have a window handle.
     /// </summary>
     public class ProcessHasNoWindowHandleException : Exception
     {

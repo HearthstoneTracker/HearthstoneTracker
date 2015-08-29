@@ -1,10 +1,10 @@
-﻿namespace Capture.Interface
-{
-    using System;
-    using System.Runtime.Remoting;
+﻿using System;
+using System.Runtime.Remoting;
 
+namespace Capture.Interface
+{
     /// <summary>
-    /// Client event proxy for marshalling event handlers
+    ///     Client event proxy for marshalling event handlers
     /// </summary>
     public class ClientCaptureInterfaceEventProxy : MarshalByRefObject, IDisposable
     {
@@ -26,12 +26,12 @@
         #region Public Events
 
         /// <summary>
-        /// Client event used to notify the hook to exit
+        ///     Client event used to notify the hook to exit
         /// </summary>
         public event DisconnectedEvent Disconnected;
 
         /// <summary>
-        /// Client event used to communicate to the client that it is time to create a screenshot
+        ///     Client event used to communicate to the client that it is time to create a screenshot
         /// </summary>
         public event ScreenshotRequestedEvent ScreenshotRequested;
 

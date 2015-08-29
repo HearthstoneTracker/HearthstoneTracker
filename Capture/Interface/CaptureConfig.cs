@@ -1,7 +1,7 @@
-﻿namespace Capture.Interface
-{
-    using System;
+﻿using System;
 
+namespace Capture.Interface
+{
     [Serializable]
     public class CaptureConfig
     {

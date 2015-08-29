@@ -1,10 +1,10 @@
-﻿namespace Capture.Interface
-{
-    using System;
-    using System.Drawing;
-    using System.Runtime.Remoting;
-    using System.Security.Permissions;
+﻿using System;
+using System.Drawing;
+using System.Runtime.Remoting;
+using System.Security.Permissions;
 
+namespace Capture.Interface
+{
     [Serializable]
     public class ScreenshotRequest : MarshalByRefObject, IDisposable
     {

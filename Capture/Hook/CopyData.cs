@@ -1,8 +1,8 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace Capture.Hook
 {
-    using System;
-    using System.Runtime.InteropServices;
-
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct CopyData
     {

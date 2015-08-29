@@ -9,7 +9,7 @@ namespace Capture.Interface
         Direct3D9,
 
         Direct3D9Simple,
-		
+
         Direct3D9SharedMem,
 
         Direct3D10,
@@ -18,6 +18,6 @@ namespace Capture.Interface
 
         Direct3D11,
 
-        Direct3D11_1,
+        Direct3D11_1
     }
 }

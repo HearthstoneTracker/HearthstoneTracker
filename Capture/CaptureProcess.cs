@@ -1,22 +1,20 @@
-﻿namespace Capture
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels.Ipc;
+using Capture.Hook;
+using Capture.Interface;
+using EasyHook;
+
+namespace Capture
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Channels.Ipc;
-
-    using Capture.Hook;
-    using Capture.Interface;
-
-    using EasyHook;
-
     public class CaptureProcess : IDisposable
     {
         #region Fields
 
         /// <summary>
-        /// Must be null to allow a random channel name to be generated
+        ///     Must be null to allow a random channel name to be generated
         /// </summary>
         private readonly string _channelName;
 
@@ -31,11 +29,15 @@
         #region Constructors and Destructors
 
         /// <summary>
-        /// Prepares capturing in the target process. Note that the process must not already be hooked, and must have a <see cref="Process.MainWindowHandle"/>.
+        ///     Prepares capturing in the target process. Note that the process must not already be hooked, and must have a
+        ///     <see cref="Process.MainWindowHandle" />.
         /// </summary>
         /// <param name="process">The process to inject into</param>
-        /// <exception cref="ProcessHasNoWindowHandleException">Thrown if the <paramref name="process"/> does not have a window handle. This could mean that the process does not have a UI, or that the process has not yet finished starting.</exception>
-        /// <exception cref="ProcessAlreadyHookedException">Thrown if the <paramref name="process"/> is already hooked</exception>
+        /// <exception cref="ProcessHasNoWindowHandleException">
+        ///     Thrown if the <paramref name="process" /> does not have a window
+        ///     handle. This could mean that the process does not have a UI, or that the process has not yet finished starting.
+        /// </exception>
+        /// <exception cref="ProcessAlreadyHookedException">Thrown if the <paramref name="process" /> is already hooked</exception>
         /// <exception cref="InjectionFailedException">Thrown if the injection failed - see the InnerException for more details.</exception>
         /// <remarks>The target process will have its main window brought to the foreground after successful injection.</remarks>
         public CaptureProcess(Process process, CaptureConfig config, CaptureInterface captureInterface)
@@ -57,7 +59,7 @@
             //_serverInterface = new CaptureInterface() { ProcessId = process.Id };
 
             // Initialise the IPC server (with our instance of _serverInterface)
-            _screenshotServer = RemoteHooking.IpcCreateServer<CaptureInterface>(
+            _screenshotServer = RemoteHooking.IpcCreateServer(
                 ref _channelName,
                 WellKnownObjectMode.Singleton,
                 _serverInterface);
@@ -102,10 +104,7 @@
 
         public CaptureInterface CaptureInterface
         {
-            get
-            {
-                return _serverInterface;
-            }
+            get { return _serverInterface; }
         }
 
         public Process Process { get; private set; }

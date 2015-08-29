@@ -1,11 +1,10 @@
-﻿namespace Capture.Hook
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using EasyHook;
+
+namespace Capture.Hook
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
-    using EasyHook;
-
     public class HookManager
     {
         #region Static Fields
@@ -40,16 +39,16 @@
 
         public static ProcessInfo[] EnumProcesses()
         {
-            List<ProcessInfo> result = new List<ProcessInfo>();
-            Process[] procList = Process.GetProcesses();
+            var result = new List<ProcessInfo>();
+            var procList = Process.GetProcesses();
 
-            for (int i = 0; i < procList.Length; i++)
+            for (var i = 0; i < procList.Length; i++)
             {
-                Process proc = procList[i];
+                var proc = procList[i];
 
                 try
                 {
-                    ProcessInfo info = new ProcessInfo();
+                    var info = new ProcessInfo();
 
                     info.FileName = proc.MainModule.FileName;
                     info.Id = proc.Id;
