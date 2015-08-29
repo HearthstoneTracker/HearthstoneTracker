@@ -43,3 +43,4 @@ HearthCap.sdf
 ipch/*
 NDependOut/*
 .vs/*
+tools/nsis*
