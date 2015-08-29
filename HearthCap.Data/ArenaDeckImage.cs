@@ -1,15 +1,15 @@
-﻿namespace HearthCap.Data
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
+namespace HearthCap.Data
+{
     public class ArenaDeckImage
     {
         public ArenaDeckImage()
         {
-            this.Id = Guid.NewGuid();
-            this.Created = DateTime.Now;
-            this.Modified = DateTime.Now;
+            Id = Guid.NewGuid();
+            Created = DateTime.Now;
+            Modified = DateTime.Now;
         }
 
         public Guid Id { get; set; }

@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class decks : DbMigration
     {
         public override void Up()
@@ -14,7 +13,7 @@ namespace HearthCap.Data.Migrations
             CreateIndex("dbo.GameResults", "Deck_Id");
             AddForeignKey("dbo.GameResults", "Deck_Id", "dbo.Decks", "Id");
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.GameResults", "Deck_Id", "dbo.Decks");

@@ -1,14 +1,14 @@
-﻿namespace HearthCap.Data
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Reflection;
 
+namespace HearthCap.Data
+{
     public static class EagerLoadExtensions
     {
-        private static IDictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
+        private static readonly IDictionary<Type, MethodInfo> methodInfos = new Dictionary<Type, MethodInfo>();
 
         public static IQueryable<GameResult> Query(this DbSet<GameResult> set)
         {
@@ -30,7 +30,7 @@
                 .Include(x => x.Image1)
                 .Include(x => x.Image2)
                 .Include(x => x.Games.Select(g => g.ArenaSession))
-                .Include(x=>x.Games.Select(g=>g.Hero))
+                .Include(x => x.Games.Select(g => g.Hero))
                 .Include(x => x.Games.Select(g => g.OpponentHero));
         }
 

@@ -1,12 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+
 namespace HearthCap.Data
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-
-    public interface IRepository<T> where T : class
+    public interface IRepository<T>
+        where T : class
     {
         List<T> ToList(Func<IQueryable<T>, IQueryable<T>> query);
 

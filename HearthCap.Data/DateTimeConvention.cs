@@ -1,13 +1,13 @@
-﻿namespace HearthCap.Data
-{
-    using System;
-    using System.Data.Entity.ModelConfiguration.Conventions;
+﻿using System;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
+namespace HearthCap.Data
+{
     public class DateTimeConvention : Convention
     {
         public DateTimeConvention()
         {
-            this.Properties<DateTime>()
+            Properties<DateTime>()
                 .Configure(c => c.HasColumnType("datetime"));
         }
     }

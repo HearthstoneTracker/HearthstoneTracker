@@ -1,12 +1,10 @@
-﻿namespace HearthCap.Data
-{
-    using System.Data.Entity;
+﻿using System.Data.Entity;
+using HearthCap.Data.Migrations;
 
+namespace HearthCap.Data
+{
     public sealed class DbInitializer
-            : MigrateDatabaseToLatestVersion<HearthStatsDbContext, Migrations.Configuration>
+        : MigrateDatabaseToLatestVersion<HearthStatsDbContext, Configuration>
     {
-        public DbInitializer()
-        {
-        }
     }
 }

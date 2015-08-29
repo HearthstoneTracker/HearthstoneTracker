@@ -1,13 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+
 namespace HearthCap.Data
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-
     [Export(typeof(IRepository<>))]
     public class Repository<T> : IRepository<T>
         where T : class
@@ -22,7 +22,7 @@ namespace HearthCap.Data
 
         public List<T> ToList(Func<IQueryable<T>, IQueryable<T>> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var q = context.Set<T>().Query();
                 var result = query(q);
@@ -32,7 +32,7 @@ namespace HearthCap.Data
 
         public async Task<List<T>> ToListAsync(Func<IQueryable<T>, IQueryable<T>> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var q = context.Set<T>().Query();
                 var result = query(q);
@@ -42,7 +42,7 @@ namespace HearthCap.Data
 
         public TReturn Query<TReturn>(Func<IQueryable<T>, TReturn> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var q = context.Set<T>().Query();
                 // var q = context.Set<T>();
@@ -52,7 +52,7 @@ namespace HearthCap.Data
 
         public async Task<TReturn> QueryAsync<TReturn>(Func<IQueryable<T>, Task<TReturn>> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var q = context.Set<T>().Query();
                 // var q = context.Set<T>();
@@ -70,7 +70,7 @@ namespace HearthCap.Data
 
         public T FirstOrDefault(Expression<Func<T, bool>> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 return context.Set<T>().Query().FirstOrDefault(query);
             }
@@ -78,7 +78,7 @@ namespace HearthCap.Data
 
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> query)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 return await context.Set<T>().Query().FirstOrDefaultAsync(query);
             }
@@ -86,7 +86,7 @@ namespace HearthCap.Data
 
         public async Task SaveOrUpdateAsync(T entity, object id)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var obj = context.Set<T>().Find(id);
                 if (obj == null)
@@ -103,7 +103,7 @@ namespace HearthCap.Data
 
         public async Task Delete(object id)
         {
-            using (var context = this.dbContext())
+            using (var context = dbContext())
             {
                 var obj = context.Set<T>().Find(id);
                 if (obj != null)

@@ -1,11 +1,10 @@
-﻿namespace HearthCap.Data
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
+namespace HearthCap.Data
+{
     public class ArenaSession : IEntityWithId<Guid>
     {
         public ArenaSession()
@@ -63,38 +62,30 @@
 
         public bool IsEnded
         {
-            get
-            {
-                return this.Wins == 12 || this.Losses == 3 || this.Retired;
-            }
+            get { return Wins == 12 || Losses == 3 || Retired; }
         }
 
         public bool IncompleteWins
         {
-            get
-            {
-                return Wins != Games.Count(x => x.Victory);
-            }
+            get { return Wins != Games.Count(x => x.Victory); }
         }
 
         public bool IncompleteLosses
         {
-            get
-            {
-                return Losses != Games.Count(x => !x.Victory);
-            }
+            get { return Losses != Games.Count(x => !x.Victory); }
         }
 
         protected bool Equals(ArenaSession other)
         {
-            return this.Id.Equals(other.Id);
+            return Id.Equals(other.Id);
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+        ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        ///     <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// true if the specified object  is equal to the current object; otherwise, false.
+        ///     true if the specified object  is equal to the current object; otherwise, false.
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
         public override bool Equals(object obj)
@@ -107,7 +98,7 @@
             {
                 return true;
             }
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
@@ -115,24 +106,24 @@
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        ///     Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
+        ///     A hash code for the current <see cref="T:System.Object" />.
         /// </returns>
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return Id.GetHashCode();
         }
 
         public void OrderGamesBy<T>(Func<GameResult, T> keySelector)
         {
-            this.Games = this.Games.OrderBy(keySelector).ToList();
+            Games = Games.OrderBy(keySelector).ToList();
         }
 
         public void OrderGamesByDescending<T>(Func<GameResult, T> keySelector)
         {
-            this.Games = this.Games.OrderByDescending(keySelector).ToList();
+            Games = Games.OrderByDescending(keySelector).ToList();
         }
     }
 }

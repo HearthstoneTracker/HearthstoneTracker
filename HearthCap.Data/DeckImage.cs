@@ -1,9 +1,9 @@
-﻿namespace HearthCap.Data
-{
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+namespace HearthCap.Data
+{
     public class DeckImage
     {
         protected DeckImage()
@@ -12,13 +12,14 @@
 
         public DeckImage(Deck deck)
         {
-            this.DeckId = deck.Id;
-            this.Deck = deck;
-            this.Created = DateTime.Now;
-            this.Modified = DateTime.Now;
+            DeckId = deck.Id;
+            Deck = deck;
+            Created = DateTime.Now;
+            Modified = DateTime.Now;
         }
 
-        [Key, ForeignKey("Deck")]
+        [Key]
+        [ForeignKey("Deck")]
         public Guid DeckId { get; protected set; }
 
         public Deck Deck { get; protected set; }

@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Data
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace HearthCap.Data
+{
     public class SettingsItem
     {
         protected SettingsItem()

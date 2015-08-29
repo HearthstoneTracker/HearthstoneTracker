@@ -1,9 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
-
     public sealed class Configuration : DbMigrationsConfiguration<HearthStatsDbContext>
     {
         public const int SeedVersion = 15;
@@ -73,7 +71,7 @@ namespace HearthCap.Data.Migrations
                     new Hero("rogue") { Name = "Valeera Sanguinar", ClassName = "Rogue" },
                     new Hero("shaman") { Name = "Thrall", ClassName = "Shaman" },
                     new Hero("warlock") { Name = "Gul'dan", ClassName = "Warlock" },
-                    new Hero("warrior") { Name = "Garrosh Hellscream", ClassName = "Warrior" },
+                    new Hero("warrior") { Name = "Garrosh Hellscream", ClassName = "Warrior" }
                 };
 
             context.Heroes.AddOrUpdate(x => x.Key, heroes);

@@ -1,10 +1,12 @@
-﻿namespace HearthCap.Data
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Data
+{
     public class Hero : IEntityWithId<Guid>
     {
-        protected Hero() { }
+        protected Hero()
+        {
+        }
 
         public Hero(string key)
         {
@@ -25,10 +27,11 @@
         public string Key { get; set; }
 
         /// <summary>
-        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+        ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        ///     <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// true if the specified object  is equal to the current object; otherwise, false.
+        ///     true if the specified object  is equal to the current object; otherwise, false.
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
         public override bool Equals(object obj)
@@ -41,7 +44,7 @@
             {
                 return true;
             }
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
@@ -49,19 +52,19 @@
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        ///     Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
+        ///     A hash code for the current <see cref="T:System.Object" />.
         /// </returns>
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return Id.GetHashCode();
         }
 
         protected bool Equals(Hero other)
         {
-            return this.Id.Equals(other.Id);
+            return Id.Equals(other.Id);
         }
     }
 }

@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class initial : DbMigration
     {
         public override void Up()
@@ -21,12 +20,12 @@ namespace HearthCap.Data.Migrations
                         RewardPacks = c.Int(nullable: false),
                         RewardOther = c.String(maxLength: 4000),
                         Retired = c.Boolean(nullable: false),
-                        Hero_Id = c.Guid(),
+                        Hero_Id = c.Guid()
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Heroes", t => t.Hero_Id)
                 .Index(t => t.Hero_Id);
-            
+
             CreateTable(
                 "dbo.GameResults",
                 c => new
@@ -44,7 +43,7 @@ namespace HearthCap.Data.Migrations
                         Turns = c.Int(nullable: false),
                         Conceded = c.Boolean(nullable: false),
                         Hero_Id = c.Guid(),
-                        OpponentHero_Id = c.Guid(),
+                        OpponentHero_Id = c.Guid()
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Heroes", t => t.Hero_Id)
@@ -53,7 +52,7 @@ namespace HearthCap.Data.Migrations
                 .Index(t => t.Hero_Id)
                 .Index(t => t.OpponentHero_Id)
                 .Index(t => t.ArenaSessionId);
-            
+
             CreateTable(
                 "dbo.Heroes",
                 c => new
@@ -63,29 +62,29 @@ namespace HearthCap.Data.Migrations
                         Description = c.String(maxLength: 4000),
                         Icon = c.String(maxLength: 4000),
                         ClassName = c.String(maxLength: 4000),
-                        Key = c.String(maxLength: 4000),
+                        Key = c.String(maxLength: 4000)
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.Decks",
                 c => new
                     {
                         Id = c.Guid(nullable: false),
                         Key = c.String(maxLength: 4000),
-                        Name = c.String(maxLength: 4000),
+                        Name = c.String(maxLength: 4000)
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.Settings",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Key = c.String(maxLength: 4000),
+                        Key = c.String(maxLength: 4000)
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
                 "dbo.SettingsItems",
                 c => new
@@ -93,12 +92,12 @@ namespace HearthCap.Data.Migrations
                         Key = c.String(nullable: false, maxLength: 4000),
                         StringValue = c.String(maxLength: 4000),
                         IntValue = c.Int(nullable: false),
-                        Settings_Id = c.Int(),
+                        Settings_Id = c.Int()
                     })
                 .PrimaryKey(t => t.Key)
                 .ForeignKey("dbo.Settings", t => t.Settings_Id)
                 .Index(t => t.Settings_Id);
-            
+
             CreateTable(
                 "dbo.ThemeConfigurations",
                 c => new
@@ -106,12 +105,11 @@ namespace HearthCap.Data.Migrations
                         Id = c.Guid(nullable: false),
                         Name = c.String(maxLength: 4000),
                         Accent = c.String(maxLength: 4000),
-                        Theme = c.Int(nullable: false),
+                        Theme = c.Int(nullable: false)
                     })
                 .PrimaryKey(t => t.Id);
-            
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.SettingsItems", "Settings_Id", "dbo.Settings");

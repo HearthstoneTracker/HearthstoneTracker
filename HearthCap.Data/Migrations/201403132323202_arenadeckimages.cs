@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class arenadeckimages : DbMigration
     {
         public override void Up()
@@ -15,10 +14,10 @@ namespace HearthCap.Data.Migrations
                         Image = c.Binary(),
                         Created = c.DateTime(nullable: false),
                         Modified = c.DateTime(nullable: false),
-                        Version = c.Binary(nullable: false, fixedLength: true, timestamp: true, storeType: "rowversion"),
+                        Version = c.Binary(nullable: false, fixedLength: true, timestamp: true, storeType: "rowversion")
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             AddColumn("dbo.ArenaSessions", "Image1_Id", c => c.Guid());
             AddColumn("dbo.ArenaSessions", "Image2_Id", c => c.Guid());
             CreateIndex("dbo.ArenaSessions", "Image1_Id");
@@ -26,7 +25,7 @@ namespace HearthCap.Data.Migrations
             AddForeignKey("dbo.ArenaSessions", "Image1_Id", "dbo.ArenaDeckImages", "Id");
             AddForeignKey("dbo.ArenaSessions", "Image2_Id", "dbo.ArenaDeckImages", "Id");
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.ArenaSessions", "Image2_Id", "dbo.ArenaDeckImages");

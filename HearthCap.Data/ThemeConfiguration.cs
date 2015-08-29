@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Data
 {
-    using System;
-
     public class ThemeConfiguration : IEntityWithId<Guid>
     {
         public Guid Id { get; protected set; }

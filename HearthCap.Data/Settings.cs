@@ -1,8 +1,8 @@
-﻿namespace HearthCap.Data
-{
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
+namespace HearthCap.Data
+{
     public class Settings : IEntityWithId<int>
     {
         [Key]

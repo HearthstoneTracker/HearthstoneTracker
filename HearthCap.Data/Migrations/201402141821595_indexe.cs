@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-
     public partial class indexe : DbMigration
     {
         public override void Up()

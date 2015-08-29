@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class deletedgames : DbMigration
     {
         public override void Up()
@@ -24,12 +23,12 @@ namespace HearthCap.Data.Migrations
                         Retired = c.Boolean(nullable: false),
                         Server = c.String(maxLength: 4000),
                         DeletedDate = c.DateTime(nullable: false),
-                        Hero_Id = c.Guid(),
+                        Hero_Id = c.Guid()
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Heroes", t => t.Hero_Id)
                 .Index(t => t.Hero_Id);
-            
+
             CreateTable(
                 "dbo.DeletedGameResults",
                 c => new
@@ -51,7 +50,7 @@ namespace HearthCap.Data.Migrations
                         Deck_Id = c.Guid(),
                         Hero_Id = c.Guid(),
                         OpponentHero_Id = c.Guid(),
-                        DeletedArenaSession_Id = c.Guid(),
+                        DeletedArenaSession_Id = c.Guid()
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Decks", t => t.Deck_Id)
@@ -62,9 +61,8 @@ namespace HearthCap.Data.Migrations
                 .Index(t => t.Hero_Id)
                 .Index(t => t.OpponentHero_Id)
                 .Index(t => t.DeletedArenaSession_Id);
-            
         }
-        
+
         public override void Down()
         {
             DropForeignKey("dbo.DeletedArenaSessions", "Hero_Id", "dbo.Heroes");

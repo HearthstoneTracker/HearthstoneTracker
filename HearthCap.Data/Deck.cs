@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Data
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Data
+{
     public class Deck : IEntityWithId<Guid>
     {
         public Deck()

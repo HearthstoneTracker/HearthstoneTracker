@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class TextFiles : DbMigration
     {
         public override void Up()
@@ -13,12 +12,11 @@ namespace HearthCap.Data.Migrations
                     {
                         Id = c.Guid(nullable: false),
                         Filename = c.String(maxLength: 4000),
-                        Template = c.String(maxLength: 4000),
+                        Template = c.String(maxLength: 4000)
                     })
                 .PrimaryKey(t => t.Id);
-            
         }
-        
+
         public override void Down()
         {
             DropTable("dbo.TextFileTemplates");

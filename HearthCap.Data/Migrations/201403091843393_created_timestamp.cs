@@ -1,8 +1,7 @@
+using System.Data.Entity.Migrations;
+
 namespace HearthCap.Data.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class created_timestamp : DbMigration
     {
         public override void Up()
@@ -23,7 +22,7 @@ namespace HearthCap.Data.Migrations
             Sql("UPDATE GameResults SET Created = Started, Modified = Started");
             Sql("UPDATE ArenaSessions SET Created = StartDate, Modified = StartDate");
         }
-        
+
         public override void Down()
         {
             DropColumn("dbo.DeletedGameResults", "Timestamp");
