@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <item>
-    <title>Version 1.9.24</title>
-    <version>1.9.24</version>
-    <file>packages/HearthstoneTracker-1.9.24-Release.zip</file>
+  <title>Version 1.10.2</title>
+  <version>1.10.2</version>
+  <updater>HearthCap.Updater.exe</updater>
+  <file>packages/HearthstoneTracker-1.10.2-Release.zip</file>
 </item>

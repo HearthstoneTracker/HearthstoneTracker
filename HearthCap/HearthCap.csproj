@@ -302,6 +302,7 @@
     <Compile Include="Features\ArenaSessions\ArenaSessionTotalsModel.cs" />
     <Compile Include="Features\ArenaSessions\Statistics\FilteredStatsViewModel.cs" />
     <Compile Include="Features\ArenaSessions\Statistics\StatModel.cs" />
+    <Compile Include="Features\AutoUpdate\UpdateInfo.cs" />
     <Compile Include="Features\AutoUpdate\UpdateViewModel.cs" />
     <Compile Include="Features\BalloonSettings\BalloonRegistrySettings.cs" />
     <Compile Include="Features\BalloonSettings\BalloonSettings.cs" />
@@ -1084,6 +1085,7 @@
     <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" ZipLevel="9" />
     <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild)" />
     <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
+	<XmlUpdate XPath="item/updater" XmlFileName="update.xml" Value="HearthCap.Updater.exe" />
     <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="packages/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
     <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
     <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />

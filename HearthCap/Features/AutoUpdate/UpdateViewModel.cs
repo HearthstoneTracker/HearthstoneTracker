@@ -18,6 +18,7 @@ namespace HearthCap.Features.AutoUpdate
     [Export(typeof(UpdateViewModel))]
     public class UpdateViewModel : Screen
     {
+        private const string HearthcapUpdaterExe = "HearthCap.Updater.exe";
         private static readonly NLog.Logger _log = LogManager.GetCurrentClassLogger();
 
         private readonly IEventAggregator _events;
@@ -34,8 +35,6 @@ namespace HearthCap.Features.AutoUpdate
 
         private bool _hasLatestVersion;
 
-        private string _filename;
-
         private Version _latestVersion;
 
         private Version _currentVersion;
@@ -43,13 +42,12 @@ namespace HearthCap.Features.AutoUpdate
         private readonly string _updateBaseUrl = "http://hearthstonetracker.com/install";
         private readonly string _updateXmlUrl = "http://hearthstonetracker.com/install/update.xml";
 
-        private string _updatefileurl;
-
         private string _error;
 
         private readonly string _basePath;
 
         private readonly string _tempPath;
+        private UpdateInfo _updateInfo;
 
         [ImportingConstructor]
         public UpdateViewModel(IEventAggregator events)
@@ -60,7 +58,7 @@ namespace HearthCap.Features.AutoUpdate
             if (!String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["updatebaseurl"]))
             {
                 _updateBaseUrl = ConfigurationManager.AppSettings["updatebaseurl"];
-                _updateXmlUrl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/") ? "/" : "") + "update.xml";
+                _updateXmlUrl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/", StringComparison.Ordinal) ? "/" : "") + "update.xml";
             }
             _basePath = AppDomain.CurrentDomain.BaseDirectory;
             _tempPath = Path.GetTempPath();
@@ -153,6 +151,20 @@ namespace HearthCap.Features.AutoUpdate
             }
         }
 
+        public UpdateInfo UpdateInfo
+        {
+            get { return _updateInfo; }
+            set
+            {
+                if (Equals(value, _updateInfo))
+                {
+                    return;
+                }
+                _updateInfo = value;
+                NotifyOfPropertyChange(() => UpdateInfo);
+            }
+        }
+
         public async Task CheckForUpdates()
         {
             UpdateAvailable = false;
@@ -180,26 +192,27 @@ namespace HearthCap.Features.AutoUpdate
             {
                 var xmldoc = new XmlDocument();
                 using (var webclient = new WebClient
-                    {
-                        CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore)
-                    })
+                {
+                    CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore)
+                })
                 {
                     var xml = await webclient.DownloadStringTaskAsync(_updateXmlUrl);
                     xmldoc.LoadXml(xml);
                 }
 
                 // TODO: add null checks
-                var latestVersion = xmldoc.SelectSingleNode("item/version").InnerText;
-                var updatefile = xmldoc.SelectSingleNode("item/file").InnerText;
-                var title = xmldoc.SelectSingleNode("item/title").InnerText;
+                UpdateInfo = new UpdateInfo()
+                {
+                    Version = new Version(xmldoc.SelectSingleNode("item/version").InnerText),
+                    File = xmldoc.SelectSingleNode("item/file").InnerText,
+                    Updater = xmldoc.SelectSingleNode("item/updater").InnerText,
+                    Title = xmldoc.SelectSingleNode("item/title").InnerText
+                };
                 // TODO: show changelog etc.
 
-                var theversion = new Version(latestVersion);
-                if (theversion > CurrentVersion)
+                if (UpdateInfo.Version > CurrentVersion)
                 {
-                    LatestVersion = theversion;
-                    _updatefileurl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/") ? "/" : "") + updatefile;
-                    _filename = updatefile.Substring(updatefile.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                    LatestVersion = UpdateInfo.Version;
                     UpdateAvailable = true;
                 }
                 else
@@ -222,16 +235,43 @@ namespace HearthCap.Features.AutoUpdate
                 {
                     UpdateAvailable = false;
                     Downloading = true;
-                    var updaterexeFilename = "HearthCap.Updater.exe";
-                    var updaterexeFileurl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/") ? "/" : "") + updaterexeFilename;
-                    var file = Path.Combine(_tempPath, _filename);
-                    var updaterFile = Path.Combine(_tempPath, updaterexeFilename);
 
+                    // Updater
+                    string updaterFileUrl = UpdateInfo.Updater;
+                    if (String.IsNullOrEmpty(UpdateInfo.Updater))
+                    {
+                        updaterFileUrl = HearthcapUpdaterExe;
+                    }
+
+                    if (!updaterFileUrl.StartsWith("http://", StringComparison.Ordinal)
+                        && !updaterFileUrl.StartsWith("https://", StringComparison.Ordinal))
+                    {
+                        updaterFileUrl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/", StringComparison.Ordinal) ? "/" : "") + updaterFileUrl;
+                    }
+
+                    // File package
+                    string filePackageUrl = UpdateInfo.File;
+                    if (!filePackageUrl.StartsWith("http://", StringComparison.Ordinal)
+                        && !filePackageUrl.StartsWith("https://", StringComparison.Ordinal))
+                    {
+                        filePackageUrl = _updateBaseUrl + (!_updateBaseUrl.EndsWith("/", StringComparison.Ordinal) ? "/" : "") + filePackageUrl;
+                    }
+
+                    string filename = UpdateInfo.File;
+                    filename = filename.Substring(filename.LastIndexOf("/", StringComparison.Ordinal) + 1);
+
+                    var file = Path.Combine(_tempPath, filename);
+                    var updaterFile = Path.Combine(_tempPath, HearthcapUpdaterExe);
+
+                    // Download
                     using (var webclient = new WebClient { CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore) })
                     {
-                        await webclient.DownloadFileTaskAsync(updaterexeFileurl, updaterFile);
-                        await webclient.DownloadFileTaskAsync(_updatefileurl, file);
+                        await Task.WhenAll(
+                            webclient.DownloadFileTaskAsync(updaterFileUrl, updaterFile),
+                            webclient.DownloadFileTaskAsync(filePackageUrl, file)
+                            );
                     }
+
                     if (!File.Exists(file)
                         || !File.Exists(updaterFile))
                     {
@@ -260,14 +300,18 @@ namespace HearthCap.Features.AutoUpdate
             using (Busy.GetTicket())
             {
                 DownloadReady = false;
-                var start = Path.Combine(_tempPath, "HearthCap.Updater.exe");
-                var path = _basePath.EndsWith("\"") ? _basePath.Substring(0, _basePath.Length - 1) : _basePath;
-                var pi = new ProcessStartInfo(start, String.Format("{0} \"{1}\"", _filename, path))
-                    {
-                        UseShellExecute = true,
-                        Verb = "runas",
-                        WorkingDirectory = _basePath
-                    };
+                string filename = UpdateInfo.File;
+                filename = filename.Substring(filename.LastIndexOf("/", StringComparison.Ordinal) + 1);
+
+                var file = Path.Combine(_tempPath, filename);
+                var updaterFile = Path.Combine(_tempPath, HearthcapUpdaterExe);
+                var path = _basePath.EndsWith("\"", StringComparison.Ordinal) ? _basePath.Substring(0, _basePath.Length - 1) : _basePath;
+                var pi = new ProcessStartInfo(updaterFile, String.Format("{0} \"{1}\"", file, path))
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    WorkingDirectory = _basePath
+                };
                 Process.Start(pi);
                 Application.Current.Shutdown();
             }
