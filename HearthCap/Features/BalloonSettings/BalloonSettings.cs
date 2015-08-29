@@ -1,12 +1,11 @@
-﻿namespace HearthCap.Features.BalloonSettings
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+
+namespace HearthCap.Features.BalloonSettings
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
     public static class BalloonTypes
     {
         public const string GameMode = "GameMode";
@@ -17,19 +16,19 @@
     [Export(typeof(BalloonSettings))]
     public class BalloonSettings : PropertyChangedBase
     {
-        private bool gameMode;
+        private bool _gameMode;
 
-        private bool gameStartEnd;
+        private bool _gameStartEnd;
 
-        private bool gameTurns;
+        private bool _gameTurns;
 
-        private readonly IDictionary<string, Func<BalloonSettings, bool>> balloonTypes = new Dictionary<string, Func<BalloonSettings, bool>>();
+        private readonly IDictionary<string, Func<BalloonSettings, bool>> _balloonTypes = new Dictionary<string, Func<BalloonSettings, bool>>();
 
         public BalloonSettings()
         {
-            this.balloonTypes.Add(BalloonTypes.GameMode, x => x.GameMode);
-            this.balloonTypes.Add(BalloonTypes.GameTurns, x => x.GameTurns);
-            this.balloonTypes.Add(BalloonTypes.GameStartEnd, x => x.GameStartEnd);
+            _balloonTypes.Add(BalloonTypes.GameMode, x => x.GameMode);
+            _balloonTypes.Add(BalloonTypes.GameTurns, x => x.GameTurns);
+            _balloonTypes.Add(BalloonTypes.GameStartEnd, x => x.GameStartEnd);
 
             using (var reg = new BalloonRegistrySettings())
             {
@@ -38,14 +37,14 @@
                 GameTurns = reg.GameTurns;
             }
 
-            this.PropertyChanged += this.OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         public bool IsEnabled(string balloonType)
         {
-            if (balloonTypes.ContainsKey(balloonType))
+            if (_balloonTypes.ContainsKey(balloonType))
             {
-                return balloonTypes[balloonType](this);
+                return _balloonTypes[balloonType](this);
             }
             return false;
         }
@@ -54,57 +53,51 @@
         {
             using (var reg = new BalloonRegistrySettings())
             {
-                reg.GameMode = this.GameMode;
-                reg.GameStartEnd = this.GameStartEnd;
-                reg.GameTurns = this.GameTurns;
+                reg.GameMode = GameMode;
+                reg.GameStartEnd = GameStartEnd;
+                reg.GameTurns = GameTurns;
             }
         }
 
         public bool GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return _gameMode; }
             set
             {
-                if (value.Equals(this.gameMode)) return;
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
+                if (value.Equals(_gameMode))
+                {
+                    return;
+                }
+                _gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
             }
         }
 
         public bool GameStartEnd
         {
-            get
-            {
-                return this.gameStartEnd;
-            }
+            get { return _gameStartEnd; }
             set
             {
-                if (value.Equals(this.gameStartEnd))
+                if (value.Equals(_gameStartEnd))
                 {
                     return;
                 }
-                this.gameStartEnd = value;
-                this.NotifyOfPropertyChange(() => this.GameStartEnd);
+                _gameStartEnd = value;
+                NotifyOfPropertyChange(() => GameStartEnd);
             }
         }
 
         public bool GameTurns
         {
-            get
-            {
-                return this.gameTurns;
-            }
+            get { return _gameTurns; }
             set
             {
-                if (value.Equals(this.gameTurns))
+                if (value.Equals(_gameTurns))
                 {
                     return;
                 }
-                this.gameTurns = value;
-                this.NotifyOfPropertyChange(() => this.GameTurns);
+                _gameTurns = value;
+                NotifyOfPropertyChange(() => GameTurns);
             }
         }
     }
