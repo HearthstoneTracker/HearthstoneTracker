@@ -1,8 +1,8 @@
-﻿namespace HearthCap.Core.GameCapture
-{
-    using System;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
+namespace HearthCap.Core.GameCapture
+{
     public interface ICaptureEngine
     {
         int Speed { get; set; }

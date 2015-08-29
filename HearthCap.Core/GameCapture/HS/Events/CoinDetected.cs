@@ -6,7 +6,7 @@ namespace HearthCap.Core.GameCapture.HS.Events
         public CoinDetected(bool goFirst)
             : base("Coin detected: " + (goFirst ? "gofirst" : "gosecond"))
         {
-            this.GoFirst = goFirst;
+            GoFirst = goFirst;
         }
 
         public bool GoFirst { get; protected set; }

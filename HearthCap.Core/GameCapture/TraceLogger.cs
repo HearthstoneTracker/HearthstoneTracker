@@ -1,14 +1,12 @@
+using System.Diagnostics;
+
 namespace HearthCap.Core.GameCapture
 {
-    using System.Diagnostics;
-
-    using NLog;
-
     internal class TraceLogger
     {
-        private readonly Logger log;
+        private readonly NLog.Logger log;
 
-        public TraceLogger(Logger log)
+        public TraceLogger(NLog.Logger log)
         {
             this.log = log;
         }
@@ -16,7 +14,7 @@ namespace HearthCap.Core.GameCapture
         [Conditional("DEBUG")]
         public void Log(string message, params object[] args)
         {
-            this.log.Trace(message, args);
+            log.Trace(message, args);
         }
     }
 }

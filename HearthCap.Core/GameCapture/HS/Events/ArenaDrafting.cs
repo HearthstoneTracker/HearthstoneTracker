@@ -1,7 +1,7 @@
+using HearthCap.Core.GameCapture.HS.Events;
+
 namespace HearthCap.Core.GameCapture.HS
 {
-    using HearthCap.Core.GameCapture.HS.Events;
-
     public class ArenaDrafting : GameEvent
     {
         public ArenaDrafting()

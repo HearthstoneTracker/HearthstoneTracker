@@ -1,9 +1,8 @@
+using System;
+using HearthCap.Data;
+
 namespace HearthCap.Core.GameCapture.HS.Events
 {
-    using System;
-
-    using HearthCap.Data;
-
     public class GameStarted : GameEvent
     {
         public DateTime StartTime { get; protected set; }
@@ -21,12 +20,12 @@ namespace HearthCap.Core.GameCapture.HS.Events
         public GameStarted(GameMode gameMode, DateTime startTime, string hero, string opponentHero, bool goFirst, string lastDeck)
             : base("Detected started game")
         {
-            this.GameMode = gameMode;
-            this.StartTime = startTime;
-            this.Hero = hero;
-            this.OpponentHero = opponentHero;
-            this.GoFirst = goFirst;
-            this.Deck = lastDeck;
+            GameMode = gameMode;
+            StartTime = startTime;
+            Hero = hero;
+            OpponentHero = opponentHero;
+            GoFirst = goFirst;
+            Deck = lastDeck;
         }
     }
 }

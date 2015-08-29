@@ -1,6 +1,6 @@
 ﻿namespace HearthCap.Core.GameCapture
 {
-    public enum Speeds : int
+    public enum Speeds
     {
         Slow = 1000 / 5, // 200 ms
         Medium = 1000 / 10, // 100 ms

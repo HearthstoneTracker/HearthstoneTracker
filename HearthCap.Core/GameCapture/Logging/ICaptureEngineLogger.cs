@@ -18,7 +18,9 @@
 //        void Diag(string format, params object[] args);
 
 //        void Diag(string message, object data);
-        
+
 //        void Debug(string format, params object[] args);        
 //    }
 //}
+
+

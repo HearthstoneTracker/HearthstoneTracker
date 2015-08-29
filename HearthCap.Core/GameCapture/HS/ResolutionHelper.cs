@@ -1,12 +1,12 @@
+using System;
+using System.Drawing;
+
 namespace HearthCap.Core.GameCapture.HS
 {
-    using System;
-    using System.Drawing;
-
     public static class ResolutionHelper
     {
-        static Func<decimal, decimal> up = (p) => Math.Round(p, 0);
-        static Func<decimal, decimal> down = (p) => Math.Round(p, 0);
+        private static readonly Func<decimal, decimal> up = p => Math.Round(p, 0);
+        private static readonly Func<decimal, decimal> down = p => Math.Round(p, 0);
 
         public static Rectangle CorrectRectangle(Size resolution, Rectangle rect, int baseResolution)
         {
@@ -48,7 +48,7 @@ namespace HearthCap.Core.GameCapture.HS
 
         public static decimal GetBoardX(Size resolution)
         {
-            decimal x = (resolution.Width - GetBoardWidth(resolution)) / 2;
+            var x = (resolution.Width - GetBoardWidth(resolution)) / 2;
             return x;
         }
 

@@ -5,7 +5,7 @@ namespace HearthCap.Core.GameCapture.HS.Events
         public ArenaHeroDetected(string hero)
             : base("hero detected: " + hero)
         {
-            this.Hero = hero;
+            Hero = hero;
         }
 
         public string Hero { get; protected set; }

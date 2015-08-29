@@ -1,23 +1,23 @@
-﻿namespace HearthCap.Core.Util
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Security.Cryptography;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
+namespace HearthCap.Core.Util
+{
     public static class ImageUtils
     {
-        public unsafe static bool IsAllBlack(this Bitmap img)
+        public static unsafe bool IsAllBlack(this Bitmap img)
         {
-            bool allblack = true;
+            var allblack = true;
             var data = img.LockBits(new Rectangle(0, 0, 64, 64), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             try
             {
                 var bytes = (byte*)data.Scan0;
-                for (int i = 0; i < data.Height * data.Stride; i++)
+                for (var i = 0; i < data.Height * data.Stride; i++)
                 {
                     allblack = (bytes[i] == 0 || bytes[i] == 255);
                     if (!allblack)
@@ -39,19 +39,25 @@
 
         public static bool CompareMemCmp(Bitmap b1, Bitmap b2)
         {
-            if ((b1 == null) != (b2 == null)) return false;
-            if (b1.Size != b2.Size) return false;
+            if ((b1 == null) != (b2 == null))
+            {
+                return false;
+            }
+            if (b1.Size != b2.Size)
+            {
+                return false;
+            }
 
             var bd1 = b1.LockBits(new Rectangle(new Point(0, 0), b1.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             var bd2 = b2.LockBits(new Rectangle(new Point(0, 0), b2.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             try
             {
-                IntPtr bd1scan0 = bd1.Scan0;
-                IntPtr bd2scan0 = bd2.Scan0;
+                var bd1scan0 = bd1.Scan0;
+                var bd2scan0 = bd2.Scan0;
 
-                int stride = bd1.Stride;
-                int len = stride * b1.Height;
+                var stride = bd1.Stride;
+                var len = stride * b1.Height;
 
                 return memcmp(bd1scan0, bd2scan0, len) == 0;
             }
@@ -62,18 +68,24 @@
             }
         }
 
-        public unsafe static bool AreEqual(Bitmap imageA, Bitmap imageB)
+        public static unsafe bool AreEqual(Bitmap imageA, Bitmap imageB)
         {
-            if (imageA.Width != imageB.Width) return false;
-            if (imageA.Height != imageB.Height) return false;
+            if (imageA.Width != imageB.Width)
+            {
+                return false;
+            }
+            if (imageA.Height != imageB.Height)
+            {
+                return false;
+            }
 
             var d1 = imageA.LockBits(new Rectangle(0, 0, imageA.Width - 1, imageA.Height - 1), ImageLockMode.ReadOnly, imageA.PixelFormat);
             var d2 = imageB.LockBits(new Rectangle(0, 0, imageB.Width - 1, imageB.Height - 1), ImageLockMode.ReadOnly, imageB.PixelFormat);
 
             var data1 = (byte*)d1.Scan0;
             var data2 = (byte*)d2.Scan0;
-            bool result = true;
-            for (int n = 0; n < d1.Height * d1.Stride; n++)
+            var result = true;
+            for (var n = 0; n < d1.Height * d1.Stride; n++)
             {
                 if (data1[n] != data2[n])
                 {
@@ -87,13 +99,20 @@
 
             return result;
         }
-        private static ImageConverter ic = new ImageConverter();
-        private static SHA512Managed sha = new SHA512Managed();
+
+        private static readonly ImageConverter ic = new ImageConverter();
+        private static readonly SHA512Managed sha = new SHA512Managed();
 
         public static bool AreEqualHash(Bitmap imageA, Bitmap imageB)
         {
-            if (imageA.Width != imageB.Width) return false;
-            if (imageA.Height != imageB.Height) return false;
+            if (imageA.Width != imageB.Width)
+            {
+                return false;
+            }
+            if (imageA.Height != imageB.Height)
+            {
+                return false;
+            }
 
             var btImage1 = new byte[1];
             var btImage2 = new byte[1];
@@ -101,11 +120,11 @@
             btImage2 = (byte[])ic.ConvertTo(imageB, btImage2.GetType());
 
             //Compute a hash for each image
-            byte[] hash1 = sha.ComputeHash(btImage1);
-            byte[] hash2 = sha.ComputeHash(btImage2);
+            var hash1 = sha.ComputeHash(btImage1);
+            var hash2 = sha.ComputeHash(btImage2);
 
             //Compare the hash values
-            for (int i = 0; i < hash1.Length && i < hash2.Length; i++)
+            for (var i = 0; i < hash1.Length && i < hash2.Length; i++)
             {
                 if (hash1[i] != hash2[i])
                 {
@@ -118,10 +137,13 @@
 
         public static bool AreEqual(byte[] imageA, byte[] imageB)
         {
-            if (imageA.Length != imageB.Length) return false;
+            if (imageA.Length != imageB.Length)
+            {
+                return false;
+            }
 
             //Compare the hash values
-            for (int i = 0; i < imageA.Length && i < imageB.Length; i++)
+            for (var i = 0; i < imageA.Length && i < imageB.Length; i++)
             {
                 if (imageA[i] != imageB[i])
                 {
@@ -137,7 +159,7 @@
             //Compare the hash values
             var imageBlen = imageB.Height * imageB.Stride;
             var imageBdata = (byte*)imageB.Scan0;
-            for (int i = 0; i < imageA.Length && i < imageBlen; i++)
+            for (var i = 0; i < imageA.Length && i < imageBlen; i++)
             {
                 if (imageA[i] != imageBdata[i])
                 {
@@ -175,8 +197,12 @@
 
         public static Color GetDominantColor(this BitmapData bitmap)
         {
-            if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
-                && bitmap.PixelFormat != PixelFormat.Format32bppRgb) throw new ApplicationException("expected 32bit image");
+            if (bitmap.PixelFormat != PixelFormat.Format32bppArgb
+                && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
+                && bitmap.PixelFormat != PixelFormat.Format32bppRgb)
+            {
+                throw new ApplicationException("expected 32bit image");
+            }
             // var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
             var stride = bitmap.Stride;
@@ -189,12 +215,16 @@
             {
                 var p = (byte*)(void*)scan0;
                 for (var y = 0; y < height; y++)
+                {
                     for (var x = 0; x < width; x++)
+                    {
                         for (var color = 0; color < 3; color++)
                         {
                             var idx = (y * stride) + x * 4 + color;
                             totals[color] += p[idx];
                         }
+                    }
+                }
             }
             // bitmap.UnlockBits(bitmapData);
 
@@ -231,7 +261,7 @@
             }
             finally
             {
-                bitmap.UnlockBits(data);                
+                bitmap.UnlockBits(data);
             }
         }
 
@@ -269,8 +299,12 @@
 
         public static Color GetDominantColorSlow(this Bitmap bitmap)
         {
-            if (bitmap.PixelFormat != PixelFormat.Format32bppArgb && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
-                && bitmap.PixelFormat != PixelFormat.Format32bppRgb) throw new ApplicationException("expected 32bit image");
+            if (bitmap.PixelFormat != PixelFormat.Format32bppArgb
+                && bitmap.PixelFormat != PixelFormat.Format32bppPArgb
+                && bitmap.PixelFormat != PixelFormat.Format32bppRgb)
+            {
+                throw new ApplicationException("expected 32bit image");
+            }
 
             var bitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
             var scan0 = bitmapData.Scan0;
@@ -286,16 +320,19 @@
             {
                 var pixels = (byte*)(void*)scan0;
                 for (var y = 0; y < height; y++)
+                {
                     for (var x = 0; x < width; x++)
                     {
                         var index = (y * stride) + x * 4;
-                        byte r1 = pixels[index];
-                        byte g1 = pixels[index + 1];
-                        byte b1 = pixels[index + 2];
-                        byte a1 = pixels[index + 3];
+                        var r1 = pixels[index];
+                        var g1 = pixels[index + 1];
+                        var b1 = pixels[index + 2];
+                        var a1 = pixels[index + 3];
 
                         if (a1 <= alphaThershold)
+                        {
                             continue; //ignore
+                        }
 
                         pixelCount++;
                         avgAlpha += a1;
@@ -306,18 +343,20 @@
                         {
                             colorDist.Add(cl, 0);
 
-                            for (int y2 = 0; y2 < height; y2++)
+                            for (var y2 = 0; y2 < height; y2++)
                             {
-                                for (int x2 = 0; x2 < width; x2++)
+                                for (var x2 = 0; x2 < width; x2++)
                                 {
-                                    int index2 = y2 * stride + x2 * 4;
-                                    byte r2 = pixels[index2];
-                                    byte g2 = pixels[index2 + 1];
-                                    byte b2 = pixels[index2 + 2];
-                                    byte a2 = pixels[index2 + 3];
+                                    var index2 = y2 * stride + x2 * 4;
+                                    var r2 = pixels[index2];
+                                    var g2 = pixels[index2 + 1];
+                                    var b2 = pixels[index2 + 2];
+                                    var a2 = pixels[index2 + 3];
 
                                     if (a2 <= alphaThershold)
+                                    {
                                         continue; //ignore
+                                    }
 
                                     dist += Math.Sqrt(Math.Pow(r2 - r1, 2) +
                                                       Math.Pow(g2 - g1, 2) +
@@ -328,23 +367,26 @@
                             colorDist[cl] = dist;
                         }
                     }
+                }
             }
 
             //clamp alpha
             avgAlpha = avgAlpha / pixelCount;
             if (avgAlpha >= (255 - alphaThershold))
+            {
                 avgAlpha = 255;
+            }
 
             //take weighted average of top 2% of colors         
             var clrs =
                 (from entry in colorDist orderby entry.Value ascending select new { Color = entry.Key, Dist = 1.0 / Math.Max(1, entry.Value) }).ToList
                     ().Take(Math.Max(1, (int)(colorDist.Count * 0.02))).ToList();
 
-            double sumDist = clrs.Sum(x => x.Dist);
+            var sumDist = clrs.Sum(x => x.Dist);
             var result = Color.FromArgb((byte)avgAlpha,
-                                          (byte)(clrs.Sum(x => x.Color.R * x.Dist) / sumDist),
-                                          (byte)(clrs.Sum(x => x.Color.G * x.Dist) / sumDist),
-                                          (byte)(clrs.Sum(x => x.Color.B * x.Dist) / sumDist));
+                (byte)(clrs.Sum(x => x.Color.R * x.Dist) / sumDist),
+                (byte)(clrs.Sum(x => x.Color.G * x.Dist) / sumDist),
+                (byte)(clrs.Sum(x => x.Color.B * x.Dist) / sumDist));
 
             return result;
         }
@@ -371,16 +413,16 @@
 
             public BitmapDataReleaser(Bitmap bitmap, Rectangle rectangle, PixelFormat? pixelFormat = null, ImageLockMode imageLockMode = ImageLockMode.ReadOnly)
             {
-                this.Bitmap = bitmap;
-                this.Rectangle = rectangle;
-                this.PixelFormat = pixelFormat ?? bitmap.PixelFormat;
-                this.ImageLockMode = imageLockMode;
+                Bitmap = bitmap;
+                Rectangle = rectangle;
+                PixelFormat = pixelFormat ?? bitmap.PixelFormat;
+                ImageLockMode = imageLockMode;
 
-                this.Data = bitmap.LockBits(Rectangle, ImageLockMode, PixelFormat);
+                Data = bitmap.LockBits(Rectangle, ImageLockMode, PixelFormat);
             }
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             /// </summary>
             public void Dispose()
             {

@@ -1,9 +1,5 @@
 namespace HearthCap.Core.GameCapture.Logging
 {
-    using System;
-
-    using NLog;
-
 //    public class CaptureEngineLogger : ICaptureEngineLogger
 //    {
 //        private readonly Type type;

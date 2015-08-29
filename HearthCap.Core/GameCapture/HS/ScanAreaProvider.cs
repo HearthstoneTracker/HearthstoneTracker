@@ -1,15 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Web.Script.Serialization;
+
 namespace HearthCap.Core.GameCapture.HS
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Globalization;
-    using System.IO;
-    using System.Reflection;
-    using System.Text;
-    using System.Web.Script.Serialization;
-
     [Export(typeof(IScanAreaProvider))]
     public class ScanAreaProvider : IScanAreaProvider
     {
@@ -17,8 +15,8 @@ namespace HearthCap.Core.GameCapture.HS
 
         public void Load()
         {
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            string filename = Path.Combine(baseDir, "areas.json");
+            var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            var filename = Path.Combine(baseDir, "areas.json");
 
             string json;
             if (File.Exists(filename))
@@ -31,13 +29,13 @@ namespace HearthCap.Core.GameCapture.HS
                 using (var sr = new StreamReader(asm.GetManifestResourceStream("HearthCap.Core.data.areas.json")))
                 {
                     json = sr.ReadToEnd();
-                }                
+                }
             }
-            
+
             var s = new JavaScriptSerializer();
             var data = s.Deserialize<List<ScanAreas>>(json);
 
-            this.scanAreas = data;
+            scanAreas = data;
         }
 
         public Image GetImage(string name)
@@ -49,27 +47,27 @@ namespace HearthCap.Core.GameCapture.HS
 
         public IEnumerable<ScanAreas> GetScanAreas()
         {
-            if (this.scanAreas == null)
+            if (scanAreas == null)
             {
-                this.Load();
+                Load();
             }
 
-            return this.scanAreas;
+            return scanAreas;
         }
     }
 
     public class EmbeddedResource : IEmbeddedResource
     {
         public EmbeddedResource(Assembly assembly, string resourceName)
-            : this(assembly, resourceName, (string)null)
+            : this(assembly, resourceName, null)
         {
         }
 
         public EmbeddedResource(Assembly assembly, string resourceName, string fileName)
         {
-            this.Assembly = assembly;
-            this.ResourceName = resourceName;
-            this.FileName = fileName;
+            Assembly = assembly;
+            ResourceName = resourceName;
+            FileName = fileName;
         }
 
         public string ResourceName { get; private set; }
@@ -80,8 +78,11 @@ namespace HearthCap.Core.GameCapture.HS
 
         public Stream GetResourceStream()
         {
-            var stream = (this.Assembly ?? Assembly.GetExecutingAssembly()).GetManifestResourceStream(this.ResourceName);
-            if (stream != null) return stream;
+            var stream = (Assembly ?? Assembly.GetExecutingAssembly()).GetManifestResourceStream(ResourceName);
+            if (stream != null)
+            {
+                return stream;
+            }
             throw new InvalidOperationException("Resource not found: " + ResourceName);
         }
     }

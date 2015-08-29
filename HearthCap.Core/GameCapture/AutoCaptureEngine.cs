@@ -1,98 +1,74 @@
-﻿namespace HearthCap.Core.GameCapture
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using Capture;
+using Capture.Hook;
+using Capture.Interface;
+using HearthCap.Core.GameCapture.EngineEvents;
+using HearthCap.Core.GameCapture.Logging.LogEvents;
+using HearthCap.Core.Util;
+using LogManager = NLog.LogManager;
+
+namespace HearthCap.Core.GameCapture
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.IO.MemoryMappedFiles;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using Capture;
-    using Capture.Hook;
-    using Capture.Interface;
-
-    using HearthCap.Core.GameCapture.EngineEvents;
-    using HearthCap.Core.GameCapture.Logging.LogEvents;
-    using HearthCap.Core.Util;
-
-    using NLog;
-
-    using LogManager = NLog.LogManager;
-
     [Export(typeof(ICaptureEngine))]
     public class CaptureEngine : ICaptureEngine
     {
         private ICaptureEngine currentCaptureEngine;
 
-        private IAutoCaptureEngine autoCaptureEngine;
+        private readonly IAutoCaptureEngine autoCaptureEngine;
 
-        private ILogCaptureEngine logCaptureEngine;
+        private readonly ILogCaptureEngine logCaptureEngine;
 
         private CaptureMethod captureMethod;
 
         public Task StartAsync()
         {
-            return this.currentCaptureEngine.StartAsync();
+            return currentCaptureEngine.StartAsync();
         }
 
         public void Stop()
         {
-            this.currentCaptureEngine.Stop();
+            currentCaptureEngine.Stop();
         }
 
         public bool IsRunning
         {
-            get
-            {
-                return this.currentCaptureEngine.IsRunning;
-            }
+            get { return currentCaptureEngine.IsRunning; }
         }
 
         public bool PublishCapturedWindow
         {
-            get
-            {
-                return this.currentCaptureEngine.PublishCapturedWindow;
-            }
-            set
-            {
-                this.currentCaptureEngine.PublishCapturedWindow = value;
-            }
+            get { return currentCaptureEngine.PublishCapturedWindow; }
+            set { currentCaptureEngine.PublishCapturedWindow = value; }
         }
 
         public int Speed
         {
-            get
-            {
-                return this.currentCaptureEngine.Speed;
-            }
-            set
-            {
-                this.currentCaptureEngine.Speed = value;
-            }
+            get { return currentCaptureEngine.Speed; }
+            set { currentCaptureEngine.Speed = value; }
         }
 
         public CaptureMethod CaptureMethod
         {
-            get
-            {
-                return this.captureMethod;
-            }
+            get { return captureMethod; }
             set
             {
-                this.captureMethod = value;
+                captureMethod = value;
                 SetCurrentEngine(value);
-                this.currentCaptureEngine.CaptureMethod = value;
+                currentCaptureEngine.CaptureMethod = value;
             }
         }
 
@@ -112,7 +88,8 @@
                     break;
             }
 
-            if (oldEngine != currentCaptureEngine && oldEngine.IsRunning)
+            if (oldEngine != currentCaptureEngine
+                && oldEngine.IsRunning)
             {
                 oldEngine.Stop();
                 currentCaptureEngine.StartAsync();
@@ -123,13 +100,13 @@
         {
             add
             {
-                this.autoCaptureEngine.UnhandledException += value;
-                this.logCaptureEngine.UnhandledException += value;
+                autoCaptureEngine.UnhandledException += value;
+                logCaptureEngine.UnhandledException += value;
             }
             remove
             {
-                this.autoCaptureEngine.UnhandledException -= value;
-                this.logCaptureEngine.UnhandledException -= value;
+                autoCaptureEngine.UnhandledException -= value;
+                logCaptureEngine.UnhandledException -= value;
             }
         }
 
@@ -137,13 +114,13 @@
         {
             add
             {
-                this.autoCaptureEngine.Started += value;
-                this.logCaptureEngine.Started += value;
+                autoCaptureEngine.Started += value;
+                logCaptureEngine.Started += value;
             }
             remove
             {
-                this.autoCaptureEngine.Started -= value;
-                this.logCaptureEngine.Started -= value;
+                autoCaptureEngine.Started -= value;
+                logCaptureEngine.Started -= value;
             }
         }
 
@@ -151,21 +128,22 @@
         {
             add
             {
-                this.autoCaptureEngine.Stopped += value;
-                this.logCaptureEngine.Stopped += value;
+                autoCaptureEngine.Stopped += value;
+                logCaptureEngine.Stopped += value;
             }
             remove
             {
-                this.autoCaptureEngine.Stopped -= value;
-                this.logCaptureEngine.Stopped -= value;
+                autoCaptureEngine.Stopped -= value;
+                logCaptureEngine.Stopped -= value;
             }
         }
+
         [ImportingConstructor]
         public CaptureEngine(IAutoCaptureEngine autoCaptureEngine, ILogCaptureEngine logCaptureEngine)
         {
             this.autoCaptureEngine = autoCaptureEngine;
             this.logCaptureEngine = logCaptureEngine;
-            this.currentCaptureEngine = autoCaptureEngine;
+            currentCaptureEngine = autoCaptureEngine;
         }
     }
 
@@ -179,26 +157,24 @@
         protected const string HEARTHSTONE_WINDOW_TITLE = "hearthstone";
         protected const string HEARTHSTONE_PROCESS_NAME = "hearthstone";
 
-        private int timerCounter = 0;
+        private int timerCounter;
 
         private readonly IEventAggregator events;
 
         private readonly IEnumerable<IImageScanner> imageScanners;
 
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly TraceLogger TraceLog = new TraceLogger(Log);
 
-        private ScreenCapture screenCapture;
+        private readonly ScreenCapture screenCapture;
 
-        private CaptureConfig captureConfig;
+        private readonly CaptureConfig captureConfig;
 
         private static readonly int delayConstant = 50;
         private int averageSpeed;
 
         private int averageCount;
-
-        private bool running;
 
         private int delay;
 
@@ -207,7 +183,7 @@
         private CaptureMethod lastCaptureMethod = CaptureMethod.AutoDetect;
         private CaptureMethod preferredCaptureMethod = CaptureMethod.AutoDetect;
 
-        private CaptureMethod? currentCaptureMethod = null;
+        private CaptureMethod? currentCaptureMethod;
 
         private bool windowLost;
 
@@ -243,15 +219,15 @@
 
         // private int lastCaptured = -1;
 
-        private Mutex[] sharedMemMutexes;
+        private readonly Mutex[] sharedMemMutexes;
 
-        private MemoryMappedFile[] sharedTextures = new MemoryMappedFile[2];
-        private MemoryMappedViewAccessor[] sharedTexturesAccess = new MemoryMappedViewAccessor[2];
-        private byte*[] sharedTexturesPtr = { (byte*)0, (byte*)0 };
+        private readonly MemoryMappedFile[] sharedTextures = new MemoryMappedFile[2];
+        private readonly MemoryMappedViewAccessor[] sharedTexturesAccess = new MemoryMappedViewAccessor[2];
+        private readonly byte*[] sharedTexturesPtr = { (byte*)0, (byte*)0 };
         private byte* copyDataMemPtr = (byte*)0;
 
-        private EventWaitHandle captureDxWaitHandle;
-        private EventWaitHandle hookReadyWaitHandle;
+        private readonly EventWaitHandle captureDxWaitHandle;
+        private readonly EventWaitHandle hookReadyWaitHandle;
 
         private MemoryMappedFile copyDataMem;
 
@@ -262,25 +238,25 @@
         [ImportingConstructor]
         public AutoCaptureEngine(
             IEventAggregator events,
-            [ImportMany]IEnumerable<IImageScanner> imageScanners)
+            [ImportMany] IEnumerable<IImageScanner> imageScanners)
         {
             this.events = events;
             this.imageScanners = imageScanners;
-            this.screenCapture = new ScreenCapture();
+            screenCapture = new ScreenCapture();
             var direct3DVersion = Direct3DVersion.Direct3D9SharedMem;
             CaptureMethod = CaptureMethod.AutoDetect;
-            this.captureConfig = new CaptureConfig()
-            {
-                Direct3DVersion = direct3DVersion
-            };
+            captureConfig = new CaptureConfig
+                {
+                    Direct3DVersion = direct3DVersion
+                };
             var security = new MutexSecurity();
             security.AddAccessRule(new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.Synchronize | MutexRights.Modify, AccessControlType.Allow));
             bool created;
             sharedMemMutexes = new[]
-            {
-                new Mutex(false, "Global\\DXHookD3D9Shared0", out created, security),
-                new Mutex(false, "Global\\DXHookD3D9Shared1", out created, security)
-            };
+                {
+                    new Mutex(false, "Global\\DXHookD3D9Shared0", out created, security),
+                    new Mutex(false, "Global\\DXHookD3D9Shared1", out created, security)
+                };
             var ewsecurity = new EventWaitHandleSecurity();
             ewsecurity.AddAccessRule(new EventWaitHandleAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), EventWaitHandleRights.FullControl, AccessControlType.Allow));
             captureDxWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\DXHookD3D9Capture", out created, ewsecurity);
@@ -293,13 +269,7 @@
 
         public event EventHandler<EventArgs> Stopped;
 
-        public bool IsRunning
-        {
-            get
-            {
-                return this.running;
-            }
-        }
+        public bool IsRunning { get; private set; }
 
         public bool PublishCapturedWindow { get; set; }
 
@@ -307,13 +277,13 @@
 
         public void Start()
         {
-            if (this.running)
+            if (IsRunning)
             {
                 Log.Warn("already running");
                 return;
             }
 
-            running = true;
+            IsRunning = true;
             try
             {
                 Log.Debug("Capture method: {0}, Version: {1}", CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
@@ -321,13 +291,13 @@
                 preferredCaptureMethod = CaptureMethod;
                 OnStarted();
 
-                while (running)
+                while (IsRunning)
                 {
                     var start = DateTime.Now.Ticks;
 
                     CaptureLoop();
 
-                    if (running)
+                    if (IsRunning)
                     {
                         DelayInternal(start);
                     }
@@ -335,23 +305,23 @@
             }
             finally
             {
-                foreach (var imageScanner in this.imageScanners)
+                foreach (var imageScanner in imageScanners)
                 {
                     imageScanner.Stop(null);
                     // imageScanner.Dispose();
                 }
 
-                this.windowLost = false;
-                this.windowFound = false;
-                this.windowMinimized = false;
-                this.currentCaptureMethod = null;
-                this.averageCount = 0;
-                this.averageSpeed = 0;
-                this.attached = false;
-                this.extraDelay = 0;
-                this.lastImageHeight = 0;
-                this.directXErrorCount = 0;
-                this.dontUseDirectX = false;
+                windowLost = false;
+                windowFound = false;
+                windowMinimized = false;
+                currentCaptureMethod = null;
+                averageCount = 0;
+                averageSpeed = 0;
+                attached = false;
+                extraDelay = 0;
+                lastImageHeight = 0;
+                directXErrorCount = 0;
+                dontUseDirectX = false;
                 // this.lastCaptured = -1;
 
                 OnStopped();
@@ -397,7 +367,7 @@
 
         public Task StartAsync()
         {
-            return Task.Run(() => this.Start()).ContinueWith(t => this.OnUnhandledException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+            return Task.Run(() => Start()).ContinueWith(t => OnUnhandledException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private void CaptureLoop()
@@ -477,7 +447,8 @@
                     lastCaptureMethod = currentCaptureMethod.Value;
                 }
 
-                if (img == null || img.Bitmap == null)
+                if (img == null
+                    || img.Bitmap == null)
                 {
                     TraceLog.Log("No image data found.");
                     OnWindowMinimized();
@@ -488,7 +459,8 @@
 
                 if (CaptureMethod == CaptureMethod.AutoDetect)
                 {
-                    if (lastImageHeight > 0 && lastImageHeight != img.Bitmap.Height)
+                    if (lastImageHeight > 0
+                        && lastImageHeight != img.Bitmap.Height)
                     {
                         // reset capture method so we detect again on next run
                         Log.Debug("Auto-detect: Image resolution changed from {0} to {1}, reset auto-detect.", lastImageHeight, img.Bitmap.Height);
@@ -501,11 +473,11 @@
                 extraDelay = 0;
                 OnWindowFound();
 
-                if (this.PublishCapturedWindow)
+                if (PublishCapturedWindow)
                 {
                     // Log.Diag("Window captured");
                     var bmpcpy = new Bitmap(img.Bitmap);
-                    this.Publish(new WindowCaptured(bmpcpy), log: false);
+                    Publish(new WindowCaptured(bmpcpy), log: false);
                 }
 
                 var start = DateTime.Now.Ticks;
@@ -513,7 +485,7 @@
                 try
                 {
                     // scan areas, publish events;
-                    foreach (var scanner in this.imageScanners)
+                    foreach (var scanner in imageScanners)
                     {
                         scanner.Run(img.Bitmap, null);
                     }
@@ -527,7 +499,9 @@
                             img.Dispose();
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
 
                     var stop = DateTime.Now.Ticks;
                     var proc = TimeSpan.FromTicks(stop - start).Milliseconds;
@@ -577,15 +551,13 @@
                     try
                     {
                         img = CaptureDirectX(wnd);
-                        if (img != null && img.Bitmap != null)
+                        if (img != null
+                            && img.Bitmap != null)
                         {
                             Log.Info("Auto-detect: Can use DirectX");
                             return CaptureMethod.DirectX;
                         }
-                        else
-                        {
-                            Log.Warn("Auto-detect: DirectX returned empty image");
-                        }
+                        Log.Warn("Auto-detect: DirectX returned empty image");
                     }
                     catch (Exception ex)
                     {
@@ -602,7 +574,8 @@
                 try
                 {
                     img = CaptureDirectX(wnd);
-                    if (img != null && img.Bitmap != null)
+                    if (img != null
+                        && img.Bitmap != null)
                     {
                         Log.Info("Auto-detect: Can use DirectX");
                         return CaptureMethod.DirectX;
@@ -612,7 +585,6 @@
                 {
                     Log.Warn("Auto-detect: DirectX throws errors, investigate: " + ex);
                 }
-
             }
 
             try
@@ -656,8 +628,9 @@
 
             try
             {
-                img = this.CaptureWdm(wnd, false, true);
-                if (img != null && img.Bitmap != null)
+                img = CaptureWdm(wnd, false, true);
+                if (img != null
+                    && img.Bitmap != null)
                 {
                     if (!img.Bitmap.IsAllBlack())
                     {
@@ -678,7 +651,7 @@
         {
             try
             {
-                var img = this.screenCapture.GetDesktopBitmapBg(wnd, forcePrintWindow, forceBitBlt) as Bitmap;
+                var img = screenCapture.GetDesktopBitmapBg(wnd, forcePrintWindow, forceBitBlt) as Bitmap;
                 if (img == null)
                 {
                     return null;
@@ -701,7 +674,7 @@
 
         private ScreenshotResource CaptureDirectX(IntPtr wnd)
         {
-            if (!this.AttachHookToProcess())
+            if (!AttachHookToProcess())
             {
                 throw new ScreenshotCaptureException("Error attaching to DirectX");
             }
@@ -710,13 +683,14 @@
             // captureProcess.BringProcessWindowToFront();
             // Initiate the screenshot of the CaptureInterface, the appropriate event handler within the target process will take care of the rest
 
-            if (this.captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9 ||
-                this.captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9Simple)
+            if (captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9
+                ||
+                captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9Simple)
             {
                 var start = DateTime.Now.Ticks;
                 var task = Task<Screenshot>.Factory.FromAsync(
-                    (rect, timeout, callback, ctxt) => this.captureProcess.CaptureInterface.BeginGetScreenshot(rect, timeout, callback),
-                    this.captureProcess.CaptureInterface.EndGetScreenshot,
+                    (rect, timeout, callback, ctxt) => captureProcess.CaptureInterface.BeginGetScreenshot(rect, timeout, callback),
+                    captureProcess.CaptureInterface.EndGetScreenshot,
                     emptyRect,
                     waitForScreenshotTimeout,
                     null);
@@ -730,7 +704,8 @@
                     var proc = TimeSpan.FromTicks(stop - start).Milliseconds;
                     TraceLog.Log("DX Capture speed: {0}", proc);
 
-                    if (screen == null && directxRetryCount == 0)
+                    if (screen == null
+                        && directxRetryCount == 0)
                     {
                         Log.Debug("No data received from DirectX hook, retrying once.");
                         directxRetryCount++;
@@ -771,7 +746,7 @@
                     }
                 }
             }
-            else if (this.captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9SharedMem)
+            else if (captureConfig.Direct3DVersion == Direct3DVersion.Direct3D9SharedMem)
             {
                 try
                 {
@@ -782,13 +757,13 @@
                     }
 
                     captureDxWaitHandle.Set();
-                    if (this.copyDataMem == null)
+                    if (copyDataMem == null)
                     {
                         try
                         {
-                            this.copyDataMem = MemoryMappedFile.OpenExisting("CaptureHookSharedMemData", MemoryMappedFileRights.Read);
-                            this.copyDataMemAccess = this.copyDataMem.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
-                            this.copyDataMemAccess.SafeMemoryMappedViewHandle.AcquirePointer(ref this.copyDataMemPtr);
+                            copyDataMem = MemoryMappedFile.OpenExisting("CaptureHookSharedMemData", MemoryMappedFileRights.Read);
+                            copyDataMemAccess = copyDataMem.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read);
+                            copyDataMemAccess.SafeMemoryMappedViewHandle.AcquirePointer(ref copyDataMemPtr);
                         }
                         catch (FileNotFoundException)
                         {
@@ -805,8 +780,9 @@
                     }
 
                     int lastRendered;
-                    CopyData copyData = (*((CopyData*)this.copyDataMemPtr));
-                    if (copyData.height <= 0 || copyData.textureId == Guid.Empty)
+                    var copyData = (*((CopyData*)copyDataMemPtr));
+                    if (copyData.height <= 0
+                        || copyData.textureId == Guid.Empty)
                     {
                         return null;
                     }
@@ -814,37 +790,37 @@
 
                     if (lastRendered != -1)
                     {
-                        if (!this.sharedMemMutexes[lastRendered].WaitOne(1000))
+                        if (!sharedMemMutexes[lastRendered].WaitOne(1000))
                         {
                             Log.Warn("Failed acquiring shared texture lock in time (1000).");
                             return null;
                         }
-                        if (this.lastKnownTextureId != copyData.textureId)
+                        if (lastKnownTextureId != copyData.textureId)
                         {
-                            for (int i = 0; i < 2; i++)
+                            for (var i = 0; i < 2; i++)
                             {
-                                if (this.sharedTexturesAccess[i] != null)
+                                if (sharedTexturesAccess[i] != null)
                                 {
-                                    this.sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
-                                    this.sharedTexturesAccess[i].Dispose();
-                                    this.sharedTexturesAccess[i] = null;
+                                    sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
+                                    sharedTexturesAccess[i].Dispose();
+                                    sharedTexturesAccess[i] = null;
                                 }
-                                if (this.sharedTextures[i] != null)
+                                if (sharedTextures[i] != null)
                                 {
-                                    this.sharedTextures[i].Dispose();
-                                    this.sharedTextures[i] = null;
+                                    sharedTextures[i].Dispose();
+                                    sharedTextures[i] = null;
                                 }
                             }
                         }
 
-                        if (this.sharedTextures[lastRendered] == null)
+                        if (sharedTextures[lastRendered] == null)
                         {
-                            this.sharedTextures[lastRendered] = MemoryMappedFile.OpenExisting(copyData.textureId.ToString() + lastRendered, MemoryMappedFileRights.ReadWrite);
-                            this.sharedTexturesAccess[lastRendered] = this.sharedTextures[lastRendered].CreateViewAccessor(
+                            sharedTextures[lastRendered] = MemoryMappedFile.OpenExisting(copyData.textureId.ToString() + lastRendered, MemoryMappedFileRights.ReadWrite);
+                            sharedTexturesAccess[lastRendered] = sharedTextures[lastRendered].CreateViewAccessor(
                                 0,
                                 copyData.height * copyData.pitch,
                                 MemoryMappedFileAccess.ReadWrite);
-                            this.sharedTexturesAccess[lastRendered].SafeMemoryMappedViewHandle.AcquirePointer(ref sharedTexturesPtr[lastRendered]);
+                            sharedTexturesAccess[lastRendered].SafeMemoryMappedViewHandle.AcquirePointer(ref sharedTexturesPtr[lastRendered]);
                         }
 
                         var img = new Bitmap(
@@ -853,8 +829,8 @@
                             copyData.pitch,
                             PixelFormat.Format32bppRgb,
                             new IntPtr(sharedTexturesPtr[lastRendered]));
-                        this.lastKnownTextureId = copyData.textureId;
-                        result = new DxScreenshotResource(img, this.sharedMemMutexes[lastRendered]);
+                        lastKnownTextureId = copyData.textureId;
+                        result = new DxScreenshotResource(img, sharedMemMutexes[lastRendered]);
                     }
                 }
                 catch (Exception ex)
@@ -873,24 +849,24 @@
         {
             if (captureProcess != null)
             {
-                captureInterface.RemoteMessage -= this.CaptureInterfaceOnRemoteMessage;
+                captureInterface.RemoteMessage -= CaptureInterfaceOnRemoteMessage;
                 captureProcess.Dispose();
                 captureProcess = null;
-                this.attached = false;
+                attached = false;
             }
 
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
-                if (this.sharedTexturesAccess[i] != null)
+                if (sharedTexturesAccess[i] != null)
                 {
-                    this.sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
-                    this.sharedTexturesAccess[i].Dispose();
-                    this.sharedTexturesAccess[i] = null;
+                    sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
+                    sharedTexturesAccess[i].Dispose();
+                    sharedTexturesAccess[i] = null;
                 }
 
-                if (this.sharedTextures[i] != null)
+                if (sharedTextures[i] != null)
                 {
-                    bool locked = false;
+                    var locked = false;
                     try
                     {
                         locked = sharedMemMutexes[i].WaitOne(1000);
@@ -901,8 +877,8 @@
                     }
                     finally
                     {
-                        this.sharedTextures[i].Dispose();
-                        this.sharedTextures[i] = null;
+                        sharedTextures[i].Dispose();
+                        sharedTextures[i] = null;
                         if (locked)
                         {
                             sharedMemMutexes[i].ReleaseMutex();
@@ -927,9 +903,12 @@
 
         private bool AttachHookToProcess()
         {
-            if (this.attached) return true;
+            if (attached)
+            {
+                return true;
+            }
 
-            Process[] processes = Process.GetProcessesByName(HEARTHSTONE_PROCESS_NAME);
+            var processes = Process.GetProcessesByName(HEARTHSTONE_PROCESS_NAME);
 
             if (processes.Length <= 0)
             {
@@ -953,7 +932,10 @@
             //    return false;
             //}
 
-            if (HookManager.IsHooked(process.Id)) return true;
+            if (HookManager.IsHooked(process.Id))
+            {
+                return true;
+            }
 
             if (captureProcess != null)
             {
@@ -964,35 +946,35 @@
             }
 
             captureInterface = new CaptureInterface();
-            captureInterface.RemoteMessage += this.CaptureInterfaceOnRemoteMessage;
-            this.captureProcess = new CaptureProcess(process, captureConfig, captureInterface);
-            this.attached = true;
+            captureInterface.RemoteMessage += CaptureInterfaceOnRemoteMessage;
+            captureProcess = new CaptureProcess(process, captureConfig, captureInterface);
+            attached = true;
             return true;
         }
 
         private void OnWindowMinimized()
         {
-            if (!this.windowMinimized)
+            if (!windowMinimized)
             {
                 Log.Debug("Hearthstone window found, but could not capture (minimized?)");
-                this.Publish(new WindowMinimized());
+                Publish(new WindowMinimized());
             }
-            this.windowFound = false;
-            this.windowLost = false;
-            this.windowMinimized = true;
+            windowFound = false;
+            windowLost = false;
+            windowMinimized = true;
         }
 
         private void OnWindowLost()
         {
-            if (!this.windowLost)
+            if (!windowLost)
             {
                 Log.Debug("Hearthstone window is lost (not running?)");
-                this.Publish(new WindowNotFound());
+                Publish(new WindowNotFound());
             }
-            this.windowMinimized = false;
-            this.windowFound = false;
-            this.windowLost = true;
-            this.attached = false;
+            windowMinimized = false;
+            windowFound = false;
+            windowLost = true;
+            attached = false;
             currentCaptureMethod = null;
             extraDelay = 2000;
             Thread.Sleep(extraDelay);
@@ -1000,26 +982,26 @@
 
         private void OnWindowFound()
         {
-            if (!this.windowFound)
+            if (!windowFound)
             {
                 Log.Debug("Window found, and capturing.");
-                this.Publish(new WindowFound());
+                Publish(new WindowFound());
             }
-            this.windowFound = true;
-            this.windowLost = false;
-            this.windowMinimized = false;
+            windowFound = true;
+            windowLost = false;
+            windowMinimized = false;
         }
 
         public CaptureMethod CaptureMethod { get; set; }
 
         public void Stop()
         {
-            running = false;
+            IsRunning = false;
         }
 
         protected virtual void OnStarted()
         {
-            var handler = this.Started;
+            var handler = Started;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
@@ -1028,7 +1010,7 @@
 
         protected virtual void OnStopped()
         {
-            var handler = this.Stopped;
+            var handler = Stopped;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
@@ -1038,7 +1020,7 @@
         protected virtual void OnUnhandledException(Exception exception)
         {
             var e = new UnhandledExceptionEventArgs(exception, false);
-            var handler = this.UnhandledException;
+            var handler = UnhandledException;
             if (handler != null)
             {
                 handler(this, e);
@@ -1052,7 +1034,7 @@
             averageSpeed += proc;
             averageCount++;
             var average = averageSpeed / averageCount;
-            TraceLog.Log(string.Format("Desired speed: {0} (+{2}), Actual speed: {1}, Average: {3}", this.Speed, proc, delay, average));
+            TraceLog.Log(string.Format("Desired speed: {0} (+{2}), Actual speed: {1}, Average: {3}", Speed, proc, delay, average));
             if (averageCount == 100)
             {
                 averageSpeed = average;
@@ -1060,17 +1042,17 @@
             }
 
             // only adjust once per second
-            if (timerCounter < Math.Floor(1000f / this.Speed))
+            if (timerCounter < Math.Floor(1000f / Speed))
             {
                 timerCounter++;
             }
             else
             {
                 timerCounter = 0;
-                if (proc > (this.Speed + delay + delayConstant))
+                if (proc > (Speed + delay + delayConstant))
                 {
                     Log.Debug("processing taking longer then desired speed: {2}ms, actual: {0}ms. (adding {1}ms. delay)", proc, delayConstant, Speed);
-                    this.delay += delayConstant;
+                    delay += delayConstant;
                 }
                 else
                 {
@@ -1078,13 +1060,13 @@
                     {
                         if (proc + delay < (Speed + delayConstant))
                         {
-                            this.delay -= delayConstant;
+                            delay -= delayConstant;
                             Log.Debug("Removing {1}ms. delay. Delay is now: {0}", delay, delayConstant);
                         }
                     }
                 }
             }
-            var wait = this.Speed - proc + delay;
+            var wait = Speed - proc + delay;
             Thread.Sleep(wait < 0 ? 0 : wait);
         }
 
@@ -1094,7 +1076,7 @@
             {
                 Log.Info("Event ({0}): {1}", message.GetType().Name, message.Message);
             }
-            this.events.PublishOnBackgroundThread(message);
+            events.PublishOnBackgroundThread(message);
         }
 
         private void CaptureInterfaceOnRemoteMessage(MessageReceivedEventArgs message)
@@ -1105,11 +1087,11 @@
                     Log.Debug(message.Message);
                     break;
                 case MessageType.Error:
-                    this.directXErrorCount++;
+                    directXErrorCount++;
                     Log.Error(message.Message);
-                    if (this.directXErrorCount >= 10)
+                    if (directXErrorCount >= 10)
                     {
-                        this.dontUseDirectX = true;
+                        dontUseDirectX = true;
                         DettachHookFromProcess();
                     }
                     break;
@@ -1128,7 +1110,7 @@
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -1138,19 +1120,19 @@
                 captureProcess = null;
             }
 
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
-                if (this.sharedTexturesAccess[i] != null)
+                if (sharedTexturesAccess[i] != null)
                 {
-                    this.sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
-                    this.sharedTexturesAccess[i].Dispose();
-                    this.sharedTexturesAccess[i] = null;
+                    sharedTexturesAccess[i].SafeMemoryMappedViewHandle.ReleasePointer();
+                    sharedTexturesAccess[i].Dispose();
+                    sharedTexturesAccess[i] = null;
                 }
 
-                if (this.sharedTextures[i] != null)
+                if (sharedTextures[i] != null)
                 {
-                    this.sharedTextures[i].Dispose();
-                    this.sharedTextures[i] = null;
+                    sharedTextures[i].Dispose();
+                    sharedTextures[i] = null;
                 }
             }
 
@@ -1179,7 +1161,7 @@
             : base(bitmap)
         {
             this.access = access;
-            this.Mutex = mutex;
+            Mutex = mutex;
         }
 
         public DxScreenshotResource(Bitmap bitmap, Mutex mutex)
@@ -1224,19 +1206,19 @@
 
         public ScreenshotResource(Bitmap bitmap)
         {
-            this.Bitmap = bitmap;
+            Bitmap = bitmap;
         }
 
         ~ScreenshotResource()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         public Bitmap Bitmap { get; private set; }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!disposed)
             {
                 if (disposing)
                 {
@@ -1244,16 +1226,16 @@
                     Bitmap = null;
                     // ...
                 }
-                this.disposed = true;
+                disposed = true;
             }
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
     }

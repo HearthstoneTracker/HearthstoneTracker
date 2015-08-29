@@ -9,8 +9,8 @@ namespace HearthCap.Core.GameCapture.HS.Events
         public NewRound(int current, bool myTurn = false)
             : base(string.Format("New game round (current: {0})", current))
         {
-            this.Current = current;
-            this.MyTurn = myTurn;
+            Current = current;
+            MyTurn = myTurn;
         }
     }
 }

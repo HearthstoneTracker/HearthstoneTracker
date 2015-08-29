@@ -1,9 +1,8 @@
+using System;
+using HearthCap.Data;
+
 namespace HearthCap.Core.GameCapture.HS.Events
 {
-    using System;
-
-    using HearthCap.Data;
-
     /// <summary>The game ended.</summary>
     public class GameEnded : GameEvent
     {

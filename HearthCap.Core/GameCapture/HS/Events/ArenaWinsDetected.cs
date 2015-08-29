@@ -7,7 +7,7 @@ namespace HearthCap.Core.GameCapture.HS.Events
         public ArenaWinsDetected(int arenaWins)
             : base("Wins: " + arenaWins)
         {
-            this.Wins = arenaWins;
+            Wins = arenaWins;
         }
     }
 }

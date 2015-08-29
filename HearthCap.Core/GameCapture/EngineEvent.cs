@@ -1,16 +1,16 @@
+using System;
+
 namespace HearthCap.Core.GameCapture
 {
-    using System;
-
     public class EngineEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        ///     Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         public EngineEvent(string message)
         {
-            this.Message = message;
-            this.Date = DateTime.Now;
+            Message = message;
+            Date = DateTime.Now;
         }
 
         public string Message { get; set; }

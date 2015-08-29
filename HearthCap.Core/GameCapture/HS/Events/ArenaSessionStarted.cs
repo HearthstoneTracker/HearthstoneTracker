@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Core.GameCapture.HS.Events
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Core.GameCapture.HS.Events
+{
     public class ArenaSessionStarted : GameEvent
     {
         public DateTime Started { get; set; }
@@ -15,10 +15,10 @@
         public ArenaSessionStarted(DateTime started, string heroKey, int wins, int losses)
             : base("Arena started")
         {
-            this.Started = started;
-            this.HeroKey = heroKey;
-            this.Wins = wins;
-            this.Losses = losses;
+            Started = started;
+            HeroKey = heroKey;
+            Wins = wins;
+            Losses = losses;
         }
     }
 }

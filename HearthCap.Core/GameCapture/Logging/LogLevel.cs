@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Core.GameCapture.Logging
 {
-    using System;
-
     [Flags]
     public enum LogLevel
     {
@@ -11,6 +11,6 @@ namespace HearthCap.Core.GameCapture.Logging
         Info = 4,
         Diag = 8,
         Debug = 16,
-        All = Error | Warn | Info | Diag | Debug,
+        All = Error | Warn | Info | Diag | Debug
     }
 }

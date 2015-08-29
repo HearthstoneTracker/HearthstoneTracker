@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Core.GameCapture.HS.Events
-{
-    using HearthCap.Data;
+﻿using HearthCap.Data;
 
+namespace HearthCap.Core.GameCapture.HS.Events
+{
     public class GameModeChanged : GameEvent
     {
         public GameMode OldGameMode { get; protected set; }
@@ -11,8 +11,8 @@
         public GameModeChanged(GameMode oldGameMode, GameMode gameMode)
             : base(string.Format("Mode changed from {0} to {1}.", oldGameMode, gameMode))
         {
-            this.OldGameMode = oldGameMode;
-            this.GameMode = gameMode;
+            OldGameMode = oldGameMode;
+            GameMode = gameMode;
         }
     }
 }

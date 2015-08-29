@@ -1,40 +1,31 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.EngineEvents;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Core.Util;
+using HearthCap.Data;
+using HearthCap.Logger.Interface;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Core.GameCapture
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Diagnostics;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Channels;
-    using System.Runtime.Remoting.Channels.Tcp;
-    using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.EngineEvents;
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Core.Util;
-    using HearthCap.Data;
-    using HearthCap.Logger.Interface;
-
-    using NLog;
-
-    using LogManager = NLog.LogManager;
-
     public interface ILogCaptureEngine : ICaptureEngine
     {
-
     }
 
     [Export(typeof(ILogCaptureEngine))]
     public class LogCaptureEngine : ILogCaptureEngine, IDisposable,
         IHandle<RequestDecks>
     {
-        private bool running;
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private static readonly TraceLogger TraceLog = new TraceLogger(Log);
 
@@ -42,32 +33,29 @@ namespace HearthCap.Core.GameCapture
 
         private IServerInterface CaptureInterface
         {
-            get
-            {
-                return (IServerInterface)_interface;
-            }
+            get { return _interface; }
         }
 
         // private ClientCaptureInterfaceEventProxy _clientEventProxy;
 
         // private IChannel _clientServerChannel;
 
-        private string probe;
+        private readonly string probe;
 
         private bool windowFound;
 
         private bool windowLost;
 
-        private IEventAggregator events;
+        private readonly IEventAggregator events;
 
         // private Regex _loadingScreenRegex = new Regex(@"prevMode=(?<prevMode>.*) nextMode=(?<nextMode>.*)");
-        private Regex _playScreenRegex = new Regex(@"prevMode=(?<prevMode>.*) nextMode=(?<nextMode>.*)");
-        private Regex _deckRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
-        private Regex _modeRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
+        private readonly Regex _playScreenRegex = new Regex(@"prevMode=(?<prevMode>.*) nextMode=(?<nextMode>.*)");
+        private readonly Regex _deckRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
+        private readonly Regex _modeRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
         private Regex _gameStateRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
-        private Regex _turnRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
-        private Regex _gameStartRegex = new Regex(@"hero=(?<hero>.*) opponenthero=(?<opponenthero>.*) turn=(?<turn>.*) first=(?<first>.*)");
-        private Regex _gameOverRegex = new Regex(@"victory=(?<victory>.*)");
+        private readonly Regex _turnRegex = new Regex(@"prev=(?<prev>.*) next=(?<next>.*)");
+        private readonly Regex _gameStartRegex = new Regex(@"hero=(?<hero>.*) opponenthero=(?<opponenthero>.*) turn=(?<turn>.*) first=(?<first>.*)");
+        private readonly Regex _gameOverRegex = new Regex(@"victory=(?<victory>.*)");
 
         private GameMode lastGameMode;
 
@@ -88,7 +76,7 @@ namespace HearthCap.Core.GameCapture
         public LogCaptureEngine(IEventAggregator events)
         {
             this.events = events;
-            this.probe = AppDomain.CurrentDomain.BaseDirectory;
+            probe = AppDomain.CurrentDomain.BaseDirectory;
             events.Subscribe(this);
         }
 
@@ -100,33 +88,27 @@ namespace HearthCap.Core.GameCapture
 
         public bool PublishCapturedWindow { get; set; }
 
-        public bool IsRunning
-        {
-            get
-            {
-                return this.running;
-            }
-        }
+        public bool IsRunning { get; private set; }
 
         public CaptureMethod CaptureMethod { get; set; }
 
         public Task StartAsync()
         {
-            return Task.Run(() => this.Start()).ContinueWith(t => this.OnUnhandledException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+            return Task.Run(() => Start()).ContinueWith(t => OnUnhandledException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private void Start()
         {
-            if (this.running)
+            if (IsRunning)
             {
                 Log.Warn("already running");
                 return;
             }
 
-            this.running = true;
+            IsRunning = true;
             try
             {
-                Log.Debug("Capture method: {0}, Version: {1}", this.CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
+                Log.Debug("Capture method: {0}, Version: {1}", CaptureMethod, Assembly.GetEntryAssembly().GetName().Version);
                 stopRequested = false;
 
                 OnStarted();
@@ -142,15 +124,15 @@ namespace HearthCap.Core.GameCapture
                 {
                     try
                     {
-                        this._interface.Disconnect();
+                        _interface.Disconnect();
                     }
                     finally
                     {
-                        RemotingServices.Disconnect(this._interface);
+                        RemotingServices.Disconnect(_interface);
                     }
                 }
 
-                running = false;
+                IsRunning = false;
             }
         }
 
@@ -158,7 +140,7 @@ namespace HearthCap.Core.GameCapture
         {
             if (!injected)
             {
-                IntPtr wnd = IntPtr.Zero;
+                var wnd = IntPtr.Zero;
                 try
                 {
                     wnd = HearthstoneHelper.GetHearthstoneWindow();
@@ -178,17 +160,13 @@ namespace HearthCap.Core.GameCapture
 
                 Thread.Sleep(3000);
 
-                this.InitServerChannel();
-                int injectresult = -1;
+                InitServerChannel();
+                var injectresult = -1;
                 var injecttask = Task.Run(
-                    () =>
-                    {
-                        injectresult = Inject("hearthstone.exe", "HearthCapLogger.dll", "HearthCapLogger", "Loader", "Load", this.probe);
-                    });
+                    () => { injectresult = Inject("hearthstone.exe", "HearthCapLogger.dll", "HearthCapLogger", "Loader", "Load", probe); });
 
                 if (!injecttask.Wait(5000))
                 {
-
                 }
 
                 if (injectresult != 0)
@@ -207,12 +185,12 @@ namespace HearthCap.Core.GameCapture
 
             try
             {
-                bool error = false;
+                var error = false;
 
                 try
                 {
                     // .NET Remoting exceptions will throw RemotingException
-                    if (!this._interface.Ping(1000))
+                    if (!_interface.Ping(1000))
                     {
                         Log.Error("Failed to ping log engine.");
                         error = true;
@@ -233,7 +211,6 @@ namespace HearthCap.Core.GameCapture
                     OnWindowFound();
                     Thread.Sleep(1000);
                 }
-
             }
             catch (Exception e)
             {
@@ -244,14 +221,14 @@ namespace HearthCap.Core.GameCapture
 
         private void OnWindowLost()
         {
-            if (!this.windowLost)
+            if (!windowLost)
             {
                 Log.Debug("Hearthstone window is lost (not running?)");
-                this.Publish(new WindowNotFound());
+                Publish(new WindowNotFound());
             }
 
-            this.windowFound = false;
-            this.windowLost = true;
+            windowFound = false;
+            windowLost = true;
         }
 
         protected void Publish(EngineEvent message, bool log = true)
@@ -260,7 +237,7 @@ namespace HearthCap.Core.GameCapture
             {
                 Log.Info("Event ({0}): {1}", message.GetType().Name, message.Message);
             }
-            this.events.PublishOnBackgroundThread(message);
+            events.PublishOnBackgroundThread(message);
         }
 
         private void Publish(GameEvent message)
@@ -271,18 +248,18 @@ namespace HearthCap.Core.GameCapture
             //    Log.Info("Ignoring last GameEvent because scanner reset was requested.");
             //    return;
             //}
-            this.events.PublishOnBackgroundThread(message);
+            events.PublishOnBackgroundThread(message);
         }
 
         private void OnWindowFound()
         {
-            if (!this.windowFound)
+            if (!windowFound)
             {
                 Log.Debug("Window found, and capturing.");
-                this.Publish(new WindowFound());
+                Publish(new WindowFound());
             }
-            this.windowFound = true;
-            this.windowLost = false;
+            windowFound = true;
+            windowLost = false;
         }
 
         private void InitServerChannel()
@@ -290,22 +267,22 @@ namespace HearthCap.Core.GameCapture
             // Initialise the IPC server (with our instance of _serverInterface)
             try
             {
-                string channelName = "hslog";
+                var channelName = "hslog";
                 //this._interface = IpcUtil.IpcConnectClient<CaptureInterface>(channelName);
                 //this._interface.Ping();
 
-                if (this._interface != null)
+                if (_interface != null)
                 {
-                    this._interface.Disconnect();
-                    RemotingServices.Disconnect(this._interface);
-                    this._interface = null;
+                    _interface.Disconnect();
+                    RemotingServices.Disconnect(_interface);
+                    _interface = null;
                 }
 
-                this._interface = new CaptureInterface();
-                this._server = IpcUtil.IpcCreateServer<CaptureInterface>(
+                _interface = new CaptureInterface();
+                _server = IpcUtil.IpcCreateServer(
                     ref channelName,
                     WellKnownObjectMode.Singleton,
-                    this._interface);
+                    _interface);
 
                 //// Attempt to create a IpcServerChannel so that any event handlers on the client will function correctly
                 //System.Collections.IDictionary properties = new System.Collections.Hashtable();
@@ -376,10 +353,11 @@ namespace HearthCap.Core.GameCapture
                 {
                     var nextMode = GetGameMode(match.Groups["next"].Value);
 
-                    if (this.lastGameMode != nextMode && nextMode != GameMode.Unknown)
+                    if (lastGameMode != nextMode
+                        && nextMode != GameMode.Unknown)
                     {
-                        this.Publish(new GameModeChanged(lastGameMode, nextMode));
-                        this.lastGameMode = nextMode;
+                        Publish(new GameModeChanged(lastGameMode, nextMode));
+                        lastGameMode = nextMode;
                     }
                 }
             }
@@ -391,10 +369,11 @@ namespace HearthCap.Core.GameCapture
                 {
                     var nextMode = match.Groups["nextMode"].Value.ToLowerInvariant() == "true" ? GameMode.Ranked : GameMode.Casual;
 
-                    if (this.lastGameMode != nextMode && nextMode != GameMode.Unknown)
+                    if (lastGameMode != nextMode
+                        && nextMode != GameMode.Unknown)
                     {
-                        this.Publish(new GameModeChanged(lastGameMode, nextMode));
-                        this.lastGameMode = nextMode;
+                        Publish(new GameModeChanged(lastGameMode, nextMode));
+                        lastGameMode = nextMode;
                     }
                 }
             }
@@ -406,10 +385,10 @@ namespace HearthCap.Core.GameCapture
                 {
                     var nextDeck = match.Groups["next"].Value;
 
-                    if (this.lastDeck != nextDeck)
+                    if (lastDeck != nextDeck)
                     {
-                        this.Publish(new DeckDetected(nextDeck));
-                        this.lastDeck = nextDeck;
+                        Publish(new DeckDetected(nextDeck));
+                        lastDeck = nextDeck;
                     }
                 }
             }
@@ -424,8 +403,8 @@ namespace HearthCap.Core.GameCapture
                     var hero = match.Groups["hero"].Value.ToLowerInvariant();
                     var opponenthero = match.Groups["opponenthero"].Value.ToLowerInvariant();
                     var turn = match.Groups["turn"].Value;
-                    int.TryParse(turn, out this.turns);
-                    this.first = match.Groups["first"].Value == "1";
+                    int.TryParse(turn, out turns);
+                    first = match.Groups["first"].Value == "1";
 
                     gameStarted = new GameStarted(lastGameMode, DateTime.Now, hero, opponenthero, first, lastDeck);
                     Publish(gameStarted);
@@ -438,13 +417,14 @@ namespace HearthCap.Core.GameCapture
                 if (match.Success)
                 {
                     var next = match.Groups["next"].Value;
-                    int nextturn = 0;
+                    var nextturn = 0;
                     if (int.TryParse(next, out nextturn))
                     {
-                        if (nextturn != 0 && this.turns != nextturn)
+                        if (nextturn != 0
+                            && turns != nextturn)
                         {
-                            this.Publish(new NewRound(nextturn, first ? nextturn % 2 == 1 : nextturn % 2 == 0));
-                            this.turns = nextturn;
+                            Publish(new NewRound(nextturn, first ? nextturn % 2 == 1 : nextturn % 2 == 0));
+                            turns = nextturn;
                         }
                     }
                 }
@@ -465,25 +445,26 @@ namespace HearthCap.Core.GameCapture
             //    }
             //}
 
-            if (message.StartsWith("[EXT] GameOver") && gameStarted != null)
+            if (message.StartsWith("[EXT] GameOver")
+                && gameStarted != null)
             {
                 var match = _gameOverRegex.Match(message);
                 if (match.Success)
                 {
                     var victory = match.Groups["victory"].Value;
 
-                    Publish(new GameEnded()
-                    {
-                        Deck = gameStarted.Deck,
-                        EndTime = DateTime.Now,
-                        GameMode = gameStarted.GameMode,
-                        GoFirst = gameStarted.GoFirst,
-                        Hero = gameStarted.Hero,
-                        OpponentHero = gameStarted.OpponentHero,
-                        StartTime = gameStarted.StartTime,
-                        Turns = this.turns,
-                        Victory = victory == "1"
-                    });
+                    Publish(new GameEnded
+                        {
+                            Deck = gameStarted.Deck,
+                            EndTime = DateTime.Now,
+                            GameMode = gameStarted.GameMode,
+                            GoFirst = gameStarted.GoFirst,
+                            Hero = gameStarted.Hero,
+                            OpponentHero = gameStarted.OpponentHero,
+                            StartTime = gameStarted.StartTime,
+                            Turns = turns,
+                            Victory = victory == "1"
+                        });
                     gameStarted = null;
                 }
             }
@@ -522,7 +503,9 @@ namespace HearthCap.Core.GameCapture
         public void Stop()
         {
             if (!IsRunning)
+            {
                 return;
+            }
 
             stopRequested = true;
         }
@@ -530,7 +513,7 @@ namespace HearthCap.Core.GameCapture
         protected virtual void OnUnhandledException(Exception exception)
         {
             var e = new UnhandledExceptionEventArgs(exception, false);
-            var handler = this.UnhandledException;
+            var handler = UnhandledException;
             if (handler != null)
             {
                 handler(this, e);
@@ -540,23 +523,23 @@ namespace HearthCap.Core.GameCapture
         public event EventHandler<UnhandledExceptionEventArgs> UnhandledException;
 
         [DllImport("HearthCapLoader.dll", EntryPoint = "Inject", SetLastError = true, CallingConvention = CallingConvention.Cdecl)]
-        static extern int Inject(
-            [In, MarshalAs(UnmanagedType.LPWStr)] string target,
-            [In, MarshalAs(UnmanagedType.LPWStr)] string dll,
-            [In, MarshalAs(UnmanagedType.LPWStr)] string name_space,
-            [In, MarshalAs(UnmanagedType.LPWStr)] string class_name,
-            [In, MarshalAs(UnmanagedType.LPWStr)] string method_name,
-            [In, MarshalAs(UnmanagedType.LPWStr)] string probe);
+        private static extern int Inject(
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string target,
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string dll,
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string name_space,
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string class_name,
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string method_name,
+            [In] [MarshalAs(UnmanagedType.LPWStr)] string probe);
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(RequestDecks message)
@@ -566,7 +549,7 @@ namespace HearthCap.Core.GameCapture
 
         protected virtual void OnStarted()
         {
-            var handler = this.Started;
+            var handler = Started;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
@@ -575,7 +558,7 @@ namespace HearthCap.Core.GameCapture
 
         protected virtual void OnStopped()
         {
-            var handler = this.Stopped;
+            var handler = Stopped;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);

@@ -8,7 +8,7 @@ namespace HearthCap.Core.GameCapture.HS.Events
             : base("Losses: " + losses)
 
         {
-            this.Losses = losses;
+            Losses = losses;
         }
     }
 }

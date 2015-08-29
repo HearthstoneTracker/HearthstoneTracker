@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Drawing;
+
 namespace HearthCap.Core.GameCapture.HS
 {
-    using System.Collections.Generic;
-    using System.Drawing;
-
     public interface IScanAreaProvider
     {
         IEnumerable<ScanAreas> GetScanAreas();

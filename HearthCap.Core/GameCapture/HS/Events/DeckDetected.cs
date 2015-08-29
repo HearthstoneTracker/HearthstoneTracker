@@ -5,9 +5,9 @@
         public string Key { get; protected set; }
 
         public DeckDetected(string key)
-            :base("Deck detected: " + key)
+            : base("Deck detected: " + key)
         {
-            this.Key = key;
+            Key = key;
         }
     }
 }
