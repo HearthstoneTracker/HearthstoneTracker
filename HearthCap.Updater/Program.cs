@@ -1,19 +1,20 @@
-﻿namespace HearthCap.Updater
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+
+namespace HearthCap.Updater
 {
-    using System;
-    using System.IO;
-    using System.Windows.Forms;
-
-    using NLog;
-    using NLog.Config;
-    using NLog.Targets;
-
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length <= 0)
+            {
                 return;
+            }
 
             var config = new LoggingConfiguration();
             var logfile = new FileTarget();
@@ -31,10 +32,10 @@
             config.AddTarget("logfile", logfile);
             config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, logfile));
             LogManager.Configuration = config;
-            
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new UpdateProgress(args));             
+            Application.Run(new UpdateProgress(args));
         }
     }
 }

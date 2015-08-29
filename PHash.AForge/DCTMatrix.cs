@@ -1,11 +1,11 @@
+using System;
+using System.Collections.Generic;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
+
 namespace PHash.AForge
 {
-    using System;
-    using System.Collections.Generic;
-
-    using MathNet.Numerics.LinearAlgebra;
-    using MathNet.Numerics.LinearAlgebra.Double;
-
     public static class DctMatrix
     {
         private static readonly IDictionary<int, Matrix<double>> dctMatrixes = new Dictionary<int, Matrix<double>>();
@@ -15,10 +15,10 @@ namespace PHash.AForge
             dctMatrixes[8] = CreateDCTMatrix(8);
             dctMatrixes[32] = CreateDCTMatrix(32);
 
-            MathNet.Numerics.Control.CheckDistributionParameters = false;
+            Control.CheckDistributionParameters = false;
             // MathNet.Numerics.Control.ParallelizeOrder = 32;
             // MathNet.Numerics.Control.UseManaged();
-            MathNet.Numerics.Control.UseSingleThread();
+            Control.UseSingleThread();
         }
 
         public static Matrix<double> CreateDCTMatrix(int n)
@@ -30,15 +30,15 @@ namespace PHash.AForge
 
             var matrix = new DenseMatrix(n);
             var val = 1d / Math.Sqrt(n);
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
             {
                 matrix[0, i] = val;
             }
 
             var sqrt2 = Math.Sqrt(2d / n);
-            for (int x = 0; x < n; x++)
+            for (var x = 0; x < n; x++)
             {
-                for (int y = 1; y < n; y++)
+                for (var y = 1; y < n; y++)
                 {
                     matrix[x, y] = sqrt2 * Math.Cos((Math.PI / 2 / n) * y * (2 * x + 1));
                 }

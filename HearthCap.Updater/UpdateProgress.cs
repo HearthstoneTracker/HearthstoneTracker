@@ -1,23 +1,21 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 
 namespace HearthCap.Updater
 {
-    using System.Diagnostics;
-    using System.IO;
-    using System.IO.Compression;
-    using System.Runtime.InteropServices;
-    using System.Threading;
-
-    using NLog;
-
     public partial class UpdateProgress : Form
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        private bool isTesting = false;
+        private readonly bool isTesting;
 
         private readonly string installFile;
 
@@ -30,40 +28,41 @@ namespace HearthCap.Updater
         public UpdateProgress(string[] args)
         {
             InitializeComponent();
-            this.Shown += OnShown;
+            Shown += OnShown;
 
-            this.installFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, args[0]);
+            installFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, args[0]);
 
             if (args.Length >= 2)
             {
-                this.installPath = args[1];
-                if (this.installPath.EndsWith("\""))
+                installPath = args[1];
+                if (installPath.EndsWith("\""))
                 {
-                    this.installPath = args[1].Substring(0, args[1].Length - 1);
+                    installPath = args[1].Substring(0, args[1].Length - 1);
                 }
             }
             else
             {
                 // this.installPath = AppDomain.CurrentDomain.BaseDirectory;
-                this.installPath = Directory.GetCurrentDirectory();
+                installPath = Directory.GetCurrentDirectory();
             }
 
-            this.isTesting = args.Any(x => x.Contains("--testing"));
+            isTesting = args.Any(x => x.Contains("--testing"));
         }
 
         private void OnShown(object sender, EventArgs eventArgs)
         {
-            Task.Run(() => this.DoUpdate());
+            Task.Run(() => DoUpdate());
         }
 
         private void DoUpdate()
         {
             var success = false;
-            
+
             try
             {
                 var retrycount = 0;
-                while (retrycount < 5 && IsRunning())
+                while (retrycount < 5
+                       && IsRunning())
                 {
                     Thread.Sleep(1000);
                     retrycount++;
@@ -84,16 +83,16 @@ namespace HearthCap.Updater
                 }
                 else
                 {
-                    success = DoUpdate(this.installFile);
-                    File.Delete(this.installFile);
+                    success = DoUpdate(installFile);
+                    File.Delete(installFile);
                 }
 
                 Thread.Sleep(500);
                 var targs = success ? "-updated" : "-updatefailed";
-                var pi = new ProcessStartInfo(Path.Combine(this.installPath, "HearthCap.exe"), targs)
-                             {
-                                 WorkingDirectory = this.installPath
-                             };
+                var pi = new ProcessStartInfo(Path.Combine(installPath, "HearthCap.exe"), targs)
+                    {
+                        WorkingDirectory = installPath
+                    };
                 Process.Start(pi);
             }
             catch (Exception ex)
@@ -102,7 +101,7 @@ namespace HearthCap.Updater
             }
             finally
             {
-                this.Hide();
+                Hide();
                 Application.Exit();
             }
         }
@@ -113,11 +112,11 @@ namespace HearthCap.Updater
             try
             {
                 // Cleanup temp files
-                var dir = new DirectoryInfo(this.installPath);
+                var dir = new DirectoryInfo(installPath);
                 var tempFiles = dir.GetFiles().Where(
                     x =>
-                    x.Extension.ToLower().EndsWith(".pendingoverwrite") ||
-                    x.Extension.ToLower().EndsWith(".tmp")).ToList();
+                        x.Extension.ToLower().EndsWith(".pendingoverwrite") ||
+                        x.Extension.ToLower().EndsWith(".tmp")).ToList();
                 foreach (var tempFile in tempFiles)
                 {
                     try
@@ -125,34 +124,38 @@ namespace HearthCap.Updater
                         Log.Warn("Deleting tempory file: " + tempFile.Name);
                         File.Delete(tempFile.FullName);
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
 
                 // HACK: work-around Capture.dll in use.
                 // Rename it to .tmp so it will get cleaned on next update
-                var fromCapDll = Path.Combine(this.installPath, "Capture.dll");
-                var toCapDll = Path.Combine(this.installPath, "Capture.dll.tmp");
+                var fromCapDll = Path.Combine(installPath, "Capture.dll");
+                var toCapDll = Path.Combine(installPath, "Capture.dll.tmp");
                 File.Move(fromCapDll, toCapDll);
 
-                using(var file = File.OpenRead(zipfile))
-                using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
+                using (var file = File.OpenRead(zipfile))
                 {
-                    foreach (var entry in zip.Entries)
+                    using (var zip = new ZipArchive(file, ZipArchiveMode.Read))
                     {
-                        var targetFile = Path.Combine(this.installPath, entry.FullName);
-                        Log.Debug("Extracting: " + entry.FullName);
-                        try
+                        foreach (var entry in zip.Entries)
                         {
-                            entry.ExtractToFile(targetFile, true);
-                        }
-                        catch (IOException ex)
-                        {
-                            Log.Error(ex);
-                            Log.Info("Renaming inaccesable file: " + targetFile);
-                            var tmpTargetFile = targetFile + ".tmp";
-                            File.Move(targetFile, tmpTargetFile);
+                            var targetFile = Path.Combine(installPath, entry.FullName);
                             Log.Debug("Extracting: " + entry.FullName);
-                            entry.ExtractToFile(targetFile, true);
+                            try
+                            {
+                                entry.ExtractToFile(targetFile, true);
+                            }
+                            catch (IOException ex)
+                            {
+                                Log.Error(ex);
+                                Log.Info("Renaming inaccesable file: " + targetFile);
+                                var tmpTargetFile = targetFile + ".tmp";
+                                File.Move(targetFile, tmpTargetFile);
+                                Log.Debug("Extracting: " + entry.FullName);
+                                entry.ExtractToFile(targetFile, true);
+                            }
                         }
                     }
                 }
@@ -209,6 +212,6 @@ namespace HearthCap.Updater
         }
 
         [DllImport("user32.dll", EntryPoint = "FindWindow", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
     }
 }

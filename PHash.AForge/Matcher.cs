@@ -1,9 +1,8 @@
-﻿namespace PHash.AForge
+﻿using System.Drawing;
+using AForge.Imaging;
+
+namespace PHash.AForge
 {
-    using System.Drawing;
-
-    using global::AForge.Imaging;
-
     public class Matcher : ITemplateMatcher
     {
         public float IsMatch(Bitmap source, Bitmap template, float threshold = 0.80f)

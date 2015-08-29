@@ -1,8 +1,8 @@
+using System.Drawing;
+using System.Drawing.Imaging;
+
 namespace PHash
 {
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     public interface IPerceptualHash
     {
         ulong Create(Bitmap image);

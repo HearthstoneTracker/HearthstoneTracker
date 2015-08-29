@@ -1,19 +1,19 @@
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+
 namespace PHash
 {
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-
     /// <summary>Generate and match perceptual hashes from images.</summary>
     public abstract class PerceptualHash : IPerceptualHash
     {
         /// <summary>Calculates the hamming distance between two hashes.</summary>
         /// <param name="a">First hash.</param>
         /// <param name="b">Second hash.</param>
-        /// <returns>The <see cref="int"/>.</returns>
+        /// <returns>The <see cref="int" />.</returns>
         public static int HammingDistance(ulong hash1, ulong hash2)
         {
-            ulong x = hash1 ^ hash2;
+            var x = hash1 ^ hash2;
             const ulong m1 = 0x5555555555555555UL;
             const ulong m2 = 0x3333333333333333UL;
             const ulong h01 = 0x0101010101010101UL;
@@ -27,14 +27,14 @@ namespace PHash
         /// <summary>Find best matching hash in a given set.</summary>
         /// <param name="hash">The hash to compare.</param>
         /// <param name="set">Set of hashes to match against.</param>
-        /// <returns>The <see cref="CompareResult"/>.</returns>
+        /// <returns>The <see cref="CompareResult" />.</returns>
         public static CompareResult FindBest(ulong hash, IList<ulong> set)
         {
-            int minIndex = -1;
-            int minDist = sizeof(ulong) * 8;
+            var minIndex = -1;
+            var minDist = sizeof (ulong) * 8;
             for (var i = 0; i < set.Count; i++)
             {
-                int dist = HammingDistance(hash, set[i]);
+                var dist = HammingDistance(hash, set[i]);
                 if (dist < minDist)
                 {
                     minDist = dist;
@@ -49,7 +49,7 @@ namespace PHash
         /// <param name="n">Number of matches to return</param>
         /// <param name="hash">The hash to compare.</param>
         /// <param name="set">Set of hashes to match against.</param>
-        /// <returns>Returns <see cref="IEnumerable{T}"/> of <see cref="CompareResult"/> with n best matches</returns>
+        /// <returns>Returns <see cref="IEnumerable{T}" /> of <see cref="CompareResult" /> with n best matches</returns>
         public static IEnumerable<CompareResult> FindNBest(int n, ulong hash, IList<ulong> set)
         {
             if (n == 1)
@@ -62,7 +62,7 @@ namespace PHash
 
             for (var i = 0; i < set.Count; i++)
             {
-                int dist = HammingDistance(hash, set[i]);
+                var dist = HammingDistance(hash, set[i]);
                 for (var j = 0; j < nbestDistances.Count; j++)
                 {
                     if (dist < nbestDistances[j])
@@ -89,9 +89,9 @@ namespace PHash
             return nbestObjects;
         }
 
-        /// <summary>Create hash from a <see cref="Bitmap"/>.</summary>
+        /// <summary>Create hash from a <see cref="Bitmap" />.</summary>
         /// <param name="image">Bitmap to create a hash from.</param>
-        /// <returns>The hash of type <see cref="ulong"/>.</returns>
+        /// <returns>The hash of type <see cref="ulong" />.</returns>
         public abstract ulong Create(BitmapData image);
 
         public virtual ulong Create(Bitmap image)
@@ -105,13 +105,13 @@ namespace PHash
         /// <summary>Hash compare result.</summary>
         public class CompareResult
         {
-            /// <summary>Initializes a new instance of the <see cref="CompareResult"/> class.</summary>
+            /// <summary>Initializes a new instance of the <see cref="CompareResult" /> class.</summary>
             /// <param name="index">The index.</param>
             /// <param name="distance">The distance.</param>
             public CompareResult(int index, int distance)
             {
-                this.Index = index;
-                this.Distance = distance;
+                Index = index;
+                Distance = distance;
             }
 
             /// <summary>Gets or sets the index of the item in the original list.</summary>

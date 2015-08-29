@@ -1,13 +1,11 @@
-﻿namespace PHash.AForge
+﻿using System;
+using System.Drawing.Imaging;
+using AForge.Imaging;
+using AForge.Imaging.Filters;
+using MathNet.Numerics.LinearAlgebra.Double;
+
+namespace PHash.AForge
 {
-    using System;
-    using System.Drawing.Imaging;
-
-    using global::AForge.Imaging;
-    using global::AForge.Imaging.Filters;
-
-    using MathNet.Numerics.LinearAlgebra.Double;
-
     public class AForgePerceptualHash : PerceptualHash
     {
         private const int dctsize = 8;
@@ -23,25 +21,27 @@
             var data = new DenseMatrix(32, 32);
 
             using (var unmanaged = new UnmanagedImage(image))
-            using (var filtered = ExtractChannel.Apply(unmanaged))
             {
-                Filter.ApplyInPlace(filtered);
-
-                using (var imgdata = Resize.Apply(filtered))
+                using (var filtered = ExtractChannel.Apply(unmanaged))
                 {
-                    unsafe
+                    Filter.ApplyInPlace(filtered);
+
+                    using (var imgdata = Resize.Apply(filtered))
                     {
-                        byte* src = (byte*)imgdata.ImageData.ToPointer();
-                        int offset = imgdata.Stride - imgdata.Width;
-                        int width = imgdata.Width;
-                        int height = imgdata.Height;
-                        for (int y = 0; y < height; y++)
+                        unsafe
                         {
-                            for (int x = 0; x < width; x++, src++)
+                            var src = (byte*)imgdata.ImageData.ToPointer();
+                            var offset = imgdata.Stride - imgdata.Width;
+                            var width = imgdata.Width;
+                            var height = imgdata.Height;
+                            for (var y = 0; y < height; y++)
                             {
-                                data.At(y, x, (float)*src / 255);
+                                for (var x = 0; x < width; x++, src++)
+                                {
+                                    data.At(y, x, (float)*src / 255);
+                                }
+                                src += offset;
                             }
-                            src += offset;
                         }
                     }
                 }
@@ -50,10 +50,10 @@
             var dct = DctMatrix.FastDCT(data);
 
             var vals = new double[dctsize * dctsize];
-            int valscount = 0;
-            for (int r = 1; r <= dctsize; r++)
+            var valscount = 0;
+            for (var r = 1; r <= dctsize; r++)
             {
-                for (int c = 1; c <= dctsize; c++)
+                for (var c = 1; c <= dctsize; c++)
                 {
                     vals[valscount] = dct.At(r, c);
                     ++valscount;
@@ -65,11 +65,11 @@
             Array.Sort(sorted);
 
             var mid = dctsize * dctsize / 2;
-            double median = (sorted[mid - 1] + sorted[mid]) / 2d;
+            var median = (sorted[mid - 1] + sorted[mid]) / 2d;
 
             ulong index = 1;
             ulong result = 0;
-            for (int i = 0; i < dctsize * dctsize; i++)
+            for (var i = 0; i < dctsize * dctsize; i++)
             {
                 if (vals[i] > median)
                 {
