@@ -264,11 +264,12 @@ namespace HearthCap.Features.AutoUpdate
                     var updaterFile = Path.Combine(_tempPath, HearthcapUpdaterExe);
 
                     // Download
-                    using (var webclient = new WebClient { CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore) })
+                    using (var wcFilePackage = new WebClient { CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore) })
+                    using (var wcUpdater = new WebClient { CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore) })
                     {
                         await Task.WhenAll(
-                            webclient.DownloadFileTaskAsync(updaterFileUrl, updaterFile),
-                            webclient.DownloadFileTaskAsync(filePackageUrl, file)
+                            wcUpdater.DownloadFileTaskAsync(updaterFileUrl, updaterFile),
+                            wcFilePackage.DownloadFileTaskAsync(filePackageUrl, file)
                             );
                     }
 
