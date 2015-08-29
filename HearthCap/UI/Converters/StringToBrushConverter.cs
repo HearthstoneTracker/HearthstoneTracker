@@ -1,4 +1,9 @@
-﻿#if NETFX_CORE
+﻿using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
+
+#if NETFX_CORE
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -11,11 +16,6 @@ using Windows.UI.Xaml.Media;
 
 namespace HearthCap.UI.Converters
 {
-    using System;
-    using System.Globalization;
-    using System.Windows.Data;
-    using System.Windows.Media;
-
     public class StringToBrushConverter : IValueConverter
     {
 #if NETFX_CORE
@@ -33,7 +33,7 @@ namespace HearthCap.UI.Converters
 #else
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return this.InternalConvert(value, targetType, parameter);
+            return InternalConvert(value, targetType, parameter);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -50,9 +50,9 @@ namespace HearthCap.UI.Converters
                 return null;
             }
 
-            string colorName = value.ToString();
-            SolidColorBrush scb = new SolidColorBrush();
-            switch (colorName as string)
+            var colorName = value.ToString();
+            var scb = new SolidColorBrush();
+            switch (colorName)
             {
                 case "Magenta":
                     scb.Color = Colors.Magenta;

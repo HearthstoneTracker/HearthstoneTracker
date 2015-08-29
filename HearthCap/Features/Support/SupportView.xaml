@@ -16,8 +16,8 @@
     </UserControl.Resources>-->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid Margin="0 0 8 0">
             <StackPanel Orientation="Vertical">
@@ -28,16 +28,16 @@
                     <Grid VerticalAlignment="Center"
                           HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBox Name="Email"
                                  Text="{Binding Email, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Stretch"></TextBox>
+                                 HorizontalAlignment="Stretch" />
                         <StackPanel Orientation="Horizontal"
                                     Grid.Row="1">
                             <TextBlock FontWeight="Bold"
-                                       Text="Note: "></TextBlock>
+                                       Text="Note: " />
                             <TextBlock>if you want updates, use a real e-mail address.</TextBlock>
                         </StackPanel>
                     </Grid>
@@ -48,9 +48,9 @@
                                         Style="{StaticResource hccFormStyle2Big}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBox Name="Subject"></TextBox>
+                        <TextBox Name="Subject" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="themessage"
@@ -59,13 +59,13 @@
                                         Style="{StaticResource hccFormStyle2Big}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBox Name="Message"
                                  Text="{Binding Message, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                                  AcceptsReturn="True"
                                  TextWrapping="Wrap"
-                                 Height="200"></TextBox>
+                                 Height="200" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="attachemail"
@@ -84,11 +84,15 @@
                   Margin="4">
                 <StackPanel HorizontalAlignment="Left">
                     <Button Name="Cancel"
-                            Width="100">Cancel</Button>
+                            Width="100">
+                        Cancel
+                    </Button>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Right">
                     <Button Name="Send"
-                            Width="100">Send</Button>
+                            Width="100">
+                        Send
+                    </Button>
                 </StackPanel>
             </Grid>
         </Grid>

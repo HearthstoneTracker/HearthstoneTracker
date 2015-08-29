@@ -16,19 +16,19 @@
                                     Tag="{Binding ElementName=Url}"
                                     Style="{StaticResource hccFormStyle2}">
                 <TextBox Name="Url"
-                         IsReadOnly="False"></TextBox>
+                         IsReadOnly="False" />
             </HeaderedContentControl>
             <HeaderedContentControl x:Name="theapikey"
                                     Header="API Key:"
                                     Tag="{Binding ElementName=ApiKey}"
                                     Style="{StaticResource hccFormStyle2}">
-                <TextBox Name="ApiKey"></TextBox>
+                <TextBox Name="ApiKey" />
             </HeaderedContentControl>
             <HeaderedContentControl x:Name="thesecretkey"
                                     Header="Secret Key:"
                                     Tag="{Binding ElementName=SecretKey}"
                                     Style="{StaticResource hccFormStyle2}">
-                <TextBox Name="SecretKey"></TextBox>
+                <TextBox Name="SecretKey" />
             </HeaderedContentControl>
             <HeaderedContentControl x:Name="theenabled"
                                     Header="Enabled?"
@@ -42,7 +42,7 @@
                 <Button Name="Save"
                         Width="100"
                         HorizontalAlignment="Right"
-                        Content="Save"></Button>
+                        Content="Save" />
             </Grid>
         </StackPanel>
     </Grid>

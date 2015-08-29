@@ -16,11 +16,11 @@
         <Setter Property="behaviors:BubbleScrollEventManager.BubbleScrollEvent"
                 Value="True" />
         <Setter Property="BorderThickness"
-                Value="0"></Setter>
+                Value="0" />
         <Setter Property="Background"
-                Value="Transparent"></Setter>
+                Value="Transparent" />
         <Setter Property="ItemContainerStyle"
-                Value="{StaticResource MetroListBoxItem}"></Setter>
+                Value="{StaticResource MetroListBoxItem}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -60,7 +60,7 @@
                             <Image Source="{Binding Key, Converter={StaticResource heroKeyToImage}}"
                                    Height="40"
                                    Width="40"
-                                   Margin="4"></Image>
+                                   Margin="4" />
                             <!--<TextBlock HorizontalAlignment="Center"
                                                Text="{Binding Path=Name}"
                                                TextWrapping="Wrap"

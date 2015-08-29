@@ -1,8 +1,8 @@
-﻿namespace HearthCap.Features.Analytics
-{
-    using System;
-    using GoogleAnalyticsTracker.Core;
+﻿using System;
+using GoogleAnalyticsTracker.Core;
 
+namespace HearthCap.Features.Analytics
+{
     public sealed class HsAnalyticsSession : AnalyticsSession
     {
         protected override string GetUniqueVisitorId()
@@ -32,7 +32,7 @@
         protected override int GetPreviousVisitTime()
         {
             var cookie = ParseCookie(Cookie);
-            int previousVisitTime = cookie.PreviousVisitTime;
+            var previousVisitTime = cookie.PreviousVisitTime;
             cookie.PreviousVisitTime = GetCurrentVisitTime();
             SaveCookie(cookie);
             if (previousVisitTime == 0)
@@ -55,20 +55,20 @@
         {
             var parts = new string[4];
             cookie.Split(new[] { '.' }, 4, StringSplitOptions.RemoveEmptyEntries).CopyTo(parts, 0);
-            string uniqueVisitorId = parts[0];
+            var uniqueVisitorId = parts[0];
             int firstVisitTime;
             int previousVisitTime;
             int sessionCount;
             int.TryParse(parts[1], out firstVisitTime);
             int.TryParse(parts[2], out previousVisitTime);
             int.TryParse(parts[3], out sessionCount);
-            return new AnalyticsCookie()
-                       {
-                           UniqueVisitorId = uniqueVisitorId,
-                           FirstVisitTime = firstVisitTime,
-                           PreviousVisitTime = previousVisitTime,
-                           SessionCount = sessionCount
-                       };
+            return new AnalyticsCookie
+                {
+                    UniqueVisitorId = uniqueVisitorId,
+                    FirstVisitTime = firstVisitTime,
+                    PreviousVisitTime = previousVisitTime,
+                    SessionCount = sessionCount
+                };
         }
 
         private void SaveCookie(AnalyticsCookie cookie)

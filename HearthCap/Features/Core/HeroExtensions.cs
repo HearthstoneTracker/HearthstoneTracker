@@ -1,12 +1,10 @@
+using System;
+using System.Windows.Media;
+using HearthCap.Data;
+using Color = System.Drawing.Color;
+
 namespace HearthCap.Features.Core
 {
-    using System;
-    using System.Windows.Media;
-
-    using HearthCap.Data;
-
-    using Color = System.Drawing.Color;
-
     public static class HeroExtensions
     {
         public static Brush GetBrush(this Hero hero)

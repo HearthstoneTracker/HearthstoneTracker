@@ -1,10 +1,9 @@
-﻿namespace HearthCap.Features.TextFiles
+﻿using System;
+using System.IO;
+using Caliburn.Micro;
+
+namespace HearthCap.Features.TextFiles
 {
-    using System;
-    using System.IO;
-
-    using Caliburn.Micro;
-
     public class TextFileModel : PropertyChangedBase
     {
         private const int cutoff = 40;
@@ -21,53 +20,44 @@
 
         public Guid Id
         {
-            get
-            {
-                return this.id;
-            }
+            get { return id; }
             set
             {
-                if (value.Equals(this.id))
+                if (value.Equals(id))
                 {
                     return;
                 }
-                this.id = value;
-                this.NotifyOfPropertyChange(() => this.Id);
+                id = value;
+                NotifyOfPropertyChange(() => Id);
             }
         }
 
         public string Filename
         {
-            get
-            {
-                return this.filename;
-            }
+            get { return filename; }
             set
             {
-                if (value == this.filename)
+                if (value == filename)
                 {
                     return;
                 }
-                this.filename = value;
-                this.NotifyOfPropertyChange(() => this.Filename);
-                this.NotifyOfPropertyChange(() => this.ShortFilename);
+                filename = value;
+                NotifyOfPropertyChange(() => Filename);
+                NotifyOfPropertyChange(() => ShortFilename);
             }
         }
 
         public string Template
         {
-            get
-            {
-                return this.template;
-            }
+            get { return template; }
             set
             {
-                if (value == this.template)
+                if (value == template)
                 {
                     return;
                 }
-                this.template = value;
-                this.NotifyOfPropertyChange(() => this.Template);
+                template = value;
+                NotifyOfPropertyChange(() => Template);
             }
         }
 
@@ -75,7 +65,7 @@
         {
             get
             {
-                var info = new FileInfo(this.Filename);
+                var info = new FileInfo(Filename);
                 if (info.FullName.Length <= cutoff)
                 {
                     return info.FullName;
@@ -90,7 +80,10 @@
                 {
                     return filename;
                 }
-                if (filename.Length >= cutoff) return filename;
+                if (filename.Length >= cutoff)
+                {
+                    return filename;
+                }
 
                 if (info.FullName.Length > cutoff)
                 {

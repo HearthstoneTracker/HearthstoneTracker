@@ -1,55 +1,47 @@
-﻿namespace HearthCap.Features.Games.LatestGames
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Linq.Dynamic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Threading;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Analytics;
+using HearthCap.Features.Core;
+using HearthCap.Features.Decks;
+using HearthCap.Features.Decks.ModelMappers;
+using HearthCap.Features.GameManager.Events;
+using HearthCap.Features.Games.Models;
+using HearthCap.Features.Games.Statistics;
+using HearthCap.Framework;
+using HearthCap.Shell;
+using HearthCap.Shell.Events;
+using HearthCap.Shell.Tabs;
+using HearthCap.Util;
+using Action = System.Action;
+using LogManager = NLog.LogManager;
+
+namespace HearthCap.Features.Games.LatestGames
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity.SqlServer;
-    using System.Linq;
-    using System.Linq.Dynamic;
-    using System.Linq.Expressions;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Threading;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Analytics;
-    using HearthCap.Features.ArenaSessions;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.Decks;
-    using HearthCap.Features.Decks.ModelMappers;
-    using HearthCap.Features.GameManager;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.Games.EditGame;
-    using HearthCap.Features.Games.Models;
-    using HearthCap.Features.Games.Statistics;
-    using HearthCap.Framework;
-    using HearthCap.Shell;
-    using HearthCap.Shell.Events;
-    using HearthCap.Shell.Tabs;
-    using HearthCap.Util;
-
-    using NLog;
-
-    using Action = System.Action;
-
     [Export(typeof(ITab))]
     [Export(typeof(LatestGamesViewModel))]
     public class LatestGamesViewModel : TabViewModel,
-                                        IHandle<GameResultAdded>,
-                                        IHandle<GameResultUpdated>,
-                                        IHandle<GameResultDeleted>,
-                                        IHandle<SelectedGameChanged>,
-                                        IHandle<RefreshAll>,
-                                        IHandle<DeckUpdated>
+        IHandle<GameResultAdded>,
+        IHandle<GameResultUpdated>,
+        IHandle<GameResultDeleted>,
+        IHandle<SelectedGameChanged>,
+        IHandle<RefreshAll>,
+        IHandle<DeckUpdated>
     {
         #region Static Fields
 
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         #endregion
 
@@ -59,7 +51,7 @@
 
         private readonly Func<HearthStatsDbContext> dbContext;
 
-        private readonly GameManager gameManager;
+        private readonly GameManager.GameManager gameManager;
 
         private readonly IEventAggregator events;
 
@@ -83,33 +75,29 @@
 
         private GameResultModel selectedGame;
 
-        private bool firstTimeLoaded = false;
+        private bool firstTimeLoaded;
 
         private Hero filterHero;
 
         private readonly BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
-        private GameResultTotalsModel totals;
-
         private Hero filterOpponentHero;
 
         private bool needRefresh = true;
 
-        private ICollectionView gameResultsCV;
+        private readonly IObservableCollection<ServerItemModel> servers = new BindableCollection<ServerItemModel>(BindableServerCollection.Instance);
 
-        private IObservableCollection<ServerItemModel> servers = new BindableCollection<ServerItemModel>(BindableServerCollection.Instance);
-
-        private BindableCollection<DeckModel> decks = new BindableCollection<DeckModel>();
+        private readonly BindableCollection<DeckModel> decks = new BindableCollection<DeckModel>();
 
         private ServerItemModel filterServer;
 
-        private readonly DateFilter dateFilter = new DateFilter() { ShowAllTime = true };
+        private readonly DateFilter dateFilter = new DateFilter { ShowAllTime = true };
 
         private int totalCount;
 
         private string search;
 
-        private BindableCollection<GameResultModel> selectedGames = new BindableCollection<GameResultModel>();
+        private readonly BindableCollection<GameResultModel> selectedGames = new BindableCollection<GameResultModel>();
 
         private IDisposable loadMoreTicket;
 
@@ -118,7 +106,7 @@
         #region Constructors and Destructors
 
         [ImportingConstructor]
-        public LatestGamesViewModel(IEventAggregator events, IRepository<GameResult> gameRepository, IDeckManager deckManager, Func<HearthStatsDbContext> dbContext, GameManager gameManager)
+        public LatestGamesViewModel(IEventAggregator events, IRepository<GameResult> gameRepository, IDeckManager deckManager, Func<HearthStatsDbContext> dbContext, GameManager.GameManager gameManager)
         {
             IsNotifying = false;
             this.events = events;
@@ -126,19 +114,19 @@
             this.deckManager = deckManager;
             this.dbContext = dbContext;
             this.gameManager = gameManager;
-            this.Order = 1;
-            this.DisplayName = "Games";
+            Order = 1;
+            DisplayName = "Games";
             this.events.Subscribe(this);
-            this.totals = new GameResultTotalsModel();
-            gameResultsCV = CollectionViewSource.GetDefaultView(this.gameResults);
+            Totals = new GameResultTotalsModel();
+            GameResultsCV = CollectionViewSource.GetDefaultView(gameResults);
 
-            gameResultsCV.SortDescriptions.Add(new SortDescription("Started", ListSortDirection.Descending));
+            GameResultsCV.SortDescriptions.Add(new SortDescription("Started", ListSortDirection.Descending));
             servers.Insert(0, new ServerItemModel(""));
 
             dateFilter.From = DateTime.Now.AddMonths(-1).SetToBeginOfDay();
             Busy = new BusyWatcher();
             dateFilter.DateChanged += DateFilterOnPropertyChanged;
-            this.PropertyChanged += this.OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         #endregion
@@ -159,194 +147,140 @@
 
         public IObservableCollection<DeckModel> Decks
         {
-            get
-            {
-                return this.decks;
-            }
+            get { return decks; }
         }
 
         public IObservableCollection<ServerItemModel> Servers
         {
-            get
-            {
-                return servers;
-            }
+            get { return servers; }
         }
 
         public ServerItemModel FilterServer
         {
-            get
-            {
-                return this.filterServer;
-            }
+            get { return filterServer; }
             set
             {
-                if (Equals(value, this.filterServer))
+                if (Equals(value, filterServer))
                 {
                     return;
                 }
-                this.filterServer = value;
+                filterServer = value;
                 RefreshDecks();
-                this.NotifyOfPropertyChange(() => this.FilterServer);
+                NotifyOfPropertyChange(() => FilterServer);
             }
         }
 
-        public GameResultTotalsModel Totals
-        {
-            get
-            {
-                return totals;
-            }
-        }
+        public GameResultTotalsModel Totals { get; private set; }
 
         public IObservableCollection<Hero> Heroes
         {
-            get
-            {
-                return heroes;
-            }
+            get { return heroes; }
         }
 
         public Hero FilterHero
         {
-            get
-            {
-                return this.filterHero;
-            }
+            get { return filterHero; }
             set
             {
-                if (Equals(value, this.filterHero))
+                if (Equals(value, filterHero))
                 {
                     return;
                 }
-                this.filterHero = value;
-                this.NotifyOfPropertyChange(() => this.FilterHero);
+                filterHero = value;
+                NotifyOfPropertyChange(() => FilterHero);
             }
         }
 
         public Hero FilterOpponentHero
         {
-            get
-            {
-                return this.filterOpponentHero;
-            }
+            get { return filterOpponentHero; }
             set
             {
-                if (Equals(value, this.filterOpponentHero))
+                if (Equals(value, filterOpponentHero))
                 {
                     return;
                 }
-                this.filterOpponentHero = value;
-                this.NotifyOfPropertyChange(() => this.FilterOpponentHero);
+                filterOpponentHero = value;
+                NotifyOfPropertyChange(() => FilterOpponentHero);
             }
         }
 
         public DeckModel FilterDeck
         {
-            get
-            {
-                return this.filterDeck;
-            }
+            get { return filterDeck; }
             set
             {
-                if (Equals(value, this.filterDeck))
+                if (Equals(value, filterDeck))
                 {
                     return;
                 }
-                this.filterDeck = value;
-                this.NotifyOfPropertyChange(() => this.FilterDeck);
+                filterDeck = value;
+                NotifyOfPropertyChange(() => FilterDeck);
             }
         }
 
         public DateFilter DateFilter
         {
-            get
-            {
-                return dateFilter;
-            }
+            get { return dateFilter; }
         }
 
         public string FilterGameMode
         {
-            get
-            {
-                return this.filterGameMode;
-            }
+            get { return filterGameMode; }
             set
             {
-                if (value == this.filterGameMode)
+                if (value == filterGameMode)
                 {
                     return;
                 }
-                this.filterGameMode = value;
-                this.NotifyOfPropertyChange(() => this.FilterGameMode);
+                filterGameMode = value;
+                NotifyOfPropertyChange(() => FilterGameMode);
             }
         }
 
         public BindableCollection<string> GameModes
         {
-            get
-            {
-                return this.gameModes;
-            }
+            get { return gameModes; }
         }
 
         public IObservableCollection<GameResultModel> GameResults
         {
-            get
-            {
-                return this.gameResults;
-            }
+            get { return gameResults; }
         }
 
-        public ICollectionView GameResultsCV
-        {
-            get
-            {
-                return gameResultsCV;
-            }
-        }
+        public ICollectionView GameResultsCV { get; private set; }
 
         public GameResultModel SelectedGame
         {
-            get
-            {
-                return this.selectedGame;
-            }
+            get { return selectedGame; }
             set
             {
-                if (Equals(value, this.selectedGame))
+                if (Equals(value, selectedGame))
                 {
                     return;
                 }
-                this.selectedGame = value;
-                this.NotifyOfPropertyChange(() => this.SelectedGame);
+                selectedGame = value;
+                NotifyOfPropertyChange(() => SelectedGame);
             }
         }
 
         public string Search
         {
-            get
-            {
-                return this.search;
-            }
+            get { return search; }
             set
             {
-                if (value == this.search)
+                if (value == search)
                 {
                     return;
                 }
-                this.search = value;
-                this.NotifyOfPropertyChange(() => this.Search);
+                search = value;
+                NotifyOfPropertyChange(() => Search);
             }
         }
 
         public BindableCollection<GameResultModel> SelectedGames
         {
-            get
-            {
-                return selectedGames;
-            }
+            get { return selectedGames; }
         }
 
         #endregion
@@ -362,10 +296,15 @@
 
         public async Task DeleteSelectedGames()
         {
-            if (SelectedGames.Count == 0) return;
+            if (SelectedGames.Count == 0)
+            {
+                return;
+            }
 
             if (MessageBox.Show(string.Format("Delete {0} games?", SelectedGames.Count), "Delete games?", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
                 return;
+            }
 
             var selectedGames = SelectedGames.ToList();
             foreach (var game in selectedGames)
@@ -375,58 +314,60 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameResultAdded message)
         {
-            this.gameResults.Insert(0, message.GameResult);
-            this.SelectedGame = message.GameResult;
+            gameResults.Insert(0, message.GameResult);
+            SelectedGame = message.GameResult;
             RefreshStats();
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameResultUpdated message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    using (PauseNotify.For(this))
                     {
-                        var hasGame = this.gameResults.FirstOrDefault(x => x.Id == message.GameResultId);
-                        if (hasGame != null)
+                        using (PauseNotify.For(this))
                         {
-                            var newgame = gameRepository.FirstOrDefault(x => x.Id == message.GameResultId);
-                            hasGame.MapFrom(newgame);
-                            RefreshStats();
+                            var hasGame = gameResults.FirstOrDefault(x => x.Id == message.GameResultId);
+                            if (hasGame != null)
+                            {
+                                var newgame = gameRepository.FirstOrDefault(x => x.Id == message.GameResultId);
+                                hasGame.MapFrom(newgame);
+                                RefreshStats();
+                            }
                         }
-                    }
-                });
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameResultDeleted message)
         {
-            var index = this.gameResults.FindIndex(x => x.Id == message.GameId);
+            var index = gameResults.FindIndex(x => x.Id == message.GameId);
             if (index >= 0)
             {
-                this.gameResults.RemoveAt(index);
+                gameResults.RemoveAt(index);
 
-                if (SelectedGame != null && SelectedGame.Id == message.GameId)
+                if (SelectedGame != null
+                    && SelectedGame.Id == message.GameId)
                 {
                     if (index > 0)
                     {
-                        SelectedGame = this.GameResults[index - 1];
+                        SelectedGame = GameResults[index - 1];
                     }
-                    if (index == 0 && this.GameResults.Count > 0)
+                    if (index == 0
+                        && GameResults.Count > 0)
                     {
-                        SelectedGame = this.GameResults[0];
+                        SelectedGame = GameResults[0];
                     }
                 }
 
@@ -441,7 +382,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(SelectedGameChanged message)
@@ -457,15 +398,16 @@
                 return;
             }
 
-            if (SelectedGame != null && message.Game.Id == SelectedGame.Id)
+            if (SelectedGame != null
+                && message.Game.Id == SelectedGame.Id)
             {
                 return;
             }
 
-            var hasGame = this.gameResults.FirstOrDefault(x => x.Id == message.Game.Id);
+            var hasGame = gameResults.FirstOrDefault(x => x.Id == message.Game.Id);
             if (hasGame != null)
             {
-                this.SelectedGame = hasGame;
+                SelectedGame = hasGame;
             }
             //Execute.OnUIThread(
             //    () =>
@@ -493,9 +435,9 @@
         }
 
         /// <summary>
-        /// Called when an attached view's Loaded event fires.
+        ///     Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewLoaded(object view)
         {
             if (!firstTimeLoaded)
@@ -509,7 +451,8 @@
 
         private Expression<Func<GameResult, bool>> GetFilterExpression()
         {
-            var query = PredicateBuilder.True<GameResult>(); ;
+            var query = PredicateBuilder.True<GameResult>();
+            ;
             if (dateFilter.From != null)
             {
                 var filterFromDate = dateFilter.From.Value.SetToBeginOfDay();
@@ -521,9 +464,10 @@
                 query = query.And(x => x.Started <= filterToDate);
             }
 
-            if (this.FilterServer != null && !String.IsNullOrEmpty(this.FilterServer.Name))
+            if (FilterServer != null
+                && !String.IsNullOrEmpty(FilterServer.Name))
             {
-                var serverName = this.FilterServer.Name;
+                var serverName = FilterServer.Name;
                 query = query.And(x => x.Server == serverName);
             }
 
@@ -536,17 +480,20 @@
                 }
             }
 
-            if (FilterDeck != null && FilterDeck.Id != Guid.Empty)
+            if (FilterDeck != null
+                && FilterDeck.Id != Guid.Empty)
             {
                 query = query.And(x => x.Deck.Id == FilterDeck.Id);
             }
 
-            if (FilterHero != null && !String.IsNullOrEmpty(FilterHero.Key))
+            if (FilterHero != null
+                && !String.IsNullOrEmpty(FilterHero.Key))
             {
                 query = query.And(x => x.Hero.Id == FilterHero.Id);
             }
 
-            if (FilterOpponentHero != null && !String.IsNullOrEmpty(FilterOpponentHero.Key))
+            if (FilterOpponentHero != null
+                && !String.IsNullOrEmpty(FilterOpponentHero.Key))
             {
                 query = query.And(x => x.OpponentHero.Id == FilterOpponentHero.Id);
             }
@@ -555,7 +502,7 @@
                 var s = Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var keyword in s)
                 {
-                    string keyword1 = keyword;
+                    var keyword1 = keyword;
                     query = query.And(x =>
                         x.Notes.ToLower().Contains(keyword1) ||
                         x.Hero.ClassName.ToLower().Contains(keyword1) ||
@@ -571,14 +518,15 @@
         {
             var expr = filter ?? GetFilterExpression();
             Task.Run(() => CurrentStats.RefreshFrom(dbContext, expr));
-            Task.Run(() => this.totals.Update(dbContext, expr));
+            Task.Run(() => Totals.Update(dbContext, expr));
         }
 
         public void ScrollChanged(ScrollChangedEventArgs e)
         {
             if (e.VerticalOffset >= e.ExtentHeight - (e.ViewportHeight * 2))
             {
-                if (!Busy.IsBusy && gameResults.Count < totalCount)
+                if (!Busy.IsBusy
+                    && gameResults.Count < totalCount)
                 {
                     needRefresh = true;
                     LoadMore();
@@ -590,54 +538,53 @@
         {
             EnsureInitialized();
             Application.Current.Dispatcher.BeginInvoke((Action)(() =>
-            {
-                if (needRefresh)
                 {
-                    needRefresh = false;
-                    if (loadMoreTicket != null)
+                    if (needRefresh)
                     {
-                        return;
-                    }
-                    this.loadMoreTicket = Busy.GetTicket();
-                    Task.Run(
-                        async () =>
+                        needRefresh = false;
+                        if (loadMoreTicket != null)
                         {
-                            var oldSelected = SelectedGame;
-                            if (clearValues)
-                            {
-                                this.gameResults.Clear();
-                            }
-                            var newgames = new List<GameResultModel>();
-                            var latest = (await gameRepository.ToListAsync(
-                                query =>
+                            return;
+                        }
+                        loadMoreTicket = Busy.GetTicket();
+                        Task.Run(
+                            async () =>
                                 {
-                                    query = query.Where(this.GetFilterExpression());
-                                    query = AddOrderByExpression(query);
-                                    return query.Skip(clearValues ? 0 : this.gameResults.Count)
-                                        .Take(50);
+                                    var oldSelected = SelectedGame;
+                                    if (clearValues)
+                                    {
+                                        gameResults.Clear();
+                                    }
+                                    var newgames = new List<GameResultModel>();
+                                    var latest = (await gameRepository.ToListAsync(
+                                        query =>
+                                            {
+                                                query = query.Where(GetFilterExpression());
+                                                query = AddOrderByExpression(query);
+                                                return query.Skip(clearValues ? 0 : gameResults.Count)
+                                                    .Take(50);
+                                            })).ToModel();
+                                    totalCount = gameRepository.Query(x => x.Where(GetFilterExpression()).Count());
 
-                                })).ToModel();
-                            totalCount = gameRepository.Query(x => x.Where(GetFilterExpression()).Count());
-
-                            newgames.AddRange(latest);
-                            this.gameResults.AddRange(newgames);
-                            if (oldSelected != null)
-                            {
-                                var foundold = gameResults.FirstOrDefault(x => x.Id == oldSelected.Id);
-                                if (foundold != null)
-                                {
-                                    SelectedGame = foundold;
-                                }
-                                else
-                                {
-                                    SelectedGame = null;
-                                }
-                            }
-                            loadMoreTicket.Dispose();
-                            loadMoreTicket = null;
-                        });
-                }
-            }), DispatcherPriority.ContextIdle);
+                                    newgames.AddRange(latest);
+                                    gameResults.AddRange(newgames);
+                                    if (oldSelected != null)
+                                    {
+                                        var foundold = gameResults.FirstOrDefault(x => x.Id == oldSelected.Id);
+                                        if (foundold != null)
+                                        {
+                                            SelectedGame = foundold;
+                                        }
+                                        else
+                                        {
+                                            SelectedGame = null;
+                                        }
+                                    }
+                                    loadMoreTicket.Dispose();
+                                    loadMoreTicket = null;
+                                });
+                    }
+                }), DispatcherPriority.ContextIdle);
         }
 
         public void Sorting(DataGridSortingEventArgs args)
@@ -647,7 +594,7 @@
 
         private IQueryable<GameResult> AddOrderByExpression(IQueryable<GameResult> query)
         {
-            foreach (var sd in gameResultsCV.SortDescriptions)
+            foreach (var sd in GameResultsCV.SortDescriptions)
             {
                 //if (sd.PropertyName == "Duration")
                 //{
@@ -688,7 +635,8 @@
 
         private void RefreshDecks()
         {
-            if (FilterServer != null && !String.IsNullOrEmpty(FilterServer.Name))
+            if (FilterServer != null
+                && !String.IsNullOrEmpty(FilterServer.Name))
             {
                 var decks = deckManager.GetDecks(FilterServer.Name).Select(x => x.ToModel());
                 this.decks.Clear();
@@ -710,7 +658,10 @@
                 if (oldSelDeck != null)
                 {
                     var newSelectedDeck = this.decks.FirstOrDefault(x => x.Id == oldSelDeck.Id);
-                    if (newSelectedDeck != null) FilterDeck = newSelectedDeck;
+                    if (newSelectedDeck != null)
+                    {
+                        FilterDeck = newSelectedDeck;
+                    }
                 }
             }
         }
@@ -741,7 +692,7 @@
 
                         //    // EditGameViewModel.Load(SelectedGame);
                         //}
-                        this.events.PublishOnUIThread(new SelectedGameChanged(this, SelectedGame));
+                        events.PublishOnUIThread(new SelectedGameChanged(this, SelectedGame));
                         break;
                     case "FilterServer":
                     case "FilterHero":
@@ -757,7 +708,7 @@
         #endregion
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(RefreshAll message)
@@ -766,26 +717,27 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(DeckUpdated message)
         {
             if (message.Deck == null)
             {
-                this.RefreshDecks();
+                RefreshDecks();
                 return;
             }
 
-            var found = this.Decks.FirstOrDefault(x => x.Id == message.Deck.Id);
+            var found = Decks.FirstOrDefault(x => x.Id == message.Deck.Id);
             if (found != null)
             {
                 found.MapFrom(message.Deck);
             }
 
-            foreach (var gameResult in this.gameResults)
+            foreach (var gameResult in gameResults)
             {
-                if (gameResult.Deck != null && gameResult.Deck.Id == message.Deck.Id)
+                if (gameResult.Deck != null
+                    && gameResult.Deck.Id == message.Deck.Id)
                 {
                     gameResult.Deck = message.Deck;
                 }

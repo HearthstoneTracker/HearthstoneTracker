@@ -1,7 +1,7 @@
+using HearthCap.Shell.UserPreferences;
+
 namespace HearthCap.Logging
 {
-    using HearthCap.Shell.UserPreferences;
-
     public class DataDirectorySettings : RegistrySettings
     {
         public DataDirectorySettings()
@@ -11,14 +11,8 @@ namespace HearthCap.Logging
 
         public string DataDirectory
         {
-            get
-            {
-                return this.GetOrCreate("DataDirectory", string.Empty);
-            }
-            set
-            {
-                this.SetValue("DataDirectory", value);
-            }
+            get { return GetOrCreate("DataDirectory", string.Empty); }
+            set { SetValue("DataDirectory", value); }
         }
     }
 }

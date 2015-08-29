@@ -1,30 +1,26 @@
-﻿namespace HearthCap.Features.Decks
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+using HearthCap.Core.GameCapture.HS.Commands;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Features.Core;
+using HearthCap.Features.Decks.ModelMappers;
+using HearthCap.Shell.Flyouts;
+using MahApps.Metro.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
+
+namespace HearthCap.Features.Decks
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Media.Imaging;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
-    using HearthCap.Core.GameCapture.HS.Commands;
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.Decks.ModelMappers;
-    using HearthCap.Shell.Flyouts;
-
-    using MahApps.Metro.Controls;
-
-    using Microsoft.WindowsAPICodePack.Dialogs;
-
     [Export(typeof(IFlyout))]
     public class DeckSettingsViewModel : FlyoutViewModel,
         IHandle<DeckScreenshotTaken>,
@@ -65,62 +61,50 @@
             this.deckManager = deckManager;
 
             SetPosition(Position.Left);
-            this.Name = Flyouts.Decks;
-            this.Header = this.DisplayName = "Decks:";
+            Name = Flyouts.Decks;
+            Header = DisplayName = "Decks:";
             // note the setting of backing field instead of property, to not trigger deck refreshing yet.
-            this.selectedServer = servers.Default ?? servers.First();
+            selectedServer = servers.Default ?? servers.First();
             events.Subscribe(this);
             CanTakeScreenshot = true;
         }
 
         public bool ShowHiddenDecks
         {
-            get
-            {
-                return this.showHiddenDecks;
-            }
+            get { return showHiddenDecks; }
             set
             {
-                if (value.Equals(this.showHiddenDecks))
+                if (value.Equals(showHiddenDecks))
                 {
                     return;
                 }
-                this.showHiddenDecks = value;
-                this.NotifyOfPropertyChange(() => this.ShowHiddenDecks);
+                showHiddenDecks = value;
+                NotifyOfPropertyChange(() => ShowHiddenDecks);
                 RefreshDecks();
             }
         }
 
         public BindableCollection<AvailableDecksModel> AvailableDecks
         {
-            get
-            {
-                return availableDecks;
-            }
+            get { return availableDecks; }
         }
 
         public BindableCollection<DeckModel> Decks
         {
-            get
-            {
-                return this.decks;
-            }
+            get { return decks; }
         }
 
         public string DeckName
         {
-            get
-            {
-                return this.deckName;
-            }
+            get { return deckName; }
             set
             {
-                if (value == this.deckName)
+                if (value == deckName)
                 {
                     return;
                 }
-                this.deckName = value;
-                this.NotifyOfPropertyChange(() => this.DeckName);
+                deckName = value;
+                NotifyOfPropertyChange(() => DeckName);
             }
         }
 
@@ -130,7 +114,7 @@
             {
                 var lst = new List<string>();
                 lst.Add("");
-                for (int i = 1; i <= 9; i++)
+                for (var i = 1; i <= 9; i++)
                 {
                     lst.Add(i.ToString(CultureInfo.InvariantCulture));
                 }
@@ -140,51 +124,42 @@
 
         public string DeckSlot
         {
-            get
-            {
-                return this.deckSlot;
-            }
+            get { return deckSlot; }
             set
             {
-                if (value == this.deckSlot)
+                if (value == deckSlot)
                 {
                     return;
                 }
-                this.deckSlot = value;
-                this.NotifyOfPropertyChange(() => this.DeckSlot);
+                deckSlot = value;
+                NotifyOfPropertyChange(() => DeckSlot);
             }
         }
 
         public string DeckNotes
         {
-            get
-            {
-                return this.deckNotes;
-            }
+            get { return deckNotes; }
             set
             {
-                if (value == this.deckNotes)
+                if (value == deckNotes)
                 {
                     return;
                 }
-                this.deckNotes = value;
-                this.NotifyOfPropertyChange(() => this.DeckNotes);
+                deckNotes = value;
+                NotifyOfPropertyChange(() => DeckNotes);
             }
         }
 
         public DeckModel SelectedDeck
         {
-            get
-            {
-                return this.selectedDeck;
-            }
+            get { return selectedDeck; }
             set
             {
-                if (Equals(value, this.selectedDeck))
+                if (Equals(value, selectedDeck))
                 {
                     return;
                 }
-                this.selectedDeck = value;
+                selectedDeck = value;
                 if (selectedDeck != null)
                 {
                     DeckName = selectedDeck.Name;
@@ -205,64 +180,52 @@
                     DeckScreenshot = null;
                 }
                 CancelTakeScreenshot();
-                this.NotifyOfPropertyChange(() => this.SelectedDeck);
-                this.NotifyOfPropertyChange(() => this.CanDeleteDeck);
+                NotifyOfPropertyChange(() => SelectedDeck);
+                NotifyOfPropertyChange(() => CanDeleteDeck);
             }
         }
 
         public BindableServerCollection Servers
         {
-            get
-            {
-                return this.servers;
-            }
+            get { return servers; }
         }
 
         public ServerItemModel SelectedServer
         {
-            get
-            {
-                return this.selectedServer;
-            }
+            get { return selectedServer; }
             set
             {
-                if (Equals(value, this.selectedServer))
+                if (Equals(value, selectedServer))
                 {
                     return;
                 }
-                this.selectedServer = value;
+                selectedServer = value;
                 RefreshDecks();
-                this.NotifyOfPropertyChange(() => this.SelectedServer);
+                NotifyOfPropertyChange(() => SelectedServer);
             }
         }
 
         public bool CanTakeScreenshot
         {
-            get
-            {
-                return this.canTakeScreenshot;
-            }
+            get { return canTakeScreenshot; }
             set
             {
-                if (value.Equals(this.canTakeScreenshot))
+                if (value.Equals(canTakeScreenshot))
                 {
                     return;
                 }
-                this.canTakeScreenshot = value;
-                this.NotifyOfPropertyChange(() => this.CanTakeScreenshot);
+                canTakeScreenshot = value;
+                NotifyOfPropertyChange(() => CanTakeScreenshot);
             }
         }
 
         public BitmapImage DeckScreenshot
         {
-            get
-            {
-                return this.deckScreenshot;
-            }
+            get { return deckScreenshot; }
             set
             {
-                this.deckScreenshot = value;
-                this.NotifyOfPropertyChange(() => this.DeckScreenshot);
+                deckScreenshot = value;
+                NotifyOfPropertyChange(() => DeckScreenshot);
             }
         }
 
@@ -277,20 +240,20 @@
             if (CanTakeScreenshot == false)
             {
                 CanTakeScreenshot = true;
-                events.PublishOnBackgroundThread(new RequestDeckScreenshot()
-                {
-                    Cancel = true
-                });
+                events.PublishOnBackgroundThread(new RequestDeckScreenshot
+                    {
+                        Cancel = true
+                    });
             }
         }
 
         public void AddDeck()
         {
-            var deck = new DeckModel()
-                           {
-                               Name = "New deck",
-                               Server = SelectedServer.Name
-                           };
+            var deck = new DeckModel
+                {
+                    Name = "New deck",
+                    Server = SelectedServer.Name
+                };
             deckManager.AddDeck(deck);
 
             RefreshDecks();
@@ -325,10 +288,7 @@
 
         public bool CanDeleteDeck
         {
-            get
-            {
-                return SelectedDeck != null && !SelectedDeck.Deleted;
-            }
+            get { return SelectedDeck != null && !SelectedDeck.Deleted; }
         }
 
         [Dependencies("DeckName", "HasNewScreenshot", "DeckSlot", "DeckNotes")]
@@ -366,13 +326,13 @@
         [Dependencies("DeckName")]
         public void SaveAsNewDeck()
         {
-            var deck = new DeckModel()
-            {
-                Name = DeckName,
-                Server = SelectedServer.Name,
-                Key = DeckSlot,
-                Notes = DeckNotes
-            };
+            var deck = new DeckModel
+                {
+                    Name = DeckName,
+                    Server = SelectedServer.Name,
+                    Key = DeckSlot,
+                    Notes = DeckNotes
+                };
             deckManager.AddDeck(deck);
             UpdateDeckImageFromBitmapImage(deck);
 
@@ -410,7 +370,7 @@
                 AvailableDecks[start].SelectedDeck.Key = string.Empty;
                 deckManager.UpdateDeck(AvailableDecks[start].SelectedDeck, true);
             }
-            for (int i = start + 1; i < 9; i++)
+            for (var i = start + 1; i < 9; i++)
             {
                 if (AvailableDecks[i].SelectedDeck != null)
                 {
@@ -429,26 +389,29 @@
 
         public void SaveScreenshotToDisk()
         {
-            if (SelectedDeck == null || DeckScreenshot == null)
+            if (SelectedDeck == null
+                || DeckScreenshot == null)
+            {
                 return;
+            }
 
             var invalid = new string(Path.GetInvalidFileNameChars());
-            var defaultFilename = invalid.Aggregate(this.DeckName, (current, c) => current.Replace(c.ToString(CultureInfo.InvariantCulture), "_"));
+            var defaultFilename = invalid.Aggregate(DeckName, (current, c) => current.Replace(c.ToString(CultureInfo.InvariantCulture), "_"));
             defaultFilename += ".png";
             var dialog = new CommonSaveFileDialog
-                             {
-                                 OverwritePrompt = true,
-                                 DefaultExtension = ".png",
-                                 DefaultFileName = defaultFilename,
-                                 EnsureValidNames = true,
-                                 Title = "Save deck screenshot",
-                                 AllowPropertyEditing = false,
-                                 RestoreDirectory = true,
-                                 Filters =
-                                     {
-                                         new CommonFileDialogFilter("PNG", ".png")
-                                     }
-                             };
+                {
+                    OverwritePrompt = true,
+                    DefaultExtension = ".png",
+                    DefaultFileName = defaultFilename,
+                    EnsureValidNames = true,
+                    Title = "Save deck screenshot",
+                    AllowPropertyEditing = false,
+                    RestoreDirectory = true,
+                    Filters =
+                        {
+                            new CommonFileDialogFilter("PNG", ".png")
+                        }
+                };
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var filename = dialog.FileName;
@@ -466,8 +429,8 @@
             // deckManager.ClearCache();
             var oldSelected = SelectedDeck;
             var d = deckManager.GetDecks(SelectedServer.Name, ShowHiddenDecks);
-            this.Decks.Clear();
-            this.Decks.AddRange(d.ToModel());
+            Decks.Clear();
+            Decks.AddRange(d.ToModel());
             if (oldSelected != null)
             {
                 SelectedDeck = Decks.FirstOrDefault(x => x.Id == oldSelected.Id);
@@ -480,16 +443,16 @@
         {
             if (AvailableDecks.Count == 0)
             {
-                for (int i = 1; i <= 9; i++)
+                for (var i = 1; i <= 9; i++)
                 {
                     var key = i.ToString(CultureInfo.InvariantCulture);
-                    var model = new AvailableDecksModel()
-                                    {
-                                        Slot = key,
-                                        AvailableDecks =
-                                            new BindableCollection<DeckModel>(this.Decks.Where(x => x.Key == key || String.IsNullOrEmpty(x.Key))),
-                                        SelectedDeck = this.Decks.FirstOrDefault(x => x.Key == key)
-                                    };
+                    var model = new AvailableDecksModel
+                        {
+                            Slot = key,
+                            AvailableDecks =
+                                new BindableCollection<DeckModel>(Decks.Where(x => x.Key == key || String.IsNullOrEmpty(x.Key))),
+                            SelectedDeck = Decks.FirstOrDefault(x => x.Key == key)
+                        };
                     model.PropertyChanged += AvailableDecksModel_OnPropertyChanged;
                     AvailableDecks.Add(model);
                 }
@@ -497,13 +460,13 @@
             }
             else
             {
-                for (int i = 1; i <= 9; i++)
+                for (var i = 1; i <= 9; i++)
                 {
                     var key = i.ToString(CultureInfo.InvariantCulture);
                     AvailableDecks[i - 1].AvailableDecks =
-                        new BindableCollection<DeckModel>(this.Decks.Where(x => x.Key == key || String.IsNullOrEmpty(x.Key)));
+                        new BindableCollection<DeckModel>(Decks.Where(x => x.Key == key || String.IsNullOrEmpty(x.Key)));
                     AvailableDecks[i - 1].PropertyChanged -= AvailableDecksModel_OnPropertyChanged;
-                    AvailableDecks[i - 1].SelectedDeck = this.Decks.FirstOrDefault(x => x.Key == key);
+                    AvailableDecks[i - 1].SelectedDeck = Decks.FirstOrDefault(x => x.Key == key);
                     AvailableDecks[i - 1].PropertyChanged += AvailableDecksModel_OnPropertyChanged;
                 }
                 NotifyOfPropertyChange(() => AvailableDecks);
@@ -511,7 +474,7 @@
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -533,13 +496,15 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(DeckScreenshotTaken message)
         {
             if (SelectedDeck == null)
+            {
                 return;
+            }
 
             SetDeckScreenshot(message.Image);
             message.Image.Dispose();
@@ -554,38 +519,38 @@
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    var ms = new MemoryStream(image);
-                    var bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    bi.StreamSource = ms;
-                    bi.EndInit();
-                    DeckScreenshot = bi;
-                    ms.Dispose();
-                });
+                    {
+                        var ms = new MemoryStream(image);
+                        var bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.CacheOption = BitmapCacheOption.OnLoad;
+                        bi.StreamSource = ms;
+                        bi.EndInit();
+                        DeckScreenshot = bi;
+                        ms.Dispose();
+                    });
         }
 
         private void SetDeckScreenshot(Bitmap image)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    var ms = new MemoryStream();
-                    var bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    image.Save(ms, ImageFormat.Bmp);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    bi.StreamSource = ms;
-                    bi.EndInit();
-                    DeckScreenshot = bi;
-                    ms.Dispose();
-                });
+                    {
+                        var ms = new MemoryStream();
+                        var bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.CacheOption = BitmapCacheOption.OnLoad;
+                        image.Save(ms, ImageFormat.Bmp);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        bi.StreamSource = ms;
+                        bi.EndInit();
+                        DeckScreenshot = bi;
+                        ms.Dispose();
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(SelectDeck message)

@@ -1,16 +1,16 @@
-﻿namespace HearthCap.UI.Behaviors.DragDrop
-{
-    using System.Windows;
-    using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
 
+namespace HearthCap.UI.Behaviors.DragDrop
+{
     public static class UIHelper
     {
         public static T FindVisualParent<T>(UIElement element) where T : UIElement
         {
-            UIElement parent = element;
+            var parent = element;
             while (parent != null)
             {
-                T correctlyTyped = parent as T;
+                var correctlyTyped = parent as T;
                 if (correctlyTyped != null)
                 {
                     return correctlyTyped;

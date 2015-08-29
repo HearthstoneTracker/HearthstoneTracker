@@ -1,67 +1,76 @@
-﻿namespace HearthCap.Shell.Dialogs
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
+namespace HearthCap.Shell.Dialogs
+{
     public partial class DialogConductorView : UserControl
     {
-        bool disabled;
+        private bool disabled;
 
         public DialogConductorView()
         {
             InitializeComponent();
             // this.ActiveItem.ContentChanged += this.OnTransitionCompleted;
-            this.Loaded += this.OnLoad;
+            Loaded += OnLoad;
         }
 
-        void OnLoad(object sender, RoutedEventArgs e)
+        private void OnLoad(object sender, RoutedEventArgs e)
         {
-            if (this.disabled) this.DisableBackground();
+            if (disabled)
+            {
+                DisableBackground();
+            }
         }
 
-        void OnTransitionCompleted(object sender, EventArgs e)
+        private void OnTransitionCompleted(object sender, EventArgs e)
         {
-            if (this.ActiveItem.Content == null)
-                this.EnableBackground();
+            if (ActiveItem.Content == null)
+            {
+                EnableBackground();
+            }
             else
             {
-                this.DisableBackground();
+                DisableBackground();
 
-                var control = this.ActiveItem.Content as Control;
+                var control = ActiveItem.Content as Control;
                 if (control != null)
+                {
                     control.Focus();
+                }
             }
         }
 
         public void EnableBackground()
         {
-            this.disabled = false;
-            this.ChangeEnabledState(this.GetBackground(), true);
+            disabled = false;
+            ChangeEnabledState(GetBackground(), true);
         }
 
         public void DisableBackground()
         {
-            this.disabled = true;
-            this.ChangeEnabledState(this.GetBackground(), false);
+            disabled = true;
+            ChangeEnabledState(GetBackground(), false);
         }
 
-        IEnumerable<UIElement> GetBackground()
+        private IEnumerable<UIElement> GetBackground()
         {
-            var contentControl = (ContentControl)this.Parent;
+            var contentControl = (ContentControl)Parent;
             var container = (Panel)contentControl.Parent;
             return container.Children.OfType<UIElement>().Where(child => child != contentControl);
         }
 
-        void ChangeEnabledState(IEnumerable<UIElement> background, bool state)
+        private void ChangeEnabledState(IEnumerable<UIElement> background, bool state)
         {
             foreach (var uiElement in background)
             {
                 var control = uiElement as Control;
                 if (control != null)
+                {
                     control.IsEnabled = state;
+                }
                 else
                 {
                     var panel = uiElement as Panel;
@@ -69,7 +78,7 @@
                     {
                         foreach (UIElement child in panel.Children)
                         {
-                            this.ChangeEnabledState(new[] { child }, state);
+                            ChangeEnabledState(new[] { child }, state);
                         }
                     }
                 }

@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Logging
 {
-    using System;
-
     public interface IAppLogManager : IDisposable
     {
         void Flush();

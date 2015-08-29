@@ -30,23 +30,23 @@
                       Grid.Row="0"
                       HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="14"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="14" />
                         <!--<ColumnDefinition Width="{Binding Source={x:Static SystemParameters.VerticalScrollBarWidth}}"></ColumnDefinition>-->
                     </Grid.ColumnDefinitions>
                     <Grid Margin="0 0 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="FirstColumn"
-                                              MinWidth="70"></ColumnDefinition>
+                                              MinWidth="70" />
                             <ColumnDefinition Width="1"
-                                              MaxWidth="1"></ColumnDefinition>
+                                              MaxWidth="1" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="1"
-                                           MaxHeight="1"></RowDefinition>
+                                           MaxHeight="1" />
                         </Grid.RowDefinitions>
                         <Path Stroke="{DynamicResource GrayBrush1}"
                               StrokeThickness="1"
@@ -58,7 +58,7 @@
                               Grid.Row="0">
                             <Path.Data>
                                 <LineGeometry StartPoint="0,0"
-                                              EndPoint="1,1"></LineGeometry>
+                                              EndPoint="1,1" />
                             </Path.Data>
                         </Path>
                         <Grid Grid.Column="0"
@@ -97,14 +97,14 @@
                           Column="1"
                           Margin="0 0 0 0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                            <ColumnDefinition SharedSizeGroup="SecondColumn" />
                             <ColumnDefinition Width="1"
-                                              MaxWidth="1"></ColumnDefinition>
+                                              MaxWidth="1" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*" />
                             <RowDefinition Height="1"
-                                           MaxHeight="1"></RowDefinition>
+                                           MaxHeight="1" />
                         </Grid.RowDefinitions>
                         <Rectangle Stroke="{DynamicResource GrayBrush5}"
                                    Fill="Transparent"
@@ -126,7 +126,7 @@
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="1"
                                              HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Stretch"></UniformGrid>
+                                             VerticalAlignment="Stretch" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -135,21 +135,22 @@
                                       Margin="0 0 0 0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"
-                                                          MinWidth="64"></ColumnDefinition>
+                                                          MinWidth="64" />
                                         <ColumnDefinition MinWidth="1"
-                                                          MaxWidth="1"></ColumnDefinition>
+                                                          MaxWidth="1" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*" />
                                         <RowDefinition Height="1"
-                                                       MaxHeight="1"></RowDefinition>
+                                                       MaxHeight="1" />
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0"
                                                Grid.Column="0"
                                                Visibility="{Binding Key, Converter={StaticResource nullToVisible}}"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center">
-                                        Total:</TextBlock>
+                                        Total:
+                                    </TextBlock>
                                     <Image Grid.Row="0"
                                            Grid.Column="0"
                                            Source="{Binding Key, Converter={StaticResource heroKeyToImage}}"
@@ -163,13 +164,13 @@
                                                Grid.Column="1"
                                                Grid.Row="0"
                                                MinWidth="1"
-                                               Grid.RowSpan="2"></Rectangle>
+                                               Grid.RowSpan="2" />
                                     <Rectangle Stroke="{DynamicResource GrayBrush1}"
                                                Fill="Transparent"
                                                Grid.ColumnSpan="2"
                                                MinHeight="1"
                                                Grid.Column="0"
-                                               Grid.Row="1"></Rectangle>
+                                               Grid.Row="1" />
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -191,7 +192,7 @@
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"></StackPanel>
+                                        VerticalAlignment="Stretch" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -212,29 +213,29 @@
                                 </Style>
                             </Grid.Style>-->
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="FirstColumn"></ColumnDefinition>
+                                    <ColumnDefinition SharedSizeGroup="FirstColumn" />
                                     <ColumnDefinition MinWidth="1"
-                                                      MaxWidth="1"></ColumnDefinition>
-                                    <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
+                                                      MaxWidth="1" />
+                                    <ColumnDefinition SharedSizeGroup="SecondColumn" />
                                     <ColumnDefinition MinWidth="1"
-                                                      MaxWidth="1"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                      MaxWidth="1" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="*" />
                                     <RowDefinition MinHeight="1"
-                                                   MaxHeight="1"></RowDefinition>
+                                                   MaxHeight="1" />
                                 </Grid.RowDefinitions>
                                 <Grid.Resources>
                                     <Style TargetType="Label">
                                         <Setter Property="FontSize"
-                                                Value="12"></Setter>
+                                                Value="12" />
                                         <Setter Property="FontWeight"
-                                                Value="SemiBold"></Setter>
+                                                Value="SemiBold" />
                                         <Setter Property="Margin"
-                                                Value="0 4 0 4"></Setter>
+                                                Value="0 4 0 4" />
                                         <Setter Property="Padding"
-                                                Value="8 0 10 0"></Setter>
+                                                Value="8 0 10 0" />
                                     </Style>
                                 </Grid.Resources>
                                 <Rectangle Stroke="{DynamicResource GrayBrush5}"
@@ -250,7 +251,7 @@
                                        Width="48"
                                        Grid.Column="0"
                                        Grid.Row="0"
-                                       Margin="6"></Image>
+                                       Margin="6" />
                                 <Rectangle Stroke="{DynamicResource GrayBrush1}"
                                            Fill="Transparent"
                                            Grid.Column="1"
@@ -265,10 +266,10 @@
                                             Margin="0 0 0 0">
                                     <Grid Visibility="{Binding Path=DataContext.ShowWins, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="Total win/loss:"></Label>
+                                        <Label Content="Total win/loss:" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -277,10 +278,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowWinRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="Total win/loss (%):"></Label>
+                                        <Label Content="Total win/loss (%):" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -289,10 +290,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowWinsCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="W/L with coin:"></Label>
+                                        <Label Content="W/L with coin:" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -301,10 +302,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowWinRatioCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="W/L with coin (%):"></Label>
+                                        <Label Content="W/L with coin (%):" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -313,10 +314,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowWinsNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="W/L without Coin:"></Label>
+                                        <Label Content="W/L without Coin:" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -325,10 +326,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowWinRatioNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="W/L without Coin (%):"></Label>
+                                        <Label Content="W/L without Coin (%):" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -337,10 +338,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowPlayedVsRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="Played against (%):"></Label>
+                                        <Label Content="Played against (%):" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -349,10 +350,10 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowTotalGamesByCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="1"></RowDefinition>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="1" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="Total (coin/no coin):"></Label>
+                                        <Label Content="Total (coin/no coin):" />
                                         <Rectangle Stroke="{DynamicResource GrayBrush9}"
                                                    Fill="Transparent"
                                                    Height="1"
@@ -361,9 +362,9 @@
                                     </Grid>
                                     <Grid Visibility="{Binding Path=DataContext.ShowTotalGames, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
+                                            <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
-                                        <Label Content="Total games:"></Label>
+                                        <Label Content="Total games:" />
                                     </Grid>
                                 </StackPanel>
                                 <Rectangle Stroke="{DynamicResource GrayBrush5}"
@@ -395,12 +396,12 @@
                                                     <ColumnDefinition Width="*"
                                                                       MinWidth="64" />
                                                     <ColumnDefinition Width="1"
-                                                                      MaxWidth="1"></ColumnDefinition>
+                                                                      MaxWidth="1" />
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
-                                                    <RowDefinition Height="*"></RowDefinition>
+                                                    <RowDefinition Height="*" />
                                                     <RowDefinition Height="1"
-                                                                   MaxHeight="1"></RowDefinition>
+                                                                   MaxHeight="1" />
                                                 </Grid.RowDefinitions>
                                                 <Grid Margin="0 0 0 0"
                                                       HorizontalAlignment="Stretch">
@@ -408,11 +409,11 @@
                                                         <Style TargetType="TextBlock"
                                                                x:Key="BaseTextStyle">
                                                             <Setter Property="FontSize"
-                                                                    Value="12"></Setter>
+                                                                    Value="12" />
                                                             <Setter Property="Margin"
-                                                                    Value="0 4 0 0"></Setter>
+                                                                    Value="0 4 0 0" />
                                                             <Setter Property="Padding"
-                                                                    Value="0 0 8 4"></Setter>
+                                                                    Value="0 0 8 4" />
                                                             <Setter Property="Foreground"
                                                                     Value="{DynamicResource BlackBrush}" />
                                                         </Style>
@@ -423,17 +424,17 @@
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=40, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="DarkOrange"></Setter>
+                                                                            Value="DarkOrange" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=25, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="Red"></Setter>
+                                                                            Value="Red" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=75, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="ForestGreen"></Setter>
+                                                                            Value="ForestGreen" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -444,43 +445,43 @@
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=60, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="DarkOrange"></Setter>
+                                                                            Value="DarkOrange" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueAboveThreshold}, ConverterParameter=75, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="Red"></Setter>
+                                                                            Value="Red" />
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding Tag, Converter={StaticResource valueBelowThreshold}, ConverterParameter=25, RelativeSource={RelativeSource Self}}"
                                                                              Value="True">
                                                                     <Setter Property="Foreground"
-                                                                            Value="ForestGreen"></Setter>
+                                                                            Value="ForestGreen" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                         <Style TargetType="TextBlock"
-                                                               BasedOn="{StaticResource BaseTextStyle}"></Style>
+                                                               BasedOn="{StaticResource BaseTextStyle}" />
                                                     </Grid.Resources>
                                                     <StackPanel Orientation="Vertical">
                                                         <StackPanel.Resources>
                                                             <Style TargetType="Grid">
                                                                 <Setter Property="Margin"
-                                                                        Value="8 0 0 0"></Setter>                                                                
+                                                                        Value="8 0 0 0" />
                                                             </Style>
                                                             <Style TargetType="Rectangle">
                                                                 <Setter Property="Margin"
-                                                                        Value="-8 0 0 0"></Setter>
+                                                                        Value="-8 0 0 0" />
                                                             </Style>
                                                         </StackPanel.Resources>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWins, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding Wins}" />
                                                             <TextBlock Text=" / "
@@ -499,13 +500,13 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWinRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding WinRate, StringFormat={}{0}%}"
                                                                        Tag="{Binding WinRate}"
@@ -528,13 +529,13 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWinsCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding WinsCoin, StringFormat={}{0}}" />
                                                             <TextBlock Text=" / "
@@ -553,17 +554,17 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWinRatioCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding WinRateCoin, StringFormat={}{0}%}"
                                                                        Tag="{Binding WinRateCoin}"
-                                                                       Style="{StaticResource PositiveStyle}"/>
+                                                                       Style="{StaticResource PositiveStyle}" />
                                                             <TextBlock Text=" / "
                                                                        Grid.Row="0"
                                                                        Grid.Column="1" />
@@ -582,13 +583,13 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWinsNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding WinsNoCoin, StringFormat={}{0}}" />
                                                             <TextBlock Text=" / "
@@ -607,20 +608,20 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowWinRatioNoCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding WinRateNoCoin, StringFormat={}{0}%}"
                                                                        Tag="{Binding WinRateNoCoin}"
                                                                        Style="{StaticResource PositiveStyle}" />
                                                             <TextBlock Text=" / "
                                                                        Grid.Row="0"
-                                                                       Grid.Column="1"></TextBlock>
+                                                                       Grid.Column="1" />
                                                             <TextBlock Text="{Binding LossRateNoCoin, StringFormat={}{0}%}"
                                                                        Tag="{Binding LossRateNoCoin}"
                                                                        Style="{StaticResource NegativeStyle}"
@@ -636,12 +637,12 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowPlayedVsRatio, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition SharedSizeGroup="Stat"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition SharedSizeGroup="Stat" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding PlayedVsRatio, StringFormat={}{0}%}" />
                                                             <Rectangle Stroke="{DynamicResource GrayBrush9}"
@@ -654,18 +655,18 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowTotalGamesByCoin, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
-                                                                <RowDefinition Height="1"></RowDefinition>
+                                                                <RowDefinition Height="*" />
+                                                                <RowDefinition Height="1" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="{Binding TotalCoin, StringFormat={}{0}}" />
                                                             <TextBlock Text=" / "
                                                                        Grid.Row="0"
-                                                                       Grid.Column="1"></TextBlock>
+                                                                       Grid.Column="1" />
                                                             <TextBlock Text="{Binding TotalNoCoin, StringFormat={}{0}}"
                                                                        Grid.Row="0"
                                                                        Grid.Column="2" />
@@ -679,10 +680,10 @@
                                                         </Grid>
                                                         <Grid Visibility="{Binding Path=DataContext.ShowTotalGames, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource booleanToVisibility}}">
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"></RowDefinition>
+                                                                <RowDefinition Height="*" />
                                                             </Grid.RowDefinitions>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding TotalGames, StringFormat={}{0}}"></TextBlock>
+                                                                <TextBlock Text="{Binding TotalGames, StringFormat={}{0}}" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </StackPanel>

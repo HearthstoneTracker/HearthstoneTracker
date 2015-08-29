@@ -1,7 +1,7 @@
+using HearthCap.Shell.UserPreferences;
+
 namespace HearthCap.Features.Analytics
 {
-    using HearthCap.Shell.UserPreferences;
-
     public class AnalyticsRegistrySettings : RegistrySettings
     {
         public AnalyticsRegistrySettings()
@@ -11,26 +11,14 @@ namespace HearthCap.Features.Analytics
 
         public string Cookie
         {
-            get
-            {
-                return this.GetOrCreate("pstore", "");
-            }
-            set
-            {
-                this.SetValue("pstore", value);
-            }
+            get { return GetOrCreate("pstore", ""); }
+            set { SetValue("pstore", value); }
         }
 
         public bool ShareUsageStatistics
         {
-            get
-            {
-                return this.GetOrCreate("ShareUsageStatistics", true);
-            }
-            set
-            {
-                this.SetValue("ShareUsageStatistics", value);
-            }
+            get { return GetOrCreate("ShareUsageStatistics", true); }
+            set { SetValue("ShareUsageStatistics", value); }
         }
     }
 }

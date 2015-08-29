@@ -23,8 +23,8 @@
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid>
             <Button Grid.Row="0"
@@ -36,31 +36,33 @@
                     <ControlTemplate>
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Image HorizontalAlignment="Stretch"
                                    Height="100"
                                    Source="{StaticResource HearthstoneTrackerLogo3}"
-                                   Stretch="Uniform"></Image>
-                            <StackPanel Grid.Row="1" 
+                                   Stretch="Uniform" />
+                            <StackPanel Grid.Row="1"
                                         Orientation="Horizontal">
                                 <TextBlock FontSize="15"
                                            FontWeight="Normal"
-                                           Text="{Binding CurrentVersion}"></TextBlock>
+                                           Text="{Binding CurrentVersion}" />
                             </StackPanel>
                             <TextBlock Grid.Row="1"
                                        FontSize="15"
                                        FontWeight="Normal"
                                        HorizontalAlignment="Right"
-                                       Name="WebsiteLink">HearthstoneTracker.com</TextBlock>
+                                       Name="WebsiteLink">
+                                HearthstoneTracker.com
+                            </TextBlock>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter TargetName="WebsiteLink"
                                         Property="Foreground"
-                                        Value="DodgerBlue"></Setter>
+                                        Value="DodgerBlue" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -72,48 +74,50 @@
                       Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Label FontSize="16"
-                           FontWeight="Bold">About:</Label>
+                           FontWeight="Bold">
+                        About:
+                    </Label>
                     <TextBox Height="180"
                              IsReadOnly="True"
                              Grid.Row="1"
                              TextWrapping="Wrap"
                              VerticalScrollBarVisibility="Auto"
                              AcceptsReturn="True"
-                             Text="{x:Static prop:Resources.AboutText}">
-                    </TextBox>
+                             Text="{x:Static prop:Resources.AboutText}" />
                 </Grid>
                 <StackPanel Grid.Row="1">
                     <Label FontSize="16"
-                           FontWeight="Bold">License information:</Label>
+                           FontWeight="Bold">
+                        License information:
+                    </Label>
                     <TextBox Height="180"
                              IsReadOnly="True"
                              TextWrapping="Wrap"
                              VerticalScrollBarVisibility="Auto"
                              AcceptsReturn="True"
-                             Text="{x:Static prop:Resources.LicenseText}">
-
-                    </TextBox>
+                             Text="{x:Static prop:Resources.LicenseText}" />
                 </StackPanel>
                 <StackPanel Grid.Row="2">
                     <Label FontSize="16"
-                           FontWeight="Bold">3rd party libraries:</Label>
+                           FontWeight="Bold">
+                        3rd party libraries:
+                    </Label>
                     <TextBox Height="180"
                              IsReadOnly="True"
                              TextWrapping="Wrap"
                              VerticalScrollBarVisibility="Auto"
                              AcceptsReturn="True"
-                             Text="{x:Static prop:Resources.LibrariesLicenseText}">
-                    </TextBox>
+                             Text="{x:Static prop:Resources.LibrariesLicenseText}" />
                 </StackPanel>
             </Grid>
         </ScrollViewer>

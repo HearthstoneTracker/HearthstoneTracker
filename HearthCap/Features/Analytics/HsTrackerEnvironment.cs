@@ -1,10 +1,9 @@
+using System;
+using System.Net;
+using GoogleAnalyticsTracker.Core.Interface;
+
 namespace HearthCap.Features.Analytics
 {
-    using System;
-    using System.Net;
-
-    using GoogleAnalyticsTracker.Core.Interface;
-
     public class HsTrackerEnvironment : ITrackerEnvironment
     {
         public string Hostname { get; set; }
@@ -17,10 +16,10 @@ namespace HearthCap.Features.Analytics
 
         public HsTrackerEnvironment()
         {
-            this.Hostname = Dns.GetHostName();
-            this.OsPlatform = Environment.OSVersion.Platform.ToString();
-            this.OsVersion = Environment.OSVersion.Version.ToString();
-            this.OsVersionString = Environment.OSVersion.VersionString;
+            Hostname = Dns.GetHostName();
+            OsPlatform = Environment.OSVersion.Platform.ToString();
+            OsVersion = Environment.OSVersion.Version.ToString();
+            OsVersionString = Environment.OSVersion.VersionString;
         }
     }
 }

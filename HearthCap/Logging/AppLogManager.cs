@@ -1,17 +1,13 @@
+using System;
+using System.ComponentModel.Composition;
+using System.IO;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
+using NLog.Targets.Wrappers;
+
 namespace HearthCap.Logging
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.IO;
-
-    using NLog;
-    using NLog.Config;
-    using NLog.Targets;
-    using NLog.Targets.Wrappers;
-
-    using LogLevel = NLog.LogLevel;
-    using LogManager = NLog.LogManager;
-
     [Export(typeof(IAppLogManager))]
     public sealed class AppLogManager : IAppLogManager
     {
@@ -35,9 +31,9 @@ namespace HearthCap.Logging
                 "${longdate}|${level:uppercase=true}|thread:${threadid}|${logger}|${message}${onexception:inner=${newline}${exception:format=tostring}}";
 
             var asyncTarget = new AsyncTargetWrapper(logfile)
-                                  {
-                                      OverflowAction = AsyncTargetWrapperOverflowAction.Grow
-                                  };
+                {
+                    OverflowAction = AsyncTargetWrapperOverflowAction.Grow
+                };
             config.AddTarget("logfile", asyncTarget);
             config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, asyncTarget));
 
@@ -64,7 +60,7 @@ namespace HearthCap.Logging
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {

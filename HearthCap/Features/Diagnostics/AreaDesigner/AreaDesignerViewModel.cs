@@ -1,31 +1,27 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Windows.Media.Imaging;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+using HearthCap.Core.GameCapture;
+using HearthCap.Core.GameCapture.HS;
+using HearthCap.Core.GameCapture.Logging.LogEvents;
+using HearthCap.Core.Util;
+using HearthCap.Shell.Tabs;
+using HearthCap.Util;
+using Microsoft.Win32;
+using PHash;
+
+namespace HearthCap.Features.Diagnostics.AreaDesigner
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Linq;
-    using System.Windows.Media.Imaging;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
-    using global::PHash;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Core.GameCapture.HS;
-    using HearthCap.Core.GameCapture.Logging.LogEvents;
-    using HearthCap.Core.Util;
-    using HearthCap.Shell.Tabs;
-    using HearthCap.Util;
-
-    using Size = System.Drawing.Size;
-
 #if DEBUG
     [Export(typeof(ITab))]
 #endif
-    public class AreaDesignerViewModel : 
+    public class AreaDesignerViewModel :
         TabViewModel,
         IHandle<WindowCaptured>
     {
@@ -33,7 +29,7 @@
 
         private readonly ICaptureEngine captureEngine;
 
-        private BindableCollection<RegionModel> regions;
+        private readonly BindableCollection<RegionModel> regions;
 
         private BitmapImage screenshot;
 
@@ -41,11 +37,9 @@
 
         private bool capturing = true;
 
-        private ScanAreasModel scanAreasModel;
-
         private ScanAreaModel selectedScanArea;
 
-        private IPerceptualHash hasher;
+        private readonly IPerceptualHash hasher;
 
         private readonly ICornerDetector cornerDetecter;
 
@@ -62,8 +56,8 @@
         private int rightMostCorner;
 
         [ImportingConstructor]
-        public AreaDesignerViewModel(IEventAggregator events, 
-            IScanAreaProvider scanAreaProvider, 
+        public AreaDesignerViewModel(IEventAggregator events,
+            IScanAreaProvider scanAreaProvider,
             ICaptureEngine captureEngine,
             IPerceptualHash hasher,
             ICornerDetector cornerDetecter)
@@ -76,42 +70,36 @@
             this.captureEngine = captureEngine;
             Order = 2000;
             regions = new BindableCollection<RegionModel>();
-            this.scanAreasModel = new ScanAreasModel(scanAreaProvider);
+            ScanAreasModel = new ScanAreasModel(scanAreaProvider);
             this.events = events;
             events.Subscribe(this);
         }
 
         public int CompareHashResult
         {
-            get
-            {
-                return this.compareHashResult;
-            }
+            get { return compareHashResult; }
             set
             {
-                if (value == this.compareHashResult)
+                if (value == compareHashResult)
                 {
                     return;
                 }
-                this.compareHashResult = value;
-                this.NotifyOfPropertyChange(() => this.CompareHashResult);
+                compareHashResult = value;
+                NotifyOfPropertyChange(() => CompareHashResult);
             }
         }
 
         public string CompareHash
         {
-            get
-            {
-                return this.compareHash;
-            }
+            get { return compareHash; }
             set
             {
-                if (value == this.compareHash)
+                if (value == compareHash)
                 {
                     return;
                 }
-                this.compareHash = value;
-                this.NotifyOfPropertyChange(() => this.CompareHash);
+                compareHash = value;
+                NotifyOfPropertyChange(() => CompareHash);
             }
         }
 
@@ -124,7 +112,7 @@
                     return 0;
                 }
 
-                var res = new Size(this.Screenshot.PixelWidth, this.Screenshot.PixelHeight);
+                var res = new Size(Screenshot.PixelWidth, Screenshot.PixelHeight);
                 return (int)ResolutionHelper.GetBoardX(res);
                 // return 0;
             }
@@ -139,8 +127,8 @@
                     return 0;
                 }
 
-                var res = new Size(this.Screenshot.PixelWidth, this.Screenshot.PixelHeight);
-                return (int)ResolutionHelper.GetBoardWidth(res);                
+                var res = new Size(Screenshot.PixelWidth, Screenshot.PixelHeight);
+                return (int)ResolutionHelper.GetBoardWidth(res);
                 // return res.Width;
             }
         }
@@ -160,154 +148,139 @@
 
         public bool CanCreateRegion
         {
-            get
-            {
-                return Screenshot != null && !String.IsNullOrWhiteSpace(RegionKey);
-            }
+            get { return Screenshot != null && !String.IsNullOrWhiteSpace(RegionKey); }
         }
 
         public string RegionKey
         {
-            get
-            {
-                return this.regionKey;
-            }
+            get { return regionKey; }
             set
             {
-                if (value == this.regionKey)
+                if (value == regionKey)
                 {
                     return;
                 }
-                this.regionKey = value;
-                this.NotifyOfPropertyChange(() => this.RegionKey);
+                regionKey = value;
+                NotifyOfPropertyChange(() => RegionKey);
             }
         }
 
         public BitmapImage Screenshot
         {
-            get { return this.screenshot; }
+            get { return screenshot; }
             set
             {
-                var old = this.screenshot;
-                this.screenshot = value;
-                this.NotifyOfPropertyChange(() => this.Screenshot);
-                if ((value != null) == this.HasScreenshot)
+                var old = screenshot;
+                screenshot = value;
+                NotifyOfPropertyChange(() => Screenshot);
+                if ((value != null) == HasScreenshot)
                 {
-                    this.NotifyOfPropertyChange(() => this.HasScreenshot);
-                    this.NotifyOfPropertyChange(() => this.BoardWidth);
-                    this.NotifyOfPropertyChange(() => this.BoardX);
-                    this.NotifyOfPropertyChange(() => this.BoardHeight);
+                    NotifyOfPropertyChange(() => HasScreenshot);
+                    NotifyOfPropertyChange(() => BoardWidth);
+                    NotifyOfPropertyChange(() => BoardX);
+                    NotifyOfPropertyChange(() => BoardHeight);
                 }
-                if (old != null && value != null)
+                if (old != null
+                    && value != null)
                 {
                     if (old.PixelWidth != value.PixelWidth)
                     {
-                        this.NotifyOfPropertyChange(() => this.BoardWidth);
-                        this.NotifyOfPropertyChange(() => this.BoardX);                        
+                        NotifyOfPropertyChange(() => BoardWidth);
+                        NotifyOfPropertyChange(() => BoardX);
                     }
                     if (old.PixelHeight != value.PixelHeight)
                     {
-                        this.NotifyOfPropertyChange(() => this.BoardHeight);
+                        NotifyOfPropertyChange(() => BoardHeight);
                     }
                 }
-                if (value != null && scanAreasModel != null && scanAreasModel.BaseResolution != value.PixelHeight)
+                if (value != null
+                    && ScanAreasModel != null
+                    && ScanAreasModel.BaseResolution != value.PixelHeight)
                 {
-                    scanAreasModel.BaseResolution = value.PixelHeight;
+                    ScanAreasModel.BaseResolution = value.PixelHeight;
                 }
             }
         }
 
         public RegionModel Region
         {
-            get
-            {
-                return this.region;
-            }
+            get { return region; }
             set
             {
-                if (Equals(value, this.region))
+                if (Equals(value, region))
                 {
                     return;
                 }
-                this.region = value;
-                this.NotifyOfPropertyChange(() => this.Region);
+                region = value;
+                NotifyOfPropertyChange(() => Region);
             }
         }
 
         public IObservableCollection<RegionModel> Regions
         {
-            get
-            {
-                return this.regions;
-            }
+            get { return regions; }
         }
 
-        public ScanAreasModel ScanAreasModel
-        {
-            get
-            {
-                return this.scanAreasModel;
-            }
-        }
+        public ScanAreasModel ScanAreasModel { get; private set; }
 
         public ScanAreaModel SelectedScanArea
         {
-            get
-            {
-                return this.selectedScanArea;
-            }
+            get { return selectedScanArea; }
             set
             {
-                if (Equals(value, this.selectedScanArea))
+                if (Equals(value, selectedScanArea))
                 {
                     return;
                 }
-                this.selectedScanArea = value;
+                selectedScanArea = value;
                 UpdateScanArea();
-                this.NotifyOfPropertyChange(() => this.SelectedScanArea);
+                NotifyOfPropertyChange(() => SelectedScanArea);
             }
         }
 
         public bool HasScreenshot
         {
-            get
-            {
-                return Screenshot != null;
-            }
+            get { return Screenshot != null; }
         }
 
         public ulong ManualHash
         {
-            get
-            {
-                return this.manualHash;
-            }
+            get { return manualHash; }
             set
             {
-                if (value == this.manualHash)
+                if (value == manualHash)
                 {
                     return;
                 }
-                this.manualHash = value;
-                this.NotifyOfPropertyChange(() => this.ManualHash);
+                manualHash = value;
+                NotifyOfPropertyChange(() => ManualHash);
             }
         }
 
         public async void SaveAreas()
         {
-            await this.ScanAreasModel.Save();
+            await ScanAreasModel.Save();
         }
 
         [Dependencies("Screenshot", "RegionKey")]
         public void CreateRegion()
         {
-            if (Screenshot == null) return;
-            if (String.IsNullOrWhiteSpace(RegionKey)) return;
-            
-            // TODO: show error
-            if (scanAreasModel.Areas.Any(x => x.Key == RegionKey)) return;
+            if (Screenshot == null)
+            {
+                return;
+            }
+            if (String.IsNullOrWhiteSpace(RegionKey))
+            {
+                return;
+            }
 
-            var model = scanAreasModel.AddArea(RegionKey);
+            // TODO: show error
+            if (ScanAreasModel.Areas.Any(x => x.Key == RegionKey))
+            {
+                return;
+            }
+
+            var model = ScanAreasModel.AddArea(RegionKey);
             if (model != null)
             {
                 SelectedScanArea = model;
@@ -317,13 +290,14 @@
 
         public void UpdateHash()
         {
-            if (SelectedScanArea == null || Screenshot == null)
+            if (SelectedScanArea == null
+                || Screenshot == null)
             {
                 return;
             }
             var model = SelectedScanArea;
             var image = ImageHelper.BitmapImage2Bitmap(Screenshot);
-            var roi = image.Clone(new Rectangle((int)(this.Region.XPos + this.BoardX), (int)this.Region.YPos, (int)this.Region.Width, (int)this.Region.Height), image.PixelFormat);
+            var roi = image.Clone(new Rectangle(Region.XPos + BoardX, Region.YPos, Region.Width, Region.Height), image.PixelFormat);
             var hash = hasher.Create(roi);
 
             // var filename = AppDomain.CurrentDomain.BaseDirectory + "\\data\\images\\" + model.Key + ".png";
@@ -356,7 +330,7 @@
         public void ResizeToRightMostCorner()
         {
             var image = ImageHelper.BitmapImage2Bitmap(Screenshot);
-            var roi = image.Clone(new Rectangle((int)(this.Region.XPos + this.BoardX), (int)this.Region.YPos, (int)this.Region.Width, (int)this.Region.Height), image.PixelFormat);
+            var roi = image.Clone(new Rectangle(Region.XPos + BoardX, Region.YPos, Region.Width, Region.Height), image.PixelFormat);
             var corners = cornerDetecter.GetCorners(roi);
             var right = 0;
             foreach (var c in corners)
@@ -367,51 +341,45 @@
                 }
             }
             RightMostCorner = right;
-            this.Region.Width = (this.Region.XPos + right);
+            Region.Width = (Region.XPos + right);
         }
 
         public string Mostly
         {
-            get
-            {
-                return this.mostly;
-            }
+            get { return mostly; }
             set
             {
-                if (value == this.mostly)
+                if (value == mostly)
                 {
                     return;
                 }
-                this.mostly = value;
-                this.NotifyOfPropertyChange(() => this.Mostly);
+                mostly = value;
+                NotifyOfPropertyChange(() => Mostly);
             }
         }
 
         public int RightMostCorner
         {
-            get
-            {
-                return this.rightMostCorner;
-            }
+            get { return rightMostCorner; }
             set
             {
-                if (value == this.rightMostCorner)
+                if (value == rightMostCorner)
                 {
                     return;
                 }
-                this.rightMostCorner = value;
-                this.NotifyOfPropertyChange(() => this.RightMostCorner);
+                rightMostCorner = value;
+                NotifyOfPropertyChange(() => RightMostCorner);
             }
         }
 
         public void OpenImage()
         {
-            var dlg = new Microsoft.Win32.OpenFileDialog
-                          {
-                              FileName = "area", 
-                              DefaultExt = ".png", 
-                              Filter = "PNG Images|*.png"
-                          };
+            var dlg = new OpenFileDialog
+                {
+                    FileName = "area",
+                    DefaultExt = ".png",
+                    Filter = "PNG Images|*.png"
+                };
 
             var result = dlg.ShowDialog();
             if (result == true)
@@ -436,12 +404,12 @@
 
         public void SaveRegionAs()
         {
-            var dlg = new Microsoft.Win32.OpenFileDialog
-                          {
-                              FileName = "area", 
-                              DefaultExt = ".png", 
-                              Filter = "PNG Images|*.png"
-                          };
+            var dlg = new OpenFileDialog
+                {
+                    FileName = "area",
+                    DefaultExt = ".png",
+                    Filter = "PNG Images|*.png"
+                };
 
             var result = dlg.ShowDialog();
             if (result == true)
@@ -449,7 +417,7 @@
                 var filename = dlg.FileName;
 
                 var image = ImageHelper.BitmapImage2Bitmap(Screenshot);
-                var roi = image.Clone(new Rectangle((int)(this.Region.XPos + this.BoardX), (int)this.Region.YPos, (int)this.Region.Width, (int)this.Region.Height), image.PixelFormat);
+                var roi = image.Clone(new Rectangle(Region.XPos + BoardX, Region.YPos, Region.Width, Region.Height), image.PixelFormat);
                 roi.Save(filename, ImageFormat.Png);
 
                 //var cropped = new CroppedBitmap(this.Screenshot, new Int32Rect((int)this.Region.XPos, (int)this.Region.YPos, (int)this.Region.Width, (int)this.Region.Height));
@@ -466,64 +434,65 @@
 
         public void ToggleCapture()
         {
-            this.capturing = !this.capturing;
+            capturing = !capturing;
         }
 
         private void UpdateScanArea()
         {
-            if (this.SelectedScanArea == null || this.Screenshot == null)
+            if (SelectedScanArea == null
+                || Screenshot == null)
             {
                 return;
             }
-            
-            var area = this.SelectedScanArea;
+
+            var area = SelectedScanArea;
             Regions.Clear();
 
-            var region = new RegionModel()
-            {
-                XPos = area.X,
-                YPos = area.Y,
-                Height = area.Height,
-                Width = area.Width,
-                MinHeight = 8,
-                MinWidth = 8,
-            };
+            var region = new RegionModel
+                {
+                    XPos = area.X,
+                    YPos = area.Y,
+                    Height = area.Height,
+                    Width = area.Width,
+                    MinHeight = 8,
+                    MinWidth = 8
+                };
             region.Moving += (sender, args) =>
-            {
-                if (args.X + region.Width > BoardWidth)
                 {
-                    args.Cancel = true;
-                    return;
-                }
-                if (args.Y + region.Height > BoardHeight)
-                {
-                    args.Cancel = true;
-                    return;
-                }
-                SelectedScanArea.X = (int)args.X;
-                SelectedScanArea.Y = (int)args.Y;
-            };
+                    if (args.X + region.Width > BoardWidth)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+                    if (args.Y + region.Height > BoardHeight)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+                    SelectedScanArea.X = (int)args.X;
+                    SelectedScanArea.Y = (int)args.Y;
+                };
             region.Resizing += (sender, args) =>
-            {
-                if (region.XPos + args.Width > BoardWidth)
                 {
-                    args.Cancel = true; 
-                    return;
-                }
-                if (region.YPos + args.Height > BoardHeight)
-                {
-                    args.Cancel = true;
-                    return;
-                }
-                SelectedScanArea.Width = (int)args.Width;
-                SelectedScanArea.Height = (int)args.Height;
-            };
-            this.Region = region;
+                    if (region.XPos + args.Width > BoardWidth)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+                    if (region.YPos + args.Height > BoardHeight)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+                    SelectedScanArea.Width = (int)args.Width;
+                    SelectedScanArea.Height = (int)args.Height;
+                };
+            Region = region;
             Regions.Add(region);
         }
 
         /// <summary>
-        /// Called when activating.
+        ///     Called when activating.
         /// </summary>
         protected override void OnActivate()
         {
@@ -531,7 +500,7 @@
         }
 
         /// <summary>
-        /// Called when deactivating.
+        ///     Called when deactivating.
         /// </summary>
         /// <param name="close">Inidicates whether this instance will be closed.</param>
         protected override void OnDeactivate(bool close)
@@ -540,32 +509,32 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(WindowCaptured message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    if (!this.capturing)
                     {
-                        return;
-                    }
+                        if (!capturing)
+                        {
+                            return;
+                        }
 
-                    // this.Screenshot = ImageHelper.Bitmap2BitmapSource(message.Data)
-                    var ms = new MemoryStream();
-                    var bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    message.Data.Save(ms, ImageFormat.Bmp);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    bi.StreamSource = ms;
-                    bi.EndInit();
-                    this.Screenshot = bi;
-                    ms.Dispose();
-                    message.Data.Dispose();
-                });
+                        // this.Screenshot = ImageHelper.Bitmap2BitmapSource(message.Data)
+                        var ms = new MemoryStream();
+                        var bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.CacheOption = BitmapCacheOption.OnLoad;
+                        message.Data.Save(ms, ImageFormat.Bmp);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        bi.StreamSource = ms;
+                        bi.EndInit();
+                        Screenshot = bi;
+                        ms.Dispose();
+                        message.Data.Dispose();
+                    });
         }
     }
 }

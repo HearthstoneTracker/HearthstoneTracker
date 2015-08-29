@@ -12,7 +12,6 @@
     <UserControl.Resources>
     </UserControl.Resources>
     <Grid>
-        <Button Name="GetDecks"></Button>
+        <Button Name="GetDecks" />
     </Grid>
 </UserControl>
-

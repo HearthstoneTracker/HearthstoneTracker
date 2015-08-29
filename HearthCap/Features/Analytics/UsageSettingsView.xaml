@@ -23,7 +23,7 @@
                     <CheckBox Name="ShareUsageStatistics"
                               IsChecked="{Binding ShareUsageStatistics}">
                         <TextBlock>
-                        Anonymously share usage information.
+                            Anonymously share usage information.
                         </TextBlock>
                     </CheckBox>
                 </StackPanel>

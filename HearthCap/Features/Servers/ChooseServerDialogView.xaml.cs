@@ -1,9 +1,9 @@
-﻿namespace HearthCap.Features.Servers
-{
-    using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
+namespace HearthCap.Features.Servers
+{
     /// <summary>
-    /// Interaction logic for ChooseServerDialogView.xaml
+    ///     Interaction logic for ChooseServerDialogView.xaml
     /// </summary>
     public partial class ChooseServerDialogView : UserControl
     {

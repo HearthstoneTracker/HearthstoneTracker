@@ -1,22 +1,18 @@
-﻿namespace HearthCap.Features.Games.Balloons
+﻿using System;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Games.Models;
+
+namespace HearthCap.Features.Games.Balloons
 {
-    using System;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.GameManager;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.Games.Models;
-
     [Export(typeof(GameResultBalloonViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class GameResultBalloonViewModel : PropertyChangedBase
     {
         private readonly IEventAggregator events;
 
-        private readonly GameManager gameManager;
+        private readonly GameManager.GameManager gameManager;
 
         private bool victory;
 
@@ -31,7 +27,7 @@
         private int turns;
 
         [ImportingConstructor]
-        public GameResultBalloonViewModel(IEventAggregator events, GameManager gameManager)
+        public GameResultBalloonViewModel(IEventAggregator events, GameManager.GameManager gameManager)
         {
             this.events = events;
             this.gameManager = gameManager;
@@ -39,93 +35,81 @@
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
         public Hero OpponentHero
         {
-            get
-            {
-                return this.opponentHero;
-            }
+            get { return opponentHero; }
             set
             {
-                if (Equals(value, this.opponentHero))
+                if (Equals(value, opponentHero))
                 {
                     return;
                 }
-                this.opponentHero = value;
-                this.NotifyOfPropertyChange(() => this.OpponentHero);
+                opponentHero = value;
+                NotifyOfPropertyChange(() => OpponentHero);
             }
         }
 
         public bool Victory
         {
-            get
-            {
-                return this.victory;
-            }
+            get { return victory; }
             set
             {
-                if (value.Equals(this.victory))
+                if (value.Equals(victory))
                 {
                     return;
                 }
-                this.victory = value;
-                this.NotifyOfPropertyChange(() => this.Victory);
+                victory = value;
+                NotifyOfPropertyChange(() => Victory);
             }
         }
 
         public GameMode GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return gameMode; }
             set
             {
-                if (value == this.gameMode)
+                if (value == gameMode)
                 {
                     return;
                 }
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
+                gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
             }
         }
 
         public int Turns
         {
-            get
-            {
-                return this.turns;
-            }
+            get { return turns; }
             set
             {
-                if (value == this.turns)
+                if (value == turns)
                 {
                     return;
                 }
-                this.turns = value;
-                this.NotifyOfPropertyChange(() => this.Turns);
+                turns = value;
+                NotifyOfPropertyChange(() => Turns);
             }
         }
 
         public async void CorrectWin()
         {
             // events.PublishOnBackgroundThread(new CorrectLastGameResult(gameResult.Id){ Won = true });
-            if (gameResult == null) return;
+            if (gameResult == null)
+            {
+                return;
+            }
 
             gameResult.Victory = true;
             Victory = true;
@@ -139,11 +123,11 @@
                 throw new ArgumentNullException("gameResult");
             }
             this.gameResult = gameResult;
-            this.Hero = gameResult.Hero;
-            this.OpponentHero = gameResult.OpponentHero;
-            this.Victory = gameResult.Victory;
-            this.GameMode = gameResult.GameMode;
-            this.Turns = gameResult.Turns;
+            Hero = gameResult.Hero;
+            OpponentHero = gameResult.OpponentHero;
+            Victory = gameResult.Victory;
+            GameMode = gameResult.GameMode;
+            Turns = gameResult.Turns;
         }
     }
 }

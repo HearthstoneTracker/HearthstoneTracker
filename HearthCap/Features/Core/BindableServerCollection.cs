@@ -1,16 +1,14 @@
-﻿namespace HearthCap.Features.Core
+﻿using System;
+using Caliburn.Micro;
+using HearthCap.Shell.UserPreferences;
+
+namespace HearthCap.Features.Core
 {
-    using System;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.UserPreferences;
-
     public class BindableServerCollection : BindableCollection<ServerItemModel>
     {
-        private IEventAggregator events;
+        private readonly IEventAggregator events;
 
-        private readonly static BindableServerCollection instance = new BindableServerCollection();
+        private static readonly BindableServerCollection instance = new BindableServerCollection();
 
         private ServerItemModel @default;
 
@@ -28,7 +26,7 @@
                     if (settings.DefaultServer == name)
                     {
                         item.IsChecked = true;
-                        this.Default = item;
+                        Default = item;
                     }
                 }
             }
@@ -36,23 +34,23 @@
 
         public ServerItemModel Default
         {
-            get
-            {
-                return this.@default;
-            }
+            get { return @default; }
             set
             {
-                if (value == this.@default) return;
-                this.@default = value;
+                if (value == @default)
+                {
+                    return;
+                }
+                @default = value;
                 foreach (var item in this)
                 {
-                    item.IsChecked = this.@default == item;
+                    item.IsChecked = @default == item;
                 }
                 if (value != null)
                 {
                     using (var settings = new ApplicationRegistrySettings())
                     {
-                        settings.DefaultServer = this.@default.Name;
+                        settings.DefaultServer = @default.Name;
                     }
                 }
                 events.PublishOnBackgroundThread(new ServerChanged(value));
@@ -62,10 +60,7 @@
 
         public static BindableServerCollection Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         public string DefaultName

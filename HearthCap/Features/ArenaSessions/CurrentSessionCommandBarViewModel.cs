@@ -1,13 +1,11 @@
-﻿namespace HearthCap.Features.ArenaSessions
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Features.Games.EditGame;
+using HearthCap.Shell.CommandBar;
+using HearthCap.Shell.Dialogs;
+
+namespace HearthCap.Features.ArenaSessions
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.Games.EditGame;
-    using HearthCap.Shell.CommandBar;
-    using HearthCap.Shell.Dialogs;
-
     [Export(typeof(ICommandBarItem))]
     public class CurrentSessionCommandBarViewModel : CommandBarItemViewModel
     {
@@ -18,7 +16,7 @@
         [ImportingConstructor]
         public CurrentSessionCommandBarViewModel(IDialogManager dialogManager, IEventAggregator events)
         {
-            this.Order = 10;
+            Order = 10;
             this.dialogManager = dialogManager;
             this.events = events;
             this.events.Subscribe(this);

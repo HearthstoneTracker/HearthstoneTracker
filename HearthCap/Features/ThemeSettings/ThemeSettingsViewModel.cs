@@ -1,28 +1,22 @@
-﻿namespace HearthCap.Features.ThemeSettings
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows.Media;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Settings;
+using HearthCap.Shell.Theme;
+using MahApps.Metro.Controls;
+using LogManager = NLog.LogManager;
+using ThemeManager = MahApps.Metro.ThemeManager;
+
+namespace HearthCap.Features.ThemeSettings
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows.Media;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Settings;
-    using HearthCap.Shell.Theme;
-
-    using MahApps.Metro;
-    using MahApps.Metro.Controls;
-
-    using NLog;
-
-    using ThemeManager = MahApps.Metro.ThemeManager;
-
     [Export(typeof(ISettingsScreen))]
     public class ThemeSettingsViewModel : SettingsScreen
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly Func<HearthStatsDbContext> dbContext;
 
@@ -49,184 +43,163 @@
         {
             this.dbContext = dbContext;
             this.themeManager = themeManager;
-            this.DisplayName = "Theme settings:";
-            this.InitializeTheme();
-            this.PropertyChanged += ThemeSettingsViewModel_PropertyChanged;
+            DisplayName = "Theme settings:";
+            InitializeTheme();
+            PropertyChanged += ThemeSettingsViewModel_PropertyChanged;
             Order = 10;
         }
 
-        void ThemeSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ThemeSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "ActiveAccent":
-                    ChangeAccent(this.ActiveAccent);
+                    ChangeAccent(ActiveAccent);
                     break;
             }
         }
 
         private void InitializeTheme()
         {
-            this.accentColors =
+            accentColors =
                 new BindableCollection<AccentViewModel>(
                     ThemeManager.Accents.Select(a => new AccentViewModel(a.Name, (Brush)a.Resources["AccentColorBrush"])).ToList());
 
-            var currentTheme = this.themeManager.CurrentConfiguration;
+            var currentTheme = themeManager.CurrentConfiguration;
             if (currentTheme != null)
             {
-                this.ActiveAccent = this.accentColors.First(a => a.Name == currentTheme.Accent);
-                this.IsThemeDark = currentTheme.Theme == "BaseDark";
-                this.IsThemeLight = currentTheme.Theme == "BaseLight";
+                ActiveAccent = accentColors.First(a => a.Name == currentTheme.Accent);
+                IsThemeDark = currentTheme.Theme == "BaseDark";
+                IsThemeLight = currentTheme.Theme == "BaseLight";
             }
-            this.IsFlyoutThemeAccent = themeManager.FlyoutTheme == FlyoutTheme.Accent;
-            this.IsFlyoutThemeLight = themeManager.FlyoutTheme == FlyoutTheme.Light;
-            this.IsFlyoutThemeDark = themeManager.FlyoutTheme == FlyoutTheme.Dark;
+            IsFlyoutThemeAccent = themeManager.FlyoutTheme == FlyoutTheme.Accent;
+            IsFlyoutThemeLight = themeManager.FlyoutTheme == FlyoutTheme.Light;
+            IsFlyoutThemeDark = themeManager.FlyoutTheme == FlyoutTheme.Dark;
         }
 
         public IObservableCollection<AccentViewModel> AccentColors
         {
-            get
-            {
-                return this.accentColors;
-            }
+            get { return accentColors; }
         }
 
         public AccentViewModel ActiveAccent
         {
-            get
-            {
-                return this.activeAccent;
-            }
+            get { return activeAccent; }
             set
             {
-                if (Equals(value, this.activeAccent))
+                if (Equals(value, activeAccent))
                 {
                     return;
                 }
-                this.activeAccent = value;
-                this.NotifyOfPropertyChange(() => this.ActiveAccent);
+                activeAccent = value;
+                NotifyOfPropertyChange(() => ActiveAccent);
             }
         }
 
         public bool IsThemeLight
         {
-            get
-            {
-                return this.isThemeLight;
-            }
+            get { return isThemeLight; }
             set
             {
-                if (value.Equals(this.isThemeLight))
+                if (value.Equals(isThemeLight))
                 {
                     return;
                 }
 
-                this.isThemeLight = value;
+                isThemeLight = value;
                 if (value)
                 {
-                    this.themeManager.ApplyThemeLight();
+                    themeManager.ApplyThemeLight();
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsThemeLight);
+                NotifyOfPropertyChange(() => IsThemeLight);
             }
         }
 
         public bool IsThemeDark
         {
-            get
-            {
-                return this.isThemeDark;
-            }
+            get { return isThemeDark; }
             set
             {
-                if (value.Equals(this.isThemeDark))
+                if (value.Equals(isThemeDark))
                 {
                     return;
                 }
 
-                this.isThemeDark = value;
+                isThemeDark = value;
                 if (value)
                 {
-                    this.themeManager.ApplyThemeDark();
+                    themeManager.ApplyThemeDark();
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsThemeDark);
+                NotifyOfPropertyChange(() => IsThemeDark);
             }
         }
 
         public bool IsFlyoutThemeLight
         {
-            get
-            {
-                return this.isFlyoutThemeLight;
-            }
+            get { return isFlyoutThemeLight; }
             set
             {
-                if (value.Equals(this.isFlyoutThemeLight))
+                if (value.Equals(isFlyoutThemeLight))
                 {
                     return;
                 }
 
-                this.isFlyoutThemeLight = value;
+                isFlyoutThemeLight = value;
                 if (value)
                 {
-                    this.themeManager.ApplyFlyoutTheme(FlyoutTheme.Light);
+                    themeManager.ApplyFlyoutTheme(FlyoutTheme.Light);
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsFlyoutThemeLight);
+                NotifyOfPropertyChange(() => IsFlyoutThemeLight);
             }
         }
 
         public bool IsFlyoutThemeDark
         {
-            get
-            {
-                return this.isFlyoutThemeDark;
-            }
+            get { return isFlyoutThemeDark; }
             set
             {
-                if (value.Equals(this.isFlyoutThemeDark))
+                if (value.Equals(isFlyoutThemeDark))
                 {
                     return;
                 }
 
-                this.isFlyoutThemeDark = value;
+                isFlyoutThemeDark = value;
                 if (value)
                 {
-                    this.themeManager.ApplyFlyoutTheme(FlyoutTheme.Dark);
+                    themeManager.ApplyFlyoutTheme(FlyoutTheme.Dark);
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsFlyoutThemeDark);
+                NotifyOfPropertyChange(() => IsFlyoutThemeDark);
             }
         }
 
         public bool IsFlyoutThemeAccent
         {
-            get
-            {
-                return this.isFlyoutThemeAccent;
-            }
+            get { return isFlyoutThemeAccent; }
             set
             {
-                if (value.Equals(this.isFlyoutThemeAccent))
+                if (value.Equals(isFlyoutThemeAccent))
                 {
                     return;
                 }
 
-                this.isFlyoutThemeAccent = value;
+                isFlyoutThemeAccent = value;
                 if (value)
                 {
-                    this.themeManager.ApplyFlyoutTheme(FlyoutTheme.Accent);
+                    themeManager.ApplyFlyoutTheme(FlyoutTheme.Accent);
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsFlyoutThemeAccent);
+                NotifyOfPropertyChange(() => IsFlyoutThemeAccent);
             }
         }
 
         public void ChangeAccent(AccentViewModel accentVm)
         {
             var accent = ThemeManager.Accents.First(x => x.Name == accentVm.Name);
-            this.themeManager.ChangeAccent(accent);
+            themeManager.ChangeAccent(accent);
         }
     }
 }

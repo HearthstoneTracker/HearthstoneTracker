@@ -54,12 +54,12 @@
                 <HeaderedContentControl.Resources>
                     <Style TargetType="Label">
                         <Setter Property="FontSize"
-                                Value="16"></Setter>
+                                Value="16" />
                     </Style>
                 </HeaderedContentControl.Resources>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <ListView Name="Providers"
                               SelectedItem="{Binding SelectedProvider}"
@@ -75,13 +75,13 @@
                                         <behaviors:FixedWidthColumn.CellTemplate>
                                             <DataTemplate>
                                                 <CheckBox IsChecked="{Binding IsEnabled}"
-                                                          IsEnabled="False"></CheckBox>
+                                                          IsEnabled="False" />
                                             </DataTemplate>
                                         </behaviors:FixedWidthColumn.CellTemplate>
                                     </behaviors:FixedWidthColumn>
                                     <GridViewColumn Header="Name"
                                                     DisplayMemberBinding="{Binding ProviderName}"
-                                                    behaviors:GridViewColumnResize.Width="*"></GridViewColumn>
+                                                    behaviors:GridViewColumnResize.Width="*" />
                                 </GridView.Columns>
                             </GridView>
                         </ListView.View>
@@ -90,26 +90,28 @@
             </HeaderedContentControl>
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0"
-                       FontSize="16">Settings:</Label>
+                       FontSize="16">
+                    Settings:
+                </Label>
                 <ContentControl Name="ActiveItem"
                                 Grid.Row="1"
-                                Margin="6 0 0 0"></ContentControl>
+                                Margin="6 0 0 0" />
             </Grid>
             <Grid Margin="0 8 0 0"
                   Visibility="{Binding IsDebug, Converter={StaticResource booleanToVisibility}}">
                 <WrapPanel>
                     <Button Name="GameStarted"
-                            Content="GameStarted"></Button>
+                            Content="GameStarted" />
                     <Button Name="GameEnded"
-                            Content="GameEnded"></Button>
+                            Content="GameEnded" />
                     <Button Name="ArenaStarted"
-                            Content="ArenaStarted"></Button>
+                            Content="ArenaStarted" />
                     <Button Name="ArenaEnded"
-                            Content="ArenaEnded"></Button>
+                            Content="ArenaEnded" />
                 </WrapPanel>
             </Grid>
         </StackPanel>

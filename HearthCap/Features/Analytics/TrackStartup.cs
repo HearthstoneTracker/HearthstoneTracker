@@ -1,17 +1,15 @@
-﻿namespace HearthCap.Features.Analytics
+﻿using System;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features.Analytics
 {
-    using System;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class TrackStartup : IStartupTask,
-                                IHandle<GameStarted>,
-                                IHandle<GameEnded>
+        IHandle<GameStarted>,
+        IHandle<GameEnded>
     {
         private readonly IEventAggregator events;
 
@@ -28,7 +26,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameEnded message)
@@ -46,7 +44,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameStarted message)

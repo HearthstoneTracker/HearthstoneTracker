@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Charts.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Charts.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Label">
                 <Setter Property="FontFamily"
@@ -31,10 +31,10 @@
                   VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <StackPanel>
@@ -57,8 +57,7 @@
                                                 FontSize="12"
                                                 VerticalAlignment="Top"
                                                 VerticalContentAlignment="Top"
-                                                ItemsSource="{Binding Path=WinsAndLosses}">
-                        </metroChart:ChartSeries>
+                                                ItemsSource="{Binding Path=WinsAndLosses}" />
                     </metroChart:RadialGaugeChart.Series>
                 </metroChart:RadialGaugeChart>
             </StackPanel>
@@ -80,8 +79,7 @@
                     </metroChart:ClusteredColumnChart.Series>
                 </metroChart:ClusteredColumnChart>
             </StackPanel>
-            <StackPanel Grid.Row="2">
-            </StackPanel>
+            <StackPanel Grid.Row="2" />
             <StackPanel Grid.Row="3">
                 <Label>Heroes played:</Label>
                 <metroChart:PieChart ChartTitle="Heroes played"

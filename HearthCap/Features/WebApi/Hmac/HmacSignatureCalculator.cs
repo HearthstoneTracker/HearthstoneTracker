@@ -1,9 +1,9 @@
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
 namespace HearthCap.Features.WebApi.Hmac
 {
-    using System;
-    using System.Security.Cryptography;
-    using System.Text;
-
     public class HmacSignatureCalculator : ICalculteSignature
     {
         public string Signature(string secret, string value)

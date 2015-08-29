@@ -1,12 +1,10 @@
-﻿namespace HearthCap.Features.Decks
+﻿using System;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+
+namespace HearthCap.Features.Decks
 {
-    using System;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-
     public class DeckModel : PropertyChangedBase
     {
         private Guid id;
@@ -27,7 +25,7 @@
 
         private bool deleted;
 
-        private static DeckModel emptyEntry = new DeckModel() { Id = Guid.Empty, Key = string.Empty, Name = string.Empty, Server = string.Empty };
+        private static readonly DeckModel emptyEntry = new DeckModel { Id = Guid.Empty, Key = string.Empty, Name = string.Empty, Server = string.Empty };
 
         public DeckModel()
         {
@@ -39,105 +37,87 @@
 
         public Guid Id
         {
-            get
-            {
-                return this.id;
-            }
+            get { return id; }
             set
             {
-                if (value.Equals(this.id))
+                if (value.Equals(id))
                 {
                     return;
                 }
-                this.id = value;
-                this.NotifyOfPropertyChange(() => this.Id);
+                id = value;
+                NotifyOfPropertyChange(() => Id);
             }
         }
 
         public string Key
         {
-            get
-            {
-                return this.key;
-            }
+            get { return key; }
             set
             {
-                if (value == this.key)
+                if (value == key)
                 {
                     return;
                 }
-                this.key = value;
-                this.NotifyOfPropertyChange(() => this.Key);
+                key = value;
+                NotifyOfPropertyChange(() => Key);
             }
         }
 
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get { return name; }
             set
             {
-                if (value == this.name)
+                if (value == name)
                 {
                     return;
                 }
-                this.name = value;
-                this.NotifyOfPropertyChange(() => this.Name);
-                this.NotifyOfPropertyChange(() => this.NameAndServer);
+                name = value;
+                NotifyOfPropertyChange(() => Name);
+                NotifyOfPropertyChange(() => NameAndServer);
             }
         }
 
         public DateTime Created
         {
-            get
-            {
-                return this.created;
-            }
+            get { return created; }
             set
             {
-                if (value.Equals(this.created))
+                if (value.Equals(created))
                 {
                     return;
                 }
-                this.created = value;
-                this.NotifyOfPropertyChange(() => this.Created);
+                created = value;
+                NotifyOfPropertyChange(() => Created);
             }
         }
 
         public DateTime Modified
         {
-            get
-            {
-                return this.modified;
-            }
+            get { return modified; }
             set
             {
-                if (value.Equals(this.modified))
+                if (value.Equals(modified))
                 {
                     return;
                 }
-                this.modified = value;
-                this.NotifyOfPropertyChange(() => this.Modified);
+                modified = value;
+                NotifyOfPropertyChange(() => Modified);
             }
         }
 
         public string Server
         {
-            get
-            {
-                return this.server;
-            }
+            get { return server; }
             set
             {
-                if (value == this.server)
+                if (value == server)
                 {
                     return;
                 }
-                this.server = value;
-                this.NotifyOfPropertyChange(() => this.Server);
-                this.NotifyOfPropertyChange(() => this.NameAndServer);
+                server = value;
+                NotifyOfPropertyChange(() => Server);
+                NotifyOfPropertyChange(() => NameAndServer);
             }
         }
 
@@ -153,7 +133,6 @@
                 return String.Format("{0} ({1})", Name, Server);
             }
         }
-
 
         public string NameAndSlot
         {
@@ -175,60 +154,48 @@
 
         public string Notes
         {
-            get
-            {
-                return this.notes;
-            }
+            get { return notes; }
             set
             {
-                if (value == this.notes)
+                if (value == notes)
                 {
                     return;
                 }
-                this.notes = value;
-                this.NotifyOfPropertyChange(() => this.Notes);
+                notes = value;
+                NotifyOfPropertyChange(() => Notes);
             }
         }
 
         public static DeckModel EmptyEntry
         {
-            get
-            {
-                return emptyEntry;
-            }
+            get { return emptyEntry; }
         }
 
         public DeckImage Image
         {
-            get
-            {
-                return this.image;
-            }
+            get { return image; }
             set
             {
-                if (Equals(value, this.image))
+                if (Equals(value, image))
                 {
                     return;
                 }
-                this.image = value;
-                this.NotifyOfPropertyChange(() => this.Image);
+                image = value;
+                NotifyOfPropertyChange(() => Image);
             }
         }
 
         public bool Deleted
         {
-            get
-            {
-                return this.deleted;
-            }
+            get { return deleted; }
             set
             {
-                if (value.Equals(this.deleted))
+                if (value.Equals(deleted))
                 {
                     return;
                 }
-                this.deleted = value;
-                this.NotifyOfPropertyChange(() => this.Deleted);
+                deleted = value;
+                NotifyOfPropertyChange(() => Deleted);
             }
         }
     }

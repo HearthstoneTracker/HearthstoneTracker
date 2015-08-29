@@ -41,7 +41,7 @@
                                     Value="{DynamicResource GrayBrush8}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver"
-                                 Value="False"></Trigger>
+                                 Value="False" />
                         <Trigger Property="IsPressed"
                                  Value="True">
                             <Setter TargetName="grid"

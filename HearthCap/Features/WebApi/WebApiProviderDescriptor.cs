@@ -1,9 +1,8 @@
+using System.Collections.Generic;
+using Caliburn.Micro;
+
 namespace HearthCap.Features.WebApi
 {
-    using System.Collections.Generic;
-
-    using Caliburn.Micro;
-
     public abstract class WebApiProviderDescriptor : PropertyChangedBase, IWebApiProviderDescriptor
     {
         private string providerName;
@@ -22,18 +21,12 @@ namespace HearthCap.Features.WebApi
 
         public string ProviderKey
         {
-            get
-            {
-                return providerKey;
-            }
+            get { return providerKey; }
         }
 
         public string ProviderName
         {
-            get
-            {
-                return providerName;
-            }
+            get { return providerName; }
             set
             {
                 if (value == providerName)
@@ -47,10 +40,7 @@ namespace HearthCap.Features.WebApi
 
         public string ProviderDescription
         {
-            get
-            {
-                return providerDescription;
-            }
+            get { return providerDescription; }
             set
             {
                 if (value == providerDescription)
@@ -64,10 +54,7 @@ namespace HearthCap.Features.WebApi
 
         public bool IsEnabled
         {
-            get
-            {
-                return isEnabled;
-            }
+            get { return isEnabled; }
             set
             {
                 if (value.Equals(isEnabled))

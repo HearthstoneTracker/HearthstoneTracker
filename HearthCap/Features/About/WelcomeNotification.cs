@@ -1,15 +1,13 @@
-﻿namespace HearthCap.Features.About
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Shell.Events;
+using HearthCap.Shell.Notifications;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features.About
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Events;
-    using HearthCap.Shell.Notifications;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
-    public class WelcomeNotification : 
+    public class WelcomeNotification :
         IStartupTask,
         IHandle<ShellReady>
     {
@@ -22,7 +20,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ShellReady message)

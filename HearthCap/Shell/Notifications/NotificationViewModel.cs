@@ -1,12 +1,11 @@
-﻿namespace HearthCap.Shell.Notifications
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Notifications
 {
-    using System;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-
-    using Caliburn.Micro;
-
     public class NotificationViewModel : Screen
     {
         private SendNotification notification;
@@ -17,77 +16,68 @@
 
         public NotificationViewModel(SendNotification notification)
         {
-            this.Notification = notification;
-            this.closeDuration = new Duration(TimeSpan.FromSeconds(1));
+            Notification = notification;
+            closeDuration = new Duration(TimeSpan.FromSeconds(1));
         }
 
         public SendNotification Notification
         {
-            get
-            {
-                return this.notification;
-            }
+            get { return notification; }
             set
             {
-                if (Equals(value, this.notification))
+                if (Equals(value, notification))
                 {
                     return;
                 }
-                this.notification = value;
-                this.NotifyOfPropertyChange(() => this.Notification);
+                notification = value;
+                NotifyOfPropertyChange(() => Notification);
             }
         }
 
         public bool Closing
         {
-            get
-            {
-                return this.closing;
-            }
+            get { return closing; }
             set
             {
-                if (value.Equals(this.closing))
+                if (value.Equals(closing))
                 {
                     return;
                 }
-                this.closing = value;
-                this.NotifyOfPropertyChange(() => this.Closing);
+                closing = value;
+                NotifyOfPropertyChange(() => Closing);
             }
         }
 
         public Duration CloseDuration
         {
-            get
-            {
-                return this.closeDuration;
-            }
+            get { return closeDuration; }
             set
             {
-                if (value.Equals(this.closeDuration))
+                if (value.Equals(closeDuration))
                 {
                     return;
                 }
-                this.closeDuration = value;
-                this.NotifyOfPropertyChange(() => this.CloseDuration);
+                closeDuration = value;
+                NotifyOfPropertyChange(() => CloseDuration);
             }
         }
 
         public void Close()
         {
-            base.TryClose();
+            TryClose();
         }
 
         public async void CloseAnimated()
         {
             Closing = true;
             await Task.Delay(1000);
-            base.TryClose();
+            TryClose();
         }
 
         /// <summary>
-        /// Called when an attached view's Loaded event fires.
+        ///     Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewLoaded(object view)
         {
             var ui = (Control)view;

@@ -54,7 +54,7 @@ namespace HearthCap.Features.AutoUpdate
         [ImportingConstructor]
         public UpdateViewModel(IEventAggregator events)
         {
-            this._events = events;
+            _events = events;
             CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
 
             if (!String.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["updatebaseurl"]))

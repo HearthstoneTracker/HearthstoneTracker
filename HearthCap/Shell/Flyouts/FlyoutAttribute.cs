@@ -1,19 +1,19 @@
-﻿namespace HearthCap.Shell.Flyouts
+﻿using System;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Shell.Theme;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Shell.Flyouts
 {
-    using System;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Theme;
-
-    using MahApps.Metro.Controls;
-
     [MetadataAttribute]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class FlyoutAttribute : ExportAttribute
     {
-        public FlyoutAttribute() : base(typeof(IFlyout)) { }
+        public FlyoutAttribute()
+            : base(typeof(IFlyout))
+        {
+        }
 
         public string Key { get; set; }
 
@@ -53,8 +53,14 @@
 
         public Flyout(IThemeManager themeManager, IScreen model)
         {
-            if (themeManager == null) { throw new ArgumentNullException("themeManager"); }
-            if (model == null) { throw new ArgumentNullException("model"); }
+            if (themeManager == null)
+            {
+                throw new ArgumentNullException("themeManager");
+            }
+            if (model == null)
+            {
+                throw new ArgumentNullException("model");
+            }
 
             this.themeManager = themeManager;
             this.model = model;
@@ -75,50 +81,53 @@
         public Flyout(IThemeManager themeManager, IFlyoutMetadata metadata, IScreen model)
             : this(themeManager, model)
         {
-            if (themeManager == null) { throw new ArgumentNullException("themeManager"); }
-            if (metadata == null) { throw new ArgumentNullException("metadata"); }
-            if (model == null) { throw new ArgumentNullException("model"); }
+            if (themeManager == null)
+            {
+                throw new ArgumentNullException("themeManager");
+            }
+            if (metadata == null)
+            {
+                throw new ArgumentNullException("metadata");
+            }
+            if (model == null)
+            {
+                throw new ArgumentNullException("model");
+            }
 
-            this.header = metadata.Header;
-            this.position = metadata.DefaultPosition;
-            this.name = metadata.Key;
-            this.isModal = metadata.IsModal;
+            header = metadata.Header;
+            position = metadata.DefaultPosition;
+            name = metadata.Key;
+            isModal = metadata.IsModal;
         }
 
         public string Header
         {
-            get
-            {
-                return this.header;
-            }
+            get { return header; }
 
             set
             {
-                if (value == this.header)
+                if (value == header)
                 {
                     return;
                 }
 
-                this.header = value;
-                this.NotifyOfPropertyChange(() => this.Header);
+                header = value;
+                NotifyOfPropertyChange(() => Header);
             }
         }
 
         public bool IsOpen
         {
-            get
-            {
-                return this.isOpen;
-            }
+            get { return isOpen; }
 
             set
             {
-                if (value.Equals(this.isOpen))
+                if (value.Equals(isOpen))
                 {
                     return;
                 }
 
-                this.isOpen = value;
+                isOpen = value;
                 if (value)
                 {
                     model.Activate();
@@ -128,97 +137,82 @@
                     model.Deactivate(false);
                 }
 
-                this.NotifyOfPropertyChange(() => this.IsOpen);
+                NotifyOfPropertyChange(() => IsOpen);
             }
         }
 
         public Position Position
         {
-            get
-            {
-                return this.position;
-            }
+            get { return position; }
 
             set
             {
-                if (value == this.position)
+                if (value == position)
                 {
                     return;
                 }
 
-                this.position = value;
+                position = value;
                 using (var reg = new FlyoutRegistrySettings())
                 {
-                    reg.SetPosition(this.GetType(), value);
+                    reg.SetPosition(GetType(), value);
                 }
-                this.NotifyOfPropertyChange(() => this.Position);
+                NotifyOfPropertyChange(() => Position);
             }
         }
 
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get { return name; }
             set
             {
-                if (value == this.name)
+                if (value == name)
                 {
                     return;
                 }
-                this.name = value;
-                this.NotifyOfPropertyChange(() => this.Name);
+                name = value;
+                NotifyOfPropertyChange(() => Name);
             }
         }
 
         public bool IsModal
         {
-            get
-            {
-                return this.isModal;
-            }
+            get { return isModal; }
             set
             {
-                if (value.Equals(this.isModal))
+                if (value.Equals(isModal))
                 {
                     return;
                 }
-                this.isModal = value;
-                this.NotifyOfPropertyChange(() => this.IsModal);
+                isModal = value;
+                NotifyOfPropertyChange(() => IsModal);
             }
         }
 
         public IScreen Model
         {
-            get
-            {
-                return this.model;
-            }
+            get { return model; }
             set
             {
-                if (Equals(value, this.model))
+                if (Equals(value, model))
                 {
                     return;
                 }
-                this.model = value;
-                this.NotifyOfPropertyChange(() => this.Model);
+                model = value;
+                NotifyOfPropertyChange(() => Model);
             }
         }
 
         public FlyoutTheme Theme
         {
-            get
-            {
-                return themeManager.FlyoutTheme;
-            }
+            get { return themeManager.FlyoutTheme; }
         }
 
         protected void SetPosition(Position defaultPosition)
         {
             using (var reg = new FlyoutRegistrySettings())
             {
-                this.Position = reg.GetPosition(this.GetType(), defaultPosition);
+                Position = reg.GetPosition(GetType(), defaultPosition);
             }
         }
     }

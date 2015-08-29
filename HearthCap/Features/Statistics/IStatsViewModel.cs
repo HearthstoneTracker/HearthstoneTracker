@@ -1,9 +1,8 @@
+using System;
+using HearthCap.Features.Core;
+
 namespace HearthCap.Features.Statistics
 {
-    using System;
-
-    using HearthCap.Features.Core;
-
     public interface IStatsViewModel
     {
         void RefreshData();

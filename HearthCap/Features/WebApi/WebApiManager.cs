@@ -1,15 +1,13 @@
-﻿namespace HearthCap.Features.WebApi
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features.WebApi
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class WebApiManager : IStartupTask
     {
@@ -30,7 +28,7 @@
             this.webApiProviders = webApiProviders.ToList();
             foreach (var provider in this.webApiProviders)
             {
-                provider.PropertyChanged += this.ProviderOnPropertyChanged;
+                provider.PropertyChanged += ProviderOnPropertyChanged;
             }
         }
 
@@ -41,26 +39,27 @@
             {
                 if (provider.IsEnabled)
                 {
-                    this.events.Subscribe(provider.EventsHandler);
+                    events.Subscribe(provider.EventsHandler);
                 }
                 else
                 {
-                    this.events.Unsubscribe(provider.EventsHandler);
+                    events.Unsubscribe(provider.EventsHandler);
                 }
             }
         }
 
         public void Run()
         {
-            foreach (var provider in this.webApiProviders)
+            foreach (var provider in webApiProviders)
             {
                 provider.Initialize();
 
-                if (provider.IsEnabled && provider.EventsHandler != null)
+                if (provider.IsEnabled
+                    && provider.EventsHandler != null)
                 {
-                    this.events.Subscribe(provider.EventsHandler);
+                    events.Subscribe(provider.EventsHandler);
                 }
-            }            
+            }
         }
     }
 }

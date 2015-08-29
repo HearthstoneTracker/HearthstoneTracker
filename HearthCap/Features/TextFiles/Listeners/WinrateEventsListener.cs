@@ -1,18 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.GameManager.Events;
+
 namespace HearthCap.Features.TextFiles.Listeners
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity;
-    using System.Globalization;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.GameManager.Events;
-
     [Export(typeof(TextFilesEventsListener))]
     public class WinrateEventsListener :
         TextFilesEventsListener,
@@ -35,8 +32,8 @@ namespace HearthCap.Features.TextFiles.Listeners
             this.repository = repository;
             this.events = events;
             events.Subscribe(this);
-            this.Variables.Add(new KeyValuePair<string, string>(winRateWeek, "Current winrate (%) last week (7 days)"));
-            this.Variables.Add(new KeyValuePair<string, string>(winRateMonth, "Current winrate (%) last month"));
+            Variables.Add(new KeyValuePair<string, string>(winRateWeek, "Current winrate (%) last week (7 days)"));
+            Variables.Add(new KeyValuePair<string, string>(winRateMonth, "Current winrate (%) last month"));
             // Variables.Add(new KeyValuePair<string, string>(winRateThisWeek, "Winrate (%) this week"));
             // Variables.Add(new KeyValuePair<string, string>(winRateThisMonth, "Winrate (%) this month"));
         }
@@ -52,12 +49,12 @@ namespace HearthCap.Features.TextFiles.Listeners
             var lastMonth = now.AddMonths(-1);
             var lastWeek = now.AddDays(-7);
 
-            float totalLastMonth = this.repository.Query(x => x.Count(e => e.Started > lastMonth));
-            float winsLastMonth = this.repository.Query(x => x.Count(e => e.Started > lastMonth && e.Victory));
-            float totalLastWeek = this.repository.Query(x => x.Count(e => e.Started > lastWeek));
-            float winsLastWeek = this.repository.Query(x => x.Count(e => e.Started > lastWeek && e.Victory));
-            double winRateLastMonth = Math.Round(winsLastMonth / totalLastMonth * 100, 0);
-            double winRateLastWeek = Math.Round(winsLastWeek / totalLastWeek * 100, 0);
+            float totalLastMonth = repository.Query(x => x.Count(e => e.Started > lastMonth));
+            float winsLastMonth = repository.Query(x => x.Count(e => e.Started > lastMonth && e.Victory));
+            float totalLastWeek = repository.Query(x => x.Count(e => e.Started > lastWeek));
+            float winsLastWeek = repository.Query(x => x.Count(e => e.Started > lastWeek && e.Victory));
+            var winRateLastMonth = Math.Round(winsLastMonth / totalLastMonth * 100, 0);
+            var winRateLastWeek = Math.Round(winsLastWeek / totalLastWeek * 100, 0);
 
             if (content.Contains(winRateWeek))
             {
@@ -72,39 +69,39 @@ namespace HearthCap.Features.TextFiles.Listeners
         }
 
         /// <summary>
-        /// Handle the message with a Task.
+        ///     Handle the message with a Task.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>
-        /// The Task that represents the operation.
+        ///     The Task that represents the operation.
         /// </returns>
         public Task Handle(GameResultAdded message)
         {
-            return Task.Run(() => this.Refresh());
+            return Task.Run(() => Refresh());
         }
 
         /// <summary>
-        /// Handle the message with a Task.
+        ///     Handle the message with a Task.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>
-        /// The Task that represents the operation.
+        ///     The Task that represents the operation.
         /// </returns>
         public Task Handle(GameResultUpdated message)
         {
-            return Task.Run(() => this.Refresh());
+            return Task.Run(() => Refresh());
         }
 
         /// <summary>
-        /// Handle the message with a Task.
+        ///     Handle the message with a Task.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>
-        /// The Task that represents the operation.
+        ///     The Task that represents the operation.
         /// </returns>
         public Task Handle(GameResultDeleted message)
         {
-            return Task.Run(() => this.Refresh());
+            return Task.Run(() => Refresh());
         }
     }
 }

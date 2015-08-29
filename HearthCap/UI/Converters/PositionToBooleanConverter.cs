@@ -1,16 +1,16 @@
+using System;
+using System.Globalization;
+using System.Windows.Data;
+using MahApps.Metro.Controls;
+
 namespace HearthCap.UI.Converters
 {
-    using System;
-    using System.Globalization;
-    using System.Windows.Data;
-
-    using MahApps.Metro.Controls;
-
     public class PositionToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && parameter != null)
+            if (value != null
+                && parameter != null)
             {
                 return value.Equals(parameter);
             }
@@ -21,14 +21,12 @@ namespace HearthCap.UI.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var position = (Position)parameter;
-            if (value != null && (bool)value)
+            if (value != null
+                && (bool)value)
             {
                 return position;
             }
-            else
-            {
-                return position == Position.Left ? Position.Right : Position.Left;
-            }
+            return position == Position.Left ? Position.Right : Position.Left;
         }
     }
 }

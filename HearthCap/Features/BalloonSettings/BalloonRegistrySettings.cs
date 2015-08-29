@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Features.BalloonSettings
-{
-    using HearthCap.Shell.UserPreferences;
+﻿using HearthCap.Shell.UserPreferences;
 
+namespace HearthCap.Features.BalloonSettings
+{
     public class BalloonRegistrySettings : RegistrySettings
     {
         public BalloonRegistrySettings()
@@ -11,38 +11,20 @@
 
         public bool GameMode
         {
-            get
-            {
-                return this.GetOrCreate("GameMode", true);
-            }
-            set
-            {
-                this.SetValue("GameMode", value);
-            }
+            get { return GetOrCreate("GameMode", true); }
+            set { SetValue("GameMode", value); }
         }
 
         public bool GameTurns
         {
-            get
-            {
-                return this.GetOrCreate("GameTurns", false);
-            }
-            set
-            {
-                this.SetValue("GameTurns", value);
-            }
+            get { return GetOrCreate("GameTurns", false); }
+            set { SetValue("GameTurns", value); }
         }
 
         public bool GameStartEnd
         {
-            get
-            {
-                return this.GetOrCreate("GameStartEnd", true);
-            }
-            set
-            {
-                this.SetValue("GameStartEnd", value);
-            }
+            get { return GetOrCreate("GameStartEnd", true); }
+            set { SetValue("GameStartEnd", value); }
         }
     }
 }

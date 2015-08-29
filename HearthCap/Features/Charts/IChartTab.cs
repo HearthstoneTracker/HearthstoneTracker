@@ -1,13 +1,11 @@
+using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using Caliburn.Micro;
+using HearthCap.Data;
+
 namespace HearthCap.Features.Charts
 {
-    using System;
-    using System.ComponentModel;
-    using System.Linq.Expressions;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-
     public interface IChartTab : INotifyPropertyChanged
     {
         int Order { get; set; }
@@ -21,18 +19,15 @@ namespace HearthCap.Features.Charts
 
         public int Order
         {
-            get
-            {
-                return this.order;
-            }
+            get { return order; }
             set
             {
-                if (value == this.order)
+                if (value == order)
                 {
                     return;
                 }
-                this.order = value;
-                this.NotifyOfPropertyChange(() => this.Order);
+                order = value;
+                NotifyOfPropertyChange(() => Order);
             }
         }
 

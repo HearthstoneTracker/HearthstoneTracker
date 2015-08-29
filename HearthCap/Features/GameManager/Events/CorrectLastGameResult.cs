@@ -1,12 +1,12 @@
-﻿namespace HearthCap.Features.GameManager.Events
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Features.GameManager.Events
+{
     public class CorrectLastGameResult
     {
         public CorrectLastGameResult(Guid id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         public Guid Id { get; set; }

@@ -1,9 +1,9 @@
-﻿namespace HearthCap.Util
-{
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
+namespace HearthCap.Util
+{
     public sealed class AsyncLock
     {
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -11,20 +11,20 @@
 
         public AsyncLock()
         {
-            this.releaser = Task.FromResult((IDisposable)new Releaser(this));
+            releaser = Task.FromResult((IDisposable)new Releaser(this));
         }
 
         public Task<IDisposable> LockAsync()
         {
-            var wait = this.semaphore.WaitAsync();
+            var wait = semaphore.WaitAsync();
             return wait.IsCompleted
-                       ? this.releaser
-                       : wait.ContinueWith(
-                           (_, state) => (IDisposable)state,
-                           this.releaser.Result,
-                           CancellationToken.None,
-                           TaskContinuationOptions.ExecuteSynchronously,
-                           TaskScheduler.Default);
+                ? releaser
+                : wait.ContinueWith(
+                    (_, state) => (IDisposable)state,
+                    releaser.Result,
+                    CancellationToken.None,
+                    TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
         }
 
         private sealed class Releaser : IDisposable
@@ -33,12 +33,12 @@
 
             internal Releaser(AsyncLock toRelease)
             {
-                this.lockToRelease = toRelease;
+                lockToRelease = toRelease;
             }
 
             public void Dispose()
             {
-                this.lockToRelease.semaphore.Release();
+                lockToRelease.semaphore.Release();
             }
         }
     }

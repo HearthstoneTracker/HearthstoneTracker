@@ -19,16 +19,16 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <WrapPanel Orientation="Horizontal"
                    Grid.Row="0"
@@ -43,7 +43,7 @@
                     <ComboBoxItem IsSelected="True"
                                   Style="{StaticResource DateComboBoxItem}"
                                   Content="do not remove1"
-                                  DataContext="{Binding}"></ComboBoxItem>
+                                  DataContext="{Binding}" />
                 </ComboBox>
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
@@ -52,7 +52,7 @@
                           VerticalAlignment="Stretch"
                           DisplayMemberPath="Name"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterServer}"></ComboBox>
+                          SelectedItem="{Binding FilterServer}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Heroes}">Hero:</Label>
@@ -60,7 +60,7 @@
                           VerticalAlignment="Stretch"
                           Background="{DynamicResource WhiteBrush}"
                           SelectedItem="{Binding FilterHero}"
-                          Style="{StaticResource heroCombobox}"></ComboBox>
+                          Style="{StaticResource heroCombobox}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Heroes}">Opponent:</Label>
@@ -68,20 +68,20 @@
                           ItemsSource="{Binding Heroes}"
                           Background="{DynamicResource WhiteBrush}"
                           SelectedItem="{Binding FilterOpponentHero}"
-                          Style="{StaticResource heroCombobox}"></ComboBox>
+                          Style="{StaticResource heroCombobox}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
                 <ComboBox ItemsSource="{Binding GameModes}"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+                          SelectedItem="{Binding FilterGameMode}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Decks}">Deck:</Label>
                 <ComboBox Name="Decks"
                           Background="{DynamicResource WhiteBrush}"
                           DisplayMemberPath="NameAndServer"
-                          SelectedItem="{Binding FilterDeck}"></ComboBox>
+                          SelectedItem="{Binding FilterDeck}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Search}">Search:</Label>
@@ -119,13 +119,13 @@
         <Grid Grid.Row="1"
               Margin="6 6 6 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="24"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="24" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding GameResultsCV}"
                       SelectionMode="Extended"
@@ -199,7 +199,7 @@
                                 <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
                                        Height="32"
                                        Width="32"
-                                       Margin="2"></Image>
+                                       Margin="2" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -212,20 +212,20 @@
                                 <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
                                        Height="32"
                                        Width="32"
-                                       Margin="2"></Image>
+                                       Margin="2" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Mode"
                                         CellStyle="{StaticResource MetroDataGridCell}"
-                                        Binding="{Binding GameMode, Converter={StaticResource enumNameConverter}}"></DataGridTextColumn>
+                                        Binding="{Binding GameMode, Converter={StaticResource enumNameConverter}}" />
                     <DataGridTextColumn Header="Started"
                                         CellStyle="{StaticResource MetroDataGridCell}"
                                         SortDirection="Descending"
-                                        Binding="{Binding Started, StringFormat=g}"></DataGridTextColumn>
+                                        Binding="{Binding Started, StringFormat=g}" />
                     <DataGridTextColumn Header="Duration"
                                         CanUserSort="False"
-                                        Binding="{Binding Duration, StringFormat={}{0} min.}"></DataGridTextColumn>
+                                        Binding="{Binding Duration, StringFormat={}{0} min.}" />
                     <DataGridTemplateColumn Header="Result"
                                             SortMemberPath="Victory">
                         <DataGridTemplateColumn.CellTemplate>
@@ -234,39 +234,39 @@
                                             Margin="4 0 0 0">
                                     <TextBlock Text="Win"
                                                Foreground="ForestGreen"
-                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibility}}" />
                                     <TextBlock Text="Loss"
                                                Foreground="Red"
-                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                               Visibility="{Binding Victory, Converter={StaticResource booleanToVisibilityInverse}}" />
                                     <TextBlock Foreground="Red"
                                                Visibility="{Binding Conceded, Converter={StaticResource booleanToVisibility}}"
-                                               Text=" (c)"></TextBlock>
+                                               Text=" (c)" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Deck"
-                                        Binding="{Binding Deck.Name}"></DataGridTextColumn>
+                                        Binding="{Binding Deck.Name}" />
                     <DataGridTemplateColumn Header="Start"
                                             SortMemberPath="GoFirst">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Margin="4 0 0 0">
                                     <TextBlock Text="First"
-                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibility}}" />
                                     <TextBlock Text="Second"
-                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                               Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibilityInverse}}" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Turns"
-                                        Binding="{Binding Turns}"></DataGridTextColumn>
+                                        Binding="{Binding Turns}" />
                     <DataGridTextColumn Header="Server"
-                                        Binding="{Binding Server}"></DataGridTextColumn>
+                                        Binding="{Binding Server}" />
                     <DataGridTextColumn Header="Notes"
                                         CanUserSort="False"
-                                        Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}"></DataGridTextColumn>
+                                        Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}" />
                 </DataGrid.Columns>
             </DataGrid>
             <controls:ProgressRing IsActive="{Binding Busy.IsBusy, Mode=OneWay}"
@@ -282,34 +282,34 @@
                   Grid.Column="0"
                   Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.Resources>
                     <Style TargetType="Label">
                         <Setter Property="Margin"
-                                Value="4 0 4 0"></Setter>
+                                Value="4 0 4 0" />
                         <Setter Property="Padding"
-                                Value="0"></Setter>
+                                Value="0" />
                         <Setter Property="FontSize"
-                                Value="14"></Setter>
+                                Value="14" />
                         <Setter Property="VerticalAlignment"
-                                Value="Center"></Setter>
+                                Value="Center" />
                         <Setter Property="FontWeight"
-                                Value="SemiBold"></Setter>
+                                Value="SemiBold" />
                     </Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="FontSize"
-                                Value="13"></Setter>
+                                Value="13" />
                         <Setter Property="VerticalAlignment"
-                                Value="Center"></Setter>
+                                Value="Center" />
                     </Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill"
-                                Value="{DynamicResource GrayBrush3}"></Setter>
+                                Value="{DynamicResource GrayBrush3}" />
                         <Setter Property="Margin"
-                                Value="8 4 4 2"></Setter>
+                                Value="8 4 4 2" />
                         <Setter Property="Width"
-                                Value="1"></Setter>
+                                Value="1" />
                     </Style>
                 </Grid.Resources>
                 <Border BorderBrush="{DynamicResource GrayBrush2}"
@@ -318,28 +318,28 @@
                         Height="24">
                     <StackPanel Orientation="Horizontal">
                         <Label>Games:</Label>
-                        <TextBlock Text="{Binding Totals.Games}"></TextBlock>
-                        <Rectangle></Rectangle>
+                        <TextBlock Text="{Binding Totals.Games}" />
+                        <Rectangle />
                         <Label>Won:</Label>
-                        <TextBlock Text="{Binding Totals.Won}"></TextBlock>
-                        <Rectangle></Rectangle>
+                        <TextBlock Text="{Binding Totals.Won}" />
+                        <Rectangle />
                         <Label>Lost:</Label>
-                        <TextBlock Text="{Binding Totals.Lost}"></TextBlock>
-                        <Rectangle></Rectangle>
+                        <TextBlock Text="{Binding Totals.Lost}" />
+                        <Rectangle />
                         <Label>Played:</Label>
-                        <TextBlock Text="{Binding Totals.Hours}"></TextBlock>
-                        <TextBlock Text="h. "></TextBlock>
-                        <TextBlock Text="{Binding Totals.Minutes}"></TextBlock>
-                        <TextBlock Text="m. "></TextBlock>
-                        <Rectangle Fill="{DynamicResource GrayBrush1}"></Rectangle>
+                        <TextBlock Text="{Binding Totals.Hours}" />
+                        <TextBlock Text="h. " />
+                        <TextBlock Text="{Binding Totals.Minutes}" />
+                        <TextBlock Text="m. " />
+                        <Rectangle Fill="{DynamicResource GrayBrush1}" />
                         <Label>Total tracked:</Label>
-                        <TextBlock Text="{Binding Totals.TotalGames}"></TextBlock>
-                        <Rectangle></Rectangle>
+                        <TextBlock Text="{Binding Totals.TotalGames}" />
+                        <Rectangle />
                         <Label>Total played:</Label>
-                        <TextBlock Text="{Binding Totals.TotalHours}"></TextBlock>
-                        <TextBlock Text="h. "></TextBlock>
-                        <TextBlock Text="{Binding Totals.TotalMinutes}"></TextBlock>
-                        <TextBlock Text="m. "></TextBlock>
+                        <TextBlock Text="{Binding Totals.TotalHours}" />
+                        <TextBlock Text="h. " />
+                        <TextBlock Text="{Binding Totals.TotalMinutes}" />
+                        <TextBlock Text="m. " />
                     </StackPanel>
                 </Border>
             </Grid>
@@ -350,7 +350,7 @@
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"></ContentControl>
+                            VerticalContentAlignment="Stretch" />
         </Grid>
     </Grid>
 </UserControl>

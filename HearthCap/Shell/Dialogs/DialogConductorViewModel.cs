@@ -1,42 +1,46 @@
-﻿namespace HearthCap.Shell.Dialogs
+﻿using System;
+using System.Collections;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Dialogs
 {
-    using System;
-    using System.Collections;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    [Export(typeof(IDialogManager)), PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(IDialogManager))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public class DialogConductorViewModel : PropertyChangedBase, IDialogManager, IConductActiveItem
     {
-        readonly Func<IMessageBox> createMessageBox;
+        private readonly Func<IMessageBox> createMessageBox;
 
         [ImportingConstructor]
         public DialogConductorViewModel(Func<IMessageBox> messageBoxFactory)
         {
-            this.createMessageBox = messageBoxFactory;
+            createMessageBox = messageBoxFactory;
         }
 
         public IScreen ActiveItem { get; protected set; }
 
         public IEnumerable GetChildren()
         {
-            return this.ActiveItem != null ? new[] { this.ActiveItem } : new object[0];
+            return ActiveItem != null ? new[] { ActiveItem } : new object[0];
         }
 
         public void ActivateItem(object item)
         {
-            this.ActiveItem = item as IScreen;
+            ActiveItem = item as IScreen;
 
-            var child = this.ActiveItem as IChild;
+            var child = ActiveItem as IChild;
             if (child != null)
+            {
                 child.Parent = this;
+            }
 
-            if (this.ActiveItem != null)
-                this.ActiveItem.Activate();
+            if (ActiveItem != null)
+            {
+                ActiveItem.Activate();
+            }
 
-            this.NotifyOfPropertyChange(() => this.ActiveItem);
-            this.ActivationProcessed(this, new ActivationProcessedEventArgs { Item = this.ActiveItem, Success = true });
+            NotifyOfPropertyChange(() => ActiveItem);
+            ActivationProcessed(this, new ActivationProcessedEventArgs { Item = ActiveItem, Success = true });
         }
 
         public void DeactivateItem(object item, bool close)
@@ -45,45 +49,52 @@
             if (guard != null)
             {
                 guard.CanClose(result =>
-                {
-                    if (result)
-                        this.CloseActiveItemCore();
-                });
+                    {
+                        if (result)
+                        {
+                            CloseActiveItemCore();
+                        }
+                    });
             }
-            else this.CloseActiveItemCore();
+            else
+            {
+                CloseActiveItemCore();
+            }
         }
 
         object IHaveActiveItem.ActiveItem
         {
-            get { return this.ActiveItem; }
-            set { this.ActivateItem(value); }
+            get { return ActiveItem; }
+            set { ActivateItem(value); }
         }
 
         public event EventHandler<ActivationProcessedEventArgs> ActivationProcessed = delegate { };
 
         public void ShowDialog(IScreen dialogModel)
         {
-            this.ActivateItem(dialogModel);
+            ActivateItem(dialogModel);
         }
 
         public void ShowMessageBox(string message, string title = "Hello Screens", MessageBoxOptions options = MessageBoxOptions.Ok, Action<IMessageBox> callback = null)
         {
-            var box = this.createMessageBox();
+            var box = createMessageBox();
 
             box.DisplayName = title;
             box.Options = options;
             box.Message = message;
 
             if (callback != null)
+            {
                 box.Deactivated += delegate { callback(box); };
+            }
 
-            this.ActivateItem(box);
+            ActivateItem(box);
         }
 
-        void CloseActiveItemCore()
+        private void CloseActiveItemCore()
         {
-            var oldItem = this.ActiveItem;
-            this.ActivateItem(null);
+            var oldItem = ActiveItem;
+            ActivateItem(null);
             oldItem.Deactivate(true);
         }
     }

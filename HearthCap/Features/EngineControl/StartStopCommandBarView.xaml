@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -31,7 +31,9 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
-                           Margin="4 0 0 0">Start capture</TextBlock>
+                           Margin="4 0 0 0">
+                    Start capture
+                </TextBlock>
             </StackPanel>
             <Button.ToolTip>
                 <TextBlock>Start the capture engine.</TextBlock>
@@ -52,7 +54,9 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
-                           Margin="4 0 0 0">Stop capture</TextBlock>
+                           Margin="4 0 0 0">
+                    Stop capture
+                </TextBlock>
             </StackPanel>
             <Button.ToolTip>
                 <TextBlock>Stop the capture engine.</TextBlock>
@@ -60,6 +64,6 @@
         </Button>
         <Rectangle Width="1"
                    Fill="{DynamicResource GrayBrush3}"
-                   Margin="4 4 4 4"></Rectangle>
+                   Margin="4 4 4 4" />
     </StackPanel>
 </UserControl>

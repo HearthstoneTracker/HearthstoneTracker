@@ -1,8 +1,8 @@
-﻿namespace HearthCap.UI.Behaviors.DragDrop
-{
-    using System;
-    using System.Windows;
+﻿using System;
+using System.Windows;
 
+namespace HearthCap.UI.Behaviors.DragDrop
+{
     public class DataGridDragDropEventArgs : EventArgs
     {
         public object Source { get; internal set; }

@@ -83,7 +83,7 @@
         <Setter Property="FontWeight"
                 Value="Normal" />
         <Setter Property="Margin"
-                Value="10 0 0 0"></Setter>
+                Value="10 0 0 0" />
     </Style>
     <Style x:Key="ChartSubTitleStyle"
            TargetType="TextBlock"
@@ -103,18 +103,18 @@
         <Setter Property="FontWeight"
                 Value="Normal" />
         <Setter Property="Margin"
-                Value="8 0 0 0"></Setter>
+                Value="8 0 0 0" />
         <Setter Property="Opacity"
-                Value="0.75"></Setter>
+                Value="0.75" />
         <Setter Property="TextWrapping"
-                Value="NoWrap"></Setter>
+                Value="NoWrap" />
     </Style>
     <Style x:Key="SeriesTextStyle"
            TargetType="TextBlock">
         <Setter Property="TextAlignment"
                 Value="Center" />
         <Setter Property="TextWrapping"
-                Value="NoWrap"></Setter>
+                Value="NoWrap" />
     </Style>
     <Style x:Key="NumberStyle"
            TargetType="TextBlock">
@@ -127,7 +127,7 @@
         <Setter Property="Opacity"
                 Value="0.75" />
         <Setter Property="FontSize"
-                Value="12"></Setter>
+                Value="12" />
     </Style>
     <Style x:Key="LeftNumbers"
            TargetType="TextBlock">
@@ -210,7 +210,7 @@
         <Setter Property="IsTabStop"
                 Value="False" />
         <Setter Property="FontSize"
-                Value="12"></Setter>
+                Value="12" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ChartLegendItem">
@@ -222,7 +222,7 @@
                                 Margin="0 0 5 0" />
                         <TextBlock FontSize="{TemplateBinding FontSize}"
                                    VerticalAlignment="Center"
-                                   Text="{TemplateBinding Caption}"></TextBlock>
+                                   Text="{TemplateBinding Caption}" />
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
@@ -237,7 +237,7 @@
                     <Border>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{TemplateBinding Caption}" />
-                            <TextBlock Text="{TemplateBinding Value}" />                            
+                            <TextBlock Text="{TemplateBinding Value}" />
                         </StackPanel>
                     </Border>
                 </ControlTemplate>
@@ -549,7 +549,7 @@
         <Setter Property="TextAlignment"
                 Value="Right" />
         <Setter Property="TextWrapping"
-                Value="NoWrap"></Setter>
+                Value="NoWrap" />
     </Style>
     <Style x:Key="BasePlotterAreaStyle"
            TargetType="local:PlotterArea">
@@ -742,7 +742,7 @@
                                                    IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                    IsSelected="{Binding Path=IsSelected}"
                                                    ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:ColumnPiece>
+                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>
@@ -773,7 +773,7 @@
                                                    IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                    IsSelected="{Binding Path=IsSelected}"
                                                    ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:ColumnPiece>
+                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>
@@ -804,7 +804,7 @@
                                                    IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                    IsSelected="{Binding Path=IsSelected}"
                                                    ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:ColumnPiece>
+                                                   ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>
@@ -1081,7 +1081,7 @@
                                                                     DoughnutInnerRadiusRatio="{Binding Path=ParentChart.InnerRadiusRatio}"
                                                                     ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
                                                                     ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"
-                                                                    x:Name="pie"></local:PiePiece>
+                                                                    x:Name="pie" />
                                                 </DataTemplate>
                                             </local:FadingListView.ItemTemplate>
                                         </local:FadingListView>
@@ -1103,7 +1103,7 @@
         <Setter Property="ChartLegendItemStyle"
                 Value="{StaticResource ChartLegendItemStyle}" />
         <Setter Property="FontSize"
-                Value="12"></Setter>
+                Value="12" />
     </Style>
     <Style x:Key="RadialGaugeChartChartAreaStyle"
            TargetType="local:ChartArea">
@@ -1174,7 +1174,7 @@
                                                                             IsSelected="{Binding Path=IsSelected}"
                                                                             ClientWidth="100"
                                                                             ClientHeight="100"
-                                                                            x:Name="radial"></local:RadialGaugePiece>
+                                                                            x:Name="radial" />
                                                     <Border Grid.Row="1"
                                                             HorizontalAlignment="Center"
                                                             Margin="0 0 0 10">
@@ -1365,7 +1365,7 @@
                                                 IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                 IsSelected="{Binding Path=IsSelected}"
                                                 ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:BarPiece>
+                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>
@@ -1395,7 +1395,7 @@
                                                 IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                 IsSelected="{Binding Path=IsSelected}"
                                                 ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:BarPiece>
+                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>
@@ -1425,7 +1425,7 @@
                                                 IsClickedByUser="{Binding Path=IsClickedByUser, Mode=TwoWay}"
                                                 IsSelected="{Binding Path=IsSelected}"
                                                 ClientWidth="{Binding Path=RealWidth, ElementName=itemsControl}"
-                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}"></local:BarPiece>
+                                                ClientHeight="{Binding Path=RealHeight, ElementName=itemsControl}" />
                             </DataTemplate>
                         </local:FadingListView.ItemTemplate>
                     </local:FadingListView>

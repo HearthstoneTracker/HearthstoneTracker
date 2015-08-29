@@ -1,28 +1,24 @@
-﻿namespace HearthCap.Features.ArenaSessions
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Features.Games.Models;
+using HearthCap.Shell.Flyouts;
+using HearthCap.Shell.Notifications;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Features.ArenaSessions
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.GameManager;
-    using HearthCap.Features.Games.Models;
-    using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.Notifications;
-
-    using MahApps.Metro.Controls;
-
     [Export(typeof(IFlyout))]
     [Export(typeof(AddArenaViewModel))]
     public class AddArenaViewModel : FlyoutViewModel, IPartImportsSatisfiedNotification
     {
         private readonly IEventAggregator events;
 
-        private readonly GameManager gameManager;
+        private readonly GameManager.GameManager gameManager;
 
         private Hero hero;
 
@@ -41,9 +37,9 @@
         private readonly BindableServerCollection servers = BindableServerCollection.Instance;
 
         [ImportingConstructor]
-        public AddArenaViewModel(IEventAggregator events, GameManager gameManager)
+        public AddArenaViewModel(IEventAggregator events, GameManager.GameManager gameManager)
         {
-            this.DisplayName = this.Header = "Add new arena:";
+            DisplayName = Header = "Add new arena:";
             SetPosition(Position.Right);
             this.events = events;
             this.gameManager = gameManager;
@@ -59,113 +55,92 @@
 
         public ServerItemModel SelectedServer
         {
-            get
-            {
-                return this.selectedServer;
-            }
+            get { return selectedServer; }
             set
             {
-                if (Equals(value, this.selectedServer))
+                if (Equals(value, selectedServer))
                 {
                     return;
                 }
-                this.selectedServer = value;
-                this.NotifyOfPropertyChange(() => this.SelectedServer);
+                selectedServer = value;
+                NotifyOfPropertyChange(() => SelectedServer);
             }
         }
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
         public IObservableCollection<Hero> Heroes
         {
-            get
-            {
-                return heroes;
-            }
+            get { return heroes; }
         }
 
         public int Losses
         {
-            get
-            {
-                return this.losses;
-            }
+            get { return losses; }
             set
             {
-                if (value == this.losses)
+                if (value == losses)
                 {
                     return;
                 }
-                this.losses = value;
-                this.NotifyOfPropertyChange(() => this.Losses);
+                losses = value;
+                NotifyOfPropertyChange(() => Losses);
             }
         }
 
         public DateTime Started
         {
-            get
-            {
-                return this.started;
-            }
+            get { return started; }
             set
             {
-                if (value.Equals(this.started))
+                if (value.Equals(started))
                 {
                     return;
                 }
-                this.started = value;
-                this.NotifyOfPropertyChange(() => this.Started);
+                started = value;
+                NotifyOfPropertyChange(() => Started);
             }
         }
 
         public int Wins
         {
-            get
-            {
-                return this.wins;
-            }
+            get { return wins; }
             set
             {
-                if (value == this.wins)
+                if (value == wins)
                 {
                     return;
                 }
-                this.wins = value;
-                this.NotifyOfPropertyChange(() => this.Wins);
+                wins = value;
+                NotifyOfPropertyChange(() => Wins);
             }
         }
 
         public BindableServerCollection Servers
         {
-            get
-            {
-                return this.servers;
-            }
+            get { return servers; }
         }
 
         [Dependencies("Hero", "SelectedServer")]
         public async Task Save()
         {
             var arena = new ArenaSessionModel();
-            arena.Hero = this.Hero;
-            arena.StartDate = this.Started;
-            arena.Losses = this.Losses;
-            arena.Wins = this.Wins;
+            arena.Hero = Hero;
+            arena.StartDate = Started;
+            arena.Losses = Losses;
+            arena.Wins = Wins;
             arena.Server = SelectedServer.Name;
 
             await gameManager.AddArenaSession(arena);
@@ -198,17 +173,20 @@
 
         private void EnsureInitialized()
         {
-            if (initialized) return;
+            if (initialized)
+            {
+                return;
+            }
             initialized = true;
 
-            var data = this.GlobalData.Get();
-            this.heroes.Clear();
-            this.heroes.AddRange(data.Heroes);
+            var data = GlobalData.Get();
+            heroes.Clear();
+            heroes.AddRange(data.Heroes);
             Reset();
         }
 
         /// <summary>
-        /// Called when a part's imports have been satisfied and it is safe to use.
+        ///     Called when a part's imports have been satisfied and it is safe to use.
         /// </summary>
         public void OnImportsSatisfied()
         {

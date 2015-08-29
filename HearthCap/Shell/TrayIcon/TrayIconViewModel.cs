@@ -1,22 +1,18 @@
-﻿namespace HearthCap.Shell.TrayIcon
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using Caliburn.Micro;
+using Hardcodet.Wpf.TaskbarNotification;
+using HearthCap.Features.BalloonSettings;
+using HearthCap.Shell.Commands;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Shell.TrayIcon
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Input;
-
-    using Caliburn.Micro;
-
-    using Hardcodet.Wpf.TaskbarNotification;
-
-    using HearthCap.Features.BalloonSettings;
-    using HearthCap.Shell.Commands;
-
-    using MahApps.Metro.Controls;
-
     [Export(typeof(TrayIconViewModel))]
     public sealed class TrayIconViewModel : Screen,
         IDisposable,
@@ -45,7 +41,8 @@
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsVisible" && TaskbarIcon != null)
+            if (e.PropertyName == "IsVisible"
+                && TaskbarIcon != null)
             {
                 TaskbarIcon.Visibility = IsVisible ? Visibility.Visible : Visibility.Collapsed;
             }
@@ -77,27 +74,21 @@
 
         public bool IsVisible
         {
-            get
-            {
-                return this.isVisible;
-            }
+            get { return isVisible; }
             set
             {
-                if (value.Equals(this.isVisible))
+                if (value.Equals(isVisible))
                 {
                     return;
                 }
-                this.isVisible = value;
-                this.NotifyOfPropertyChange(() => this.IsVisible);
+                isVisible = value;
+                NotifyOfPropertyChange(() => IsVisible);
             }
         }
 
         public BalloonSettings BalloonSettings
         {
-            get
-            {
-                return this.balloonSettings;
-            }
+            get { return balloonSettings; }
         }
 
         public void Quit()
@@ -116,7 +107,7 @@
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -124,9 +115,9 @@
         }
 
         /// <summary>
-        /// Called when an attached view's Loaded event fires.
+        ///     Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewLoaded(object view)
         {
             if (TaskbarIcon != null)
@@ -137,14 +128,14 @@
 
         public void ShowBalloonTip(string title, string message, object viewModel = null, int timeout = 6000)
         {
-            var balloonTipViewModel = new DefaultBalloonTipViewModel()
-                                          {
-                                              Title = title,
-                                              Message = message,
-                                              ViewModel = viewModel
-                                          };
+            var balloonTipViewModel = new DefaultBalloonTipViewModel
+                {
+                    Title = title,
+                    Message = message,
+                    ViewModel = viewModel
+                };
 
-            this.wasVisible = this.IsVisible;
+            wasVisible = IsVisible;
             if (!wasVisible)
             {
                 balloonTipViewModel.BalloonClosing += BalloonTipViewModelOnBalloonClosing;
@@ -154,7 +145,7 @@
             Execute.OnUIThread(
                 () =>
                     {
-                        var balloonTip = new DefaultBalloonTip() { };
+                        var balloonTip = new DefaultBalloonTip();
                         ViewModelBinder.Bind(balloonTipViewModel, balloonTip, null);
                         TaskbarIcon.ShowCustomBalloon(balloonTip, PopupAnimation.Slide, timeout);
                     });
@@ -162,12 +153,12 @@
 
         private void BalloonTipViewModelOnBalloonClosing(object sender, EventArgs eventArgs)
         {
-            this.IsVisible = wasVisible;
+            IsVisible = wasVisible;
             ((DefaultBalloonTipViewModel)sender).BalloonClosing -= BalloonTipViewModelOnBalloonClosing;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(TrayNotification message)
@@ -184,7 +175,7 @@
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {

@@ -199,9 +199,9 @@
         <Setter Property="Height"
                 Value="32" />
         <Setter Property="Background"
-                Value="{DynamicResource TransparentWhiteBrush}"></Setter>
+                Value="{DynamicResource TransparentWhiteBrush}" />
         <Setter Property="IsDropDownOpen"
-                Value="{Binding IsOpen}"></Setter>
+                Value="{Binding IsOpen}" />
     </Style>
     <Style x:Key="DateComboBoxItem"
            TargetType="ComboBoxItem"
@@ -215,18 +215,18 @@
                           cal:Bind.Model="{Binding}"
                           Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal"
                                     Margin="0 8 0 0"
                                     Grid.Row="1">
                             <DatePicker Name="From"
-                                        SelectedDate="{Binding From}"></DatePicker>
+                                        SelectedDate="{Binding From}" />
                             <TextBlock Text=" - "
-                                       VerticalAlignment="Center"></TextBlock>
+                                       VerticalAlignment="Center" />
                             <DatePicker Name="To"
-                                        SelectedDate="{Binding To}"></DatePicker>
+                                        SelectedDate="{Binding To}" />
                         </StackPanel>
                         <StackPanel Grid.Row="0"
                                     Height="32"
@@ -236,23 +236,23 @@
                                     Margin="0 0 4 0"
                                     Visibility="{Binding ShowAllTime, Converter={StaticResource booleanToVisibility}}"
                                     cal:Message.Attach="SetAllTime"
-                                    Content="All time"></Button>
+                                    Content="All time" />
                             <Button Name="SetThisYear"
                                     Margin="0 0 4 0"
                                     cal:Message.Attach="SetThisYear"
-                                    Content="This year"></Button>
+                                    Content="This year" />
                             <Button Name="SetThisMonth"
                                     Margin="0 0 4 0"
                                     cal:Message.Attach="SetThisMonth"
-                                    Content="This month"></Button>
+                                    Content="This month" />
                             <Button Name="SetThisWeek"
                                     Margin="0 0 4 0"
                                     cal:Message.Attach="SetThisWeek"
-                                    Content="This week"></Button>
+                                    Content="This week" />
                             <Button Name="SetToday"
                                     Margin="0 0 4 0"
                                     cal:Message.Attach="SetToday"
-                                    Content="Today"></Button>
+                                    Content="Today" />
                         </StackPanel>
                     </Grid>
                 </ControlTemplate>
@@ -267,21 +267,23 @@
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0:MMM dd, yyyy} - {1:MMM dd, yyyy}">
                                         <Binding Path="DataContext.From"
-                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}"></Binding>
+                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}" />
                                         <Binding Path="DataContext.To"
-                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}"></Binding>
+                                                 RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}" />
                                     </MultiBinding>
-                                </TextBlock.Text></TextBlock>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                         <StackPanel Visibility="{Binding Path=DataContext.To, Converter={StaticResource nullToVisible}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ComboBox}}">
                             <TextBlock Visibility="{Binding Path=DataContext.From, Converter={StaticResource nullToCollapsed}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ComboBox}}">
                                 <TextBlock.Text>
                                     <Binding StringFormat="{}{0:MMM dd, yyyy} - Today"
                                              Path="DataContext.From"
-                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}"></Binding>
-                                </TextBlock.Text></TextBlock>
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ComboBox}" />
+                                </TextBlock.Text>
+                            </TextBlock>
                             <TextBlock Visibility="{Binding Path=DataContext.From, Converter={StaticResource nullToVisible}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ComboBox}}"
-                                       Text="All time"></TextBlock>
+                                       Text="All time" />
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

@@ -1,11 +1,9 @@
+using System;
+using Caliburn.Micro;
+using HearthCap.Data;
+
 namespace HearthCap.Features.Statistics
 {
-    using System;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-
     public class StatModel : PropertyChangedBase
     {
         private Hero hero;
@@ -40,285 +38,237 @@ namespace HearthCap.Features.Statistics
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
         public int TotalGames
         {
-            get
-            {
-                return this.totalGames;
-            }
+            get { return totalGames; }
             set
             {
-                if (value == this.totalGames)
+                if (value == totalGames)
                 {
                     return;
                 }
-                this.totalGames = value;
-                this.NotifyOfPropertyChange(() => this.TotalGames);
+                totalGames = value;
+                NotifyOfPropertyChange(() => TotalGames);
             }
         }
 
         public int Wins
         {
-            get
-            {
-                return this.wins;
-            }
+            get { return wins; }
             set
             {
-                if (value == this.wins)
+                if (value == wins)
                 {
                     return;
                 }
-                this.wins = value;
-                this.NotifyOfPropertyChange(() => this.Wins);
+                wins = value;
+                NotifyOfPropertyChange(() => Wins);
             }
         }
 
         public int Losses
         {
-            get
-            {
-                return this.losses;
-            }
+            get { return losses; }
             set
             {
-                if (value == this.losses)
+                if (value == losses)
                 {
                     return;
                 }
-                this.losses = value;
-                this.NotifyOfPropertyChange(() => this.Losses);
+                losses = value;
+                NotifyOfPropertyChange(() => Losses);
             }
         }
 
         public int WinsCoin
         {
-            get
-            {
-                return this.winsCoin;
-            }
+            get { return winsCoin; }
             set
             {
-                if (value == this.winsCoin)
+                if (value == winsCoin)
                 {
                     return;
                 }
-                this.winsCoin = value;
-                this.NotifyOfPropertyChange(() => this.WinsCoin);
-                this.NotifyOfPropertyChange(() => this.TotalCoin);
+                winsCoin = value;
+                NotifyOfPropertyChange(() => WinsCoin);
+                NotifyOfPropertyChange(() => TotalCoin);
             }
         }
 
         public int WinsNoCoin
         {
-            get
-            {
-                return this.winsNoCoin;
-            }
+            get { return winsNoCoin; }
             set
             {
-                if (value == this.winsNoCoin)
+                if (value == winsNoCoin)
                 {
                     return;
                 }
-                this.winsNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.WinsNoCoin);
-                this.NotifyOfPropertyChange(() => this.TotalNoCoin);
+                winsNoCoin = value;
+                NotifyOfPropertyChange(() => WinsNoCoin);
+                NotifyOfPropertyChange(() => TotalNoCoin);
             }
         }
 
         public decimal WinRate
         {
-            get
-            {
-                return this.winRate;
-            }
+            get { return winRate; }
             set
             {
-                if (value == this.winRate)
+                if (value == winRate)
                 {
                     return;
                 }
-                this.winRate = value;
-                this.NotifyOfPropertyChange(() => this.WinRate);
+                winRate = value;
+                NotifyOfPropertyChange(() => WinRate);
             }
         }
 
         public decimal LossRate
         {
-            get
-            {
-                return this.lossRate;
-            }
+            get { return lossRate; }
             set
             {
-                if (value == this.lossRate)
+                if (value == lossRate)
                 {
                     return;
                 }
-                this.lossRate = value;
-                this.NotifyOfPropertyChange(() => this.LossRate);
+                lossRate = value;
+                NotifyOfPropertyChange(() => LossRate);
             }
         }
 
         public decimal WinRateCoin
         {
-            get
-            {
-                return this.winRateCoin;
-            }
+            get { return winRateCoin; }
             set
             {
-                if (value == this.winRateCoin)
+                if (value == winRateCoin)
                 {
                     return;
                 }
-                this.winRateCoin = value;
-                this.NotifyOfPropertyChange(() => this.WinRateCoin);
+                winRateCoin = value;
+                NotifyOfPropertyChange(() => WinRateCoin);
             }
         }
 
         public decimal WinRateNoCoin
         {
-            get
-            {
-                return this.winRateNoCoin;
-            }
+            get { return winRateNoCoin; }
             set
             {
-                if (value == this.winRateNoCoin)
+                if (value == winRateNoCoin)
                 {
                     return;
                 }
-                this.winRateNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.WinRateNoCoin);
+                winRateNoCoin = value;
+                NotifyOfPropertyChange(() => WinRateNoCoin);
             }
         }
 
         public int LossesCoin
         {
-            get
-            {
-                return this.lossesCoin;
-            }
+            get { return lossesCoin; }
             set
             {
-                if (value == this.lossesCoin)
+                if (value == lossesCoin)
                 {
                     return;
                 }
-                this.lossesCoin = value;
-                this.NotifyOfPropertyChange(() => this.LossesCoin);
-                this.NotifyOfPropertyChange(() => this.TotalCoin);
+                lossesCoin = value;
+                NotifyOfPropertyChange(() => LossesCoin);
+                NotifyOfPropertyChange(() => TotalCoin);
             }
         }
 
         public int LossesNoCoin
         {
-            get
-            {
-                return this.lossesNoCoin;
-            }
+            get { return lossesNoCoin; }
             set
             {
-                if (value == this.lossesNoCoin)
+                if (value == lossesNoCoin)
                 {
                     return;
                 }
-                this.lossesNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.LossesNoCoin);
-                this.NotifyOfPropertyChange(() => this.TotalNoCoin);
+                lossesNoCoin = value;
+                NotifyOfPropertyChange(() => LossesNoCoin);
+                NotifyOfPropertyChange(() => TotalNoCoin);
             }
         }
 
         public decimal LossRateCoin
         {
-            get
-            {
-                return this.lossRateCoin;
-            }
+            get { return lossRateCoin; }
             set
             {
-                if (value == this.lossRateCoin)
+                if (value == lossRateCoin)
                 {
                     return;
                 }
-                this.lossRateCoin = value;
-                this.NotifyOfPropertyChange(() => this.LossRateCoin);
+                lossRateCoin = value;
+                NotifyOfPropertyChange(() => LossRateCoin);
             }
         }
 
         public decimal LossRateNoCoin
         {
-            get
-            {
-                return this.lossRateNoCoin;
-            }
+            get { return lossRateNoCoin; }
             set
             {
-                if (value == this.lossRateNoCoin)
+                if (value == lossRateNoCoin)
                 {
                     return;
                 }
-                this.lossRateNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.LossRateNoCoin);
+                lossRateNoCoin = value;
+                NotifyOfPropertyChange(() => LossRateNoCoin);
             }
         }
 
         public int TotalCoin
         {
-            get
-            {
-                return LossesCoin + WinsCoin;
-            }
+            get { return LossesCoin + WinsCoin; }
         }
 
         public int TotalNoCoin
         {
-            get
-            {
-                return LossesNoCoin + WinsNoCoin;
-            }
+            get { return LossesNoCoin + WinsNoCoin; }
         }
 
         public decimal PlayedVsRatio
         {
             get
             {
-                if (GlobalTotal == 0) return 0;
+                if (GlobalTotal == 0)
+                {
+                    return 0;
+                }
                 return Math.Round(TotalGames / (decimal)GlobalTotal * 100, 0);
             }
         }
 
         public int GlobalTotal
         {
-            get
-            {
-                return this.globalTotal;
-            }
+            get { return globalTotal; }
             set
             {
-                if (value == this.globalTotal)
+                if (value == globalTotal)
                 {
                     return;
                 }
-                this.globalTotal = value;
-                this.NotifyOfPropertyChange(() => this.GlobalTotal);
+                globalTotal = value;
+                NotifyOfPropertyChange(() => GlobalTotal);
             }
         }
     }

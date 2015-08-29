@@ -1,33 +1,29 @@
-﻿namespace HearthCap.Features.Games.AddGame
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Features.ArenaSessions;
+using HearthCap.Shell.CommandBar;
+using HearthCap.Shell.Flyouts;
+
+namespace HearthCap.Features.Games.AddGame
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.ArenaSessions;
-    using HearthCap.Shell.CommandBar;
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.Flyouts;
-
     [Export(typeof(ICommandBarItem))]
     public class AddGameCommandBarViewModel : CommandBarItemViewModel, IHandle<SelectedArenaSessionChanged>
     {
         private readonly IEventAggregator events;
 
-
-        private ArenaSessionsViewModel arenaSessionsViewModel;
+        private readonly ArenaSessionsViewModel arenaSessionsViewModel;
 
         [ImportingConstructor]
         public AddGameCommandBarViewModel(
-            IEventAggregator events, 
+            IEventAggregator events,
             ArenaSessionsViewModel arenaSessionsViewModel,
             CurrentSessionFlyoutViewModel arenaSessionViewModel)
         {
             this.events = events;
             this.arenaSessionsViewModel = arenaSessionsViewModel;
-            this.Order = -1;
+            Order = -1;
             this.arenaSessionsViewModel.Activated += UpdateArenaStatus;
             this.arenaSessionsViewModel.Deactivated += UpdateArenaStatus;
             this.arenaSessionsViewModel.PropertyChanged += ArenaSessionsViewModelOnPropertyChanged;
@@ -61,10 +57,7 @@
 
         public bool IsArenasActiveAndSelected
         {
-            get
-            {
-                return arenaSessionsViewModel.IsActive && arenaSessionsViewModel.SelectedArenaSession != null;
-            }
+            get { return arenaSessionsViewModel.IsActive && arenaSessionsViewModel.SelectedArenaSession != null; }
         }
 
         //public bool CanAddArenaGame
@@ -86,7 +79,7 @@
         {
             if (IsArenasActiveAndSelected)
             {
-                events.PublishOnCurrentThread(new CreateNewGame() { ArenaSession = arenaSessionsViewModel.SelectedArenaSession });
+                events.PublishOnCurrentThread(new CreateNewGame { ArenaSession = arenaSessionsViewModel.SelectedArenaSession });
             }
         }
 
@@ -96,7 +89,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(SelectedArenaSessionChanged message)

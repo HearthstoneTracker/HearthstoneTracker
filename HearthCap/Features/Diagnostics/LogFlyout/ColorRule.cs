@@ -1,10 +1,9 @@
+using System.Windows;
+using System.Windows.Media;
+using NLog.Conditions;
+
 namespace HearthCap.Features.Diagnostics.LogFlyout
 {
-    using System.Windows;
-    using System.Windows.Media;
-
-    using NLog.Conditions;
-
     public class ColorRule
     {
         public ColorRule(string condition = null)
@@ -29,21 +28,21 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
 
         public ColorRule(string condition, Brush foregroundColor, Brush backgroundColor, FontStyle fontStyle, FontWeight fontWeight)
         {
-            this.Condition = condition;
-            this.ForegroundColor = foregroundColor;
-            this.BackgroundColor = backgroundColor;
-            this.FontStyle = fontStyle;
-            this.FontWeight = fontWeight;
+            Condition = condition;
+            ForegroundColor = foregroundColor;
+            BackgroundColor = backgroundColor;
+            FontStyle = fontStyle;
+            FontWeight = fontWeight;
         }
 
         public ConditionExpression Condition { get; set; }
-        
+
         public FontStyle FontStyle { get; set; }
 
         public FontWeight FontWeight { get; set; }
 
         public Brush BackgroundColor { get; set; }
-        
+
         public Brush ForegroundColor { get; set; }
     }
 }

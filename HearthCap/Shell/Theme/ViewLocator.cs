@@ -1,15 +1,12 @@
-﻿namespace HearthCap.Shell.Theme
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Theme
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-
-    using Caliburn.Micro;
-
-    using MahApps.Metro;
-
     [Export(typeof(IViewLocator))]
     public class ViewLocator : IViewLocator
     {
@@ -30,7 +27,9 @@
                 return cached;
             }
 
-            if (viewType.IsInterface || viewType.IsAbstract || !typeof(UIElement).IsAssignableFrom(viewType))
+            if (viewType.IsInterface
+                || viewType.IsAbstract
+                || !typeof(UIElement).IsAssignableFrom(viewType))
             {
                 return new TextBlock { Text = string.Format("Cannot create {0}.", viewType.FullName) };
             }
@@ -39,10 +38,10 @@
             var frameworkElement = newInstance as FrameworkElement;
             if (frameworkElement != null)
             {
-                var resources = this.themeManager.GetThemeResources();
+                var resources = themeManager.GetThemeResources();
                 foreach (var d in resources)
                 {
-                    frameworkElement.Resources.MergedDictionaries.Add(d);                    
+                    frameworkElement.Resources.MergedDictionaries.Add(d);
                 }
             }
 

@@ -1,15 +1,12 @@
+using System;
+using System.Windows;
+using System.Windows.Threading;
+using Caliburn.Micro;
+using HearthCap.Util;
+using Action = System.Action;
+
 namespace HearthCap.Features.Core
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Threading;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Util;
-
-    using Action = System.Action;
-
     public class DateFilter : PropertyChangedBase
     {
         private DateTime? from;
@@ -26,117 +23,106 @@ namespace HearthCap.Features.Core
 
         public DateFilter()
         {
-            this.PropertyChanged += (sender, args) =>
+            PropertyChanged += (sender, args) =>
                 {
-                    if (args.PropertyName == "From" || args.PropertyName == "To")
+                    if (args.PropertyName == "From"
+                        || args.PropertyName == "To")
                     {
-                        this.needRefresh = true;
-                        this.OnDateChanged();
+                        needRefresh = true;
+                        OnDateChanged();
                     }
                 };
         }
 
         public bool IsOpen
         {
-            get
-            {
-                return this.isOpen;
-            }
+            get { return isOpen; }
             set
             {
-                if (value.Equals(this.isOpen))
+                if (value.Equals(isOpen))
                 {
                     return;
                 }
-                this.isOpen = value;
-                this.NotifyOfPropertyChange(() => this.IsOpen);
+                isOpen = value;
+                NotifyOfPropertyChange(() => IsOpen);
             }
         }
 
         public DateTime? From
         {
-            get
-            {
-                return this.from;
-            }
+            get { return from; }
             set
             {
-                if (value.Equals(this.from))
+                if (value.Equals(from))
                 {
                     return;
                 }
-                this.from = value;
-                this.NotifyOfPropertyChange(() => this.From);
+                from = value;
+                NotifyOfPropertyChange(() => From);
             }
         }
 
         public DateTime? To
         {
-            get
-            {
-                return this.to;
-            }
+            get { return to; }
             set
             {
-                if (value.Equals(this.to))
+                if (value.Equals(to))
                 {
                     return;
                 }
-                this.to = value;
-                this.NotifyOfPropertyChange(() => this.To);
+                to = value;
+                NotifyOfPropertyChange(() => To);
             }
         }
 
         public bool ShowAllTime
         {
-            get
-            {
-                return this.showAllTime;
-            }
+            get { return showAllTime; }
             set
             {
-                if (value.Equals(this.showAllTime))
+                if (value.Equals(showAllTime))
                 {
                     return;
                 }
-                this.showAllTime = value;
-                this.NotifyOfPropertyChange(() => this.ShowAllTime);
+                showAllTime = value;
+                NotifyOfPropertyChange(() => ShowAllTime);
             }
         }
 
         public void SetAllTime()
         {
-            this.From = null;
-            this.To = null;
-            this.IsOpen = false;
+            From = null;
+            To = null;
+            IsOpen = false;
         }
 
         public void SetThisYear()
         {
-            this.From = new DateTime(DateTime.Now.Year, 1, 1);
-            this.To = null;
-            this.IsOpen = false;
+            From = new DateTime(DateTime.Now.Year, 1, 1);
+            To = null;
+            IsOpen = false;
         }
 
         public void SetThisMonth()
         {
-            this.From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            this.To = null;
-            this.IsOpen = false;
+            From = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            To = null;
+            IsOpen = false;
         }
 
         public void SetThisWeek()
         {
-            this.From = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
-            this.To = null;
-            this.IsOpen = false;
+            From = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            To = null;
+            IsOpen = false;
         }
 
         public void SetToday()
         {
-            this.From = DateTime.Now.SetToBeginOfDay();
-            this.To = null;
-            this.IsOpen = false;
+            From = DateTime.Now.SetToBeginOfDay();
+            To = null;
+            IsOpen = false;
         }
 
         protected virtual void OnDateChanged()
@@ -144,10 +130,10 @@ namespace HearthCap.Features.Core
             Application.Current.Dispatcher.BeginInvoke(
                 (Action)(() =>
                     {
-                        if (this.needRefresh)
+                        if (needRefresh)
                         {
-                            this.needRefresh = false;
-                            var handler = this.DateChanged;
+                            needRefresh = false;
+                            var handler = DateChanged;
                             if (handler != null)
                             {
                                 handler(this, EventArgs.Empty);

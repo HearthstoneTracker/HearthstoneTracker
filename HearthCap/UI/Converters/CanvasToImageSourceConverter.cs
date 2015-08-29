@@ -1,22 +1,22 @@
-﻿namespace HearthCap.UI.Converters
+﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Point = System.Drawing.Point;
+using Size = System.Windows.Size;
+
+namespace HearthCap.UI.Converters
 {
-    using System;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-
-    using PixelFormat = System.Windows.Media.PixelFormat;
-    using Point = System.Windows.Point;
-    using Size = System.Windows.Size;
-
     public class CanvasToImageSourceParameters
     {
         public double Height { get; set; }
-        
+
         public double Width { get; set; }
     }
 
@@ -24,7 +24,7 @@
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Converts a Canvas to an image source
             var canvas = value as Canvas;
@@ -33,8 +33,8 @@
                 return null;
             }
             var param = parameter as CanvasToImageSourceParameters;
-            double width = canvas.Width;
-            double height = canvas.Height;
+            var width = canvas.Width;
+            var height = canvas.Height;
             if (param != null)
             {
                 width = param.Width;
@@ -45,7 +45,7 @@
             {
                 canvas.Measure(new Size(width, height));
                 canvas.Arrange(new Rect(0, 0, width, height));
-                canvas.UpdateLayout();                
+                canvas.UpdateLayout();
             }
 
             var rtb = new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Pbgra32);
@@ -54,20 +54,20 @@
             return rtb;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
 
-        Bitmap GetBitmap(BitmapSource source)
+        private Bitmap GetBitmap(BitmapSource source)
         {
-            var bmp = new Bitmap(source.PixelWidth, source.PixelHeight, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-            var data = bmp.LockBits(new Rectangle(System.Drawing.Point.Empty, bmp.Size), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+            var bmp = new Bitmap(source.PixelWidth, source.PixelHeight, PixelFormat.Format32bppPArgb);
+            var data = bmp.LockBits(new Rectangle(Point.Empty, bmp.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppPArgb);
             source.CopyPixels(Int32Rect.Empty, data.Scan0, data.Height * data.Stride, data.Stride);
             bmp.UnlockBits(data);
             return bmp;
         }
+
         #endregion
     }
-
 }

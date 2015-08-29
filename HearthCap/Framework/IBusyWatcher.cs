@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Framework
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Framework
+{
     public interface IBusyWatcher
     {
         bool IsBusy { get; }

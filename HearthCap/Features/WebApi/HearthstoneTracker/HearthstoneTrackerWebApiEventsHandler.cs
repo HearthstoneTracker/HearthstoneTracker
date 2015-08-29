@@ -1,16 +1,13 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Features.WebApi.Hmac;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Features.WebApi.HearthstoneTracker
 {
-    using System;
-    using System.Net.Http;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Features.WebApi.Hmac;
-
-    using NLog;
-
     public sealed class HearthstoneTrackerWebApiEventsHandler : IWebApiEventsHandler,
         IHandleWithTask<GameStarted>,
         IHandleWithTask<GameEnded>,
@@ -18,7 +15,7 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
         IHandleWithTask<ArenaSessionEnded>,
         IDisposable
     {
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private WebApiProviderDescriptor providerDescriptor;
 
@@ -26,17 +23,13 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
 
         private string baseUrl;
 
-        public HearthstoneTrackerWebApiEventsHandler()
-        {
-        }
-
         public void Initialize(WebApiProviderDescriptor providerDescriptor)
         {
             this.providerDescriptor = providerDescriptor;
-            this.baseUrl = this.providerDescriptor.Data["Url"];
-            if (!this.baseUrl.EndsWith("/"))
+            baseUrl = this.providerDescriptor.Data["Url"];
+            if (!baseUrl.EndsWith("/"))
             {
-                this.baseUrl = this.baseUrl + "/";
+                baseUrl = baseUrl + "/";
             }
 
             var signingHandler = new HmacSigningHandler(
@@ -45,11 +38,11 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
                 new CanonicalRepresentationBuilder(),
                 new HmacSignatureCalculator());
 
-            this.client = new HttpClient(
-                new AddUserAgentHandler()
+            client = new HttpClient(
+                new AddUserAgentHandler
                     {
                         InnerHandler =
-                            new RequestContentMd5Handler()
+                            new RequestContentMd5Handler
                                 {
                                     InnerHandler = signingHandler
                                 }
@@ -57,47 +50,47 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public async Task Handle(GameStarted message)
         {
-            await this.PostAsync("gamestarted", message);
+            await PostAsync("gamestarted", message);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public async Task Handle(GameEnded message)
         {
-            await this.PostAsync("gameended", message);
+            await PostAsync("gameended", message);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public async Task Handle(ArenaSessionStarted message)
         {
-            await this.PostAsync("arenastarted", message);
+            await PostAsync("arenastarted", message);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public async Task Handle(ArenaSessionEnded message)
         {
-            await this.PostAsync("arenaended", message);
+            await PostAsync("arenaended", message);
         }
 
         private async Task PostAsync(string path, object message)
         {
             try
             {
-                var url = this.baseUrl + path;
-                await this.client.PostAsJsonAsync(url, message);
+                var url = baseUrl + path;
+                await client.PostAsJsonAsync(url, message);
             }
             catch (Exception ex)
             {
@@ -106,7 +99,7 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {

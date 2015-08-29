@@ -1,9 +1,8 @@
-﻿namespace HearthCap.Shell.TrayIcon
+﻿using System;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.TrayIcon
 {
-    using System;
-
-    using Caliburn.Micro;
-
     public class DefaultBalloonTipViewModel : Screen
     {
         private object viewModel;
@@ -14,52 +13,43 @@
 
         public string Title
         {
-            get
-            {
-                return this.title;
-            }
+            get { return title; }
             set
             {
-                if (value == this.title)
+                if (value == title)
                 {
                     return;
                 }
-                this.title = value;
-                this.NotifyOfPropertyChange(() => this.Title);
+                title = value;
+                NotifyOfPropertyChange(() => Title);
             }
         }
 
         public string Message
         {
-            get
-            {
-                return this.message;
-            }
+            get { return message; }
             set
             {
-                if (value == this.message)
+                if (value == message)
                 {
                     return;
                 }
-                this.message = value;
-                this.NotifyOfPropertyChange(() => this.Message);
+                message = value;
+                NotifyOfPropertyChange(() => Message);
             }
         }
 
         public object ViewModel
         {
-            get
-            {
-                return this.viewModel;
-            }
+            get { return viewModel; }
             set
             {
-                if (Equals(value, this.viewModel))
+                if (Equals(value, viewModel))
                 {
                     return;
                 }
-                this.viewModel = value;
-                this.NotifyOfPropertyChange(() => this.ViewModel);
+                viewModel = value;
+                NotifyOfPropertyChange(() => ViewModel);
             }
         }
 
@@ -67,7 +57,7 @@
 
         public void OnBalloonClosing()
         {
-            var handler = this.BalloonClosing;
+            var handler = BalloonClosing;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);

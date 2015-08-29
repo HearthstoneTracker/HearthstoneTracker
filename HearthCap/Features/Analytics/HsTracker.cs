@@ -1,7 +1,7 @@
+using GoogleAnalyticsTracker.Core;
+
 namespace HearthCap.Features.Analytics
 {
-    using GoogleAnalyticsTracker.Core;
-
     public class HsTracker
         : TrackerBase
     {

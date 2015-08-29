@@ -53,7 +53,7 @@
                              Background="Transparent">
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" 
+                                <WrapPanel Orientation="Horizontal"
                                            IsItemsHost="True" />
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
@@ -69,7 +69,7 @@
                                              StrokeThickness="1"
                                              Stroke="Black"
                                              Fill="White" />
-                                    <Label HorizontalAlignment="Center" Content="Light"></Label>
+                                    <Label HorizontalAlignment="Center" Content="Light" />
                                 </StackPanel>
                             </Grid>
                         </ListBoxItem>
@@ -85,7 +85,7 @@
                                              StrokeThickness="1"
                                              Stroke="White"
                                              Fill="Black" />
-                                    <Label HorizontalAlignment="Center" Content="Dark"></Label>
+                                    <Label HorizontalAlignment="Center" Content="Dark" />
                                 </StackPanel>
                             </Grid>
                         </ListBoxItem>
@@ -121,7 +121,7 @@
                                              Stroke="Black"
                                              Fill="White" />
                                     <Label HorizontalAlignment="Center"
-                                           Content="Light"></Label>
+                                           Content="Light" />
                                 </StackPanel>
                             </Grid>
                         </ListBoxItem>
@@ -139,7 +139,7 @@
                                              Stroke="White"
                                              Fill="Black" />
                                     <Label HorizontalAlignment="Center"
-                                           Content="Dark"></Label>
+                                           Content="Dark" />
                                 </StackPanel>
                             </Grid>
                         </ListBoxItem>

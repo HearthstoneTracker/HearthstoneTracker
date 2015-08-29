@@ -1,27 +1,25 @@
 ﻿namespace HearthCap.Shell.TrayIcon
 {
-    using System.Collections.Generic;
-
     public class TrayNotification
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        ///     Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         public TrayNotification(string title, string message, int timeout = 6000)
         {
-            this.Title = title;
-            this.Message = message;
-            this.Timeout = timeout;
+            Title = title;
+            Message = message;
+            Timeout = timeout;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        ///     Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         public TrayNotification(string title, object viewModel, int timeout = 6000)
         {
-            this.Title = title;
-            this.ViewModel = viewModel;
-            this.Timeout = timeout;
+            Title = title;
+            ViewModel = viewModel;
+            Timeout = timeout;
         }
 
         public string Title { get; set; }

@@ -150,18 +150,18 @@
     <Grid HorizontalAlignment="Stretch"
           IsEnabled="{Binding HasScreenshot}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       Grid.Column="0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label Content="Areas:"
                        Style="{StaticResource DescriptionHeaderStyle}" />
@@ -197,79 +197,99 @@
                             BorderBrush="{DynamicResource BlackBrush}">
                         <Grid Margin="4">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0"
-                                           Grid.Column="0">X:</TextBlock>
+                                           Grid.Column="0">
+                                    X:
+                                </TextBlock>
                                 <TextBox Text="{Binding Region.XPos}"
                                          Grid.Row="0"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="1"
-                                           Grid.Column="0">Y:</TextBlock>
+                                           Grid.Column="0">
+                                    Y:
+                                </TextBlock>
                                 <TextBox Text="{Binding Region.YPos}"
                                          Grid.Row="1"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="2"
-                                           Grid.Column="0">Height:</TextBlock>
+                                           Grid.Column="0">
+                                    Height:
+                                </TextBlock>
                                 <TextBox Text="{Binding Region.Height}"
                                          Grid.Row="2"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="3"
-                                           Grid.Column="0">Width:</TextBlock>
+                                           Grid.Column="0">
+                                    Width:
+                                </TextBlock>
                                 <TextBox Text="{Binding Region.Width}"
                                          Grid.Row="3"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="4"
-                                           Grid.Column="0">Hash:</TextBlock>
+                                           Grid.Column="0">
+                                    Hash:
+                                </TextBlock>
                                 <TextBox Text="{Binding SelectedScanArea.Hash}"
                                          Grid.Row="4"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="5"
-                                           Grid.Column="0">Image:</TextBlock>
+                                           Grid.Column="0">
+                                    Image:
+                                </TextBlock>
                                 <TextBox Text="{Binding SelectedScanArea.ImageLocation}"
                                          Grid.Row="5"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="6"
-                                           Grid.Column="0">Base res.:</TextBlock>
+                                           Grid.Column="0">
+                                    Base res.:
+                                </TextBlock>
                                 <TextBox Text="{Binding SelectedScanArea.BaseResolution}"
                                          Grid.Row="6"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="7"
-                                           Grid.Column="0">Compare:</TextBlock>
+                                           Grid.Column="0">
+                                    Compare:
+                                </TextBlock>
                                 <StackPanel Grid.Row="7"
                                             Grid.Column="1" Orientation="Horizontal">
-                                    <TextBox Text="{Binding CompareHash}" Width="100"></TextBox>
-                                    <TextBox Text="{Binding CompareHashResult}" Width="40"></TextBox>
+                                    <TextBox Text="{Binding CompareHash}" Width="100" />
+                                    <TextBox Text="{Binding CompareHashResult}" Width="40" />
                                 </StackPanel>
                                 <TextBlock Grid.Row="8"
-                                           Grid.Column="0">Mostly:</TextBlock>
+                                           Grid.Column="0">
+                                    Mostly:
+                                </TextBlock>
                                 <TextBox Text="{Binding Mostly}"
                                          Grid.Row="8"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                                 <TextBlock Grid.Row="9"
-                                           Grid.Column="0">Right most C.:</TextBlock>
+                                           Grid.Column="0">
+                                    Right most C.:
+                                </TextBlock>
                                 <TextBox Text="{Binding RightMostCorner}"
                                          Grid.Row="9"
-                                         Grid.Column="1"></TextBox>
+                                         Grid.Column="1" />
                             </Grid>
                             <WrapPanel Orientation="Horizontal"
                                        Grid.Column="0"
@@ -277,7 +297,7 @@
                                 <Button Content="Update hash"
                                         Margin="2"
                                         cal:Message.Attach="UpdateHash"
-                                        IsEnabled="{Binding SelectedScanArea, Converter={StaticResource nullToBoolean}}"></Button>
+                                        IsEnabled="{Binding SelectedScanArea, Converter={StaticResource nullToBoolean}}" />
                                 <Button Name="SaveRegionAs"
                                         Content="Save Image"
                                         IsEnabled="{Binding SelectedScanArea, Converter={StaticResource nullToBoolean}}" />
@@ -292,7 +312,7 @@
                             CornerRadius="5"
                             BorderBrush="{DynamicResource BlackBrush}">
                         <StackPanel Margin="4">
-                            <TextBox Name="RegionKey"></TextBox>
+                            <TextBox Name="RegionKey" />
                             <Button Name="CreateRegion"
                                     Content="Create Region" />
                         </StackPanel>
@@ -302,7 +322,7 @@
                             CornerRadius="5"
                             BorderBrush="{DynamicResource BlackBrush}">
                         <StackPanel Margin="4">
-                            <TextBox Name="ManualHash"></TextBox>
+                            <TextBox Name="ManualHash" />
                             <Button Name="OpenImage"
                                     Content="Open image" />
                             <Button Name="UpdateManualHash"
@@ -345,11 +365,9 @@
                         Height="{Binding BoardHeight}">
                     <ItemsControl Name="Regions"
                                   HorizontalAlignment="Stretch"
-                                  Style="{StaticResource RegionItemsStyle}">
-                    </ItemsControl>
+                                  Style="{StaticResource RegionItemsStyle}" />
                 </Border>
             </Canvas>
         </ScrollViewer>
     </Grid>
 </UserControl>
-

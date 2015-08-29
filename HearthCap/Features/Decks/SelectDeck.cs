@@ -6,7 +6,7 @@ namespace HearthCap.Features.Decks
 
         public SelectDeck(DeckModel deck)
         {
-            this.Deck = deck;
+            Deck = deck;
         }
     }
 }

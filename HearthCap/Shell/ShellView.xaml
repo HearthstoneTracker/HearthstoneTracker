@@ -37,7 +37,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Theme.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
                 <ResourceDictionary Source="/MahApps.Metro;component/Styles/FlatSlider.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -60,7 +60,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <ContentControl cal:View.Model="{Binding}"></ContentControl>
+                        <ContentControl cal:View.Model="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -76,8 +76,8 @@
                 <ControlTemplate>
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <ItemsPresenter Grid.Row="0" />
                         <Grid Grid.Row="0"
@@ -89,22 +89,22 @@
                                             HorizontalAlignment="Stretch"
                                             BorderThickness="0"
                                             HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"></ContentControl>
+                                            VerticalContentAlignment="Stretch" />
                         </Grid>
                         <Grid Grid.Row="1"
                               Background="{DynamicResource WhiteBrush}"
                               ZIndex="100">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="1" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Rectangle Fill="{DynamicResource BlackBrush}"></Rectangle>
+                            <Rectangle Fill="{DynamicResource BlackBrush}" />
                             <Border Grid.Row="1">
                                 <ContentControl cal:View.Model="{Binding Status}"
                                                 Name="StatusBar"
                                                 behaviors:ActualSizeBehavior.ActualSize="True"
                                                 behaviors:ActualSizeBehavior.ActualHeight="{Binding Path=Status.Height, Mode=OneWayToSource}"
-                                                Margin="8 0 8 4"></ContentControl>
+                                                Margin="8 0 8 4" />
                             </Border>
                         </Grid>
                     </Grid>
@@ -173,10 +173,10 @@
                                             <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                                                 <MenuItem Header="Left"
                                                           IsCheckable="True"
-                                                          IsChecked="{Binding Position, Converter={StaticResource positionToBool}, ConverterParameter={x:Static metro:Position.Left}}"></MenuItem>
+                                                          IsChecked="{Binding Position, Converter={StaticResource positionToBool}, ConverterParameter={x:Static metro:Position.Left}}" />
                                                 <MenuItem Header="Right"
                                                           IsCheckable="True"
-                                                          IsChecked="{Binding Position, Converter={StaticResource positionToBool}, ConverterParameter={x:Static metro:Position.Right}}"></MenuItem>
+                                                          IsChecked="{Binding Position, Converter={StaticResource positionToBool}, ConverterParameter={x:Static metro:Position.Right}}" />
                                             </ContextMenu>
                                         </Button.ContextMenu>
                                     </Button>
@@ -254,7 +254,7 @@
                 <Button.Template>
                     <ControlTemplate>
                         <Image Source="{StaticResource HearthstoneTrackerLogo3}"
-                               Stretch="Uniform"></Image>
+                               Stretch="Uniform" />
                     </ControlTemplate>
                 </Button.Template>
             </Button>
@@ -268,9 +268,9 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Menu Grid.Row="0"
                       Grid.Column="0"
@@ -280,20 +280,20 @@
                       HorizontalAlignment="Left">
                     <MenuItem Header="_APPLICATION">
                         <MenuItem Header="_Settings..."
-                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('settings')]"></MenuItem>
-                        <Separator></Separator>
+                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('settings')]" />
+                        <Separator />
                         <MenuItem Header="Change _data folder..."
-                                  cal:Message.Attach="ChangeDataFolder"></MenuItem>
-                        <Separator></Separator>
+                                  cal:Message.Attach="ChangeDataFolder" />
+                        <Separator />
                         <MenuItem Header="E_xit"
-                                  cal:Message.Attach="ExitToDesktop"></MenuItem>
+                                  cal:Message.Attach="ExitToDesktop" />
                     </MenuItem>
                     <MenuItem Header="_TOOLS">
                         <MenuItem Header="_Web API Settings..."
-                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('webapi')]"></MenuItem>
+                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('webapi')]" />
                         <Separator />
                         <MenuItem Header="_Text files..."
-                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('textfiles')]"></MenuItem>
+                                  cal:Message.Attach="[Event Click] = [Action ToggleFlyout('textfiles')]" />
                     </MenuItem>
                     <MenuItem Header="_SERVER"
                               ItemsSource="{Binding Servers}">
@@ -333,7 +333,7 @@
                         <MenuItem.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock Foreground="Red"
-                                           Text="{Binding Header, RelativeSource= {RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}}}"></TextBlock>
+                                           Text="{Binding Header, RelativeSource= {RelativeSource Mode=FindAncestor, AncestorType={x:Type MenuItem}}}" />
                             </DataTemplate>
                         </MenuItem.HeaderTemplate>
                     </MenuItem>
@@ -345,7 +345,7 @@
                           Grid.Row="1">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"></StackPanel>
+                        <StackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
@@ -355,7 +355,7 @@
                 <metro:MetroTabControl.ContentTemplate>
                     <DataTemplate>
                         <ContentControl cal:View.Model="{Binding}"
-                                        Margin="0 0 0 0"></ContentControl>
+                                        Margin="0 0 0 0" />
                     </DataTemplate>
                 </metro:MetroTabControl.ContentTemplate>
             </metro:MetroTabControl>
@@ -376,7 +376,7 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"></ContentControl>
+                        VerticalContentAlignment="Stretch" />
         <ContentControl x:Name="Dialogs"
                         cal:View.Model="{Binding Dialogs}"
                         HorizontalAlignment="Stretch"

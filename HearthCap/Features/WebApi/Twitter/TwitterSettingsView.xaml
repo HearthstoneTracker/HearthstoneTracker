@@ -15,13 +15,13 @@
                                     Header="Get a PIN code:"
                                     Tag="{Binding ElementName=GetPinCode}"
                                     Style="{StaticResource hccFormStyle2}">
-                <Button Name="GetPinCode" Content="Get Twitter PIN code"></Button>
+                <Button Name="GetPinCode" Content="Get Twitter PIN code" />
             </HeaderedContentControl>
             <HeaderedContentControl x:Name="thepincode"
                                     Header="Twitter PIN Code:"
                                     Tag="{Binding ElementName=PinCode}"
                                     Style="{StaticResource hccFormStyle2}">
-                <TextBox Name="PinCode"></TextBox>
+                <TextBox Name="PinCode" />
             </HeaderedContentControl>
             <HeaderedContentControl x:Name="theenabled"
                                     Header="Enabled?"
@@ -35,7 +35,7 @@
                 <Button Name="Save"
                         Width="100"
                         HorizontalAlignment="Right"
-                        Content="Save"></Button>
+                        Content="Save" />
             </Grid>
         </StackPanel>
     </Grid>

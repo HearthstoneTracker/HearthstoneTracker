@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=about:AboutCommandBarViewModel, IsDesignTimeCreatable=False}"
              cal:Bind.AtDesignTime="False">
     <UserControl.Resources>
-        <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="/Resources/Icons.xaml" />
     </UserControl.Resources>
     <Button cal:Message.Attach="ToggleAbout"
             Cursor="Hand">
@@ -25,7 +25,9 @@
             <TextBlock Foreground="White"
                        FontSize="16"
                        Margin="4 0 0 0"
-                       FontWeight="SemiBold">About</TextBlock>
+                       FontWeight="SemiBold">
+                About
+            </TextBlock>
         </StackPanel>
     </Button>
 </UserControl>

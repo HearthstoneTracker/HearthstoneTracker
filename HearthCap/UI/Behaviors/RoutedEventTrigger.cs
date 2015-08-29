@@ -1,26 +1,17 @@
-﻿namespace HearthCap.UI.Behaviors
-{
-    using System;
-    using System.Windows;
-    using System.Windows.Interactivity;
+﻿using System;
+using System.Windows;
+using System.Windows.Interactivity;
 
+namespace HearthCap.UI.Behaviors
+{
     public class RoutedEventTrigger : EventTriggerBase<DependencyObject>
     {
-        RoutedEvent _routedEvent;
+        public RoutedEvent RoutedEvent { get; set; }
 
-        public RoutedEvent RoutedEvent
-        {
-            get { return _routedEvent; }
-            set { _routedEvent = value; }
-        }
-
-        public RoutedEventTrigger()
-        {
-        }
         protected override void OnAttached()
         {
-            Behavior behavior = base.AssociatedObject as Behavior;
-            FrameworkElement associatedElement = base.AssociatedObject as FrameworkElement;
+            var behavior = AssociatedObject as Behavior;
+            var associatedElement = AssociatedObject as FrameworkElement;
 
             if (behavior != null)
             {
@@ -32,13 +23,15 @@
             }
             if (RoutedEvent != null)
             {
-                associatedElement.AddHandler(RoutedEvent, new RoutedEventHandler(this.OnRoutedEvent));
+                associatedElement.AddHandler(RoutedEvent, new RoutedEventHandler(OnRoutedEvent));
             }
         }
-        void OnRoutedEvent(object sender, RoutedEventArgs args)
+
+        private void OnRoutedEvent(object sender, RoutedEventArgs args)
         {
-            base.OnEvent(args);
+            OnEvent(args);
         }
+
         protected override string GetEventName()
         {
             return RoutedEvent.Name;

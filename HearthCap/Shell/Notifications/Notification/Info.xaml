@@ -10,8 +10,8 @@
              d:DesignWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Button cal:Message.Attach="Close"
                 Grid.Column="0"
@@ -27,7 +27,7 @@
                     Margin="2">
             <TextBlock Text="{Binding Notification.Message}"
                        FontSize="15"
-                       Foreground="{DynamicResource WhiteBrush}"></TextBlock>
+                       Foreground="{DynamicResource WhiteBrush}" />
         </StackPanel>
     </Grid>
 </UserControl>

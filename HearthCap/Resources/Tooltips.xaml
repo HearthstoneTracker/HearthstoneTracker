@@ -8,7 +8,7 @@
     <Style x:Key="CalloutTooltip"
            TargetType="ToolTip">
         <Setter Property="Placement"
-                Value="Bottom"></Setter>
+                Value="Bottom" />
         <Setter Property="OverridesDefaultStyle"
                 Value="true" />
         <Setter Property="HasDropShadow"
@@ -44,7 +44,7 @@
         <Style.Resources>
             <Style TargetType="TextBlock">
                 <Setter Property="FontSize"
-                        Value="18"></Setter>
+                        Value="18" />
             </Style>
         </Style.Resources>
     </Style>
@@ -52,6 +52,6 @@
            BasedOn="{StaticResource DefaultTooltip}" />
     <Style TargetType="xctk:TimePicker">
         <Setter Property="Foreground"
-                Value="{DynamicResource BlackBrush}"></Setter>
+                Value="{DynamicResource BlackBrush}" />
     </Style>
 </ResourceDictionary>

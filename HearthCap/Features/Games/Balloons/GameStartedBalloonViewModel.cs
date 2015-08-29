@@ -1,24 +1,19 @@
-﻿namespace HearthCap.Features.Games.Balloons
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Data;
+
+namespace HearthCap.Features.Games.Balloons
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Data;
-    using HearthCap.Features.GameManager;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.Games.Models;
-
     [Export(typeof(GameStartedBalloonViewModel))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class GameStartedBalloonViewModel : PropertyChangedBase
     {
         private readonly IEventAggregator events;
 
-        private readonly GameManager gameManager;
+        private readonly GameManager.GameManager gameManager;
 
         private readonly IRepository<Hero> heroRepository;
 
@@ -31,7 +26,7 @@
         private GameMode gameMode;
 
         [ImportingConstructor]
-        public GameStartedBalloonViewModel(IEventAggregator events, GameManager gameManager, IRepository<Hero> heroRepository)
+        public GameStartedBalloonViewModel(IEventAggregator events, GameManager.GameManager gameManager, IRepository<Hero> heroRepository)
         {
             this.events = events;
             this.gameManager = gameManager;
@@ -40,69 +35,57 @@
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
         public Hero OpponentHero
         {
-            get
-            {
-                return this.opponentHero;
-            }
+            get { return opponentHero; }
             set
             {
-                if (Equals(value, this.opponentHero))
+                if (Equals(value, opponentHero))
                 {
                     return;
                 }
-                this.opponentHero = value;
-                this.NotifyOfPropertyChange(() => this.OpponentHero);
+                opponentHero = value;
+                NotifyOfPropertyChange(() => OpponentHero);
             }
         }
 
         public bool HasCoin
         {
-            get
-            {
-                return this.hasCoin;
-            }
+            get { return hasCoin; }
             set
             {
-                if (value.Equals(this.hasCoin))
+                if (value.Equals(hasCoin))
                 {
                     return;
                 }
-                this.hasCoin = value;
-                this.NotifyOfPropertyChange(() => this.HasCoin);
+                hasCoin = value;
+                NotifyOfPropertyChange(() => HasCoin);
             }
         }
 
         public GameMode GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return gameMode; }
             set
             {
-                if (value == this.gameMode)
+                if (value == gameMode)
                 {
                     return;
                 }
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
+                gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
             }
         }
 
@@ -113,9 +96,9 @@
                 throw new ArgumentNullException("gameResult");
             }
 
-            this.GameMode = gameResult.GameMode;
-            this.Hero = heroRepository.Query(q => q.FirstOrDefault(x => x.Key == gameResult.Hero));
-            this.OpponentHero = heroRepository.Query(q => q.FirstOrDefault(x => x.Key == gameResult.OpponentHero));
+            GameMode = gameResult.GameMode;
+            Hero = heroRepository.Query(q => q.FirstOrDefault(x => x.Key == gameResult.Hero));
+            OpponentHero = heroRepository.Query(q => q.FirstOrDefault(x => x.Key == gameResult.OpponentHero));
         }
     }
 }

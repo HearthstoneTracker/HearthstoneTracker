@@ -1,12 +1,11 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Linq.Expressions;
+using HearthCap.Data;
+using HearthCap.Features.Games.Statistics;
+
 namespace HearthCap.Features.Charts
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Linq.Expressions;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Games.Statistics;
-
     [Export(typeof(IChartTab))]
     public class CommonChartsViewModel : ChartTab
     {
@@ -25,12 +24,11 @@ namespace HearthCap.Features.Charts
 
         [Import(RequiredCreationPolicy = CreationPolicy.NonShared)]
         public ArenaSessions.Statistics.FilteredStatsViewModel ArenaStats { get; set; }
-        
 
         public override void RefreshData(Expression<Func<GameResult, bool>> gameFilter, Expression<Func<ArenaSession, bool>> arenaFilter)
         {
-            GamesStats.RefreshFrom(this.dbContext, gameFilter);
-            ArenaStats.RefreshFrom(this.dbContext, arenaFilter);
+            GamesStats.RefreshFrom(dbContext, gameFilter);
+            ArenaStats.RefreshFrom(dbContext, arenaFilter);
         }
     }
 }

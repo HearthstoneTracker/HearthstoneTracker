@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance Type=support:SupportCommandBarViewModel, IsDesignTimeCreatable=False}"
              cal:Bind.AtDesignTime="False">
     <UserControl.Resources>
-        <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="/Resources/Icons.xaml" />
     </UserControl.Resources>
     <Button Name="SupportRequest"
             Cursor="Hand"
@@ -29,13 +29,16 @@
                        FontSize="16"
                        VerticalAlignment="Center"
                        Margin="4 0 0 0"
-                       FontWeight="SemiBold">Help</TextBlock>
+                       FontWeight="SemiBold">
+                Help
+            </TextBlock>
         </StackPanel>
         <Button.ToolTip>
             <Border>
                 <StackPanel Orientation="Vertical">
                     <TextBlock FontSize="13">
-                        Send a support ticket</TextBlock>
+                        Send a support ticket
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Button.ToolTip>

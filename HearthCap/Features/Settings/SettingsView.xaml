@@ -25,8 +25,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <Label FontSize="16" Content="{Binding DisplayName}"></Label>
-                            <ContentControl cal:View.Model="{Binding}" Margin="10 0 0 0"></ContentControl>
+                            <Label FontSize="16" Content="{Binding DisplayName}" />
+                            <ContentControl cal:View.Model="{Binding}" Margin="10 0 0 0" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

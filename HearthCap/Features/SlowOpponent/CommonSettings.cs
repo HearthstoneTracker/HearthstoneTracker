@@ -1,7 +1,7 @@
+using HearthCap.Shell.UserPreferences;
+
 namespace HearthCap.Features.SlowOpponent
 {
-    using HearthCap.Shell.UserPreferences;
-
     public class CommonSettings : RegistrySettings
     {
         public CommonSettings()

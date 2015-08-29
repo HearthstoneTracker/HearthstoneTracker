@@ -1,10 +1,8 @@
+using System.ComponentModel;
+using HearthCap.Features.WebApi.Generic;
+
 namespace HearthCap.Features.WebApi.HearthstoneTracker
 {
-    using System;
-    using System.ComponentModel;
-
-    using HearthCap.Features.WebApi.Generic;
-
     public class ProviderSettingsViewModel : GenericWebApiProviderSettingsViewModel
     {
         private const string HSTrackerUrl = "http://hearthstonetracker.com/api/live";
@@ -15,7 +13,7 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             : base(providerDescriptor)
         {
             Url = HSTrackerUrl;
-            this.PropertyChanged += OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -23,30 +21,27 @@ namespace HearthCap.Features.WebApi.HearthstoneTracker
             switch (e.PropertyName)
             {
                 case "Url":
-                    this.ValuesChanged = true;
+                    ValuesChanged = true;
                     break;
             }
         }
 
         public override string Url
         {
-            get
-            {
-                return this.url;
-            }
+            get { return url; }
             set
             {
-                if (value == this.url)
+                if (value == url)
                 {
                     return;
                 }
-                this.url = value;
-                this.NotifyOfPropertyChange(() => this.Url);
+                url = value;
+                NotifyOfPropertyChange(() => Url);
             }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {

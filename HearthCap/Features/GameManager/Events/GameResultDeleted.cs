@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Features.GameManager.Events
 {
-    using System;
-
     public class GameResultDeleted
     {
         public Guid GameId { get; set; }
@@ -9,8 +9,8 @@ namespace HearthCap.Features.GameManager.Events
 
         public GameResultDeleted(Guid gameId, Guid? arenaId = null)
         {
-            this.GameId = gameId;
-            this.ArenaId = arenaId;
+            GameId = gameId;
+            ArenaId = arenaId;
         }
     }
 }

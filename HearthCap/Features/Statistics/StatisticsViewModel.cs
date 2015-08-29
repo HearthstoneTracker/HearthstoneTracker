@@ -1,19 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Analytics;
+using HearthCap.Features.Core;
+using HearthCap.Framework;
+using HearthCap.Shell.Tabs;
+
 namespace HearthCap.Features.Statistics
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Analytics;
-    using HearthCap.Features.Core;
-    using HearthCap.Framework;
-    using HearthCap.Shell.Tabs;
-
     [Export(typeof(ITab))]
     public class StatisticsViewModel : Conductor<IStatsViewModel>.Collection.OneActive, ITab
     {
@@ -27,11 +25,11 @@ namespace HearthCap.Features.Statistics
 
         private int order;
 
-        private readonly BindableCollection<KeyValuePair<Type, string>> filterTypes = new BindableCollection<KeyValuePair<Type, string>>()
-                                                                                            {
-                                                                                                new KeyValuePair<Type, string>(typeof(HeroStatViewModel), "Hero vs Hero"),
-                                                                                                new KeyValuePair<Type, string>(typeof(DecksStatViewModel), "Decks vs Hero"),
-                                                                                            };
+        private readonly BindableCollection<KeyValuePair<Type, string>> filterTypes = new BindableCollection<KeyValuePair<Type, string>>
+            {
+                new KeyValuePair<Type, string>(typeof(HeroStatViewModel), "Hero vs Hero"),
+                new KeyValuePair<Type, string>(typeof(DecksStatViewModel), "Decks vs Hero")
+            };
 
         private KeyValuePair<Type, string> selectedFilterType;
 
@@ -41,14 +39,14 @@ namespace HearthCap.Features.Statistics
 
         private readonly GameModesStringCollection gameModes = new GameModesStringCollection(true);
 
-        private IObservableCollection<ServerItemModel> servers = new BindableCollection<ServerItemModel>(BindableServerCollection.Instance);
+        private readonly IObservableCollection<ServerItemModel> servers = new BindableCollection<ServerItemModel>(BindableServerCollection.Instance);
 
         private ServerItemModel filterServer;
 
-        private DateFilter dateFilter = new DateFilter()
-                                            {
-                                                ShowAllTime = true
-                                            };
+        private readonly DateFilter dateFilter = new DateFilter
+            {
+                ShowAllTime = true
+            };
 
         private string search;
 
@@ -56,16 +54,16 @@ namespace HearthCap.Features.Statistics
         public StatisticsViewModel(Func<HearthStatsDbContext> dbContext,
             IRepository<GameResult> gameRepository,
             IRepository<ArenaSession> arenaRepository,
-            [ImportMany]IEnumerable<IStatsViewModel> statsViewModels)
+            [ImportMany] IEnumerable<IStatsViewModel> statsViewModels)
         {
             IsNotifying = false;
             this.dbContext = dbContext;
             this.gameRepository = gameRepository;
             this.arenaRepository = arenaRepository;
-            this.DisplayName = this.Header = "Statistics";
-            this.Order = 3;
-            this.dateFilter.From = DateTime.Now.AddMonths(-1);
-            this.dateFilter.DateChanged += dateFilter_PropertyChanged;
+            DisplayName = Header = "Statistics";
+            Order = 3;
+            dateFilter.From = DateTime.Now.AddMonths(-1);
+            dateFilter.DateChanged += dateFilter_PropertyChanged;
             SelectedFilterType = FilterTypes.First();
 
             foreach (var statsViewModel in statsViewModels)
@@ -74,10 +72,10 @@ namespace HearthCap.Features.Statistics
             }
             servers.Insert(0, new ServerItemModel(""));
             Busy = new BusyWatcher();
-            this.PropertyChanged += OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
-        void dateFilter_PropertyChanged(object sender, EventArgs eventArgs)
+        private void dateFilter_PropertyChanged(object sender, EventArgs eventArgs)
         {
             RefreshData();
         }
@@ -86,132 +84,102 @@ namespace HearthCap.Features.Statistics
 
         public IObservableCollection<ServerItemModel> Servers
         {
-            get
-            {
-                return servers;
-            }
+            get { return servers; }
         }
 
         public ServerItemModel FilterServer
         {
-            get
-            {
-                return this.filterServer;
-            }
+            get { return filterServer; }
             set
             {
-                if (Equals(value, this.filterServer))
+                if (Equals(value, filterServer))
                 {
                     return;
                 }
-                this.filterServer = value;
-                this.NotifyOfPropertyChange(() => this.FilterServer);
+                filterServer = value;
+                NotifyOfPropertyChange(() => FilterServer);
             }
         }
 
         public string Header
         {
-            get
-            {
-                return this.header;
-            }
+            get { return header; }
             set
             {
-                this.header = value;
-                this.NotifyOfPropertyChange(() => this.Header);
+                header = value;
+                NotifyOfPropertyChange(() => Header);
             }
         }
 
         public int Order
         {
-            get
-            {
-                return this.order;
-            }
+            get { return order; }
             set
             {
-                if (value == this.order)
+                if (value == order)
                 {
                     return;
                 }
-                this.order = value;
-                this.NotifyOfPropertyChange(() => this.Order);
+                order = value;
+                NotifyOfPropertyChange(() => Order);
             }
         }
 
         public DateFilter DateFilter
         {
-            get
-            {
-                return dateFilter;
-            }
+            get { return dateFilter; }
         }
 
         public GameModesStringCollection GameModes
         {
-            get
-            {
-                return this.gameModes;
-            }
+            get { return gameModes; }
         }
 
         public string FilterGameMode
         {
-            get
-            {
-                return this.filterGameMode;
-            }
+            get { return filterGameMode; }
             set
             {
-                if (value == this.filterGameMode)
+                if (value == filterGameMode)
                 {
                     return;
                 }
-                this.filterGameMode = value;
-                this.NotifyOfPropertyChange(() => this.FilterGameMode);
+                filterGameMode = value;
+                NotifyOfPropertyChange(() => FilterGameMode);
             }
         }
 
         public KeyValuePair<Type, string> SelectedFilterType
         {
-            get
-            {
-                return this.selectedFilterType;
-            }
+            get { return selectedFilterType; }
             set
             {
-                if (value.Equals(this.selectedFilterType))
+                if (value.Equals(selectedFilterType))
                 {
                     return;
                 }
-                this.selectedFilterType = value;
-                this.NotifyOfPropertyChange(() => this.SelectedFilterType);
+                selectedFilterType = value;
+                NotifyOfPropertyChange(() => SelectedFilterType);
             }
         }
 
         public string Search
         {
-            get
-            {
-                return this.search;
-            }
+            get { return search; }
             set
             {
-                if (value == this.search)
+                if (value == search)
                 {
                     return;
                 }
-                this.search = value;
-                this.NotifyOfPropertyChange(() => this.Search);
+                search = value;
+                NotifyOfPropertyChange(() => Search);
             }
         }
 
         public BindableCollection<KeyValuePair<Type, string>> FilterTypes
         {
-            get
-            {
-                return this.filterTypes;
-            }
+            get { return filterTypes; }
         }
 
         public void RefreshData()
@@ -228,7 +196,7 @@ namespace HearthCap.Features.Statistics
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -236,7 +204,7 @@ namespace HearthCap.Features.Statistics
         }
 
         /// <summary>
-        /// Called when activating.
+        ///     Called when activating.
         /// </summary>
         protected override void OnActivate()
         {
@@ -244,12 +212,15 @@ namespace HearthCap.Features.Statistics
         }
 
         /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
+        ///     Called the first time the page's LayoutUpdated event fires after it is navigated to.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewReady(object view)
         {
-            if (initialized) return;
+            if (initialized)
+            {
+                return;
+            }
             initialized = true;
 
             var item = Items.FirstOrDefault(x => x.GetType().IsAssignableFrom(SelectedFilterType.Key));

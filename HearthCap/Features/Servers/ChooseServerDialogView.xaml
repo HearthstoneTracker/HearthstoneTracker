@@ -11,33 +11,34 @@
              d:DataContext="{d:DesignInstance Type=servers:ChooseServerDialogViewModel, IsDesignTimeCreatable=False}">
     <Grid Margin="8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <TextBlock TextWrapping="Wrap">
                 Choose which server to set on your existing games and arenas.
             </TextBlock>
             <TextBlock TextWrapping="Wrap" Margin="0 4 0 0">
-                This will also be the default (you can change default server in the menu).</TextBlock>
+                This will also be the default (you can change default server in the menu).
+            </TextBlock>
         </StackPanel>
         <Grid Grid.Row="2"
               Margin="0 8 0 8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ComboBox Name="Servers"
                       DisplayMemberPath="Name"
                       Grid.Column="0"
                       Margin="0 0 8 0"
-                      SelectedItem="{Binding SelectedServer}"></ComboBox>
+                      SelectedItem="{Binding SelectedServer}" />
             <Button Width="100"
                     Content="_Save &amp; Close"
                     Name="SaveClose"
                     Grid.Column="1"
-                    cal:Message.Attach="SaveClose"></Button>
+                    cal:Message.Attach="SaveClose" />
         </Grid>
     </Grid>
 </UserControl>

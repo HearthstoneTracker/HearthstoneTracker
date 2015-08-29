@@ -1,11 +1,9 @@
-﻿namespace HearthCap.Features.Decks
+﻿using System;
+using System.Collections.Generic;
+using HearthCap.Data;
+
+namespace HearthCap.Features.Decks
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-
-    using HearthCap.Data;
-
     public interface IDeckManager
     {
         IEnumerable<Deck> GetDecks(string server, bool includeDeleted = false);

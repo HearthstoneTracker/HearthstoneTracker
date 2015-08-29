@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -30,7 +30,9 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
-                           Margin="4 0 0 0">Current arena</TextBlock>
+                           Margin="4 0 0 0">
+                    Current arena
+                </TextBlock>
             </StackPanel>
             <Button.ToolTip>
                 <TextBlock>Show current/last arena session.</TextBlock>
@@ -39,7 +41,7 @@
         <Rectangle Width="1"
                    Visibility="{Binding ArenaViewModel.LatestArenaSession, Converter={StaticResource nullToCollapsed}}"
                    Fill="{DynamicResource GrayBrush5}"
-                   Margin="4 4 4 4"></Rectangle>
+                   Margin="4 4 4 4" />
         <Button Margin="0"
                 cal:Message.Attach="AddArena"
                 Style="{DynamicResource ToolbarButton}">
@@ -53,7 +55,9 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
                 <TextBlock FontSize="16"
-                           Margin="4 0 0 0">Add arena</TextBlock>
+                           Margin="4 0 0 0">
+                    Add arena
+                </TextBlock>
             </StackPanel>
             <Button.ToolTip>
                 <TextBlock>Add a new arena.</TextBlock>

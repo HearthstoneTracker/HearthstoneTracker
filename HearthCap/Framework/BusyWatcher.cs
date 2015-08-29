@@ -1,11 +1,10 @@
-﻿namespace HearthCap.Framework
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Threading;
+using Caliburn.Micro;
+
+namespace HearthCap.Framework
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Threading;
-
-    using Caliburn.Micro;
-
     [Export(typeof(IBusyWatcher))]
     public class BusyWatcher : PropertyChangedBase, IBusyWatcher
     {
@@ -13,10 +12,7 @@
 
         public bool IsBusy
         {
-            get
-            {
-                return this.counter > 0;
-            }
+            get { return counter > 0; }
         }
 
         public IDisposable GetTicket()
@@ -26,17 +22,17 @@
 
         public void AddWatch()
         {
-            if (Interlocked.Increment(ref this.counter) == 1)
+            if (Interlocked.Increment(ref counter) == 1)
             {
-                this.NotifyOfPropertyChange(() => this.IsBusy);
+                NotifyOfPropertyChange(() => IsBusy);
             }
         }
 
         public void RemoveWatch()
         {
-            if (Interlocked.Decrement(ref this.counter) == 0)
+            if (Interlocked.Decrement(ref counter) == 0)
             {
-                this.NotifyOfPropertyChange(() => this.IsBusy);
+                NotifyOfPropertyChange(() => IsBusy);
             }
         }
 
@@ -46,8 +42,8 @@
 
             public BusyWatcherTicket(IBusyWatcher parent)
             {
-                this._parent = parent;
-                this._parent.AddWatch();
+                _parent = parent;
+                _parent.AddWatch();
             }
 
             public void Dispose()

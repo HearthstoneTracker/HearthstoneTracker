@@ -1,21 +1,18 @@
-﻿namespace HearthCap.Features.Analytics
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Forms;
+using GoogleAnalyticsTracker.Core.TrackerParameters;
+using NLog;
+
+namespace HearthCap.Features.Analytics
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
-    using System.Reflection;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
-
-    using GoogleAnalyticsTracker.Core;
-    using GoogleAnalyticsTracker.Core.TrackerParameters;
-
-    using NLog;
-
     public static class Tracker
     {
-        private static Logger Log = LogManager.GetCurrentClassLogger();
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private static bool isEnabled;
 
@@ -26,9 +23,9 @@
             Version = Assembly.GetEntryAssembly().GetName().Version;
             ExtraParameters = new Dictionary<string, string>();
             ScreenResolution = String.Format(
-                    "{0}x{1}",
-                    System.Windows.SystemParameters.PrimaryScreenWidth,
-                    System.Windows.SystemParameters.PrimaryScreenHeight);
+                "{0}x{1}",
+                SystemParameters.PrimaryScreenWidth,
+                SystemParameters.PrimaryScreenHeight);
             ScreenColors = String.Format("{0}-bit", Screen.PrimaryScreen.BitsPerPixel);
 
             var osPlatform = Environment.OSVersion.Platform.ToString();
@@ -36,12 +33,12 @@
             var osVersionString = Environment.OSVersion.VersionString;
             UserAgent = String.Format("{0}/{1} ({2}; {3}; {4})", "HearthstoneTracker", Version, osPlatform, osVersion, osVersionString);
             instance = new HsTracker("UA-46945463-6", "app.hearthstonetracker.com")
-            {
-                UseSsl = false,
-                UserAgent = UserAgent,
-                ThrowOnErrors = false,
-                Language = CultureInfo.InstalledUICulture.Name
-            };
+                {
+                    UseSsl = false,
+                    UserAgent = UserAgent,
+                    ThrowOnErrors = false,
+                    Language = CultureInfo.InstalledUICulture.Name
+                };
 
             using (var reg = new AnalyticsRegistrySettings())
             {
@@ -76,18 +73,12 @@
         [Browsable(false)]
         public static HsTracker Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
 
         public static bool IsEnabled
         {
-            get
-            {
-                return isEnabled;
-            }
+            get { return isEnabled; }
             set
             {
                 isEnabled = value;
@@ -100,7 +91,10 @@
 
         public static void TrackPageViewAsync(string pageTitle, string pageUrl)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
             LastPageTitle = pageTitle;
             LastPageUrl = pageUrl;
             TrackLastPageViewAsync();
@@ -108,7 +102,10 @@
 
         public static void TrackLastPageViewAsync()
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled)
+            {
+                return;
+            }
             var pageView = new PageView();
             FillParameters(pageView);
             Instance.TrackPageViewAsync(pageView);
@@ -116,13 +113,16 @@
 
         public static void TrackEventAsync(string category, string action, string label, int value = 1)
         {
-            if (!IsEnabled) return;
-            var pageView = new EventTracking()
+            if (!IsEnabled)
+            {
+                return;
+            }
+            var pageView = new EventTracking
                 {
                     Category = category,
                     Action = action,
                     Label = label,
-                    Value = value,
+                    Value = value
                 };
             FillParameters(pageView);
             instance.TrackEventAsync(pageView);

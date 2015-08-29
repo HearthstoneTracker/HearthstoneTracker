@@ -1,7 +1,7 @@
+using System.Windows.Media;
+
 namespace HearthCap.Features.Diagnostics.AreaDesigner
 {
-    using System.Windows.Media;
-
     public class OverlayRegionModel : RegionModel
     {
         private double opacity;
@@ -10,35 +10,29 @@ namespace HearthCap.Features.Diagnostics.AreaDesigner
 
         public Brush Brush
         {
-            get
-            {
-                return this.brush;
-            }
+            get { return brush; }
             set
             {
-                if (Equals(value, this.brush))
+                if (Equals(value, brush))
                 {
                     return;
                 }
-                this.brush = value;
-                this.NotifyOfPropertyChange(() => this.Brush);
+                brush = value;
+                NotifyOfPropertyChange(() => Brush);
             }
         }
 
         public double Opacity
         {
-            get
-            {
-                return this.opacity;
-            }
+            get { return opacity; }
             set
             {
-                if (value.Equals(this.opacity))
+                if (value.Equals(opacity))
                 {
                     return;
                 }
-                this.opacity = value;
-                this.NotifyOfPropertyChange(() => this.Opacity);
+                opacity = value;
+                NotifyOfPropertyChange(() => Opacity);
             }
         }
     }

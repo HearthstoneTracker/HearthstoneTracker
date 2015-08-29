@@ -35,7 +35,7 @@
                                Margin="4 2 2 2"
                                Foreground="White" />
                 </Border>
-                <ContentControl Name="ActiveItem" Margin="8"></ContentControl>
+                <ContentControl Name="ActiveItem" Margin="8" />
             </StackPanel>
         </Border>
     </Grid>

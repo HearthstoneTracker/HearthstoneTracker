@@ -1,15 +1,11 @@
-﻿namespace HearthCap.Features.Settings
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Shell.Dialogs;
+using HearthCap.Shell.Flyouts;
+using HearthCap.Shell.WindowCommands;
+
+namespace HearthCap.Features.Settings
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.WindowCommands;
-
-    using MahApps.Metro.Controls;
-
     [Export(typeof(IWindowCommand))]
     public class SettingsWindowCommandViewModel : WindowCommandViewModel, IHandle<ToggleSettingsCommand>
     {
@@ -28,16 +24,16 @@
 
         public void ToggleSettings()
         {
-            this.eventAggregator.PublishOnCurrentThread(new ToggleFlyoutCommand("settings"));
+            eventAggregator.PublishOnCurrentThread(new ToggleFlyoutCommand("settings"));
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ToggleSettingsCommand message)
         {
-            this.ToggleSettings();
+            ToggleSettings();
         }
     }
 }

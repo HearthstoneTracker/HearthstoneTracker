@@ -1,10 +1,9 @@
-﻿namespace HearthCap.Features
+﻿using System.ComponentModel.Composition;
+using HearthCap.Shell.Commands;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features
 {
-    using System.ComponentModel.Composition;
-
-    using HearthCap.Shell.Commands;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class Configuration : IStartupTask
     {

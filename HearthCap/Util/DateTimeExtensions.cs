@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Util
 {
-    using System;
-
     public static class DateTimeExtensions
     {
         #region Public Methods and Operators
@@ -18,7 +18,7 @@ namespace HearthCap.Util
 
         public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
         {
-            int diff = dt.DayOfWeek - startOfWeek;
+            var diff = dt.DayOfWeek - startOfWeek;
             if (diff < 0)
             {
                 diff += 7;
@@ -26,6 +26,7 @@ namespace HearthCap.Util
 
             return dt.AddDays(-1 * diff).Date;
         }
+
         #endregion
     }
 }

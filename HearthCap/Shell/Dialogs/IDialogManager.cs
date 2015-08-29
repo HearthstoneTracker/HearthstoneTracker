@@ -1,9 +1,8 @@
-﻿namespace HearthCap.Shell.Dialogs
+﻿using System;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Dialogs
 {
-    using System;
-
-    using Caliburn.Micro;
-
     public interface IDialogManager
     {
         void ShowDialog(IScreen dialogModel);

@@ -1,12 +1,12 @@
-﻿namespace HearthCap.Util
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
-    using System.Windows.Input;
-    using System.Windows.Interop;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
+using System.Windows.Interop;
 
+namespace HearthCap.Util
+{
     public class HotKey : IDisposable
     {
         private static Dictionary<int, HotKey> _dictHotKeyToCalBackProc;
@@ -22,7 +22,7 @@
 
         public const int WmHotKey = 0x0312;
 
-        private bool _disposed = false;
+        private bool _disposed;
 
         public Key Key { get; private set; }
         public KeyModifier KeyModifiers { get; private set; }
@@ -44,19 +44,19 @@
         // ******************************************************************
         public bool Register()
         {
-            int virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
+            var virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
             Id = virtualKeyCode + ((int)KeyModifiers * 0x10000);
-            bool result = NativeMethods.RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
+            var result = NativeMethods.RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
 
             if (_dictHotKeyToCalBackProc == null)
             {
                 _dictHotKeyToCalBackProc = new Dictionary<int, HotKey>();
-                ComponentDispatcher.ThreadFilterMessage += new ThreadMessageEventHandler(ComponentDispatcherThreadFilterMessage);
+                ComponentDispatcher.ThreadFilterMessage += ComponentDispatcherThreadFilterMessage;
             }
 
             _dictHotKeyToCalBackProc.Add(Id, this);
 
-            Debug.Print(result.ToString() + ", " + Id + ", " + virtualKeyCode);
+            Debug.Print(result + ", " + Id + ", " + virtualKeyCode);
             return result;
         }
 
@@ -117,7 +117,7 @@
         protected virtual void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
-            if (!this._disposed)
+            if (!_disposed)
             {
                 // If disposing equals true, dispose all managed
                 // and unmanaged resources.

@@ -1,23 +1,16 @@
-﻿namespace HearthCap.Features.Decks
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Data.Entity;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.StartUp;
+using Omu.ValueInjecter;
+
+namespace HearthCap.Features.Decks
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.StartUp;
-
-    using Omu.ValueInjecter;
-
     [Export(typeof(IDeckManager))]
     [Export(typeof(IStartupTask))]
     public class DeckManager : IDeckManager, IStartupTask
@@ -112,10 +105,10 @@
                 {
                     deck.Image = new DeckImage(deck);
                 }
-                
+
                 deck.Image.Image = image;
                 deck.Image.Modified = DateTime.Now;
-                
+
                 ClearCache();
                 context.SaveChanges();
             }
@@ -175,7 +168,7 @@
 
                 if (!suppressEvent)
                 {
-                    events.PublishOnBackgroundThread(new DeckUpdated(newdeck));                    
+                    events.PublishOnBackgroundThread(new DeckUpdated(newdeck));
                 }
             }
         }
@@ -226,12 +219,12 @@
                 var deck = context.Decks.FirstOrDefault(x => x.Key == slot && (x.Server == server));
                 if (deck == null)
                 {
-                    deck = new Deck()
-                               {
-                                   Server = server,
-                                   Key = slot,
-                                   Name = String.Format("New deck {0} ({1})", slot, server)
-                               };
+                    deck = new Deck
+                        {
+                            Server = server,
+                            Key = slot,
+                            Name = String.Format("New deck {0} ({1})", slot, server)
+                        };
                     context.Decks.Add(deck);
                     context.SaveChanges();
                     events.PublishOnBackgroundThread(new DeckUpdated(deck));

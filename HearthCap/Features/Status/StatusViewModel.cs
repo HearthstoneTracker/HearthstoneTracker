@@ -1,18 +1,16 @@
-﻿namespace HearthCap.Features.Status
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows.Media;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.EngineEvents;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Features.Decks;
+
+namespace HearthCap.Features.Status
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Windows.Media;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.EngineEvents;
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.Decks;
-
     [Export(typeof(StatusViewModel))]
     public class StatusViewModel : Screen,
         IHandle<GameModeChanged>,
@@ -65,129 +63,105 @@
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
-                this.NotifyOfPropertyChange(() => this.HeroBrush);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
+                NotifyOfPropertyChange(() => HeroBrush);
             }
         }
 
         public Hero OpponentHero
         {
-            get
-            {
-                return this.opponentHero;
-            }
+            get { return opponentHero; }
             set
             {
-                if (Equals(value, this.opponentHero))
+                if (Equals(value, opponentHero))
                 {
                     return;
                 }
-                this.opponentHero = value;
-                this.NotifyOfPropertyChange(() => this.OpponentHero);
-                this.NotifyOfPropertyChange(() => this.OpponentHeroBrush);
+                opponentHero = value;
+                NotifyOfPropertyChange(() => OpponentHero);
+                NotifyOfPropertyChange(() => OpponentHeroBrush);
             }
         }
 
         public Brush HeroBrush
         {
-            get
-            {
-                return Hero.GetBrush();
-            }
+            get { return Hero.GetBrush(); }
         }
 
         public Brush OpponentHeroBrush
         {
-            get
-            {
-                return OpponentHero.GetBrush();
-            }
+            get { return OpponentHero.GetBrush(); }
         }
 
         public bool WindowMinimized
         {
-            get
-            {
-                return this.windowMinimized;
-            }
+            get { return windowMinimized; }
             set
             {
-                if (value.Equals(this.windowMinimized))
+                if (value.Equals(windowMinimized))
                 {
                     return;
                 }
-                this.windowMinimized = value;
+                windowMinimized = value;
                 if (windowMinimized)
                 {
-                    this.WindowLost = false;
-                    this.WindowFound = false;
-                } 
-                this.NotifyOfPropertyChange(() => this.WindowMinimized);
+                    WindowLost = false;
+                    WindowFound = false;
+                }
+                NotifyOfPropertyChange(() => WindowMinimized);
             }
         }
 
         public bool WindowFound
         {
-            get
-            {
-                return this.windowFound;
-            }
+            get { return windowFound; }
             set
             {
-                if (value.Equals(this.windowFound))
+                if (value.Equals(windowFound))
                 {
                     return;
                 }
-                this.windowFound = value;
+                windowFound = value;
                 if (windowFound)
                 {
-                    this.WindowLost = false;
-                    this.WindowMinimized = false;
-                } 
-                this.NotifyOfPropertyChange(() => this.WindowFound);
-                this.NotifyOfPropertyChange(() => this.ShowDeck);                
+                    WindowLost = false;
+                    WindowMinimized = false;
+                }
+                NotifyOfPropertyChange(() => WindowFound);
+                NotifyOfPropertyChange(() => ShowDeck);
             }
         }
 
         public bool WindowLost
         {
-            get
-            {
-                return this.windowLost;
-            }
+            get { return windowLost; }
             set
             {
-                if (value.Equals(this.windowLost))
+                if (value.Equals(windowLost))
                 {
                     return;
                 }
-                this.windowLost = value;
+                windowLost = value;
                 if (windowLost)
                 {
-                    this.WindowFound = false;
-                    this.WindowMinimized = false;
+                    WindowFound = false;
+                    WindowMinimized = false;
                 }
-                this.NotifyOfPropertyChange(() => this.WindowLost);
+                NotifyOfPropertyChange(() => WindowLost);
             }
         }
 
         public bool IsUnknownGameMode
         {
-            get
-            {
-                return GameMode == GameMode.Unknown;
-            }
+            get { return GameMode == GameMode.Unknown; }
         }
 
         public bool ShowDeck
@@ -195,143 +169,122 @@
             get
             {
                 return WindowFound &&
-                    (GameMode == GameMode.Casual ||
-                    GameMode == GameMode.Challenge ||
-                    GameMode == GameMode.Practice || 
-                    GameMode == GameMode.Ranked);
+                       (GameMode == GameMode.Casual ||
+                        GameMode == GameMode.Challenge ||
+                        GameMode == GameMode.Practice ||
+                        GameMode == GameMode.Ranked);
             }
         }
 
         public GameMode GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return gameMode; }
             set
             {
-                if (value == this.gameMode)
+                if (value == gameMode)
                 {
                     return;
                 }
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
-                this.NotifyOfPropertyChange(() => this.IsUnknownGameMode);
-                this.NotifyOfPropertyChange(() => this.ShowDeck);
+                gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
+                NotifyOfPropertyChange(() => IsUnknownGameMode);
+                NotifyOfPropertyChange(() => ShowDeck);
             }
         }
 
         public string Deck
         {
-            get
-            {
-                return this.deck;
-            }
+            get { return deck; }
             set
             {
-                if (value == this.deck)
+                if (value == deck)
                 {
                     return;
                 }
-                this.deck = value;
-                this.NotifyOfPropertyChange(() => this.Deck);
-                this.NotifyOfPropertyChange(() => this.IsUnknownDeck);
+                deck = value;
+                NotifyOfPropertyChange(() => Deck);
+                NotifyOfPropertyChange(() => IsUnknownDeck);
             }
         }
 
         public bool IsUnknownDeck
         {
-            get
-            {
-                return String.IsNullOrEmpty(Deck);
-            }
+            get { return String.IsNullOrEmpty(Deck); }
         }
 
         public decimal Height
         {
-            get
-            {
-                return this.height;
-            }
+            get { return height; }
             set
             {
-                if (value == this.height)
+                if (value == height)
                 {
                     return;
                 }
-                this.height = value;
-                this.NotifyOfPropertyChange(() => this.Height);
+                height = value;
+                NotifyOfPropertyChange(() => Height);
             }
         }
 
         public bool MyTurn
         {
-            get
-            {
-                return this.myTurn;
-            }
+            get { return myTurn; }
             set
             {
-                if (value.Equals(this.myTurn))
+                if (value.Equals(myTurn))
                 {
                     return;
                 }
-                this.myTurn = value;
-                this.NotifyOfPropertyChange(() => this.MyTurn);
+                myTurn = value;
+                NotifyOfPropertyChange(() => MyTurn);
             }
         }
 
         public int Turns
         {
-            get
-            {
-                return this.turns;
-            }
+            get { return turns; }
             set
             {
-                if (value == this.turns)
+                if (value == turns)
                 {
                     return;
                 }
-                this.turns = value;
-                this.NotifyOfPropertyChange(() => this.Turns);
+                turns = value;
+                NotifyOfPropertyChange(() => Turns);
             }
         }
 
         public bool IsInGame
         {
-            get
-            {
-                return this.isInGame;
-            }
+            get { return isInGame; }
             set
             {
-                if (value.Equals(this.isInGame))
+                if (value.Equals(isInGame))
                 {
                     return;
                 }
-                this.isInGame = value;
-                this.NotifyOfPropertyChange(() => this.IsInGame);
+                isInGame = value;
+                NotifyOfPropertyChange(() => IsInGame);
             }
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameModeChanged message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             GameMode = message.GameMode;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(DeckDetected message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             var deck = deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Key);
             if (deck != null)
             {
@@ -340,59 +293,59 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(WindowNotFound message)
         {
-            this.WindowLost = true;
+            WindowLost = true;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(WindowFound message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(WindowMinimized message)
         {
-            this.WindowMinimized = true;
+            WindowMinimized = true;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(HeroDetected message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             Hero = GlobalData.Get().Heroes.FirstOrDefault(x => x.Key == message.Hero);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(OpponentHeroDetected message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             OpponentHero = GlobalData.Get().Heroes.FirstOrDefault(x => x.Key == message.Hero);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameEnded message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             Hero = null;
             OpponentHero = null;
             MyTurn = false;
@@ -401,23 +354,23 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(NewRound message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             Turns = message.Current;
             MyTurn = message.MyTurn;
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameStarted message)
         {
-            this.WindowFound = true;
+            WindowFound = true;
             IsInGame = true;
         }
     }

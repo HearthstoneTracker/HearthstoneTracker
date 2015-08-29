@@ -1,28 +1,24 @@
-﻿namespace HearthCap.Shell.Theme
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using HearthCap.Data;
+using HearthCap.StartUp;
+using MahApps.Metro;
+using MahApps.Metro.Controls;
+using NLog;
+
+namespace HearthCap.Shell.Theme
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using System.Windows;
-
-    using HearthCap.Data;
-    using HearthCap.StartUp;
-
-    using MahApps.Metro;
-    using MahApps.Metro.Controls;
-
-    using NLog;
-
     [Export(typeof(IThemeManager))]
     [Export(typeof(ThemeManager))]
     [Export(typeof(IStartupTask))]
     public class ThemeManager : IThemeManager, IStartupTask
     {
-        private static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly Func<HearthStatsDbContext> dbContext;
 
@@ -34,11 +30,11 @@
         public ThemeManager(Func<HearthStatsDbContext> dbContext)
         {
             this.dbContext = dbContext;
-            this.themeResources = new[]
-                                      {
-                                          // new ResourceDictionary { Source = new Uri("pack://application:,,,/HearthCap;component/Resources/Icons.xaml") },
-                                          new ResourceDictionary { Source = new Uri("/Resources/Theme.xaml", UriKind.Relative) }
-                                      };
+            themeResources = new[]
+                {
+                    // new ResourceDictionary { Source = new Uri("pack://application:,,,/HearthCap;component/Resources/Icons.xaml") },
+                    new ResourceDictionary { Source = new Uri("/Resources/Theme.xaml", UriKind.Relative) }
+                };
         }
 
         public ThemeConfiguration CurrentConfiguration
@@ -49,7 +45,7 @@
                 {
                     Run();
                 }
-                return this.currentConfiguration;
+                return currentConfiguration;
             }
         }
 
@@ -57,7 +53,7 @@
 
         public IEnumerable<ResourceDictionary> GetThemeResources()
         {
-            return this.themeResources;
+            return themeResources;
         }
 
         public void ChangeAccent(Accent accent)
@@ -111,9 +107,9 @@
 
         public void Run()
         {
-            this.currentConfiguration = this.GetOrCreateThemeConfiguration();
+            currentConfiguration = GetOrCreateThemeConfiguration();
             // MahApps.Metro.ThemeManager.InvalidateSystemResourcesOnBackgroundThread = true;
-            ApplyConfiguration(this.currentConfiguration);
+            ApplyConfiguration(currentConfiguration);
             using (var reg = new ThemeRegistrySettings())
             {
                 FlyoutTheme = reg.FlyoutTheme;
@@ -150,7 +146,7 @@
                 if (themeconfig == null)
                 {
                     var theme = MahApps.Metro.ThemeManager.DetectAppStyle(Application.Current);
-                    themeconfig = new ThemeConfiguration() { Name = "default", Accent = theme.Item2.Name, Theme = theme.Item1.Name };
+                    themeconfig = new ThemeConfiguration { Name = "default", Accent = theme.Item2.Name, Theme = theme.Item1.Name };
                     context.ThemeConfigurations.Add(themeconfig);
                     context.SaveChanges();
                 }
@@ -163,7 +159,7 @@
 
         protected virtual void OnFlyoutThemeChanged()
         {
-            var handler = this.FlyoutThemeChanged;
+            var handler = FlyoutThemeChanged;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);

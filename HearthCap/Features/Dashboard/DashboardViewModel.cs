@@ -1,19 +1,14 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Framework;
+using HearthCap.Shell.Tabs;
+
 namespace HearthCap.Features.Dashboard
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Framework;
-    using HearthCap.Shell.Tabs;
-
     // [Export(typeof(ITab))]
     public class DashboardViewModel : TabViewModel
     {
@@ -27,8 +22,8 @@ namespace HearthCap.Features.Dashboard
         public DashboardViewModel(Func<HearthStatsDbContext> dbContext)
         {
             this.dbContext = dbContext;
-            this.DisplayName = "Dashboard";
-            this.Header = "Dashboard!";
+            DisplayName = "Dashboard";
+            Header = "Dashboard!";
             Order = 0;
         }
 
@@ -40,19 +35,16 @@ namespace HearthCap.Features.Dashboard
 
         public string Header
         {
-            get
-            {
-                return this.header;
-            }
+            get { return header; }
             set
             {
-                this.header = value;
-                this.NotifyOfPropertyChange(() => this.Header);
+                header = value;
+                NotifyOfPropertyChange(() => Header);
             }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override async void OnInitialize()
         {
@@ -67,10 +59,7 @@ namespace HearthCap.Features.Dashboard
 
         public IObservableCollection<Hero> Heroes
         {
-            get
-            {
-                return heroes;
-            }
+            get { return heroes; }
         }
     }
 }

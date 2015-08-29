@@ -1,13 +1,11 @@
-﻿namespace HearthCap.Features.IncompatibleHooks
+﻿using System.ComponentModel.Composition;
+using System.Windows;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.EngineEvents;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features.IncompatibleHooks
 {
-    using System.ComponentModel.Composition;
-    using System.Windows;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.EngineEvents;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class IncompatibleHooksNotify : IStartupTask,
         IHandle<IncompatibleHooksFound>
@@ -28,7 +26,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(IncompatibleHooksFound message)

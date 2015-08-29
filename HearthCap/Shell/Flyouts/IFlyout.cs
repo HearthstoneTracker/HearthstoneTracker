@@ -1,9 +1,8 @@
-﻿namespace HearthCap.Shell.Flyouts
+﻿using Caliburn.Micro;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Shell.Flyouts
 {
-    using Caliburn.Micro;
-
-    using MahApps.Metro.Controls;
-
     public interface IFlyout : IScreen
     {
         string Header { get; set; }

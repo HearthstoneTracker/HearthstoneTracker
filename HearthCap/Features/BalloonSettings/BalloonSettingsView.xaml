@@ -44,15 +44,15 @@
     <Grid>
         <StackPanel Grid.IsSharedSizeScope="True">
             <StackPanel VerticalAlignment="Center"
-                            Orientation="Vertical" Margin="8">
+                        Orientation="Vertical" Margin="8">
                 <CheckBox Name="StartMinimized"
                           Margin="4"
-                              IsChecked="{Binding UserPreferences.StartMinimized}">
+                          IsChecked="{Binding UserPreferences.StartMinimized}">
                     <TextBlock Margin="4 0 0 0">Start minimized?</TextBlock>
                 </CheckBox>
                 <CheckBox Name="MinimizeToTray"
                           Margin="4"
-                              IsChecked="{Binding MinimizeToTray}">
+                          IsChecked="{Binding MinimizeToTray}">
                     <TextBlock Margin="4 0 0 0">Minimize to tray:</TextBlock>
                 </CheckBox>
             </StackPanel>

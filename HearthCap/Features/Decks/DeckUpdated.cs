@@ -1,14 +1,14 @@
-﻿namespace HearthCap.Features.Decks
-{
-    using HearthCap.Data;
+﻿using HearthCap.Data;
 
+namespace HearthCap.Features.Decks
+{
     public class DeckUpdated
     {
         public Deck Deck { get; set; }
 
         public DeckUpdated(Deck deck)
         {
-            this.Deck = deck;
+            Deck = deck;
         }
     }
 

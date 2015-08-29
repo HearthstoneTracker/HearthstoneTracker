@@ -1,24 +1,22 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
-{
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
+﻿using System.Windows.Controls.Primitives;
 
+namespace HearthCap.Features.Diagnostics.AreaDesigner
+{
     public class MoveThumb : Thumb
     {
         public MoveThumb()
         {
-            this.DragDelta += this.MoveThumb_DragDelta;
+            DragDelta += MoveThumb_DragDelta;
         }
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            var region = this.DataContext as RegionModel;
+            var region = DataContext as RegionModel;
             if (region != null)
             {
                 region.XPos += (int)e.HorizontalChange;
                 region.YPos += (int)e.VerticalChange;
             }
-        }        
+        }
     }
 }

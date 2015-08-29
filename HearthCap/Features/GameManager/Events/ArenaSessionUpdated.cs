@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Features.GameManager.Events
 {
-    using System;
-
     public class ArenaSessionUpdated
     {
         public Guid ArenaSessionId { get; set; }
@@ -10,8 +10,8 @@ namespace HearthCap.Features.GameManager.Events
 
         public ArenaSessionUpdated(Guid arenaSessionId, bool isLatest = false)
         {
-            this.ArenaSessionId = arenaSessionId;
-            this.IsLatest = isLatest;
+            ArenaSessionId = arenaSessionId;
+            IsLatest = isLatest;
         }
     }
 }

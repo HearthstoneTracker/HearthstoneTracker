@@ -1,16 +1,14 @@
+using System.ComponentModel;
+using HearthCap.Features.WebApi.Generic;
+
 namespace HearthCap.Features.WebApi.ValueBot
 {
-    using System;
-    using System.ComponentModel;
-
-    using HearthCap.Features.WebApi.Generic;
-
     public class ProviderSettingsViewModel : GenericWebApiProviderSettingsViewModel
     {
         public ProviderSettingsViewModel(WebApiProviderDescriptor providerDescriptor)
             : base(providerDescriptor)
         {
-            this.PropertyChanged += OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -18,7 +16,7 @@ namespace HearthCap.Features.WebApi.ValueBot
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {

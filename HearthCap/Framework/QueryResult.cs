@@ -1,13 +1,13 @@
-﻿namespace HearthCap.Framework
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using Caliburn.Micro;
+
+namespace HearthCap.Framework
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    public class QueryResult<TEntity> : IResult where TEntity : class
+    public class QueryResult<TEntity> : IResult
+        where TEntity : class
     {
         public QueryResult(IQueryable<TEntity> query)
         {
@@ -38,7 +38,7 @@
             var handler = Completed;
             if (handler != null)
             {
-                handler(this, new ResultCompletionEventArgs() { Error = error, WasCancelled = wasCancelled });
+                handler(this, new ResultCompletionEventArgs { Error = error, WasCancelled = wasCancelled });
             }
         }
     }

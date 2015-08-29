@@ -1,40 +1,36 @@
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using HearthCap.Features.Analytics;
+using HearthCap.Shell.Flyouts;
+using MahApps.Metro.Controls;
+
 namespace HearthCap.Features.Settings
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.Analytics;
-    using HearthCap.Shell.Flyouts;
-
-    using MahApps.Metro.Controls;
-
     [Export(typeof(IFlyout))]
     public class SettingsViewModel : FlyoutViewModel<ISettingsScreen>.Collection.AllActive
     {
         private bool firstTime = true;
 
         [ImportingConstructor]
-        public SettingsViewModel([ImportMany]IEnumerable<ISettingsScreen> settingsScreens)
+        public SettingsViewModel([ImportMany] IEnumerable<ISettingsScreen> settingsScreens)
         {
             // this.settingsScreens = new BindableCollection<ISettingsScreen>(settingsScreens.OrderBy(x=>x.Order));
-            this.Name = "settings";
-            this.Header = "Settings";
+            Name = "settings";
+            Header = "Settings";
             SetPosition(Position.Left);
-            this.Items.AddRange(settingsScreens.OrderBy(x => x.Order));
-            this.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == "IsOpen" && IsOpen)
+            Items.AddRange(settingsScreens.OrderBy(x => x.Order));
+            PropertyChanged += (sender, args) =>
                 {
-                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
-                }
-            };
+                    if (args.PropertyName == "IsOpen" && IsOpen)
+                    {
+                        Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
+                    }
+                };
         }
 
         /// <summary>
-        /// Called when activating.
+        ///     Called when activating.
         /// </summary>
         protected override void OnActivate()
         {

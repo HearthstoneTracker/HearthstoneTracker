@@ -1,12 +1,10 @@
-﻿namespace HearthCap.Shell.Flyouts
+﻿using Caliburn.Micro;
+using HearthCap.Shell.Theme;
+using HearthCap.StartUp;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Shell.Flyouts
 {
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Theme;
-    using HearthCap.StartUp;
-
-    using MahApps.Metro.Controls;
-
     public abstract class FlyoutViewModel : Screen, IFlyout
     {
         private string header;
@@ -23,118 +21,100 @@
 
         protected FlyoutViewModel()
         {
-            this.themeManager = AppBootstrapper.Container.GetExportedValue<IThemeManager>();
+            themeManager = AppBootstrapper.Container.GetExportedValue<IThemeManager>();
             themeManager.FlyoutThemeChanged += (sender, args) => NotifyOfPropertyChange("Theme");
         }
 
         public string Header
         {
-            get
-            {
-                return this.header;
-            }
+            get { return header; }
 
             set
             {
-                if (value == this.header)
+                if (value == header)
                 {
                     return;
                 }
 
-                this.header = value;
-                this.NotifyOfPropertyChange(() => this.Header);
+                header = value;
+                NotifyOfPropertyChange(() => Header);
             }
         }
 
         public bool IsOpen
         {
-            get
-            {
-                return this.isOpen;
-            }
+            get { return isOpen; }
 
             set
             {
-                if (value.Equals(this.isOpen))
+                if (value.Equals(isOpen))
                 {
                     return;
                 }
 
-                this.isOpen = value;
-                this.NotifyOfPropertyChange(() => this.IsOpen);
+                isOpen = value;
+                NotifyOfPropertyChange(() => IsOpen);
             }
         }
 
         public Position Position
         {
-            get
-            {
-                return this.position;
-            }
+            get { return position; }
 
             set
             {
-                if (value == this.position)
+                if (value == position)
                 {
                     return;
                 }
 
-                this.position = value;
+                position = value;
                 using (var reg = new FlyoutRegistrySettings())
                 {
-                    reg.SetPosition(this.GetType(), value);
+                    reg.SetPosition(GetType(), value);
                 }
-                this.NotifyOfPropertyChange(() => this.Position);
+                NotifyOfPropertyChange(() => Position);
             }
         }
 
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get { return name; }
             set
             {
-                if (value == this.name)
+                if (value == name)
                 {
                     return;
                 }
-                this.name = value;
-                this.NotifyOfPropertyChange(() => this.Name);
+                name = value;
+                NotifyOfPropertyChange(() => Name);
             }
         }
 
         public bool IsModal
         {
-            get
-            {
-                return this.isModal;
-            }
+            get { return isModal; }
             set
             {
-                if (value.Equals(this.isModal))
+                if (value.Equals(isModal))
                 {
                     return;
                 }
-                this.isModal = value;
-                this.NotifyOfPropertyChange(() => this.IsModal);
+                isModal = value;
+                NotifyOfPropertyChange(() => IsModal);
             }
         }
 
         public FlyoutTheme Theme
         {
-            get
-            {
-                return themeManager.FlyoutTheme;
-            }
+            get { return themeManager.FlyoutTheme; }
         }
 
         protected internal void SetPosition(Position defaultPosition)
         {
             using (var reg = new FlyoutRegistrySettings())
             {
-                this.Position = reg.GetPosition(this.GetType(), defaultPosition);
+                Position = reg.GetPosition(GetType(), defaultPosition);
             }
         }
     }
@@ -166,75 +146,42 @@
 
                 protected void SetPosition(Position defaultPosition)
                 {
-                    this.inner.SetPosition(defaultPosition);
+                    inner.SetPosition(defaultPosition);
                 }
 
                 public string Header
                 {
-                    get
-                    {
-                        return this.inner.Header;
-                    }
-                    set
-                    {
-                        this.inner.Header = value;
-                    }
+                    get { return inner.Header; }
+                    set { inner.Header = value; }
                 }
 
                 public bool IsOpen
                 {
-                    get
-                    {
-                        return this.inner.IsOpen;
-                    }
-                    set
-                    {
-                        this.inner.IsOpen = value;
-                    }
+                    get { return inner.IsOpen; }
+                    set { inner.IsOpen = value; }
                 }
 
                 public Position Position
                 {
-                    get
-                    {
-                        return this.inner.Position;
-                    }
-                    set
-                    {
-                        this.inner.Position = value;
-                    }
+                    get { return inner.Position; }
+                    set { inner.Position = value; }
                 }
 
                 public string Name
                 {
-                    get
-                    {
-                        return this.inner.Name;
-                    }
-                    set
-                    {
-                        this.inner.Name = value;
-                    }
+                    get { return inner.Name; }
+                    set { inner.Name = value; }
                 }
 
                 public bool IsModal
                 {
-                    get
-                    {
-                        return this.inner.IsModal;
-                    }
-                    set
-                    {
-                        this.inner.IsModal = value;
-                    }
+                    get { return inner.IsModal; }
+                    set { inner.IsModal = value; }
                 }
 
                 public FlyoutTheme Theme
                 {
-                    get
-                    {
-                        return this.inner.Theme;
-                    }
+                    get { return inner.Theme; }
                 }
             }
 
@@ -249,150 +196,84 @@
 
                 public string Header
                 {
-                    get
-                    {
-                        return this.inner.Header;
-                    }
-                    set
-                    {
-                        this.inner.Header = value;
-                    }
+                    get { return inner.Header; }
+                    set { inner.Header = value; }
                 }
 
                 public bool IsOpen
                 {
-                    get
-                    {
-                        return this.inner.IsOpen;
-                    }
-                    set
-                    {
-                        this.inner.IsOpen = value;
-                    }
+                    get { return inner.IsOpen; }
+                    set { inner.IsOpen = value; }
                 }
 
                 public Position Position
                 {
-                    get
-                    {
-                        return this.inner.Position;
-                    }
-                    set
-                    {
-                        this.inner.Position = value;
-                    }
+                    get { return inner.Position; }
+                    set { inner.Position = value; }
                 }
 
                 public string Name
                 {
-                    get
-                    {
-                        return this.inner.Name;
-                    }
-                    set
-                    {
-                        this.inner.Name = value;
-                    }
+                    get { return inner.Name; }
+                    set { inner.Name = value; }
                 }
 
                 public bool IsModal
                 {
-                    get
-                    {
-                        return this.inner.IsModal;
-                    }
-                    set
-                    {
-                        this.inner.IsModal = value;
-                    }
+                    get { return inner.IsModal; }
+                    set { inner.IsModal = value; }
                 }
 
                 public FlyoutTheme Theme
                 {
-                    get
-                    {
-                        return this.inner.Theme;
-                    }
+                    get { return inner.Theme; }
                 }
 
                 protected void SetPosition(Position defaultPosition)
                 {
-                    this.inner.SetPosition(defaultPosition);
+                    inner.SetPosition(defaultPosition);
                 }
             }
         }
 
         public string Header
         {
-            get
-            {
-                return this.inner.Header;
-            }
-            set
-            {
-                this.inner.Header = value;
-            }
+            get { return inner.Header; }
+            set { inner.Header = value; }
         }
 
         public Position Position
         {
-            get
-            {
-                return this.inner.Position;
-            }
-            set
-            {
-                this.inner.Position = value;
-            }
+            get { return inner.Position; }
+            set { inner.Position = value; }
         }
 
         public bool IsOpen
         {
-            get
-            {
-                return this.inner.IsOpen;
-            }
-            set
-            {
-                this.inner.IsOpen = value;
-            }
+            get { return inner.IsOpen; }
+            set { inner.IsOpen = value; }
         }
 
         public string Name
         {
-            get
-            {
-                return this.inner.Name;
-            }
-            set
-            {
-                this.inner.Name = value;
-            }
+            get { return inner.Name; }
+            set { inner.Name = value; }
         }
 
         public bool IsModal
         {
-            get
-            {
-                return this.inner.IsModal;
-            }
-            set
-            {
-                this.inner.IsModal = value;
-            }
+            get { return inner.IsModal; }
+            set { inner.IsModal = value; }
         }
 
         public FlyoutTheme Theme
         {
-            get
-            {
-                return this.inner.Theme;
-            }
+            get { return inner.Theme; }
         }
 
         protected void SetPosition(Position defaultPosition)
         {
-            this.inner.SetPosition(defaultPosition);
+            inner.SetPosition(defaultPosition);
         }
     }
 }

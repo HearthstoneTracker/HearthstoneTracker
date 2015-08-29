@@ -1,9 +1,8 @@
+using System;
+using Caliburn.Micro;
+
 namespace HearthCap.Features.Decks
 {
-    using System;
-
-    using Caliburn.Micro;
-
     public class AvailableDecksModel : PropertyChangedBase
     {
         private BindableCollection<DeckModel> availableDecks;
@@ -14,62 +13,50 @@ namespace HearthCap.Features.Decks
 
         public DeckModel SelectedDeck
         {
-            get
-            {
-                return this.selectedDeck;
-            }
+            get { return selectedDeck; }
             set
             {
-                if (Equals(value, this.selectedDeck))
+                if (Equals(value, selectedDeck))
                 {
                     return;
                 }
-                this.selectedDeck = value;
-                this.NotifyOfPropertyChange(() => this.SelectedDeck);
+                selectedDeck = value;
+                NotifyOfPropertyChange(() => SelectedDeck);
             }
         }
 
         public BindableCollection<DeckModel> AvailableDecks
         {
-            get
-            {
-                return this.availableDecks;
-            }
+            get { return availableDecks; }
             set
             {
-                if (Equals(value, this.availableDecks))
+                if (Equals(value, availableDecks))
                 {
                     return;
                 }
-                this.availableDecks = value;
-                this.NotifyOfPropertyChange(() => this.AvailableDecks);
+                availableDecks = value;
+                NotifyOfPropertyChange(() => AvailableDecks);
             }
         }
 
         public string Slot
         {
-            get
-            {
-                return this.slot;
-            }
+            get { return slot; }
             set
             {
-                if (value == this.slot)
+                if (value == slot)
                 {
                     return;
                 }
-                this.slot = value;
-                this.NotifyOfPropertyChange(() => this.Slot);
-                this.NotifyOfPropertyChange(() => this.SlotLabel);
+                slot = value;
+                NotifyOfPropertyChange(() => Slot);
+                NotifyOfPropertyChange(() => SlotLabel);
             }
         }
 
         public string SlotLabel
         {
-            get
-            {
-                return String.Format("Slot {0}:", this.Slot);
-            }
+            get { return String.Format("Slot {0}:", Slot); }
         }
     }
 }

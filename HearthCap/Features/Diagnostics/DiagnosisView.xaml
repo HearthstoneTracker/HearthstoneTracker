@@ -25,9 +25,9 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="33*"></RowDefinition>
-                <RowDefinition Height="34*"></RowDefinition>
-                <RowDefinition Height="33*"></RowDefinition>
+                <RowDefinition Height="33*" />
+                <RowDefinition Height="34*" />
+                <RowDefinition Height="33*" />
             </Grid.RowDefinitions>
             <Image x:Name="Screenshot"
                    Source="{Binding Screenshot}"
@@ -40,9 +40,9 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Level}"></TextBlock>
-                            <TextBlock Text=":"></TextBlock>
-                            <TextBlock Text="{Binding Message}"></TextBlock>
+                            <TextBlock Text="{Binding Level}" />
+                            <TextBlock Text=":" />
+                            <TextBlock Text="{Binding Message}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -53,9 +53,9 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Level}"></TextBlock>
-                            <TextBlock Text=":"></TextBlock>
-                            <TextBlock Text="{Binding Message}"></TextBlock>
+                            <TextBlock Text="{Binding Level}" />
+                            <TextBlock Text=":" />
+                            <TextBlock Text="{Binding Message}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

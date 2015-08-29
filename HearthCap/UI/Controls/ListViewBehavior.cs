@@ -1,15 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Windows;
+using System.Windows.Controls;
+
 namespace HearthCap.UI.Controls
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Windows;
-    using System.Windows.Controls;
-
     /// <summary>The list view behavior.</summary>
     public class ListViewBehavior
     {
-        static Dictionary<ListView, Capture> Associations =
+        private static readonly Dictionary<ListView, Capture> Associations =
             new Dictionary<ListView, Capture>();
 
         public static bool GetScrollOnNewItem(DependencyObject obj)
@@ -34,12 +34,18 @@ namespace HearthCap.UI.Controls
             DependencyPropertyChangedEventArgs e)
         {
             var ListView = d as ListView;
-            if (ListView == null) return;
+            if (ListView == null)
+            {
+                return;
+            }
             bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
-            if (newValue == oldValue) return;
+            if (newValue == oldValue)
+            {
+                return;
+            }
             if (newValue)
             {
-                ListView.Loaded += new RoutedEventHandler(ListView_Loaded);
+                ListView.Loaded += ListView_Loaded;
                 // ListView.Unloaded += new RoutedEventHandler(ListView_Unloaded);
             }
             else
@@ -47,28 +53,35 @@ namespace HearthCap.UI.Controls
                 ListView.Loaded -= ListView_Loaded;
                 ListView.Unloaded -= ListView_Unloaded;
                 if (Associations.ContainsKey(ListView))
+                {
                     Associations[ListView].Dispose();
+                }
             }
         }
 
-        static void ListView_Unloaded(object sender, RoutedEventArgs e)
+        private static void ListView_Unloaded(object sender, RoutedEventArgs e)
         {
             var ListView = (ListView)sender;
             if (Associations.ContainsKey(ListView))
+            {
                 Associations[ListView].Dispose();
+            }
             ListView.Unloaded -= ListView_Unloaded;
         }
 
-        static void ListView_Loaded(object sender, RoutedEventArgs e)
+        private static void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             var ListView = (ListView)sender;
             var incc = ListView.Items as INotifyCollectionChanged;
-            if (incc == null) return;
+            if (incc == null)
+            {
+                return;
+            }
             ListView.Loaded -= ListView_Loaded;
             Associations[ListView] = new Capture(ListView);
         }
 
-        class Capture : IDisposable
+        private class Capture : IDisposable
         {
             public ListView ListView { get; set; }
             public INotifyCollectionChanged incc { get; set; }
@@ -76,26 +89,29 @@ namespace HearthCap.UI.Controls
             public Capture(ListView ListView)
             {
                 this.ListView = ListView;
-                this.incc = ListView.ItemsSource as INotifyCollectionChanged;
-                if (this.incc != null)
+                incc = ListView.ItemsSource as INotifyCollectionChanged;
+                if (incc != null)
                 {
-                    this.incc.CollectionChanged += this.incc_CollectionChanged;
+                    incc.CollectionChanged += incc_CollectionChanged;
                 }
             }
 
-            void incc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+            private void incc_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems.Count > 0)
+                if (e.Action == NotifyCollectionChangedAction.Add
+                    && e.NewItems.Count > 0)
                 {
-                    this.ListView.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
+                    ListView.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
                     // this.ListView.SelectedItem = e.NewItems[0];
                 }
             }
 
             public void Dispose()
             {
-                if (this.incc != null)
-                    this.incc.CollectionChanged -= this.incc_CollectionChanged;
+                if (incc != null)
+                {
+                    incc.CollectionChanged -= incc_CollectionChanged;
+                }
             }
         }
     }

@@ -9,7 +9,7 @@
              d:DataContext="{d:DesignInstance Type=settings:SettingsWindowCommandViewModel, IsDesignTimeCreatable=False}"
              cal:Bind.AtDesignTime="False">
     <UserControl.Resources>
-        <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="/Resources/Icons.xaml" />
     </UserControl.Resources>
     <Button cal:Message.Attach="ToggleSettings"
             Cursor="Hand">
@@ -25,7 +25,9 @@
             <TextBlock Foreground="White"
                        FontSize="16"
                        Margin="4 0 0 0"
-                       FontWeight="SemiBold">Settings</TextBlock>
+                       FontWeight="SemiBold">
+                Settings
+            </TextBlock>
         </StackPanel>
     </Button>
 </UserControl>

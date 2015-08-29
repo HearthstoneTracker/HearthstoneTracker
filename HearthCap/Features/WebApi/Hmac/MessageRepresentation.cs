@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Features.WebApi.Hmac
 {
-    using System;
-
     public class MessageRepresentation
     {
         public string Representation { get; set; }

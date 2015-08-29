@@ -1,10 +1,11 @@
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace HearthCap.Features.WebApi.Hmac
 {
-    using System;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Threading.Tasks;
-
     public class HmacSigningHandler : HttpClientHandler
     {
         private readonly string apiKey;
@@ -15,7 +16,7 @@ namespace HearthCap.Features.WebApi.Hmac
         private readonly ICalculteSignature signatureCalculator;
 
         public HmacSigningHandler(
-            string apiKey, 
+            string apiKey,
             string secretKey,
             IBuildMessageRepresentation representationBuilder,
             ICalculteSignature signatureCalculator)
@@ -27,16 +28,16 @@ namespace HearthCap.Features.WebApi.Hmac
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-                                                               System.Threading.CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
             if (!request.Headers.Contains(Configuration.ApiKeyHeader))
             {
-                request.Headers.Add(Configuration.ApiKeyHeader, this.apiKey);
+                request.Headers.Add(Configuration.ApiKeyHeader, apiKey);
             }
 
             request.Headers.Date = new DateTimeOffset(DateTime.Now, DateTime.Now - DateTime.UtcNow);
-            var representation = this.representationBuilder.BuildRequestRepresentation(request);
-            string signature = this.signatureCalculator.Signature(this.secretKey, representation);
+            var representation = representationBuilder.BuildRequestRepresentation(request);
+            var signature = signatureCalculator.Signature(secretKey, representation);
             var header = new AuthenticationHeaderValue(Configuration.AuthenticationScheme, signature);
             request.Headers.Authorization = header;
             return base.SendAsync(request, cancellationToken);

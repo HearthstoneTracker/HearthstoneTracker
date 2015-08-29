@@ -1,12 +1,12 @@
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+
 namespace HearthCap.Util
 {
-    using System;
-    using System.Drawing;
-    using System.IO;
-    using System.Windows;
-    using System.Windows.Interop;
-    using System.Windows.Media.Imaging;
-
     public static class ImageHelper
     {
         public static Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
@@ -27,7 +27,7 @@ namespace HearthCap.Util
             {
                 throw new ArgumentNullException("bmp");
             }
-            
+
             var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
                 bmp.GetHbitmap(),
                 IntPtr.Zero,

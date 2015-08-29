@@ -1,7 +1,7 @@
+using Caliburn.Micro;
+
 namespace HearthCap.Features.Core
 {
-    using Caliburn.Micro;
-
     public class ServerItemModel : PropertyChangedBase
     {
         private string name;
@@ -15,35 +15,29 @@ namespace HearthCap.Features.Core
 
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get { return name; }
             set
             {
-                if (value == this.name)
+                if (value == name)
                 {
                     return;
                 }
-                this.name = value;
-                this.NotifyOfPropertyChange(() => this.Name);
+                name = value;
+                NotifyOfPropertyChange(() => Name);
             }
         }
 
         public bool IsChecked
         {
-            get
-            {
-                return this.isChecked;
-            }
+            get { return isChecked; }
             set
             {
-                if (value.Equals(this.isChecked))
+                if (value.Equals(isChecked))
                 {
                     return;
                 }
-                this.isChecked = value;
-                this.NotifyOfPropertyChange(() => this.IsChecked);
+                isChecked = value;
+                NotifyOfPropertyChange(() => IsChecked);
             }
         }
     }

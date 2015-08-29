@@ -1,13 +1,11 @@
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using Caliburn.Micro;
+using HearthCap.Data;
+
 namespace HearthCap.Features.Games.LatestGames
 {
-    using System;
-    using System.Linq;
-    using System.Linq.Expressions;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-
     public class GameResultTotalsModel : PropertyChangedBase
     {
         private int games;
@@ -26,143 +24,115 @@ namespace HearthCap.Features.Games.LatestGames
 
         private int totalMinutes;
 
-        public GameResultTotalsModel()
-        {
-        }
-
         public int Games
         {
-            get
-            {
-                return this.games;
-            }
+            get { return games; }
             set
             {
-                if (value == this.games)
+                if (value == games)
                 {
                     return;
                 }
-                this.games = value;
-                this.NotifyOfPropertyChange(() => this.Games);
+                games = value;
+                NotifyOfPropertyChange(() => Games);
             }
         }
 
         public int Won
         {
-            get
-            {
-                return this.won;
-            }
+            get { return won; }
             set
             {
-                if (value == this.won)
+                if (value == won)
                 {
                     return;
                 }
-                this.won = value;
-                this.NotifyOfPropertyChange(() => this.Won);
+                won = value;
+                NotifyOfPropertyChange(() => Won);
             }
         }
 
         public int Lost
         {
-            get
-            {
-                return this.lost;
-            }
+            get { return lost; }
             set
             {
-                if (value == this.lost)
+                if (value == lost)
                 {
                     return;
                 }
-                this.lost = value;
-                this.NotifyOfPropertyChange(() => this.Lost);
+                lost = value;
+                NotifyOfPropertyChange(() => Lost);
             }
         }
 
         public int Hours
         {
-            get
-            {
-                return this.hours;
-            }
+            get { return hours; }
             set
             {
-                if (value == this.hours)
+                if (value == hours)
                 {
                     return;
                 }
-                this.hours = value;
-                this.NotifyOfPropertyChange(() => this.Hours);
+                hours = value;
+                NotifyOfPropertyChange(() => Hours);
             }
         }
 
         public int Minutes
         {
-            get
-            {
-                return this.minutes;
-            }
+            get { return minutes; }
             set
             {
-                if (value == this.minutes)
+                if (value == minutes)
                 {
                     return;
                 }
-                this.minutes = value;
-                this.NotifyOfPropertyChange(() => this.Minutes);
+                minutes = value;
+                NotifyOfPropertyChange(() => Minutes);
             }
         }
 
         public int TotalGames
         {
-            get
-            {
-                return this.totalGames;
-            }
+            get { return totalGames; }
             set
             {
-                if (value == this.totalGames)
+                if (value == totalGames)
                 {
                     return;
                 }
-                this.totalGames = value;
-                this.NotifyOfPropertyChange(() => this.TotalGames);
+                totalGames = value;
+                NotifyOfPropertyChange(() => TotalGames);
             }
         }
 
         public int TotalHours
         {
-            get
-            {
-                return this.totalHours;
-            }
+            get { return totalHours; }
             set
             {
-                if (value == this.totalHours)
+                if (value == totalHours)
                 {
                     return;
                 }
-                this.totalHours = value;
-                this.NotifyOfPropertyChange(() => this.TotalHours);
+                totalHours = value;
+                NotifyOfPropertyChange(() => TotalHours);
             }
         }
 
         public int TotalMinutes
         {
-            get
-            {
-                return this.totalMinutes;
-            }
+            get { return totalMinutes; }
             set
             {
-                if (value == this.totalMinutes)
+                if (value == totalMinutes)
                 {
                     return;
                 }
-                this.totalMinutes = value;
-                this.NotifyOfPropertyChange(() => this.TotalMinutes);
+                totalMinutes = value;
+                NotifyOfPropertyChange(() => TotalMinutes);
             }
         }
 
@@ -171,23 +141,23 @@ namespace HearthCap.Features.Games.LatestGames
             using (var context = dbContext())
             {
                 var result = context.Games.Where(filter);
-                this.Games = result.Count();
-                this.Won = result.Count(x => x.Victory);
-                this.Lost = result.Count(x => !x.Victory);
+                Games = result.Count();
+                Won = result.Count(x => x.Victory);
+                Lost = result.Count(x => !x.Victory);
                 var totalMinutes = result
                     .Select(x => new { x.Started, x.Stopped })
                     .ToList()
                     .Sum(x => x.Stopped.Subtract(x.Started).Minutes);
-                this.Hours = totalMinutes / 60;
-                this.Minutes = totalMinutes % 60;
+                Hours = totalMinutes / 60;
+                Minutes = totalMinutes % 60;
 
-                this.TotalGames = context.Games.Count();
+                TotalGames = context.Games.Count();
                 var totaltotalminutes =
                     context.Database.SqlQuery<int?>("SELECT SUM(DATEDIFF(mi, [Started], [Stopped])) FROM GameResults").FirstOrDefault();
                 if (totaltotalminutes.HasValue)
                 {
-                    this.TotalHours = totaltotalminutes.Value / 60;
-                    this.TotalMinutes = totaltotalminutes.Value % 60;
+                    TotalHours = totaltotalminutes.Value / 60;
+                    TotalMinutes = totaltotalminutes.Value % 60;
                 }
             }
         }

@@ -1,9 +1,8 @@
-﻿namespace HearthCap.UI.Behaviors
-{
-    using System;
-    using System.Windows;
-    using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
+namespace HearthCap.UI.Behaviors
+{
     public class SelectingItemAttachedProperty
     {
         public static readonly DependencyProperty SelectingItemProperty = DependencyProperty.RegisterAttached(
@@ -22,32 +21,38 @@
             target.SetValue(SelectingItemProperty, value);
         }
 
-        static void OnSelectingItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void OnSelectingItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var grid = sender as DataGrid;
-            if (grid != null && grid.SelectedItem != null)
+            if (grid != null
+                && grid.SelectedItem != null)
             {
                 grid.Dispatcher.InvokeAsync(() =>
-                {
-                    if (grid.SelectedItem == null)
-                        return;
+                    {
+                        if (grid.SelectedItem == null)
+                        {
+                            return;
+                        }
 
-                    grid.UpdateLayout();
-                    grid.ScrollIntoView(grid.SelectedItem, null);
-                });                
+                        grid.UpdateLayout();
+                        grid.ScrollIntoView(grid.SelectedItem, null);
+                    });
             }
 
             var lv = sender as ListView;
-            if (lv != null && lv.SelectedItem != null)
+            if (lv != null
+                && lv.SelectedItem != null)
             {
                 lv.Dispatcher.InvokeAsync(() =>
-                {
-                    if (lv.SelectedItem == null)
-                        return;
+                    {
+                        if (lv.SelectedItem == null)
+                        {
+                            return;
+                        }
 
-                    lv.UpdateLayout();
-                    lv.ScrollIntoView(lv.SelectedItem);
-                });
+                        lv.UpdateLayout();
+                        lv.ScrollIntoView(lv.SelectedItem);
+                    });
             }
         }
     }

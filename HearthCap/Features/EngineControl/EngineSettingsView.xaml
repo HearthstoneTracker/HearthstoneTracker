@@ -57,10 +57,10 @@
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch">
                 <ComboBox Name="Speeds"
-                         ItemsSource="{Binding Speeds, Mode=OneWay}"
-                         SelectedItem="{Binding SelectedSpeed}"
-                         DisplayMemberPath="Name"
-                         Background="Transparent">
+                          ItemsSource="{Binding Speeds, Mode=OneWay}"
+                          SelectedItem="{Binding SelectedSpeed}"
+                          DisplayMemberPath="Name"
+                          Background="Transparent">
                     <!--<ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollContentPresenter}}}"

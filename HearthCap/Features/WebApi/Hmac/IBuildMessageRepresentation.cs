@@ -1,7 +1,7 @@
+using System.Net.Http;
+
 namespace HearthCap.Features.WebApi.Hmac
 {
-    using System.Net.Http;
-
     public interface IBuildMessageRepresentation
     {
         string BuildRequestRepresentation(HttpRequestMessage requestMessage);

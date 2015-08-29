@@ -20,14 +20,14 @@
                   VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Label FontSize="14">Files:</Label>
                 <ListView Name="Files"
@@ -36,21 +36,20 @@
                           SelectedItem="{Binding SelectedTemplate}"
                           SelectionMode="Single"
                           Grid.Row="1"
-                          Height="80">
-                </ListView>
+                          Height="80" />
                 <Grid Grid.Row="2"
                       Margin="0 4 0 0">
                     <Button Name="AddNew"
                             Width="100"
                             HorizontalAlignment="Left"
                             Content="Add new"
-                            Margin="4 0 0 0"></Button>
+                            Margin="4 0 0 0" />
                     <Button Name="Delete"
                             Width="100"
                             Content="Delete"
                             HorizontalAlignment="Right"
                             Visibility="{Binding SelectedTemplate, Converter={StaticResource nullToCollapsed}}"
-                            Margin="4 0 0 0"></Button>
+                            Margin="4 0 0 0" />
                 </Grid>
             </Grid>
             <StackPanel Grid.Row="1"
@@ -62,17 +61,17 @@
                                         Style="{StaticResource hccFormStyle2}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBox Name="Filename"
                                  Grid.Column="0"
                                  Text="{Binding SelectedTemplate.Filename}"
-                                 IsReadOnly="True"></TextBox>
+                                 IsReadOnly="True" />
                         <Button Name="ChooseFile"
                                 Content="Choose"
                                 Margin="4 0 0 0"
-                                Grid.Column="1"></Button>
+                                Grid.Column="1" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="template"
@@ -81,21 +80,21 @@
                                         Style="{StaticResource hccFormStyle2}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBox Name="TemplateText"
                                  Grid.Row="0"
                                  AcceptsReturn="True"
                                  Text="{Binding SelectedTemplate.Template}"
-                                 Height="60"></TextBox>
+                                 Height="60" />
                         <Grid Grid.Row="1"
                               Margin="0 4 0 0">
                             <Button Name="Save"
                                     Width="100"
                                     Content="Save"
                                     HorizontalAlignment="Right"
-                                    Margin="4 0 0 0"></Button>
+                                    Margin="4 0 0 0" />
                         </Grid>
                     </Grid>
                 </HeaderedContentControl>
@@ -105,8 +104,8 @@
                                         Style="{StaticResource hccFormStyle2}">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <DataGrid ItemsSource="{Binding Variables}"
                                   SelectionMode="Single"
@@ -120,7 +119,7 @@
                                                         Width="Auto">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Key}"></TextBlock>
+                                            <TextBlock Text="{Binding Key}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -128,7 +127,7 @@
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Value}"></TextBlock>
+                                            <TextBlock Text="{Binding Value}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -141,7 +140,7 @@
                                     Content="Insert"
                                     IsEnabled="{Binding SelectedVariable, Converter={StaticResource nullToBoolean}}"
                                     HorizontalAlignment="Right"
-                                    Margin="4 0 0 0"></Button>
+                                    Margin="4 0 0 0" />
                         </Grid>
                     </Grid>
                 </HeaderedContentControl>

@@ -1,13 +1,11 @@
-﻿namespace HearthCap.Features.EngineControl
+﻿using System;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Shell.CommandBar;
+
+namespace HearthCap.Features.EngineControl
 {
-    using System;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Shell.CommandBar;
-
     [Export(typeof(ICommandBarItem))]
     public class StartStopCommandBarViewModel : CommandBarItemViewModel,
         IHandle<EngineRegistrySettingsChanged>
@@ -54,10 +52,7 @@
 
         public bool IsStarted
         {
-            get
-            {
-                return _isStarted;
-            }
+            get { return _isStarted; }
             set
             {
                 if (value.Equals(_isStarted))
@@ -71,10 +66,7 @@
 
         public bool IsStarting
         {
-            get
-            {
-                return _isStarting;
-            }
+            get { return _isStarting; }
             set
             {
                 if (value.Equals(_isStarting))
@@ -88,10 +80,7 @@
 
         public bool IsStopping
         {
-            get
-            {
-                return _isStopping;
-            }
+            get { return _isStopping; }
             set
             {
                 if (value.Equals(_isStopping))
@@ -105,10 +94,7 @@
 
         public bool ShowControls
         {
-            get
-            {
-                return _showControls;
-            }
+            get { return _showControls; }
             set
             {
                 if (value.Equals(_showControls))
@@ -133,7 +119,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(EngineRegistrySettingsChanged message)

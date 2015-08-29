@@ -1,11 +1,10 @@
-﻿namespace HearthCap.Shell.Notifications
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Notifications
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
     [Export(typeof(NotificationsViewModel))]
     public class NotificationsViewModel : Conductor<NotificationViewModel>.Collection.AllActive,
         IHandle<SendNotification>
@@ -20,7 +19,7 @@
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -30,7 +29,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(SendNotification message)
@@ -46,11 +45,11 @@
                         if (message.HideAfter > 0)
                         {
                             Task.Run(async () =>
-                            {
-                                await Task.Delay(message.HideAfter);
-                                await Execute.OnUIThreadAsync(vm.CloseAnimated);
-                            });
-                        }                        
+                                {
+                                    await Task.Delay(message.HideAfter);
+                                    await Execute.OnUIThreadAsync(vm.CloseAnimated);
+                                });
+                        }
                     });
         }
     }

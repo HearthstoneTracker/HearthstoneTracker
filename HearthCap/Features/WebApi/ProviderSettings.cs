@@ -1,9 +1,8 @@
+using System;
+using HearthCap.Shell.UserPreferences;
+
 namespace HearthCap.Features.WebApi
 {
-    using System;
-
-    using HearthCap.Shell.UserPreferences;
-
     public class ProviderSettings : RegistrySettings
     {
         public ProviderSettings(string providerKey)
@@ -13,14 +12,8 @@ namespace HearthCap.Features.WebApi
 
         public bool Enabled
         {
-            get
-            {
-                return this.GetOrCreate("Enabled", false);
-            }
-            set
-            {
-                this.SetValue("Enabled", value);
-            }
+            get { return GetOrCreate("Enabled", false); }
+            set { SetValue("Enabled", value); }
         }
     }
 }

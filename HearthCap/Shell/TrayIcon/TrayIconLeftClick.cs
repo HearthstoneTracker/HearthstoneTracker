@@ -2,6 +2,5 @@
 {
     public class TrayIconLeftClick : CommandEvent
     {
-
     }
 }

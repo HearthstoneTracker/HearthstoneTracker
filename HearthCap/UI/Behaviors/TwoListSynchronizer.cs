@@ -1,15 +1,15 @@
-﻿namespace HearthCap.UI.Behaviors
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Specialized;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
+﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
+namespace HearthCap.UI.Behaviors
+{
     /// <summary>
-    /// A sync behaviour for a multiselector.
+    ///     A sync behaviour for a multiselector.
     /// </summary>
     public static class MultiSelectorBehaviours
     {
@@ -20,7 +20,7 @@
             "SynchronizationManager", typeof(SynchronizationManager), typeof(MultiSelectorBehaviours), new PropertyMetadata(null));
 
         /// <summary>
-        /// Gets the synchronized selected items.
+        ///     Gets the synchronized selected items.
         /// </summary>
         /// <param name="dependencyObject">The dependency object.</param>
         /// <returns>The list that is acting as the sync list.</returns>
@@ -30,7 +30,7 @@
         }
 
         /// <summary>
-        /// Sets the synchronized selected items.
+        ///     Sets the synchronized selected items.
         /// </summary>
         /// <param name="dependencyObject">The dependency object.</param>
         /// <param name="value">The value to be set as synchronized items.</param>
@@ -53,19 +53,20 @@
         {
             if (e.OldValue != null)
             {
-                SynchronizationManager synchronizer = GetSynchronizationManager(dependencyObject);
+                var synchronizer = GetSynchronizationManager(dependencyObject);
                 synchronizer.StopSynchronizing();
 
                 SetSynchronizationManager(dependencyObject, null);
             }
 
-            IList list = e.NewValue as IList;
-            Selector selector = dependencyObject as Selector;
+            var list = e.NewValue as IList;
+            var selector = dependencyObject as Selector;
 
             // check that this property is an IList, and that it is being set on a ListBox
-            if (list != null && selector != null)
+            if (list != null
+                && selector != null)
             {
-                SynchronizationManager synchronizer = GetSynchronizationManager(dependencyObject);
+                var synchronizer = GetSynchronizationManager(dependencyObject);
                 if (synchronizer == null)
                 {
                     synchronizer = new SynchronizationManager(selector);
@@ -77,7 +78,7 @@
         }
 
         /// <summary>
-        /// A synchronization manager.
+        ///     A synchronization manager.
         /// </summary>
         private class SynchronizationManager
         {
@@ -85,7 +86,7 @@
             private TwoListSynchronizer _synchronizer;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="SynchronizationManager"/> class.
+            ///     Initializes a new instance of the <see cref="SynchronizationManager" /> class.
             /// </summary>
             /// <param name="selector">The selector.</param>
             internal SynchronizationManager(Selector selector)
@@ -94,11 +95,11 @@
             }
 
             /// <summary>
-            /// Starts synchronizing the list.
+            ///     Starts synchronizing the list.
             /// </summary>
             public void StartSynchronizingList()
             {
-                IList list = GetSynchronizedSelectedItems(_multiSelector);
+                var list = GetSynchronizedSelectedItems(_multiSelector);
 
                 if (list != null)
                 {
@@ -108,7 +109,7 @@
             }
 
             /// <summary>
-            /// Stops synchronizing the list.
+            ///     Stops synchronizing the list.
             /// </summary>
             public void StopSynchronizing()
             {
@@ -121,33 +122,29 @@
                 {
                     return (selector as MultiSelector).SelectedItems;
                 }
-                else if (selector is ListBox)
+                if (selector is ListBox)
                 {
                     return (selector as ListBox).SelectedItems;
                 }
-                else
-                {
-                    throw new InvalidOperationException("Target object has no SelectedItems property to bind.");
-                }
+                throw new InvalidOperationException("Target object has no SelectedItems property to bind.");
             }
-
         }
     }
 
     /// <summary>
-    /// Converts items in the Master list to Items in the target list, and back again.
+    ///     Converts items in the Master list to Items in the target list, and back again.
     /// </summary>
     public interface IListItemConverter
     {
         /// <summary>
-        /// Converts the specified master list item.
+        ///     Converts the specified master list item.
         /// </summary>
         /// <param name="masterListItem">The master list item.</param>
         /// <returns>The result of the conversion.</returns>
         object Convert(object masterListItem);
 
         /// <summary>
-        /// Converts the specified target list item.
+        ///     Converts the specified target list item.
         /// </summary>
         /// <param name="targetListItem">The target list item.</param>
         /// <returns>The result of the conversion.</returns>
@@ -155,7 +152,7 @@
     }
 
     /// <summary>
-    /// Keeps two lists synchronized. 
+    ///     Keeps two lists synchronized.
     /// </summary>
     public class TwoListSynchronizer : IWeakEventListener
     {
@@ -164,9 +161,8 @@
         private readonly IListItemConverter _masterTargetConverter;
         private readonly IList _targetList;
 
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwoListSynchronizer"/> class.
+        ///     Initializes a new instance of the <see cref="TwoListSynchronizer" /> class.
         /// </summary>
         /// <param name="masterList">The master list.</param>
         /// <param name="targetList">The target list.</param>
@@ -179,7 +175,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwoListSynchronizer"/> class.
+        ///     Initializes a new instance of the <see cref="TwoListSynchronizer" /> class.
         /// </summary>
         /// <param name="masterList">The master list.</param>
         /// <param name="targetList">The target list.</param>
@@ -191,7 +187,7 @@
         private delegate void ChangeListAction(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter);
 
         /// <summary>
-        /// Starts synchronizing the lists.
+        ///     Starts synchronizing the lists.
         /// </summary>
         public void StartSynchronizing()
         {
@@ -211,7 +207,7 @@
         }
 
         /// <summary>
-        /// Stop synchronizing the lists.
+        ///     Stop synchronizing the lists.
         /// </summary>
         public void StopSynchronizing()
         {
@@ -220,13 +216,16 @@
         }
 
         /// <summary>
-        /// Receives events from the centralized event manager.
+        ///     Receives events from the centralized event manager.
         /// </summary>
-        /// <param name="managerType">The type of the <see cref="T:System.Windows.WeakEventManager"/> calling this method.</param>
+        /// <param name="managerType">The type of the <see cref="T:System.Windows.WeakEventManager" /> calling this method.</param>
         /// <param name="sender">Object that originated the event.</param>
         /// <param name="e">Event data.</param>
         /// <returns>
-        /// true if the listener handled the event. It is considered an error by the <see cref="T:System.Windows.WeakEventManager"/> handling in WPF to register a listener for an event that the listener does not handle. Regardless, the method should return false if it receives an event that it does not recognize or handle.
+        ///     true if the listener handled the event. It is considered an error by the
+        ///     <see cref="T:System.Windows.WeakEventManager" /> handling in WPF to register a listener for an event that the
+        ///     listener does not handle. Regardless, the method should return false if it receives an event that it does not
+        ///     recognize or handle.
         /// </returns>
         public bool ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
@@ -236,7 +235,7 @@
         }
 
         /// <summary>
-        /// Listens for change events on a list.
+        ///     Listens for change events on a list.
         /// </summary>
         /// <param name="list">The list to listen to.</param>
         protected void ListenForChangeEvents(IList list)
@@ -248,7 +247,7 @@
         }
 
         /// <summary>
-        /// Stops listening for change events.
+        ///     Stops listening for change events.
         /// </summary>
         /// <param name="list">The list to stop listening to.</param>
         protected void StopListeningForChangeEvents(IList list)
@@ -261,11 +260,11 @@
 
         private void AddItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
-            int itemCount = e.NewItems.Count;
+            var itemCount = e.NewItems.Count;
 
-            for (int i = 0; i < itemCount; i++)
+            for (var i = 0; i < itemCount; i++)
             {
-                int insertionPoint = e.NewStartingIndex + i;
+                var insertionPoint = e.NewStartingIndex + i;
 
                 if (insertionPoint > list.Count)
                 {
@@ -290,7 +289,7 @@
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            IList sourceList = sender as IList;
+            var sourceList = sender as IList;
 
             switch (e.Action)
             {
@@ -341,11 +340,11 @@
 
         private void RemoveItems(IList list, NotifyCollectionChangedEventArgs e, Converter<object, object> converter)
         {
-            int itemCount = e.OldItems.Count;
+            var itemCount = e.OldItems.Count;
 
             // for the number of items being removed, remove the item from the Old Starting Index
             // (this will cause following items to be shifted down to fill the hole).
-            for (int i = 0; i < itemCount; i++)
+            for (var i = 0; i < itemCount; i++)
             {
                 list.RemoveAt(e.OldStartingIndex);
             }
@@ -363,7 +362,7 @@
 
             targetList.Clear();
 
-            foreach (object o in sourceList)
+            foreach (var o in sourceList)
             {
                 targetList.Add(converter(o));
             }
@@ -377,7 +376,7 @@
         }
 
         /// <summary>
-        /// Makes sure that all synchronized lists have the same values as the source list.
+        ///     Makes sure that all synchronized lists have the same values as the source list.
         /// </summary>
         /// <param name="sourceList">The source list.</param>
         private void UpdateListsFromSource(IList sourceList)
@@ -392,16 +391,13 @@
             }
         }
 
-
-
-
         /// <summary>
-        /// An implementation that does nothing in the conversions.
+        ///     An implementation that does nothing in the conversions.
         /// </summary>
         internal class DoNothingListItemConverter : IListItemConverter
         {
             /// <summary>
-            /// Converts the specified master list item.
+            ///     Converts the specified master list item.
             /// </summary>
             /// <param name="masterListItem">The master list item.</param>
             /// <returns>The result of the conversion.</returns>
@@ -411,7 +407,7 @@
             }
 
             /// <summary>
-            /// Converts the specified target list item.
+            ///     Converts the specified target list item.
             /// </summary>
             /// <param name="targetListItem">The target list item.</param>
             /// <returns>The result of the conversion.</returns>

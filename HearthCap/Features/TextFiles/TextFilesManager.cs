@@ -1,24 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.Data;
+using Omu.ValueInjecter;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Features.TextFiles
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-
-    using NLog;
-
-    using Omu.ValueInjecter;
-
     [Export(typeof(TextFilesManager))]
     public class TextFilesManager
     {
-        private Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly IEventAggregator events;
 
@@ -40,52 +35,46 @@ namespace HearthCap.Features.TextFiles
             this.repository = repository;
             this.textFilesEventsListeners = textFilesEventsListeners;
 
-            this.LoadTextTemplates();
+            LoadTextTemplates();
 
             foreach (var listener in textFilesEventsListeners)
             {
-                listener.Templates = this.templates;
+                listener.Templates = templates;
                 listener.Manager = this;
             }
         }
 
         public IEnumerable<TextFilesEventsListener> Listeners
         {
-            get
-            {
-                return this.textFilesEventsListeners;
-            }
+            get { return textFilesEventsListeners; }
         }
 
         public BindableCollection<TextFileModel> Templates
         {
-            get
-            {
-                return this.templates;
-            }
+            get { return templates; }
         }
 
         private void LoadTextTemplates()
         {
-            var tpls = this.repository.ToList((q) => q.OrderBy(x => x.Filename));
-            this.templates.IsNotifying = false;
+            var tpls = repository.ToList(q => q.OrderBy(x => x.Filename));
+            templates.IsNotifying = false;
             foreach (var tpl in tpls)
             {
                 var model = new TextFileModel();
                 model.InjectFrom(tpl);
-                this.templates.Add(model);
+                templates.Add(model);
             }
-            this.templates.IsNotifying = true;
-            this.templates.Refresh();
+            templates.IsNotifying = true;
+            templates.Refresh();
         }
 
         public void Refresh()
         {
-            foreach (var textFileModel in this.templates)
+            foreach (var textFileModel in templates)
             {
-                string content = textFileModel.Template;
+                var content = textFileModel.Template;
 
-                foreach (var listener in this.Listeners)
+                foreach (var listener in Listeners)
                 {
                     if (listener.ShouldHandle(content))
                     {
@@ -94,7 +83,7 @@ namespace HearthCap.Features.TextFiles
                 }
 
                 // TODO: this will fail if we have multiple same filenames, but that 'should' not happen
-                this.WriteFile(textFileModel, content);
+                WriteFile(textFileModel, content);
             }
         }
 
@@ -107,7 +96,7 @@ namespace HearthCap.Features.TextFiles
                     using (var file = File.CreateText(template.Filename))
                     {
                         file.Write(content);
-                    }                    
+                    }
                 }
             }
             catch (Exception ex)

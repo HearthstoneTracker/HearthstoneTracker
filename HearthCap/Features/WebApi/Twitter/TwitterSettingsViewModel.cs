@@ -1,10 +1,9 @@
+using System;
+using System.ComponentModel;
+using Caliburn.Micro.Recipes.Filters;
+
 namespace HearthCap.Features.WebApi.Twitter
 {
-    using System;
-    using System.ComponentModel;
-
-    using Caliburn.Micro.Recipes.Filters;
-
     public class TwitterSettingsViewModel : WebApiProviderSettingsViewModel
     {
         private readonly WebApiProviderDescriptor providerDescriptor;
@@ -20,7 +19,7 @@ namespace HearthCap.Features.WebApi.Twitter
                 throw new ArgumentNullException("providerDescriptor");
             }
             this.providerDescriptor = providerDescriptor;
-            this.PropertyChanged += this.OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -29,44 +28,41 @@ namespace HearthCap.Features.WebApi.Twitter
             {
                 case "IsEnabled":
                 case "PinCode":
-                    this.ValuesChanged = true;
+                    ValuesChanged = true;
                     break;
             }
         }
 
         public string PinCode
         {
-            get
-            {
-                return this.pinCode;
-            }
+            get { return pinCode; }
             set
             {
-                if (value == this.pinCode)
+                if (value == pinCode)
                 {
                     return;
                 }
-                this.pinCode = value;
-                this.NotifyOfPropertyChange(() => this.PinCode);
+                pinCode = value;
+                NotifyOfPropertyChange(() => PinCode);
             }
         }
 
         public bool ValuesChanged
         {
-            get
-            {
-                return this.valuesChanged;
-            }
+            get { return valuesChanged; }
             set
             {
-                if (value.Equals(this.valuesChanged)) return;
-                this.valuesChanged = value;
-                this.NotifyOfPropertyChange(() => this.ValuesChanged);
+                if (value.Equals(valuesChanged))
+                {
+                    return;
+                }
+                valuesChanged = value;
+                NotifyOfPropertyChange(() => ValuesChanged);
             }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -75,36 +71,35 @@ namespace HearthCap.Features.WebApi.Twitter
         [Dependencies("PinCode", "IsEnabled")]
         public void Save()
         {
-            using (var reg = new ProviderSettings(this.providerDescriptor.ProviderKey))
+            using (var reg = new ProviderSettings(providerDescriptor.ProviderKey))
             {
-                reg.Enabled = this.IsEnabled;
-                reg.SetValue("PinCode", this.PinCode);
+                reg.Enabled = IsEnabled;
+                reg.SetValue("PinCode", PinCode);
             }
-            this.providerDescriptor.IsEnabled = this.IsEnabled;
-            this.providerDescriptor.Data["PinCode"] = this.PinCode;
-            ((IWebApiProviderDescriptor)this.providerDescriptor).Initialize();
+            providerDescriptor.IsEnabled = IsEnabled;
+            providerDescriptor.Data["PinCode"] = PinCode;
+            ((IWebApiProviderDescriptor)providerDescriptor).Initialize();
         }
 
         public bool CanSave()
         {
-            bool valid = true;
-            valid = valid && !String.IsNullOrWhiteSpace(this.PinCode);
-            return valid && this.ValuesChanged;
+            var valid = true;
+            valid = valid && !String.IsNullOrWhiteSpace(PinCode);
+            return valid && ValuesChanged;
         }
 
         protected override void LoadSettings()
         {
-            this.IsNotifying = false;
-            using (var reg = new ProviderSettings(this.providerDescriptor.ProviderKey))
+            IsNotifying = false;
+            using (var reg = new ProviderSettings(providerDescriptor.ProviderKey))
             {
-                this.IsEnabled = reg.Enabled;
-                this.PinCode = reg.GetOrCreate("PinCode", "");
+                IsEnabled = reg.Enabled;
+                PinCode = reg.GetOrCreate("PinCode", "");
             }
-            this.providerDescriptor.IsEnabled = this.IsEnabled;
-            this.providerDescriptor.Data["PinCode"] = this.PinCode;
-            this.IsNotifying = true;
-            this.Refresh();
+            providerDescriptor.IsEnabled = IsEnabled;
+            providerDescriptor.Data["PinCode"] = PinCode;
+            IsNotifying = true;
+            Refresh();
         }
-
     }
 }

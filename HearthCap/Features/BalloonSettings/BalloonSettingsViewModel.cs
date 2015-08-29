@@ -1,21 +1,18 @@
-﻿namespace HearthCap.Features.BalloonSettings
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Features.Decks;
+using HearthCap.Features.Settings;
+using HearthCap.Shell.TrayIcon;
+using HearthCap.Shell.UserPreferences;
+using HearthCap.Util;
+
+namespace HearthCap.Features.BalloonSettings
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Text;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.Decks;
-    using HearthCap.Features.Settings;
-    using HearthCap.Shell.TrayIcon;
-    using HearthCap.Shell.UserPreferences;
-    using HearthCap.Util;
-
     [Export(typeof(ISettingsScreen))]
     public class BalloonSettingsViewModel : SettingsScreen,
         IHandle<GameModeChanged>,
@@ -30,9 +27,9 @@
 
         private bool minimizeToTray;
 
-        private IEventAggregator events;
+        private readonly IEventAggregator events;
 
-        private IDeckManager deckManager;
+        private readonly IDeckManager deckManager;
 
         private bool sendingNotification;
 
@@ -52,69 +49,63 @@
             this.userPreferences = userPreferences;
             this.balloonSettings = balloonSettings;
             this.deckManager = deckManager;
-            this.DisplayName = "Tray icon settings:";
-            this.Order = 1;
+            DisplayName = "Tray icon settings:";
+            Order = 1;
             events.Subscribe(this);
         }
 
         public UserPreferences UserPreferences
         {
-            get
-            {
-                return this.userPreferences;
-            }
+            get { return userPreferences; }
         }
 
         private void UpdateSettings()
         {
-            if (PauseNotify.IsPaused(this)) return;
-            userPreferences.MinimizeToTray = this.MinimizeToTray;
+            if (PauseNotify.IsPaused(this))
+            {
+                return;
+            }
+            userPreferences.MinimizeToTray = MinimizeToTray;
         }
 
         private void LoadSettings()
         {
             using (PauseNotify.For(this))
             {
-                this.MinimizeToTray = userPreferences.MinimizeToTray;
+                MinimizeToTray = userPreferences.MinimizeToTray;
             }
         }
 
         public bool MinimizeToTray
         {
-            get
-            {
-                return this.minimizeToTray;
-            }
+            get { return minimizeToTray; }
             set
             {
-                if (value.Equals(this.minimizeToTray))
+                if (value.Equals(minimizeToTray))
                 {
                     return;
                 }
-                this.minimizeToTray = value;
-                this.NotifyOfPropertyChange(() => this.MinimizeToTray);
-                this.UpdateSettings();
+                minimizeToTray = value;
+                NotifyOfPropertyChange(() => MinimizeToTray);
+                UpdateSettings();
             }
         }
 
         public BalloonSettings BalloonSettings
         {
-            get
-            {
-                return this.balloonSettings;
-            }
+            get { return balloonSettings; }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
-            this.LoadSettings();
+            LoadSettings();
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameModeChanged message)
@@ -122,7 +113,7 @@
             lastGameMode = message.GameMode;
             if (!sendingNotification)
             {
-                this.sendingNotification = true;
+                sendingNotification = true;
                 Task.Delay(250).ContinueWith(t => ShowModeChangeBalloon());
             }
         }
@@ -160,32 +151,35 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(DeckDetected message)
         {
             var deck = deckManager.GetOrCreateDeckBySlot(BindableServerCollection.Instance.DefaultName, message.Key);
-            this.lastDeckName = deck != null ? deck.Name : message.Key;
+            lastDeckName = deck != null ? deck.Name : message.Key;
             if (!sendingNotification)
             {
-                this.sendingNotification = true;
+                sendingNotification = true;
                 Task.Delay(250).ContinueWith(t => ShowModeChangeBalloon());
             }
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(NewRound message)
         {
-            if (message.Current <= 1) return;
+            if (message.Current <= 1)
+            {
+                return;
+            }
 
-            events.PublishOnBackgroundThread(new TrayNotification("New round",String.Format("Round #{0}, {1}", message.Current, message.MyTurn ? "your turn" : "enemy turn"), 3000)
-                                                 {
-                                                     BalloonType = BalloonTypes.GameTurns                                                     
-                                                 });
+            events.PublishOnBackgroundThread(new TrayNotification("New round", String.Format("Round #{0}, {1}", message.Current, message.MyTurn ? "your turn" : "enemy turn"), 3000)
+                {
+                    BalloonType = BalloonTypes.GameTurns
+                });
         }
     }
 }

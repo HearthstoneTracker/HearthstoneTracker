@@ -1,43 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using Caliburn.Micro;
+using HearthCap.Composition;
+using HearthCap.Data;
+using HearthCap.Features.AutoUpdate;
+using HearthCap.Features.Core;
+using HearthCap.Features.Servers;
+using HearthCap.Features.Status;
+using HearthCap.Features.Support;
+using HearthCap.Logging;
+using HearthCap.Shell.CommandBar;
+using HearthCap.Shell.Commands;
+using HearthCap.Shell.Dialogs;
+using HearthCap.Shell.Events;
+using HearthCap.Shell.Flyouts;
+using HearthCap.Shell.Notifications;
+using HearthCap.Shell.Settings;
+using HearthCap.Shell.Tabs;
+using HearthCap.Shell.TrayIcon;
+using HearthCap.Shell.WindowCommands;
+using HearthCap.Util;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Shell
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Diagnostics;
-    using System.Diagnostics.Contracts;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Composition;
-    using HearthCap.Data;
-    using HearthCap.Features.AutoUpdate;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.Servers;
-    using HearthCap.Features.Status;
-    using HearthCap.Features.Support;
-    using HearthCap.Logging;
-    using HearthCap.Shell.CommandBar;
-    using HearthCap.Shell.Commands;
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.Events;
-    using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.Notifications;
-    using HearthCap.Shell.Settings;
-    using HearthCap.Shell.Tabs;
-    using HearthCap.Shell.TrayIcon;
-    using HearthCap.Shell.WindowCommands;
-    using HearthCap.Util;
-
-    using Microsoft.WindowsAPICodePack.Dialogs;
-
-    using NLog;
-
-    using LogManager = NLog.LogManager;
-
     [Export(typeof(IShell))]
     public class ShellViewModel :
         Conductor<ITab>.Collection.OneActive,
@@ -46,7 +42,7 @@ namespace HearthCap.Shell
         IHandle<VisitWebsiteCommand>,
         IHandle<RestoreWindowCommand>
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private readonly IDialogManager dialogManager;
 
@@ -66,7 +62,7 @@ namespace HearthCap.Shell
 
         private readonly BindableCollection<IFlyout> flyouts;
 
-        private bool viewReady = false;
+        private bool viewReady;
 
         private UpdateViewModel updater;
 
@@ -74,7 +70,7 @@ namespace HearthCap.Shell
 
         private WindowState windowState;
 
-        private TrayIconViewModel trayIcon;
+        private readonly TrayIconViewModel trayIcon;
 
         private readonly SettingsManager settingsManager;
 
@@ -92,10 +88,10 @@ namespace HearthCap.Shell
             IDialogManager dialogManager,
             IEventAggregator events,
             Func<HearthStatsDbContext> dbContext,
-            [ImportMany]IEnumerable<IFlyout> flyouts,
-            [ImportMany]IEnumerable<ITab> tabs,
-            [ImportMany]IEnumerable<IWindowCommand> windowCommands,
-            [ImportMany]IEnumerable<ICommandBarItem> commandBarItems,
+            [ImportMany] IEnumerable<IFlyout> flyouts,
+            [ImportMany] IEnumerable<ITab> tabs,
+            [ImportMany] IEnumerable<IWindowCommand> windowCommands,
+            [ImportMany] IEnumerable<ICommandBarItem> commandBarItems,
             UpdateViewModel updateViewModel,
             UserPreferences.UserPreferences userPreferences,
             TrayIconViewModel trayIcon,
@@ -116,7 +112,7 @@ namespace HearthCap.Shell
             this.windowCommands = new BindableCollection<IWindowCommand>(windowCommands.OrderByDescending(x => x.Order));
             this.flyouts = new BindableCollection<IFlyout>(flyouts);
 
-            this.DisplayName = "HearthstoneTracker.com";
+            DisplayName = "HearthstoneTracker.com";
             this.events.Subscribe(this);
             this.userPreferences.PropertyChanged += (sender, args) =>
                 {
@@ -125,8 +121,8 @@ namespace HearthCap.Shell
                         WindowState = userPreferences.WindowState;
                     }
                 };
-            this.WindowState = UserPreferences.WindowState;
-            this.PropertyChanged += ShellViewModel_PropertyChanged;
+            WindowState = UserPreferences.WindowState;
+            PropertyChanged += ShellViewModel_PropertyChanged;
         }
 
         public void ChangeServer(ServerItemModel server)
@@ -146,59 +142,41 @@ namespace HearthCap.Shell
 
         public BindableCollection<ServerItemModel> Servers
         {
-            get
-            {
-                return servers;
-            }
+            get { return servers; }
         }
 
         public UpdateViewModel Updater
         {
-            get
-            {
-                return this.updater;
-            }
+            get { return updater; }
             set
             {
-                if (Equals(value, this.updater))
+                if (Equals(value, updater))
                 {
                     return;
                 }
-                this.updater = value;
-                this.NotifyOfPropertyChange(() => this.Updater);
+                updater = value;
+                NotifyOfPropertyChange(() => Updater);
             }
         }
 
         public IDialogManager Dialogs
         {
-            get
-            {
-                return dialogManager;
-            }
+            get { return dialogManager; }
         }
 
         public IObservableCollection<IFlyout> Flyouts
         {
-            get
-            {
-                return this.flyouts;
-            }
+            get { return flyouts; }
         }
 
         public IObservableCollection<IWindowCommand> WindowCommands
         {
-            get
-            {
-                return this.windowCommands;
-            }
+            get { return windowCommands; }
         }
 
         public BindableCollection<ICommandBarItem> CommandBarItems
         {
-            get
-            {
-                return this.commandBarItems;
-            }
+            get { return commandBarItems; }
         }
 
         public void ExitToDesktop()
@@ -208,18 +186,19 @@ namespace HearthCap.Shell
 
         public void Close()
         {
-            this.TryClose();
+            TryClose();
         }
 
         #region Flyouts
+
         public void ToggleFlyout(string name)
         {
-            this.ApplyToggleFlyout(name);
+            ApplyToggleFlyout(name);
         }
 
         public void ToggleFlyout(string name, bool isModal)
         {
-            this.ApplyToggleFlyout(name, null, isModal);
+            ApplyToggleFlyout(name, null, isModal);
         }
 
         public void SupportRequest()
@@ -230,7 +209,7 @@ namespace HearthCap.Shell
         protected void ApplyToggleFlyout(string name, bool? isModal = null, bool? show = null)
         {
             Contract.Requires(name != null, "name cannot be null");
-            foreach (var f in this.flyouts.Where(x => name.Equals(x.Name)))
+            foreach (var f in flyouts.Where(x => name.Equals(x.Name)))
             {
                 if (isModal.HasValue)
                 {
@@ -259,18 +238,18 @@ namespace HearthCap.Shell
                     target = VisitWebsiteCommand.DefaultWebsite;
                 }
 
-                System.Diagnostics.Process.Start(target);
+                Process.Start(target);
             }
-            catch (System.ComponentModel.Win32Exception noBrowser)
+            catch (Win32Exception noBrowser)
             {
                 if (noBrowser.ErrorCode == -2147467259)
                 {
-                    this.dialogManager.ShowMessageBox(noBrowser.Message, "No browser detected");
+                    dialogManager.ShowMessageBox(noBrowser.Message, "No browser detected");
                 }
             }
-            catch (System.Exception other)
+            catch (Exception other)
             {
-                this.dialogManager.ShowMessageBox(other.Message, "Unknown error");
+                dialogManager.ShowMessageBox(other.Message, "Unknown error");
             }
         }
 
@@ -284,10 +263,7 @@ namespace HearthCap.Shell
         {
             Updater = updateViewModel;
             ((IActivate)Updater).Activate();
-            updateViewModel.Deactivated += (sender, args) =>
-            {
-                Updater = null;
-            };
+            updateViewModel.Deactivated += (sender, args) => { Updater = null; };
         }
 
         public void VisitWebsite()
@@ -306,13 +282,13 @@ namespace HearthCap.Shell
         {
             var current = (string)AppDomain.CurrentDomain.GetData("DataDirectory");
 
-            var dialog = new CommonOpenFileDialog()
-                             {
-                                 InitialDirectory = current,
-                                 DefaultDirectory = current,
-                                 IsFolderPicker = true,
-                                 EnsurePathExists = true
-                             };
+            var dialog = new CommonOpenFileDialog
+                {
+                    InitialDirectory = current,
+                    DefaultDirectory = current,
+                    IsFolderPicker = true,
+                    EnsurePathExists = true
+                };
             var result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
             {
@@ -338,7 +314,7 @@ namespace HearthCap.Shell
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location, "-restarting");
+                Process.Start(Assembly.GetEntryAssembly().Location, "-restarting");
                 Application.Current.Shutdown();
             }
         }
@@ -347,38 +323,38 @@ namespace HearthCap.Shell
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    var window = this.GetView() as Window;
-                    if (window != null)
                     {
-                        window.Show();
-                        if (window.WindowState == WindowState.Minimized)
+                        var window = GetView() as Window;
+                        if (window != null)
                         {
-                            window.WindowState = WindowState.Normal;
+                            window.Show();
+                            if (window.WindowState == WindowState.Minimized)
+                            {
+                                window.WindowState = WindowState.Normal;
+                            }
+                            window.Activate();
+                            window.Topmost = true; // important
+                            window.Topmost = false; // important
+                            window.Focus(); // important
                         }
-                        window.Activate();
-                        window.Topmost = true;  // important
-                        window.Topmost = false; // important
-                        window.Focus();         // important
-                    }
-                });
+                    });
         }
 
         public void Hide()
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    var window = this.GetView() as Window;
-                    if (window != null)
                     {
-                        window.Hide();
-                    }
-                });
+                        var window = GetView() as Window;
+                        if (window != null)
+                        {
+                            window.Hide();
+                        }
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(VisitWebsiteCommand message)
@@ -388,18 +364,18 @@ namespace HearthCap.Shell
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ToggleFlyoutCommand message)
         {
-            this.ApplyToggleFlyout(message.Name, message.IsModal, message.Show);
+            ApplyToggleFlyout(message.Name, message.IsModal, message.Show);
         }
 
         /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
+        ///     Called the first time the page's LayoutUpdated event fires after it is navigated to.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewReady(object view)
         {
             if (servers.Default == null)
@@ -419,7 +395,10 @@ namespace HearthCap.Shell
 
         private void SetMissingServer(ServerItemModel selectedServer)
         {
-            if (selectedServer == null) return;
+            if (selectedServer == null)
+            {
+                return;
+            }
             var serverName = selectedServer.Name;
 
             using (var context = dbContext())
@@ -432,9 +411,9 @@ namespace HearthCap.Shell
         }
 
         /// <summary>
-        /// Called when an attached view's Loaded event fires.
+        ///     Called when an attached view's Loaded event fires.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewLoaded(object view)
         {
             if (!viewReady)
@@ -442,10 +421,10 @@ namespace HearthCap.Shell
                 viewReady = true;
                 Task.Run(
                     async () =>
-                    {
-                        await updateViewModel.CheckForUpdates();
-                        UpdateAvailable = updateViewModel.UpdateAvailable;
-                    });
+                        {
+                            await updateViewModel.CheckForUpdates();
+                            UpdateAvailable = updateViewModel.UpdateAvailable;
+                        });
 
                 ((IActivate)Notifications).Activate();
                 ((IActivate)Status).Activate();
@@ -454,97 +433,94 @@ namespace HearthCap.Shell
                 var ordered = tabs.OrderBy(x => x.Order);
                 foreach (var tab in ordered)
                 {
-                    this.Items.Add(tab);
+                    Items.Add(tab);
                 }
 
                 // tabs
-                if (this.Items.Count > 0)
+                if (Items.Count > 0)
                 {
-                    this.ActivateItem(this.Items.First());
+                    ActivateItem(Items.First());
                 }
 
                 // flyouts
-                foreach (var flyout in this.Flyouts)
+                foreach (var flyout in Flyouts)
                 {
                     flyout.PropertyChanged += (sender, args) =>
-                    {
-                        if (args.PropertyName == "IsOpen")
                         {
-                            var f = (IFlyout)sender;
-                            if (f.IsOpen)
+                            if (args.PropertyName == "IsOpen")
                             {
-                                f.Activate();
+                                var f = (IFlyout)sender;
+                                if (f.IsOpen)
+                                {
+                                    f.Activate();
+                                }
+                                else
+                                {
+                                    f.Deactivate(false);
+                                }
                             }
-                            else
-                            {
-                                f.Deactivate(false);
-                            }
-                        }
-                    };
+                        };
                     //var activate = flyout as IActivate;
                     //if (activate != null)
                     //{
                     //    activate.Activate();
                     //}
                 }
-                this.events.PublishOnBackgroundThread(new ShellReady());
+                events.PublishOnBackgroundThread(new ShellReady());
             }
         }
 
         public bool UpdateAvailable
         {
-            get
-            {
-                return this.updateAvailable;
-            }
+            get { return updateAvailable; }
             set
             {
-                if (value.Equals(this.updateAvailable))
+                if (value.Equals(updateAvailable))
                 {
                     return;
                 }
-                this.updateAvailable = value;
-                this.NotifyOfPropertyChange(() => this.UpdateAvailable);
+                updateAvailable = value;
+                NotifyOfPropertyChange(() => UpdateAvailable);
             }
         }
 
         public WindowState WindowState
         {
-            get
-            {
-                return this.windowState;
-            }
+            get { return windowState; }
             set
             {
-                if (value == this.windowState)
+                if (value == windowState)
                 {
                     return;
                 }
-                this.windowState = value;
+                windowState = value;
                 UserPreferences.WindowState = value;
-                this.NotifyOfPropertyChange(() => this.WindowState);
+                NotifyOfPropertyChange(() => WindowState);
                 events.PublishOnBackgroundThread(new WindowStateChanged(value));
             }
         }
 
         public UserPreferences.UserPreferences UserPreferences
         {
-            get
-            {
-                return this.userPreferences;
-            }
+            get { return userPreferences; }
         }
 
-        void ShellViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ShellViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (PauseNotify.IsPaused(this)) return;
+            if (PauseNotify.IsPaused(this))
+            {
+                return;
+            }
 
             switch (e.PropertyName)
             {
                 case "WindowState":
                     if (WindowState == WindowState.Minimized)
                     {
-                        if (!userPreferences.MinimizeToTray) return;
+                        if (!userPreferences.MinimizeToTray)
+                        {
+                            return;
+                        }
                         wasVisible = trayIcon.IsVisible;
                         Hide();
                         trayIcon.IsVisible = true;
@@ -555,7 +531,7 @@ namespace HearthCap.Shell
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(RestoreWindowCommand message)

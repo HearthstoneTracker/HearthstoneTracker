@@ -1,23 +1,18 @@
+using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Data;
+using HearthCap.Shell.Flyouts;
+using MahApps.Metro.Controls;
+using NLog;
+using NLog.Config;
+using NLog.Targets.Wrappers;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Features.Diagnostics.LogFlyout
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Core.GameCapture.Logging;
-    using HearthCap.Data;
-    using HearthCap.Shell.Flyouts;
-
-    using MahApps.Metro.Controls;
-
-    using NLog.Config;
-    using NLog.Targets.Wrappers;
-
-    using LogLevel = HearthCap.Core.GameCapture.Logging.LogLevel;
-
     [Export(typeof(IFlyout))]
     public class LogFlyoutViewModel : FlyoutViewModel
     {
@@ -25,7 +20,7 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
 
         private readonly ICaptureEngine captureEngine;
 
-        private BindableCollection<LogMessageModel> logMessages = new BindableCollection<LogMessageModel>();
+        private readonly BindableCollection<LogMessageModel> logMessages = new BindableCollection<LogMessageModel>();
 
         private bool debugEnabled;
 
@@ -41,7 +36,7 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
 
         private CaptureTarget captureTarget;
 
-        private NLog.LogLevel currentLogLevel;
+        private LogLevel currentLogLevel;
 
         private LoggingRule loggingRule;
 
@@ -52,34 +47,34 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
         {
             this.dbContext = dbContext;
             this.captureEngine = captureEngine;
-            this.Name = "log";
-            this.Header = "Log";
+            Name = "log";
+            Header = "Log";
             SetPosition(Position.Right);
             // CaptureEngineLogger.Hook(LogAction);
-            this.warnEnabled = true;
-            this.errorEnabled = true;
-            this.infoEnabled = true;
+            warnEnabled = true;
+            errorEnabled = true;
+            infoEnabled = true;
             ConfigureCaptureTarget();
             RefreshLogSettings();
         }
 
         private void ConfigureCaptureTarget()
         {
-            this.captureTarget = new CaptureTarget()
-                             {
-                                 Layout = "${date}|${level:uppercase=true}|${logger}|${message}${onexception:inner=${newline}${exception:format=tostring}}"
-                             };
+            captureTarget = new CaptureTarget
+                {
+                    Layout = "${date}|${level:uppercase=true}|${logger}|${message}${onexception:inner=${newline}${exception:format=tostring}}"
+                };
             captureTarget.LogReceived += target_LogReceived;
             var asyncWrapper = new AsyncTargetWrapper { Name = "CaptureTargetWrapper", WrappedTarget = captureTarget };
 
-            NLog.LogManager.Configuration.AddTarget(asyncWrapper.Name, asyncWrapper);
+            LogManager.Configuration.AddTarget(asyncWrapper.Name, asyncWrapper);
             currentLogLevel = NLog.LogLevel.Info;
             loggingRule = new LoggingRule("*", currentLogLevel, asyncWrapper);
-            NLog.LogManager.Configuration.LoggingRules.Insert(0, loggingRule);
-            NLog.LogManager.ReconfigExistingLoggers();
-            this.PropertyChanged += OnPropertyChanged;
+            LogManager.Configuration.LoggingRules.Insert(0, loggingRule);
+            LogManager.ReconfigExistingLoggers();
+            PropertyChanged += OnPropertyChanged;
 #if DEBUG
-            this.DebugEnabled = true;
+            DebugEnabled = true;
 #endif
         }
 
@@ -134,12 +129,12 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
                     {
                         loggingRule.DisableLoggingForLevel(NLog.LogLevel.Trace);
                     }
-                    NLog.LogManager.ReconfigExistingLoggers();
-                    break;                    
+                    LogManager.ReconfigExistingLoggers();
+                    break;
             }
         }
 
-        void target_LogReceived(object sender, LogReceivedEventArgs e)
+        private void target_LogReceived(object sender, LogReceivedEventArgs e)
         {
             //if (e.Message.Level == NLog.LogLevel.Fatal && !ErrorEnabled) return;
             //if (e.Message.Level == NLog.LogLevel.Error && !ErrorEnabled) return;
@@ -148,23 +143,23 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
             //if (e.Message.Level == NLog.LogLevel.Debug && !DebugEnabled) return;
             //if (e.Message.Level == NLog.LogLevel.Trace && !DiagEnabled) return;
 
-            if (this.logMessages.Count > 1000)
+            if (logMessages.Count > 1000)
             {
-                this.logMessages.RemoveAt(this.logMessages.Count - 1);
+                logMessages.RemoveAt(logMessages.Count - 1);
             }
-            this.logMessages.Insert(0, e.Message);
+            logMessages.Insert(0, e.Message);
         }
 
-        private void LogAction(string s, LogLevel logLevel, object arg3)
+        private void LogAction(string s, HearthCap.Core.GameCapture.Logging.LogLevel logLevel, object arg3)
         {
-            if (!this.LogLevel.HasFlag(logLevel))
+            if (!LogLevel.HasFlag(logLevel))
             {
                 return;
             }
 
-            if (this.logMessages.Count > 5000)
+            if (logMessages.Count > 5000)
             {
-                this.logMessages.RemoveAt(this.logMessages.Count - 1);
+                logMessages.RemoveAt(logMessages.Count - 1);
             }
 
             // this.logMessages.Insert(0, new LogMessageModel(s, logLevel, DateTime.Now));
@@ -172,91 +167,76 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
 
         public bool DebugEnabled
         {
-            get
-            {
-                return this.debugEnabled;
-            }
+            get { return debugEnabled; }
             set
             {
-                if (value.Equals(this.debugEnabled))
+                if (value.Equals(debugEnabled))
                 {
                     return;
                 }
-                this.debugEnabled = value;
+                debugEnabled = value;
                 RefreshLogSettings();
-                this.NotifyOfPropertyChange(() => this.DebugEnabled);
+                NotifyOfPropertyChange(() => DebugEnabled);
             }
         }
 
         public bool DiagEnabled
         {
-            get
-            {
-                return this.diagEnabled;
-            }
+            get { return diagEnabled; }
             set
             {
-                if (value.Equals(this.diagEnabled))
+                if (value.Equals(diagEnabled))
                 {
                     return;
                 }
-                this.diagEnabled = value;
+                diagEnabled = value;
                 RefreshLogSettings();
-                this.NotifyOfPropertyChange(() => this.DiagEnabled);
+                NotifyOfPropertyChange(() => DiagEnabled);
             }
         }
 
         public bool WarnEnabled
         {
-            get
-            {
-                return this.warnEnabled;
-            }
+            get { return warnEnabled; }
             set
             {
-                if (value.Equals(this.warnEnabled))
+                if (value.Equals(warnEnabled))
                 {
                     return;
                 }
-                this.warnEnabled = value;
+                warnEnabled = value;
                 RefreshLogSettings();
-                this.NotifyOfPropertyChange(() => this.WarnEnabled);
+                NotifyOfPropertyChange(() => WarnEnabled);
             }
         }
 
         public bool ErrorEnabled
         {
-            get
-            {
-                return this.errorEnabled;
-            }
+            get { return errorEnabled; }
             set
             {
-                if (value.Equals(this.errorEnabled))
+                if (value.Equals(errorEnabled))
                 {
                     return;
                 }
-                this.errorEnabled = value;
+                errorEnabled = value;
                 RefreshLogSettings();
-                this.NotifyOfPropertyChange(() => this.ErrorEnabled);
+                NotifyOfPropertyChange(() => ErrorEnabled);
             }
         }
 
         public bool InfoEnabled
         {
-            get
-            {
-                return this.infoEnabled;
-            }
+            get { return infoEnabled; }
             set
             {
-                if (value.Equals(this.infoEnabled))
+                if (value.Equals(infoEnabled))
                 {
                     return;
                 }
-                this.infoEnabled = value;
+                infoEnabled = value;
                 RefreshLogSettings();
-                this.NotifyOfPropertyChange(() => this.InfoEnabled);
+                NotifyOfPropertyChange(() => InfoEnabled);
             }
         }
 
@@ -278,23 +258,23 @@ namespace HearthCap.Features.Diagnostics.LogFlyout
             // TODO: enable/disable this in NLog so it also gets written to the log files.
         }
 
-        public LogLevel LogLevel { get; set; }
+        public HearthCap.Core.GameCapture.Logging.LogLevel LogLevel { get; set; }
 
         public BindableCollection<LogMessageModel> LogMessages
         {
-            get
-            {
-                return this.logMessages;
-            }
+            get { return logMessages; }
         }
 
         /// <summary>
-        /// Called the first time the page's LayoutUpdated event fires after it is navigated to.
+        ///     Called the first time the page's LayoutUpdated event fires after it is navigated to.
         /// </summary>
-        /// <param name="view"/>
+        /// <param name="view" />
         protected override void OnViewReady(object view)
         {
-            if (!firstTime) return;
+            if (!firstTime)
+            {
+                return;
+            }
             firstTime = false;
 
             //    Dispatcher.CurrentDispatcher.Invoke(() =>

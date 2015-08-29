@@ -1,18 +1,12 @@
-﻿namespace HearthCap.Shell
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Windows;
+using Caliburn.Micro;
+using HearthCap.Shell.TrayIcon;
+
+namespace HearthCap.Shell
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Configuration;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using System.Windows;
-    using System.Windows.Interop;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.TrayIcon;
-
     [Export(typeof(StartupViewModel))]
     public class StartupViewModel : Screen,
         IHandle<TrayIconLeftClick>,
@@ -28,7 +22,7 @@
 
         private double oldWidth;
 
-        private static object initLock = new object();
+        private static readonly object initLock = new object();
 
         private double oldLeft;
         private double oldTop;
@@ -39,16 +33,16 @@
 
         [ImportingConstructor]
         public StartupViewModel(
-            IEventAggregator events, 
-            IShell shell, 
-            TrayIconViewModel trayIcon, 
+            IEventAggregator events,
+            IShell shell,
+            TrayIconViewModel trayIcon,
             CustomWindowManager windowManager,
             UserPreferences.UserPreferences userPreferences)
         {
             this.events = events;
             this.windowManager = windowManager;
             this.userPreferences = userPreferences;
-            this.Shell = shell;
+            Shell = shell;
             this.trayIcon = trayIcon;
             events.Subscribe(this);
             Shell.Deactivated += ShellOnDeactivated;
@@ -56,30 +50,27 @@
 
         private void ShellOnDeactivated(object sender, DeactivationEventArgs deactivationEventArgs)
         {
-            this.TryClose();
+            TryClose();
         }
 
         public IShell Shell { get; set; }
 
         public TrayIconViewModel TrayIcon
         {
-            get
-            {
-                return this.trayIcon;
-            }
+            get { return trayIcon; }
             set
             {
-                if (Equals(value, this.trayIcon))
+                if (Equals(value, trayIcon))
                 {
                     return;
                 }
-                this.trayIcon = value;
-                this.NotifyOfPropertyChange(() => this.TrayIcon);
+                trayIcon = value;
+                NotifyOfPropertyChange(() => TrayIcon);
             }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
@@ -94,7 +85,7 @@
 
                 shellWindow = windowManager.EnsureWindow<IShell>();
                 var args = Environment.GetCommandLineArgs();
-                bool isLogon = args.Any(x => x.Contains("-logon"));
+                var isLogon = args.Any(x => x.Contains("-logon"));
                 if (isLogon || userPreferences.StartMinimized)
                 {
                     if (userPreferences.MinimizeToTray)
@@ -112,7 +103,7 @@
                     else
                     {
                         shellWindow.WindowState = WindowState.Minimized;
-                        shellWindow.Show();                        
+                        shellWindow.Show();
                     }
                 }
                 else
@@ -128,7 +119,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(TrayIconLeftClick message)
@@ -140,7 +131,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(TrayIconDoubleClick message)

@@ -18,13 +18,13 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/MahApps.Metro;component/styles/controls.datagrid.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/MahApps.Metro;component/styles/controls.datagrid.xaml" />
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <HierarchicalDataTemplate  x:Key="GamesTemplate"
-                                       DataType="{x:Type models:ArenaSessionModel}"
-                                       ItemsSource="{Binding _Games}">
+            <HierarchicalDataTemplate x:Key="GamesTemplate"
+                                      DataType="{x:Type models:ArenaSessionModel}"
+                                      ItemsSource="{Binding _Games}">
                 <DataGrid ItemsSource="{Binding _Games}"
                           SelectionMode="Single"
                           IsSynchronizedWithCurrentItem="False"
@@ -60,16 +60,16 @@
                                     <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
                                            Height="32"
                                            Width="32"
-                                           Margin="2"></Image>
+                                           Margin="2" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Started"
                                             CellStyle="{StaticResource MetroDataGridCell}"
                                             SortDirection="Descending"
-                                            Binding="{Binding Started, StringFormat=g}"></DataGridTextColumn>
+                                            Binding="{Binding Started, StringFormat=g}" />
                         <DataGridTextColumn Header="Duration"
-                                            Binding="{Binding Duration, StringFormat={}{0} min.}"></DataGridTextColumn>
+                                            Binding="{Binding Duration, StringFormat={}{0} min.}" />
                         <DataGridTemplateColumn Header="Result"
                                                 SortMemberPath="Victory">
                             <DataGridTemplateColumn.CellTemplate>
@@ -78,13 +78,13 @@
                                                 Margin="4 0 0 0">
                                         <TextBlock Text="Win"
                                                    Foreground="ForestGreen"
-                                                   Visibility="{Binding Victory, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                                   Visibility="{Binding Victory, Converter={StaticResource booleanToVisibility}}" />
                                         <TextBlock Text="Loss"
                                                    Foreground="Red"
-                                                   Visibility="{Binding Victory, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                                   Visibility="{Binding Victory, Converter={StaticResource booleanToVisibilityInverse}}" />
                                         <TextBlock Foreground="Red"
                                                    Visibility="{Binding Conceded, Converter={StaticResource booleanToVisibility}}"
-                                                   Text=" (c)"></TextBlock>
+                                                   Text=" (c)" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -95,20 +95,20 @@
                                 <DataTemplate>
                                     <StackPanel Margin="4 0 0 0">
                                         <TextBlock Text="First"
-                                                   Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibility}}"></TextBlock>
+                                                   Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibility}}" />
                                         <TextBlock Text="Second"
-                                                   Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibilityInverse}}"></TextBlock>
+                                                   Visibility="{Binding GoFirst, Converter={StaticResource booleanToVisibilityInverse}}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Turns"
-                                            Binding="{Binding Turns}"></DataGridTextColumn>
+                                            Binding="{Binding Turns}" />
                         <DataGridTextColumn Header="Server"
-                                            Binding="{Binding Server}"></DataGridTextColumn>
+                                            Binding="{Binding Server}" />
                         <DataGridTextColumn Header="Notes"
                                             CanUserSort="False"
-                                            Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}"></DataGridTextColumn>
+                                            Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </HierarchicalDataTemplate>
@@ -116,8 +116,8 @@
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0"
                    Orientation="Horizontal"
@@ -132,7 +132,7 @@
                     <ComboBoxItem IsSelected="True"
                                   Style="{StaticResource DateComboBoxItem}"
                                   Content="do not remove1"
-                                  DataContext="{Binding}"></ComboBoxItem>
+                                  DataContext="{Binding}" />
                 </ComboBox>
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
@@ -141,14 +141,14 @@
                           VerticalAlignment="Stretch"
                           DisplayMemberPath="Name"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterServer}"></ComboBox>
+                          SelectedItem="{Binding FilterServer}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Heroes}">Hero:</Label>
                 <ComboBox Name="Heroes"
                           Background="{DynamicResource WhiteBrush}"
                           Style="{StaticResource heroCombobox}"
-                          SelectedItem="{Binding FilterHero}"></ComboBox>
+                          SelectedItem="{Binding FilterHero}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Search}">Search:</Label>
@@ -186,13 +186,13 @@
         <Grid Grid.Row="1"
               Margin="6 6 6 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="24"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="24" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding ArenaSessions}"
                       SelectionMode="Single"
@@ -242,32 +242,32 @@
                                 <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
                                        Height="32"
                                        Width="32"
-                                       Margin="6 2 4 2"></Image>
+                                       Margin="6 2 4 2" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Started"
                                         CellStyle="{StaticResource MetroDataGridCell}"
                                         SortDirection="Descending"
-                                        Binding="{Binding StartDate, StringFormat=g}"></DataGridTextColumn>
+                                        Binding="{Binding StartDate, StringFormat=g}" />
                     <DataGridTextColumn Header="Ended"
                                         CellStyle="{StaticResource MetroDataGridCell}"
-                                        Binding="{Binding EndDate, StringFormat=g}"></DataGridTextColumn>
+                                        Binding="{Binding EndDate, StringFormat=g}" />
                     <DataGridTextColumn Header="Wins"
-                                        Binding="{Binding Wins}"></DataGridTextColumn>
+                                        Binding="{Binding Wins}" />
                     <DataGridTextColumn Header="Losses"
-                                        Binding="{Binding Losses}"></DataGridTextColumn>
+                                        Binding="{Binding Losses}" />
                     <DataGridTextColumn Header="Gold"
-                                        Binding="{Binding RewardGold}"></DataGridTextColumn>
+                                        Binding="{Binding RewardGold}" />
                     <DataGridTextColumn Header="Dust"
-                                        Binding="{Binding RewardDust}"></DataGridTextColumn>
+                                        Binding="{Binding RewardDust}" />
                     <DataGridTextColumn Header="Packs"
-                                        Binding="{Binding RewardPacks}"></DataGridTextColumn>
+                                        Binding="{Binding RewardPacks}" />
                     <DataGridTextColumn Header="Server"
-                                        Binding="{Binding Server}"></DataGridTextColumn>
+                                        Binding="{Binding Server}" />
                     <DataGridTextColumn Header="Notes"
                                         CanUserSort="False"
-                                        Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}"></DataGridTextColumn>
+                                        Binding="{Binding Notes, Converter={StaticResource removeNewLinesConverter}, ConverterParameter=100}" />
                 </DataGrid.Columns>
             </DataGrid>
             <controls:ProgressRing IsActive="{Binding Busy.IsBusy, Mode=OneWay}"
@@ -288,70 +288,70 @@
                 <Border.Resources>
                     <Style TargetType="Label">
                         <Setter Property="Margin"
-                                Value="4 0 4 0"></Setter>
+                                Value="4 0 4 0" />
                         <Setter Property="Padding"
-                                Value="0"></Setter>
+                                Value="0" />
                         <Setter Property="FontSize"
-                                Value="14"></Setter>
+                                Value="14" />
                         <Setter Property="VerticalAlignment"
-                                Value="Center"></Setter>
+                                Value="Center" />
                         <Setter Property="FontWeight"
-                                Value="SemiBold"></Setter>
+                                Value="SemiBold" />
                     </Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="FontSize"
-                                Value="13"></Setter>
+                                Value="13" />
                         <Setter Property="VerticalAlignment"
-                                Value="Center"></Setter>
+                                Value="Center" />
                     </Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill"
-                                Value="{DynamicResource GrayBrush3}"></Setter>
+                                Value="{DynamicResource GrayBrush3}" />
                         <Setter Property="Margin"
-                                Value="4 4 4 2"></Setter>
+                                Value="4 4 4 2" />
                         <Setter Property="Width"
-                                Value="1"></Setter>
+                                Value="1" />
                     </Style>
                 </Border.Resources>
                 <StackPanel Orientation="Horizontal">
                     <Label>Arenas:</Label>
-                    <TextBlock Text="{Binding Totals.Arenas}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.Arenas}" />
+                    <Rectangle />
                     <Label>0-6:</Label>
-                    <TextBlock Text="{Binding Totals.ZeroToSix}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.ZeroToSix}" />
+                    <Rectangle />
                     <Label>7+:</Label>
-                    <TextBlock Text="{Binding Totals.SevenPlus}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.SevenPlus}" />
+                    <Rectangle />
                     <Label>12:</Label>
-                    <TextBlock Text="{Binding Totals.Twelve}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.Twelve}" />
+                    <Rectangle />
                     <Label>Avg. wins:</Label>
-                    <TextBlock Text="{Binding Totals.AverageWins}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.AverageWins}" />
+                    <Rectangle />
                     <Label>Played:</Label>
-                    <TextBlock Text="{Binding Totals.Hours}"></TextBlock>
-                    <TextBlock Text="h. "></TextBlock>
-                    <TextBlock Text="{Binding Totals.Minutes}"></TextBlock>
-                    <TextBlock Text="m. "></TextBlock>
+                    <TextBlock Text="{Binding Totals.Hours}" />
+                    <TextBlock Text="h. " />
+                    <TextBlock Text="{Binding Totals.Minutes}" />
+                    <TextBlock Text="m. " />
                     <Rectangle />
                     <Label>Gold:</Label>
-                    <TextBlock Text="{Binding Totals.GoldEarned}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.GoldEarned}" />
+                    <Rectangle />
                     <Label>Dust:</Label>
-                    <TextBlock Text="{Binding Totals.DustEarned}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.DustEarned}" />
+                    <Rectangle />
                     <Label>Packs:</Label>
-                    <TextBlock Text="{Binding Totals.PacksEarned}"></TextBlock>
-                    <Rectangle Fill="{DynamicResource GrayBrush1}"></Rectangle>
+                    <TextBlock Text="{Binding Totals.PacksEarned}" />
+                    <Rectangle Fill="{DynamicResource GrayBrush1}" />
                     <Label>Total tracked:</Label>
-                    <TextBlock Text="{Binding Totals.TotalArenas}"></TextBlock>
-                    <Rectangle></Rectangle>
+                    <TextBlock Text="{Binding Totals.TotalArenas}" />
+                    <Rectangle />
                     <Label>Total played:</Label>
-                    <TextBlock Text="{Binding Totals.TotalHours}"></TextBlock>
-                    <TextBlock Text="h. "></TextBlock>
-                    <TextBlock Text="{Binding Totals.TotalMinutes}"></TextBlock>
-                    <TextBlock Text="m. "></TextBlock>
+                    <TextBlock Text="{Binding Totals.TotalHours}" />
+                    <TextBlock Text="h. " />
+                    <TextBlock Text="{Binding Totals.TotalMinutes}" />
+                    <TextBlock Text="m. " />
                 </StackPanel>
             </Border>
             <ContentControl Name="CurrentStats"
@@ -361,7 +361,7 @@
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"></ContentControl>
+                            VerticalContentAlignment="Stretch" />
         </Grid>
     </Grid>
 </UserControl>

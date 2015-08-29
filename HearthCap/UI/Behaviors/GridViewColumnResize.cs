@@ -1,16 +1,17 @@
 ﻿// From: http://lazycowprojects.tumblr.com/post/7063214400/wpf-c-listview-column-width-auto
 // https://code.google.com/p/lazycowprojects/source/browse/Wpf/GridViewColumnResize.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+
 namespace HearthCap.UI.Behaviors
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
-    using System.Windows;
-    using System.Windows.Controls;
-
     /// <summary>
-    /// Static class used to attach to wpf control
+    ///     Static class used to attach to wpf control
     /// </summary>
     public static class GridViewColumnResize
     {
@@ -18,20 +19,20 @@ namespace HearthCap.UI.Behaviors
 
         public static readonly DependencyProperty WidthProperty =
             DependencyProperty.RegisterAttached("Width", typeof(string), typeof(GridViewColumnResize),
-                                                new PropertyMetadata(OnSetWidthCallback));
+                new PropertyMetadata(OnSetWidthCallback));
 
         public static readonly DependencyProperty GridViewColumnResizeBehaviorProperty =
             DependencyProperty.RegisterAttached("GridViewColumnResizeBehavior",
-                                                typeof(GridViewColumnResizeBehavior), typeof(GridViewColumnResize),
-                                                null);
+                typeof(GridViewColumnResizeBehavior), typeof(GridViewColumnResize),
+                null);
 
         public static readonly DependencyProperty EnabledProperty =
             DependencyProperty.RegisterAttached("Enabled", typeof(bool), typeof(GridViewColumnResize),
-                                                new PropertyMetadata(OnSetEnabledCallback));
+                new PropertyMetadata(OnSetEnabledCallback));
 
         public static readonly DependencyProperty ListViewResizeBehaviorProperty =
             DependencyProperty.RegisterAttached("ListViewResizeBehaviorProperty",
-                                                typeof(ListViewResizeBehavior), typeof(GridViewColumnResize), null);
+                typeof(ListViewResizeBehavior), typeof(GridViewColumnResize), null);
 
         #endregion
 
@@ -62,7 +63,7 @@ namespace HearthCap.UI.Behaviors
             var element = dependencyObject as GridViewColumn;
             if (element != null)
             {
-                GridViewColumnResizeBehavior behavior = GetOrCreateBehavior(element);
+                var behavior = GetOrCreateBehavior(element);
                 behavior.Width = e.NewValue as string;
             }
             else
@@ -77,7 +78,7 @@ namespace HearthCap.UI.Behaviors
             var element = dependencyObject as ListView;
             if (element != null)
             {
-                ListViewResizeBehavior behavior = GetOrCreateBehavior(element);
+                var behavior = GetOrCreateBehavior(element);
                 behavior.Enabled = (bool)e.NewValue;
             }
             else
@@ -85,7 +86,6 @@ namespace HearthCap.UI.Behaviors
                 Console.Error.WriteLine("Error: Expected type ListView but found " + dependencyObject.GetType().Name);
             }
         }
-
 
         private static ListViewResizeBehavior GetOrCreateBehavior(ListView element)
         {
@@ -116,7 +116,7 @@ namespace HearthCap.UI.Behaviors
         #region Nested type: GridViewColumnResizeBehavior
 
         /// <summary>
-        /// GridViewColumn class that gets attached to the GridViewColumn control
+        ///     GridViewColumn class that gets attached to the GridViewColumn control
         /// </summary>
         public class GridViewColumnResizeBehavior
         {
@@ -159,7 +159,11 @@ namespace HearthCap.UI.Behaviors
             {
                 get
                 {
-                    if (Width == "*" || Width == "1*") return 1;
+                    if (Width == "*"
+                        || Width == "1*")
+                    {
+                        return 1;
+                    }
                     if (Width.EndsWith("*"))
                     {
                         double perc;
@@ -180,7 +184,7 @@ namespace HearthCap.UI.Behaviors
                 }
                 else
                 {
-                    double width = allowedSpace * (Percentage / totalPercentage);
+                    var width = allowedSpace * (Percentage / totalPercentage);
                     _element.Width = width;
                 }
             }
@@ -191,7 +195,7 @@ namespace HearthCap.UI.Behaviors
         #region Nested type: ListViewResizeBehavior
 
         /// <summary>
-        /// ListViewResizeBehavior class that gets attached to the ListView control
+        ///     ListViewResizeBehavior class that gets attached to the ListView control
         /// </summary>
         public class ListViewResizeBehavior : IDisposable
         {
@@ -206,23 +210,25 @@ namespace HearthCap.UI.Behaviors
 
             public ListViewResizeBehavior(ListView element)
             {
-                if (element == null) throw new ArgumentNullException("element");
+                if (element == null)
+                {
+                    throw new ArgumentNullException("element");
+                }
                 _element = element;
                 element.Loaded += OnLoaded;
 
                 // Action for resizing and re-enable the size lookup
                 // This stops the columns from constantly resizing to improve performance
                 Action resizeAndEnableSize = () =>
-                {
-                    Resize();
-                    _element.SizeChanged += OnSizeChanged;
-                };
+                    {
+                        Resize();
+                        _element.SizeChanged += OnSizeChanged;
+                    };
                 _timer = new Timer(x => Application.Current.Dispatcher.BeginInvoke(resizeAndEnableSize), null, Delay,
-                                   RefreshTime);
+                    RefreshTime);
             }
 
             public bool Enabled { get; set; }
-
 
             private void OnLoaded(object sender, RoutedEventArgs e)
             {
@@ -231,8 +237,11 @@ namespace HearthCap.UI.Behaviors
 
             private void OnSizeChanged(object sender, SizeChangedEventArgs e)
             {
-                if (disposed) return;
-                
+                if (disposed)
+                {
+                    return;
+                }
+
                 if (e.WidthChanged)
                 {
                     _element.SizeChanged -= OnSizeChanged;
@@ -244,14 +253,14 @@ namespace HearthCap.UI.Behaviors
             {
                 if (Enabled)
                 {
-                    double totalWidth = _element.ActualWidth;
+                    var totalWidth = _element.ActualWidth;
                     var gv = _element.View as GridView;
                     if (gv != null)
                     {
-                        double allowedSpace = totalWidth - GetAllocatedSpace(gv);
+                        var allowedSpace = totalWidth - GetAllocatedSpace(gv);
                         allowedSpace = allowedSpace - Margin;
-                        double totalPercentage = GridViewColumnResizeBehaviors(gv).Sum(x => x.Percentage);
-                        foreach (GridViewColumnResizeBehavior behavior in GridViewColumnResizeBehaviors(gv))
+                        var totalPercentage = GridViewColumnResizeBehaviors(gv).Sum(x => x.Percentage);
+                        foreach (var behavior in GridViewColumnResizeBehaviors(gv))
                         {
                             behavior.SetWidth(allowedSpace, totalPercentage);
                         }
@@ -261,7 +270,7 @@ namespace HearthCap.UI.Behaviors
 
             private static IEnumerable<GridViewColumnResizeBehavior> GridViewColumnResizeBehaviors(GridView gv)
             {
-                foreach (GridViewColumn t in gv.Columns)
+                foreach (var t in gv.Columns)
                 {
                     var gridViewColumnResizeBehavior =
                         t.GetValue(GridViewColumnResizeBehaviorProperty) as GridViewColumnResizeBehavior;
@@ -275,7 +284,7 @@ namespace HearthCap.UI.Behaviors
             private static double GetAllocatedSpace(GridView gv)
             {
                 double totalWidth = 0;
-                foreach (GridViewColumn t in gv.Columns)
+                foreach (var t in gv.Columns)
                 {
                     var gridViewColumnResizeBehavior =
                         t.GetValue(GridViewColumnResizeBehaviorProperty) as GridViewColumnResizeBehavior;
@@ -295,7 +304,7 @@ namespace HearthCap.UI.Behaviors
             }
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             /// </summary>
             public void Dispose()
             {
@@ -306,7 +315,9 @@ namespace HearthCap.UI.Behaviors
             protected virtual void Dispose(bool disposing)
             {
                 if (disposed)
+                {
                     return;
+                }
 
                 if (disposing)
                 {

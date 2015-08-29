@@ -23,51 +23,51 @@
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="LogItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Visibility"
-                        Value="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}"></Setter>
+                        Value="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}" />
             </Style>
             <model:LogStyleSelector x:Key="LogStyleSelector">
                 <model:LogStyleSelector.FatalStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="Black"></Setter>
+                                Value="Black" />
                         <Setter Property="Background"
-                                Value="Red"></Setter>
+                                Value="Red" />
                     </Style>
                 </model:LogStyleSelector.FatalStyle>
                 <model:LogStyleSelector.ErrorStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="Red"></Setter>
+                                Value="Red" />
                     </Style>
                 </model:LogStyleSelector.ErrorStyle>
                 <model:LogStyleSelector.WarnStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="DarkOrange"></Setter>
+                                Value="DarkOrange" />
                     </Style>
                 </model:LogStyleSelector.WarnStyle>
                 <model:LogStyleSelector.InfoStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="Black"></Setter>
+                                Value="Black" />
                     </Style>
                 </model:LogStyleSelector.InfoStyle>
                 <model:LogStyleSelector.DebugStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="Gray"></Setter>
+                                Value="Gray" />
                     </Style>
                 </model:LogStyleSelector.DebugStyle>
                 <model:LogStyleSelector.TraceStyle>
                     <Style TargetType="ListBoxItem"
                            BasedOn="{StaticResource LogItemStyle}">
                         <Setter Property="Foreground"
-                                Value="LightGray"></Setter>
+                                Value="LightGray" />
                     </Style>
                 </model:LogStyleSelector.TraceStyle>
             </model:LogStyleSelector>
@@ -76,22 +76,22 @@
     <Grid Margin="4">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal"
                         Margin="4">
                 <CheckBox Name="DiagEnabled"
                           Visibility="{Binding DiagVisible, Converter={StaticResource booleanToVisibility}}"
-                          Content="Diag"></CheckBox>
+                          Content="Diag" />
                 <CheckBox Name="DebugEnabled"
-                          Content="Debug"></CheckBox>
+                          Content="Debug" />
                 <CheckBox Name="WarnEnabled"
-                          Content="Warnings"></CheckBox>
+                          Content="Warnings" />
                 <CheckBox Name="InfoEnabled"
-                          Content="Info"></CheckBox>
+                          Content="Info" />
                 <CheckBox Name="ErrorEnabled"
-                          Content="Errors"></CheckBox>
+                          Content="Errors" />
             </StackPanel>
             <ListView Background="White"
                       Name="LogMessages"
@@ -109,8 +109,7 @@
                                        FontStyle="{Binding FontStyle, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
                                        FontWeight="{Binding FontWeight, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
                                        Text="{Binding Message}"
-                                       Visibility="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}">
-                            </TextBlock>
+                                       Visibility="{Binding IsVisible, Converter={StaticResource booleanToVisibility}}" />
                             <!--<TextBlock Text="{Binding Date, StringFormat=T}"></TextBlock>
                             <TextBlock Text=" ("></TextBlock>
                             <TextBlock Text="{Binding Level}"></TextBlock>

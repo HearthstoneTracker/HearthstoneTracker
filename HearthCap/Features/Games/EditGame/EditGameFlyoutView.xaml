@@ -22,15 +22,15 @@
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Label">
                 <Setter Property="FontSize"
-                        Value="16"></Setter>
+                        Value="16" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Height="32"
               Visibility="{Binding LastGameId, Converter={StaticResource nullToCollapsed}}">
@@ -48,7 +48,9 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock VerticalAlignment="Center"
-                               Margin="4 0 0 0">DELETE</TextBlock>
+                               Margin="4 0 0 0">
+                        DELETE
+                    </TextBlock>
                 </StackPanel>
             </Button>
         </Grid>
@@ -57,8 +59,8 @@
               Grid.Row="1"
               IsEnabled="{Binding Busy.IsBusy, Converter={StaticResource invertBoolean}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal"
                         Grid.Column="0">
@@ -76,7 +78,9 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                         <TextBlock VerticalAlignment="Center"
-                                   Margin="4 0 0 0">SAVE AS NEW</TextBlock>
+                                   Margin="4 0 0 0">
+                            SAVE AS NEW
+                        </TextBlock>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -96,7 +100,9 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                         <TextBlock VerticalAlignment="Center"
-                                   Margin="4 0 0 0">SAVE</TextBlock>
+                                   Margin="4 0 0 0">
+                            SAVE
+                        </TextBlock>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -115,7 +121,8 @@
                         CornerRadius="4">
                     <TextBlock TextWrapping="Wrap"
                                FontSize="13">
-                        To create a new arena game, select an arena, then click 'Add arena game' in the toolbar.</TextBlock>
+                        To create a new arena game, select an arena, then click 'Add arena game' in the toolbar.
+                    </TextBlock>
                 </Border>
                 <HeaderedContentControl x:Name="theservers"
                                         Header="Server:"
@@ -123,7 +130,7 @@
                                         Style="{StaticResource hccFormStyle}">
                     <ComboBox Name="Servers"
                               DisplayMemberPath="Name"
-                              SelectedItem="{Binding SelectedServer}"></ComboBox>
+                              SelectedItem="{Binding SelectedServer}" />
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="gamemode"
                                         Header="Game mode:"
@@ -131,7 +138,7 @@
                                         Style="{StaticResource hccFormStyle}"
                                         Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}">
                     <ComboBox Name="GameModes"
-                              SelectedItem="{Binding GameMode}"></ComboBox>
+                              SelectedItem="{Binding GameMode}" />
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="deck"
                                         Header="Deck:"
@@ -140,8 +147,8 @@
                                         Visibility="{Binding GameMode, Converter={StaticResource valueToCollapsed}, ConverterParameter={x:Static data:GameMode.Arena}}">
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <ComboBox Name="Decks"
                                   IsEditable="True"
@@ -183,10 +190,10 @@
                         <StackPanel>
                             <Button cal:Message.Attach="AssignToArena"
                                     Visibility="{Binding ArenaSession, Converter={StaticResource nullToVisible}}"
-                                    Content="Assign to last arena"></Button>
+                                    Content="Assign to last arena" />
                             <Button Name="ViewArena"
                                     Visibility="{Binding ArenaSession, Converter={StaticResource nullToCollapsed}}"
-                                    Content="View arena"></Button>
+                                    Content="View arena" />
                         </StackPanel>
                     </HeaderedContentControl>
                 </StackPanel>
@@ -196,8 +203,8 @@
                                         Style="{StaticResource hccFormStyle}">
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <xctk:DateTimePicker Name="StartTime"
                                              Value="{Binding StartTime}"
@@ -206,11 +213,11 @@
                                              TimeFormat="Custom"
                                              TimeFormatString="t"
                                              ShowButtonSpinner="False"
-                                             Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                                             Foreground="{DynamicResource BlackBrush}" />
                         <Button Name="SetStartTime"
                                 Content="Now"
                                 Grid.Column="1"
-                                Margin="4 0 0 0"></Button>
+                                Margin="4 0 0 0" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="endtime"
@@ -219,8 +226,8 @@
                                         Style="{StaticResource hccFormStyle}">
                     <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <xctk:DateTimePicker Name="EndTime"
                                              Value="{Binding EndTime}"
@@ -229,11 +236,11 @@
                                              TimeFormat="Custom"
                                              TimeFormatString="t"
                                              ShowButtonSpinner="False"
-                                             Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                                             Foreground="{DynamicResource BlackBrush}" />
                         <Button Name="SetEndTime"
                                 Content="Now"
                                 Grid.Column="1"
-                                Margin="4 0 0 0"></Button>
+                                Margin="4 0 0 0" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="hero"
@@ -247,7 +254,7 @@
                              SelectionMode="Single"
                              Background="Transparent"
                              Grid.Column="1"
-                             Style="{StaticResource heroListBox}"></ListBox>
+                             Style="{StaticResource heroListBox}" />
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="opphero"
                                         Header="Opponent hero:"
@@ -258,7 +265,7 @@
                              SelectedItem="{Binding OpponentHero}"
                              SelectionMode="Single"
                              Grid.Column="1"
-                             Style="{StaticResource heroListBox}"></ListBox>
+                             Style="{StaticResource heroListBox}" />
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="gofirst"
                                         Header="Went first?"
@@ -266,16 +273,16 @@
                                         Style="{StaticResource hccFormStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition SharedSizeGroup="SecondColumn" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <CheckBox Name="GoFirst"
-                                  Grid.Column="0"></CheckBox>
+                                  Grid.Column="0" />
                         <Label Target="{Binding ElementName=Turns}"
                                Content="Turns:"
-                               Grid.Column="1"></Label>
+                               Grid.Column="1" />
                         <metro:NumericUpDown Name="Turns"
                                              Grid.Column="2"
                                              HorizontalAlignment="Stretch"
@@ -290,17 +297,17 @@
                                         Style="{StaticResource hccFormStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition SharedSizeGroup="SecondColumn" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <CheckBox Name="Victory"></CheckBox>
+                        <CheckBox Name="Victory" />
                         <Label Target="{Binding ElementName=Conceded}"
                                Content="Conceded?"
-                               Grid.Column="1"></Label>
+                               Grid.Column="1" />
                         <CheckBox Name="Conceded"
-                                  Grid.Column="2"></CheckBox>
+                                  Grid.Column="2" />
                     </Grid>
                 </HeaderedContentControl>
                 <HeaderedContentControl x:Name="notes"
@@ -311,7 +318,7 @@
                              MaxLength="4000"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Height="100"></TextBox>
+                             Height="100" />
                 </HeaderedContentControl>
             </StackPanel>
         </ScrollViewer>

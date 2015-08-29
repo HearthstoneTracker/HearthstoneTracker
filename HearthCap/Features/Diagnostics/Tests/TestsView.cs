@@ -1,13 +1,11 @@
-﻿namespace HearthCap.Features.Diagnostics.Tests
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Logger.Interface;
+using HearthCap.Shell.Tabs;
+
+namespace HearthCap.Features.Diagnostics.Tests
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Logger.Interface;
-    using HearthCap.Shell.Tabs;
-
 #if DEBUG
     [Export(typeof(ITab))]
 #endif
@@ -34,7 +32,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(RequestDecksResponse message)

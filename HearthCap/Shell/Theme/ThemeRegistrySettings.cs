@@ -1,9 +1,8 @@
-﻿namespace HearthCap.Shell.Theme
+﻿using HearthCap.Shell.UserPreferences;
+using MahApps.Metro.Controls;
+
+namespace HearthCap.Shell.Theme
 {
-    using HearthCap.Shell.UserPreferences;
-
-    using MahApps.Metro.Controls;
-
     public class ThemeRegistrySettings : RegistrySettings
     {
         public ThemeRegistrySettings()
@@ -13,14 +12,8 @@
 
         public FlyoutTheme FlyoutTheme
         {
-            get
-            {
-                return this.GetOrCreate("FlyoutTheme", FlyoutTheme.Dark);
-            }
-            set
-            {
-                this.SetValue("FlyoutTheme", value);
-            }
+            get { return GetOrCreate("FlyoutTheme", FlyoutTheme.Dark); }
+            set { SetValue("FlyoutTheme", value); }
         }
     }
 }

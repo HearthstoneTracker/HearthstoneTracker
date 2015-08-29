@@ -1,60 +1,53 @@
-﻿namespace HearthCap.Features.ArenaSessions
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+using HearthCap.Core.GameCapture.HS;
+using HearthCap.Core.GameCapture.HS.Commands;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Features.GameManager.Events;
+using HearthCap.Features.Games;
+using HearthCap.Features.Games.Models;
+using HearthCap.Shell.Flyouts;
+using HearthCap.Shell.Notifications;
+using HearthCap.Util;
+using MahApps.Metro.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using LogManager = NLog.LogManager;
+
+namespace HearthCap.Features.ArenaSessions
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Media.Imaging;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
-    using HearthCap.Core.GameCapture.HS;
-    using HearthCap.Core.GameCapture.HS.Commands;
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Features.GameManager;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.Games;
-    using HearthCap.Features.Games.Models;
-    using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.Notifications;
-    using HearthCap.Util;
-
-    using MahApps.Metro.Controls;
-
-    using Microsoft.WindowsAPICodePack.Dialogs;
-
-    using NLog;
-
-    using LogManager = NLog.LogManager;
-
     [Export(typeof(IFlyout))]
     [Export(typeof(CurrentSessionFlyoutViewModel))]
     public sealed class CurrentSessionFlyoutViewModel : FlyoutViewModel,
-                                                 IPartImportsSatisfiedNotification,
-                                                 IHandleWithTask<ArenaHeroDetected>,
-                                                 IHandle<GameModeChanged>,
-                                                 IHandle<ArenaDrafting>,
-                                                 IHandle<ArenaSessionUpdated>,
-                                                 IHandleWithTask<ArenaDeckScreenshotTaken>,
-                                                 IHandle<ArenaWinsDetected>,
-                                                 IHandle<ArenaLossesDetected>,
-                                                 IHandle<SelectedGameChanged>
+        IPartImportsSatisfiedNotification,
+        IHandleWithTask<ArenaHeroDetected>,
+        IHandle<GameModeChanged>,
+        IHandle<ArenaDrafting>,
+        IHandle<ArenaSessionUpdated>,
+        IHandleWithTask<ArenaDeckScreenshotTaken>,
+        IHandle<ArenaWinsDetected>,
+        IHandle<ArenaLossesDetected>,
+        IHandle<SelectedGameChanged>
     {
         #region Static Fields
 
-        private Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         #endregion
 
         #region Fields
+
         private readonly BindableServerCollection servers = BindableServerCollection.Instance;
 
         private ServerItemModel selectedServer;
@@ -63,7 +56,7 @@
 
         private readonly IEventAggregator events;
 
-        private readonly GameManager gameManager;
+        private readonly GameManager.GameManager gameManager;
 
         private readonly IRepository<Hero> heroRepository;
 
@@ -71,7 +64,7 @@
 
         private Hero hero;
 
-        private BindableCollection<Hero> heroes = new BindableCollection<Hero>();
+        private readonly BindableCollection<Hero> heroes = new BindableCollection<Hero>();
 
         private bool isEnded;
 
@@ -81,7 +74,7 @@
 
         private int losses;
 
-        private AsyncLock newArenaLock = new AsyncLock();
+        private readonly AsyncLock newArenaLock = new AsyncLock();
 
         private bool retired;
 
@@ -132,7 +125,7 @@
             IEventAggregator events,
             IRepository<ArenaSession> arenaRepository,
             IRepository<Hero> heroRepository,
-            GameManager gameManager)
+            GameManager.GameManager gameManager)
         {
             this.events = events;
             this.arenaRepository = arenaRepository;
@@ -154,10 +147,7 @@
 
         public bool ShowScreenshotColumn
         {
-            get
-            {
-                return showScreenshotColumn;
-            }
+            get { return showScreenshotColumn; }
             set
             {
                 if (value.Equals(showScreenshotColumn))
@@ -171,10 +161,7 @@
 
         public ServerItemModel SelectedServer
         {
-            get
-            {
-                return selectedServer;
-            }
+            get { return selectedServer; }
             set
             {
                 if (Equals(value, selectedServer))
@@ -188,10 +175,7 @@
 
         public int RewardGold
         {
-            get
-            {
-                return rewardGold;
-            }
+            get { return rewardGold; }
             set
             {
                 if (value == rewardGold)
@@ -205,10 +189,7 @@
 
         public int RewardDust
         {
-            get
-            {
-                return rewardDust;
-            }
+            get { return rewardDust; }
             set
             {
                 if (value == rewardDust)
@@ -222,10 +203,7 @@
 
         public int RewardPacks
         {
-            get
-            {
-                return rewardPacks;
-            }
+            get { return rewardPacks; }
             set
             {
                 if (value == rewardPacks)
@@ -239,10 +217,7 @@
 
         public string Notes
         {
-            get
-            {
-                return notes;
-            }
+            get { return notes; }
             set
             {
                 if (value == notes)
@@ -256,10 +231,7 @@
 
         public DateTime? Ended
         {
-            get
-            {
-                return ended;
-            }
+            get { return ended; }
             set
             {
                 if (value.Equals(ended))
@@ -273,10 +245,7 @@
 
         public Hero Hero
         {
-            get
-            {
-                return hero;
-            }
+            get { return hero; }
             set
             {
                 if (Equals(value, hero))
@@ -290,18 +259,12 @@
 
         public IObservableCollection<Hero> Heroes
         {
-            get
-            {
-                return heroes;
-            }
+            get { return heroes; }
         }
 
         public bool IsEnded
         {
-            get
-            {
-                return isEnded;
-            }
+            get { return isEnded; }
             set
             {
                 if (value.Equals(isEnded))
@@ -317,7 +280,11 @@
         {
             get
             {
-                if (SelectedArenaSession == null || LatestArenaSession == null) return false;
+                if (SelectedArenaSession == null
+                    || LatestArenaSession == null)
+                {
+                    return false;
+                }
 
                 return Equals(SelectedArenaSession.Id, LatestArenaSession.Id);
             }
@@ -325,10 +292,7 @@
 
         public ArenaSessionModel LatestArenaSession
         {
-            get
-            {
-                return latestArenaSession;
-            }
+            get { return latestArenaSession; }
             set
             {
                 if (Equals(value, latestArenaSession))
@@ -343,10 +307,7 @@
 
         public int Losses
         {
-            get
-            {
-                return losses;
-            }
+            get { return losses; }
             set
             {
                 if (value == losses)
@@ -360,10 +321,7 @@
 
         public bool Retired
         {
-            get
-            {
-                return retired;
-            }
+            get { return retired; }
             set
             {
                 if (value.Equals(retired))
@@ -377,10 +335,7 @@
 
         public ArenaSessionModel SelectedArenaSession
         {
-            get
-            {
-                return selectedArenaSession;
-            }
+            get { return selectedArenaSession; }
             set
             {
                 if (ReferenceEquals(value, selectedArenaSession))
@@ -399,10 +354,7 @@
 
         public DateTime Started
         {
-            get
-            {
-                return started;
-            }
+            get { return started; }
             set
             {
                 if (value.Equals(started))
@@ -416,10 +368,7 @@
 
         public int Wins
         {
-            get
-            {
-                return wins;
-            }
+            get { return wins; }
             set
             {
                 if (value == wins)
@@ -433,18 +382,12 @@
 
         public BindableServerCollection Servers
         {
-            get
-            {
-                return servers;
-            }
+            get { return servers; }
         }
 
         public BitmapImage DeckScreenshot1
         {
-            get
-            {
-                return deckScreenshot1;
-            }
+            get { return deckScreenshot1; }
             set
             {
                 deckScreenshot1 = value;
@@ -454,10 +397,7 @@
 
         public BitmapImage DeckScreenshot2
         {
-            get
-            {
-                return deckScreenshot2;
-            }
+            get { return deckScreenshot2; }
             set
             {
                 deckScreenshot2 = value;
@@ -467,10 +407,7 @@
 
         public bool CanTakeScreenshot
         {
-            get
-            {
-                return canTakeScreenshot;
-            }
+            get { return canTakeScreenshot; }
             set
             {
                 if (value.Equals(canTakeScreenshot))
@@ -484,10 +421,7 @@
 
         public bool TakingScreenshot
         {
-            get
-            {
-                return takingScreenshot;
-            }
+            get { return takingScreenshot; }
             set
             {
                 if (value.Equals(takingScreenshot))
@@ -506,7 +440,7 @@
         public void AddGame()
         {
             // this.IsOpen = false;
-            events.PublishOnCurrentThread(new CreateNewGame() { ArenaSession = SelectedArenaSession });
+            events.PublishOnCurrentThread(new CreateNewGame { ArenaSession = SelectedArenaSession });
         }
 
         public async Task Delete()
@@ -533,24 +467,27 @@
 
         public void SaveScreenshotToDisk()
         {
-            if (SelectedArenaSession == null || SelectedArenaSession.Image1 == null)
+            if (SelectedArenaSession == null
+                || SelectedArenaSession.Image1 == null)
+            {
                 return;
+            }
 
             var defaultFilename = "arena.png";
             var dialog = new CommonSaveFileDialog
-            {
-                OverwritePrompt = true,
-                DefaultExtension = ".png",
-                DefaultFileName = defaultFilename,
-                EnsureValidNames = true,
-                Title = "Save deck screenshot",
-                AllowPropertyEditing = false,
-                RestoreDirectory = true,
-                Filters =
-                                     {
-                                         new CommonFileDialogFilter("PNG", ".png")
-                                     }
-            };
+                {
+                    OverwritePrompt = true,
+                    DefaultExtension = ".png",
+                    DefaultFileName = defaultFilename,
+                    EnsureValidNames = true,
+                    Title = "Save deck screenshot",
+                    AllowPropertyEditing = false,
+                    RestoreDirectory = true,
+                    Filters =
+                        {
+                            new CommonFileDialogFilter("PNG", ".png")
+                        }
+                };
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 Bitmap image1 = null;
@@ -575,8 +512,8 @@
                 }
                 else
                 {
-                    Bitmap target = new Bitmap(image1.Width + image2.Width, Math.Max(image1.Height, image2.Height));
-                    using (Graphics g = Graphics.FromImage(target))
+                    var target = new Bitmap(image1.Width + image2.Width, Math.Max(image1.Height, image2.Height));
+                    using (var g = Graphics.FromImage(target))
                     {
                         g.DrawImage(image1, 0, 0);
                         g.DrawImage(image2, image1.Width, 0);
@@ -638,12 +575,13 @@
 
             Load(previousArena);
         }
+
         /// <summary>
-        /// Handle the message with a Task.
+        ///     Handle the message with a Task.
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>
-        /// The Task that represents the operation.
+        ///     The Task that represents the operation.
         /// </returns>
         public async Task Handle(ArenaHeroDetected message)
         {
@@ -664,7 +602,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaWinsDetected message)
@@ -673,7 +611,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaLossesDetected message)
@@ -702,7 +640,8 @@
                 }
 
                 // weird case
-                if (latestArena.IsEnded && latestArena.EndDate != null)
+                if (latestArena.IsEnded
+                    && latestArena.EndDate != null)
                 {
                     var diff = DateTime.Now.Subtract(latestArena.EndDate.Value);
                     if (diff < TimeSpan.FromMinutes(5))
@@ -733,7 +672,8 @@
                 // check if we need to correct last game
                 if (latestArena.IsEnded)
                 {
-                    if (detectedLosses >= 0 && detectedLosses < 3)
+                    if (detectedLosses >= 0
+                        && detectedLosses < 3)
                     {
                         // last game was not a loss
                         Log.Debug("Correcting last game to be a win, because arena was ended, but losses is {0}.", detectedLosses);
@@ -742,7 +682,6 @@
                         {
                             lastgame.Victory = true;
                             await gameManager.UpdateGame(lastgame);
-                            return;
                         }
                     }
                 }
@@ -760,7 +699,6 @@
                 //    latestArena = await TryCreateArenaSession(detectedHero);
                 //    return;
                 //}
-
             }
             finally
             {
@@ -786,7 +724,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameModeChanged message)
@@ -800,12 +738,15 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaSessionUpdated message)
         {
-            if (SelectedArenaSession == null) return;
+            if (SelectedArenaSession == null)
+            {
+                return;
+            }
 
             if (message.ArenaSessionId == SelectedArenaSession.Id)
             {
@@ -816,7 +757,7 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaDrafting message)
@@ -826,7 +767,9 @@
         public void Load(ArenaSessionModel arenaSessionModel)
         {
             if (arenaSessionModel == null)
+            {
                 return;
+            }
 
             SelectedArenaSession = arenaSessionModel;
             InitLatest();
@@ -851,8 +794,9 @@
             }
 
             var arena = SelectedArenaSession;
-            bool changeGameHeroes = false;
-            if (arena.Hero != null && Hero.Id != arena.Hero.Id)
+            var changeGameHeroes = false;
+            if (arena.Hero != null
+                && Hero.Id != arena.Hero.Id)
             {
                 if (MessageBox.Show(
                     "Changing arena hero, will change the hero for all games in this arena.\nAre you sure you want to save?",
@@ -908,15 +852,13 @@
             await Task.Run(() => LoadLatest());
         }
 
-
         /// <summary>
-        /// Called when a part's imports have been satisfied and it is safe to use.
+        ///     Called when a part's imports have been satisfied and it is safe to use.
         /// </summary>
         public void OnImportsSatisfied()
         {
             EnsureInitialized();
         }
-
 
         public void LoadLatest()
         {
@@ -976,7 +918,10 @@
 
         private void EnsureInitialized()
         {
-            if (initialized) return;
+            if (initialized)
+            {
+                return;
+            }
             initialized = true;
 
             var data = GlobalData.Get();
@@ -1039,9 +984,9 @@
             using (await newArenaLock.LockAsync())
             {
                 var arena = new ArenaSessionModel
-                {
-                    Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero),
-                };
+                    {
+                        Hero = await heroRepository.FirstOrDefaultAsync(x => x.Key == detectedHero)
+                    };
                 arena = await gameManager.AddArenaSession(arena);
 
                 // for web api
@@ -1053,7 +998,7 @@
         #endregion
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public async Task Handle(ArenaDeckScreenshotTaken message)
@@ -1138,18 +1083,16 @@
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(SelectedGameChanged message)
         {
-
             if (message.Game != null)
             {
                 if (message.Game.ArenaSession == null)
                 {
                     IsOpen = false;
-                    return;
                 }
             }
         }

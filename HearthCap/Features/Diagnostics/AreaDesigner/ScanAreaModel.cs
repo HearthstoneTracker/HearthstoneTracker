@@ -1,13 +1,9 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
+﻿using System.Drawing;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS;
+
+namespace HearthCap.Features.Diagnostics.AreaDesigner
 {
-    using System;
-    using System.Drawing;
-    using System.IO;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS;
-
     public class ScanAreaModel : PropertyChangedBase
     {
         private ulong hash;
@@ -38,185 +34,155 @@
 
         public ScanAreaModel(ScanArea scanArea)
         {
-            this.Key = scanArea.Key;
-            this.X = scanArea.X;
-            this.Y = scanArea.Y;
-            this.Width = scanArea.Width;
-            this.Height = scanArea.Height;
-            this.Hash = scanArea.Hash;
-            this.ImageLocation = scanArea.Image;
-            this.BaseResolution = scanArea.BaseResolution;
-            this.Mostly = scanArea.Mostly;
+            Key = scanArea.Key;
+            X = scanArea.X;
+            Y = scanArea.Y;
+            Width = scanArea.Width;
+            Height = scanArea.Height;
+            Hash = scanArea.Hash;
+            ImageLocation = scanArea.Image;
+            BaseResolution = scanArea.BaseResolution;
+            Mostly = scanArea.Mostly;
             // this.Image = GetAreaImage(scanArea.Key);
         }
 
         public string Key
         {
-            get
-            {
-                return this.key;
-            }
+            get { return key; }
             set
             {
-                if (value == this.key)
+                if (value == key)
                 {
                     return;
                 }
-                this.key = value;
-                this.NotifyOfPropertyChange(() => this.Key);
+                key = value;
+                NotifyOfPropertyChange(() => Key);
             }
         }
 
         public int X
         {
-            get
-            {
-                return this.x;
-            }
+            get { return x; }
             set
             {
-                if (value == this.x)
+                if (value == x)
                 {
                     return;
                 }
-                this.x = value;
-                this.NotifyOfPropertyChange(() => this.X);
+                x = value;
+                NotifyOfPropertyChange(() => X);
             }
         }
 
         public int Y
         {
-            get
-            {
-                return this.y;
-            }
+            get { return y; }
             set
             {
-                if (value == this.y)
+                if (value == y)
                 {
                     return;
                 }
-                this.y = value;
-                this.NotifyOfPropertyChange(() => this.Y);
+                y = value;
+                NotifyOfPropertyChange(() => Y);
             }
         }
 
         public int Height
         {
-            get
-            {
-                return this.height;
-            }
+            get { return height; }
             set
             {
-                if (value == this.height)
+                if (value == height)
                 {
                     return;
                 }
-                this.height = value;
-                this.NotifyOfPropertyChange(() => this.Height);
+                height = value;
+                NotifyOfPropertyChange(() => Height);
             }
         }
 
         public int Width
         {
-            get
-            {
-                return this.width;
-            }
+            get { return width; }
             set
             {
-                if (value == this.width)
+                if (value == width)
                 {
                     return;
                 }
-                this.width = value;
-                this.NotifyOfPropertyChange(() => this.Width);
+                width = value;
+                NotifyOfPropertyChange(() => Width);
             }
         }
 
         public Image Image
         {
-            get
-            {
-                return this.image;
-            }
+            get { return image; }
             set
             {
-                if (Equals(value, this.image))
+                if (Equals(value, image))
                 {
                     return;
                 }
-                this.image = value;
-                this.NotifyOfPropertyChange(() => this.Image);
+                image = value;
+                NotifyOfPropertyChange(() => Image);
             }
         }
 
         public string ImageLocation
         {
-            get
-            {
-                return this.imageLocation;
-            }
+            get { return imageLocation; }
             set
             {
-                if (value == this.imageLocation)
+                if (value == imageLocation)
                 {
                     return;
                 }
-                this.imageLocation = value;
-                this.NotifyOfPropertyChange(() => this.ImageLocation);
+                imageLocation = value;
+                NotifyOfPropertyChange(() => ImageLocation);
             }
         }
 
         public ulong Hash
         {
-            get
-            {
-                return this.hash;
-            }
+            get { return hash; }
             set
             {
-                if (value == this.hash)
+                if (value == hash)
                 {
                     return;
                 }
-                this.hash = value;
-                this.NotifyOfPropertyChange(() => this.Hash);
+                hash = value;
+                NotifyOfPropertyChange(() => Hash);
             }
         }
 
         public int BaseResolution
         {
-            get
-            {
-                return this.baseResolution;
-            }
+            get { return baseResolution; }
             set
             {
-                if (value == this.baseResolution)
+                if (value == baseResolution)
                 {
                     return;
                 }
-                this.baseResolution = value;
-                this.NotifyOfPropertyChange(() => this.BaseResolution);
+                baseResolution = value;
+                NotifyOfPropertyChange(() => BaseResolution);
             }
         }
 
         public string Mostly
         {
-            get
-            {
-                return this.mostly;
-            }
+            get { return mostly; }
             set
             {
-                if (value == this.mostly)
+                if (value == mostly)
                 {
                     return;
                 }
-                this.mostly = value;
-                this.NotifyOfPropertyChange(() => this.Mostly);
+                mostly = value;
+                NotifyOfPropertyChange(() => Mostly);
             }
         }
     }

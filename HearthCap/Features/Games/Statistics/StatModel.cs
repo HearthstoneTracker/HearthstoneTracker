@@ -1,10 +1,9 @@
+using System;
+using System.Windows.Media;
+using Caliburn.Micro;
+
 namespace HearthCap.Features.Games.Statistics
 {
-    using System;
-    using System.Windows.Media;
-
-    using Caliburn.Micro;
-
     public class StatModel : PropertyChangedBase
     {
         private string category;
@@ -13,7 +12,9 @@ namespace HearthCap.Features.Games.Statistics
 
         private Brush brush;
 
-        public StatModel() { }
+        public StatModel()
+        {
+        }
 
         public StatModel(string category, float number, Brush brush = null)
         {
@@ -24,52 +25,43 @@ namespace HearthCap.Features.Games.Statistics
 
         public string Category
         {
-            get
-            {
-                return this.category;
-            }
+            get { return category; }
             set
             {
-                if (value == this.category)
+                if (value == category)
                 {
                     return;
                 }
-                this.category = value;
-                this.NotifyOfPropertyChange(() => this.Category);
+                category = value;
+                NotifyOfPropertyChange(() => Category);
             }
         }
 
         public float Number
         {
-            get
-            {
-                return this.number;
-            }
+            get { return number; }
             set
             {
-                if (value.Equals(this.number))
+                if (value.Equals(number))
                 {
                     return;
                 }
-                this.number = value;
-                this.NotifyOfPropertyChange(() => this.Number);
+                number = value;
+                NotifyOfPropertyChange(() => Number);
             }
         }
 
         public Brush Brush
         {
-            get
-            {
-                return this.brush;
-            }
+            get { return brush; }
             set
             {
-                if (Equals(value, this.brush))
+                if (Equals(value, brush))
                 {
                     return;
                 }
-                this.brush = value;
-                this.NotifyOfPropertyChange(() => this.Brush);
+                brush = value;
+                NotifyOfPropertyChange(() => Brush);
             }
         }
     }

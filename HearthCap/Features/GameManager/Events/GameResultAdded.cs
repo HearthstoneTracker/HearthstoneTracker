@@ -1,7 +1,7 @@
+using HearthCap.Features.Games.Models;
+
 namespace HearthCap.Features.GameManager.Events
 {
-    using HearthCap.Features.Games.Models;
-
     public class GameResultAdded
     {
         public object Source { get; set; }
@@ -10,8 +10,8 @@ namespace HearthCap.Features.GameManager.Events
 
         public GameResultAdded(object source, GameResultModel gameResult)
         {
-            this.Source = source;
-            this.GameResult = gameResult;
+            Source = source;
+            GameResult = gameResult;
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿namespace HearthCap.Shell.Events
-{
-    using System.Windows;
+﻿using System.Windows;
 
+namespace HearthCap.Shell.Events
+{
     public class WindowStateChanged
     {
         public WindowStateChanged(WindowState windowState)
         {
-            this.WindowState = windowState;
+            WindowState = windowState;
         }
 
         public WindowState WindowState { get; set; }

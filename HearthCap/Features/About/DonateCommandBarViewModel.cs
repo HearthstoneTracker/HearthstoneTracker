@@ -1,15 +1,13 @@
-﻿namespace HearthCap.Features.About
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Features.Analytics;
+using HearthCap.Properties;
+using HearthCap.Shell.Commands;
+using HearthCap.Shell.Dialogs;
+using HearthCap.Shell.WindowCommands;
+
+namespace HearthCap.Features.About
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.Analytics;
-    using HearthCap.Properties;
-    using HearthCap.Shell.Commands;
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.WindowCommands;
-
     [Export(typeof(IWindowCommand))]
     public class DonateCommandBarViewModel : WindowCommandViewModel
     {
@@ -29,7 +27,7 @@
         public void Donate()
         {
             Tracker.TrackEventAsync(Tracker.CommonCategory, "Donate", Tracker.Version.ToString(), 1);
-           
+
             events.PublishOnBackgroundThread(new VisitWebsiteCommand(Resources.DonationLink));
         }
     }

@@ -1,29 +1,21 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using HearthCap.Features.Analytics;
+using HearthCap.Logging;
+using Microsoft.WindowsAPICodePack.ApplicationServices;
+using NLog;
+
 namespace HearthCap.StartUp
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
-    using System.Windows.Threading;
-
-    using GoogleAnalyticsTracker;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Logging;
-
-    using Microsoft.WindowsAPICodePack.ApplicationServices;
-
-    using NLog;
-
-    using Application = System.Windows.Application;
-    using Tracker = HearthCap.Features.Analytics.Tracker;
-
     [Export(typeof(CrashManager))]
     public class CrashManager
     {
         private readonly IAppLogManager appLogManager;
 
-        private readonly static Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         [ImportingConstructor]
         public CrashManager(IAppLogManager appLogManager)
@@ -34,7 +26,7 @@ namespace HearthCap.StartUp
         public void WireUp()
         {
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
-            AppDomain.CurrentDomain.UnhandledException += this.CurrentDomainOnUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             Application.Current.DispatcherUnhandledException += ApplicationOnDispatcherUnhandledException;
 
             ApplicationRestartRecoveryManager.RegisterForApplicationRestart(new RestartSettings("-died", RestartRestrictions.None));

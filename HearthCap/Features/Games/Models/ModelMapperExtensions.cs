@@ -1,21 +1,19 @@
-﻿namespace HearthCap.Features.Games.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+using HearthCap.Data;
+using HearthCap.Features.Decks;
+using Omu.ValueInjecter;
+
+namespace HearthCap.Features.Games.Models
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Decks;
-    using HearthCap.Features.Decks.ModelMappers;
-
-    using Omu.ValueInjecter;
-
     public static class ModelMapperExtensions
     {
         public static ArenaSessionModel ToModel(this ArenaSession arena, int arenaSessionRecurse = 0)
         {
-            if (arena == null) return null;
+            if (arena == null)
+            {
+                return null;
+            }
             ArenaSessionModel model = null;
             model = new ArenaSessionModel();
             model.InjectFrom(arena);
@@ -25,7 +23,10 @@
 
         public static GameResultModel ToModel(this GameResult game, int arenaSessionRecurse = 0, ArenaSessionModel arenaSessionModel = null)
         {
-            if (game == null) return null;
+            if (game == null)
+            {
+                return null;
+            }
             GameResultModel model = null;
             model = new GameResultModel();
             model.InjectFrom(game);

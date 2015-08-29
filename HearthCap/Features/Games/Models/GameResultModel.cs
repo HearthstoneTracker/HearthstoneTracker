@@ -1,12 +1,10 @@
-﻿namespace HearthCap.Features.Games.Models
+﻿using System;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+
+namespace HearthCap.Features.Games.Models
 {
-    using System;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-
     public class GameResultModel : PropertyChangedBase
     {
         private Guid id;
@@ -59,332 +57,276 @@
 
         public Guid Id
         {
-            get
-            {
-                return this.id;
-            }
+            get { return id; }
             set
             {
-                if (value.Equals(this.id))
+                if (value.Equals(id))
                 {
                     return;
                 }
-                this.id = value;
-                this.NotifyOfPropertyChange(() => this.Id);
+                id = value;
+                NotifyOfPropertyChange(() => Id);
             }
         }
 
         public Deck Deck
         {
-            get
-            {
-                return this.deck;
-            }
+            get { return deck; }
             set
             {
-                if (Equals(value, this.deck))
+                if (Equals(value, deck))
                 {
                     return;
                 }
-                this.deck = value;
-                this.NotifyOfPropertyChange(() => this.Deck);
+                deck = value;
+                NotifyOfPropertyChange(() => Deck);
             }
         }
 
         public Hero Hero
         {
-            get
-            {
-                return this.hero;
-            }
+            get { return hero; }
             set
             {
-                if (Equals(value, this.hero))
+                if (Equals(value, hero))
                 {
                     return;
                 }
-                this.hero = value;
-                this.NotifyOfPropertyChange(() => this.Hero);
+                hero = value;
+                NotifyOfPropertyChange(() => Hero);
             }
         }
 
         public Hero OpponentHero
         {
-            get
-            {
-                return this.opponentHero;
-            }
+            get { return opponentHero; }
             set
             {
-                if (Equals(value, this.opponentHero))
+                if (Equals(value, opponentHero))
                 {
                     return;
                 }
-                this.opponentHero = value;
-                this.NotifyOfPropertyChange(() => this.OpponentHero);
+                opponentHero = value;
+                NotifyOfPropertyChange(() => OpponentHero);
             }
         }
 
         public bool Victory
         {
-            get
-            {
-                return this.victory;
-            }
+            get { return victory; }
             set
             {
-                if (value.Equals(this.victory))
+                if (value.Equals(victory))
                 {
                     return;
                 }
-                this.victory = value;
-                this.NotifyOfPropertyChange(() => this.Victory);
+                victory = value;
+                NotifyOfPropertyChange(() => Victory);
             }
         }
 
         public bool GoFirst
         {
-            get
-            {
-                return this.goFirst;
-            }
+            get { return goFirst; }
             set
             {
-                if (value.Equals(this.goFirst))
+                if (value.Equals(goFirst))
                 {
                     return;
                 }
-                this.goFirst = value;
-                this.NotifyOfPropertyChange(() => this.GoFirst);
+                goFirst = value;
+                NotifyOfPropertyChange(() => GoFirst);
             }
         }
 
         public DateTime Started
         {
-            get
-            {
-                return this.started;
-            }
+            get { return started; }
             set
             {
-                if (value.Equals(this.started))
+                if (value.Equals(started))
                 {
                     return;
                 }
-                this.started = value;
-                this.NotifyOfPropertyChange(() => this.Started);
+                started = value;
+                NotifyOfPropertyChange(() => Started);
             }
         }
 
         public DateTime Stopped
         {
-            get
-            {
-                return this.stopped;
-            }
+            get { return stopped; }
             set
             {
-                if (value.Equals(this.stopped))
+                if (value.Equals(stopped))
                 {
                     return;
                 }
-                this.stopped = value;
-                this.NotifyOfPropertyChange(() => this.Stopped);
+                stopped = value;
+                NotifyOfPropertyChange(() => Stopped);
             }
         }
 
         public int Duration
         {
-            get
-            {
-                return this.duration;
-            }
+            get { return duration; }
             set
             {
-                if (value == this.duration)
+                if (value == duration)
                 {
                     return;
                 }
-                this.duration = value;
-                this.NotifyOfPropertyChange(() => this.Duration);
+                duration = value;
+                NotifyOfPropertyChange(() => Duration);
             }
         }
 
         public DateTime Created
         {
-            get
-            {
-                return this.created;
-            }
+            get { return created; }
             set
             {
-                if (value.Equals(this.created))
+                if (value.Equals(created))
                 {
                     return;
                 }
-                this.created = value;
-                this.NotifyOfPropertyChange(() => this.Created);
+                created = value;
+                NotifyOfPropertyChange(() => Created);
             }
         }
 
         public DateTime Modified
         {
-            get
-            {
-                return this.modified;
-            }
+            get { return modified; }
             set
             {
-                if (value.Equals(this.modified))
+                if (value.Equals(modified))
                 {
                     return;
                 }
-                this.modified = value;
-                this.NotifyOfPropertyChange(() => this.Modified);
+                modified = value;
+                NotifyOfPropertyChange(() => Modified);
             }
         }
 
         public GameMode GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return gameMode; }
             set
             {
-                if (value == this.gameMode)
+                if (value == gameMode)
                 {
                     return;
                 }
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
+                gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
             }
         }
 
         public string Notes
         {
-            get
-            {
-                return this.notes;
-            }
+            get { return notes; }
             set
             {
-                if (value == this.notes)
+                if (value == notes)
                 {
                     return;
                 }
-                this.notes = value;
-                this.NotifyOfPropertyChange(() => this.Notes);
+                notes = value;
+                NotifyOfPropertyChange(() => Notes);
             }
         }
 
         public Guid? ArenaSessionId
         {
-            get
-            {
-                return this.arenaSessionId;
-            }
+            get { return arenaSessionId; }
             set
             {
-                if (value.Equals(this.arenaSessionId))
+                if (value.Equals(arenaSessionId))
                 {
                     return;
                 }
-                this.arenaSessionId = value;
-                this.NotifyOfPropertyChange(() => this.ArenaSessionId);
+                arenaSessionId = value;
+                NotifyOfPropertyChange(() => ArenaSessionId);
             }
         }
 
         public int ArenaGameNo
         {
-            get
-            {
-                return this.arenaGameNo;
-            }
+            get { return arenaGameNo; }
             set
             {
-                if (value == this.arenaGameNo)
+                if (value == arenaGameNo)
                 {
                     return;
                 }
-                this.arenaGameNo = value;
-                this.NotifyOfPropertyChange(() => this.ArenaGameNo);
+                arenaGameNo = value;
+                NotifyOfPropertyChange(() => ArenaGameNo);
             }
         }
 
         public int Turns
         {
-            get
-            {
-                return this.turns;
-            }
+            get { return turns; }
             set
             {
-                if (value == this.turns)
+                if (value == turns)
                 {
                     return;
                 }
-                this.turns = value;
-                this.NotifyOfPropertyChange(() => this.Turns);
+                turns = value;
+                NotifyOfPropertyChange(() => Turns);
             }
         }
 
         public bool Conceded
         {
-            get
-            {
-                return this.conceded;
-            }
+            get { return conceded; }
             set
             {
-                if (value.Equals(this.conceded))
+                if (value.Equals(conceded))
                 {
                     return;
                 }
-                this.conceded = value;
-                this.NotifyOfPropertyChange(() => this.Conceded);
+                conceded = value;
+                NotifyOfPropertyChange(() => Conceded);
             }
         }
 
         public ArenaSessionModel ArenaSession
         {
-            get
-            {
-                return this.arenaSession;
-            }
+            get { return arenaSession; }
             set
             {
-                if (Equals(value, this.arenaSession))
+                if (Equals(value, arenaSession))
                 {
                     return;
                 }
-                this.arenaSession = value;
-                this.NotifyOfPropertyChange(() => this.ArenaSession);
+                arenaSession = value;
+                NotifyOfPropertyChange(() => ArenaSession);
             }
         }
 
         public string Server
         {
-            get
-            {
-                return this.server;
-            }
+            get { return server; }
             set
             {
-                if (value == this.server)
+                if (value == server)
                 {
                     return;
                 }
-                this.server = value;
-                this.NotifyOfPropertyChange(() => this.Server);
+                server = value;
+                NotifyOfPropertyChange(() => Server);
             }
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+        ///     Determines whether the specified <see cref="T:System.Object" /> is equal to the current
+        ///     <see cref="T:System.Object" />.
         /// </summary>
         /// <returns>
-        /// true if the specified object  is equal to the current object; otherwise, false.
+        ///     true if the specified object  is equal to the current object; otherwise, false.
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
         public override bool Equals(object obj)
@@ -397,27 +339,27 @@
             {
                 return true;
             }
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
-            return this.Equals((GameResultModel)obj);
+            return Equals((GameResultModel)obj);
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        ///     Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
+        ///     A hash code for the current <see cref="T:System.Object" />.
         /// </returns>
         public override int GetHashCode()
         {
-            return this.Id.GetHashCode();
+            return Id.GetHashCode();
         }
 
         protected bool Equals(GameResultModel other)
         {
-            return this.Id.Equals(other.Id);
+            return Id.Equals(other.Id);
         }
     }
 }

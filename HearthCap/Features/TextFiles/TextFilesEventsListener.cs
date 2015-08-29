@@ -1,11 +1,9 @@
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using Caliburn.Micro;
+
 namespace HearthCap.Features.TextFiles
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-
-    using Caliburn.Micro;
-
     public abstract class TextFilesEventsListener
     {
         private IObservableCollection<TextFileModel> templates = new BindableCollection<TextFileModel>();
@@ -16,32 +14,26 @@ namespace HearthCap.Features.TextFiles
 
         public IList<KeyValuePair<string, string>> Variables
         {
-            get
-            {
-                return this.variables;
-            }
+            get { return variables; }
         }
 
         public IObservableCollection<TextFileModel> Templates
         {
-            get
-            {
-                return this.templates;
-            }
+            get { return templates; }
             set
             {
                 if (templates != null)
                 {
                     templates.CollectionChanged -= TemplatesChanged;
                 }
-                this.templates = value;
+                templates = value;
                 templates.CollectionChanged += TemplatesChanged;
             }
         }
 
         protected void Refresh()
         {
-            if (this.Manager != null)
+            if (Manager != null)
             {
                 Manager.Refresh();
             }
@@ -53,7 +45,7 @@ namespace HearthCap.Features.TextFiles
         protected virtual void TemplatesChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             // TODO: very naive. should only handle changed items
-            this.Refresh();
+            Refresh();
         }
     }
 }

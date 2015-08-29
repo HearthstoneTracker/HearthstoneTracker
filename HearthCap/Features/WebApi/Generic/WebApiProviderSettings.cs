@@ -9,38 +9,20 @@ namespace HearthCap.Features.WebApi.Generic
 
         public string Url
         {
-            get
-            {
-                return this.GetOrCreate("Url", "");
-            }
-            set
-            {
-                this.SetValue("Url", value);
-            }
+            get { return GetOrCreate("Url", ""); }
+            set { SetValue("Url", value); }
         }
 
         public string ApiKey
         {
-            get
-            {
-                return this.GetOrCreate("ApiKey", "");
-            }
-            set
-            {
-                this.SetValue("ApiKey", value);
-            }
+            get { return GetOrCreate("ApiKey", ""); }
+            set { SetValue("ApiKey", value); }
         }
 
         public string SecretKey
         {
-            get
-            {
-                return this.GetOrCreate("SecretKey", "");
-            }
-            set
-            {
-                this.SetValue("SecretKey", value);
-            }
+            get { return GetOrCreate("SecretKey", ""); }
+            set { SetValue("SecretKey", value); }
         }
     }
 }

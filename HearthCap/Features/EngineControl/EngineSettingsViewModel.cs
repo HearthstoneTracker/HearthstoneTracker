@@ -1,20 +1,15 @@
-﻿namespace HearthCap.Features.EngineSettings
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Features.EngineControl;
+using HearthCap.Features.Settings;
+using HearthCap.Shell.UserPreferences;
+using HearthCap.Util;
+
+namespace HearthCap.Features.EngineSettings
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Data;
-    using HearthCap.Features.EngineControl;
-    using HearthCap.Features.Settings;
-    using HearthCap.Shell.Settings;
-    using HearthCap.Shell.UserPreferences;
-    using HearthCap.Util;
-
     public abstract class SpeedScreen : Screen, ISettingsScreen
     {
         public int Order { get; set; }
@@ -29,51 +24,51 @@
 
         private readonly UserPreferences _userPreferences;
 
-        private IEnumerable<SettingModel> defaultSpeeds = new[]
-                                                                   {
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "Slow (5 fps)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.Slow
-                                                                           },
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "Medium (10 fps)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.Medium
-                                                                           },
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "Fast (20 fps)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.Fast
-                                                                           },
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "Very fast (30 fps)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.VeryFast
-                                                                           },
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "Insanely Fast (60 fps)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.InsanelyFast
-                                                                           },
-                                                                       new SettingModel
-                                                                           {
-                                                                               Name = "No delay (not recommended!)",
-                                                                               Value = (int)HearthCap.Core.GameCapture.Speeds.NoDelay
-                                                                           }
-                                                                   };
+        private readonly IEnumerable<SettingModel> defaultSpeeds = new[]
+            {
+                new SettingModel
+                    {
+                        Name = "Slow (5 fps)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.Slow
+                    },
+                new SettingModel
+                    {
+                        Name = "Medium (10 fps)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.Medium
+                    },
+                new SettingModel
+                    {
+                        Name = "Fast (20 fps)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.Fast
+                    },
+                new SettingModel
+                    {
+                        Name = "Very fast (30 fps)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.VeryFast
+                    },
+                new SettingModel
+                    {
+                        Name = "Insanely Fast (60 fps)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.InsanelyFast
+                    },
+                new SettingModel
+                    {
+                        Name = "No delay (not recommended!)",
+                        Value = (int)HearthCap.Core.GameCapture.Speeds.NoDelay
+                    }
+            };
 
         private SettingModel selectedSpeed;
 
         private SettingModel selectedEngine;
 
-        private BindableCollection<SettingModel> engines = new BindableCollection<SettingModel>(new[]
-                                                                                                    {
-                                                                                                        new SettingModel("Auto detect (default)", CaptureMethod.AutoDetect),
-                                                                                                        new SettingModel("Screen Capture (supports background capture)", CaptureMethod.Wdm),
-                                                                                                        new SettingModel("DirectX (supports bg & full-screen)", CaptureMethod.DirectX),
-                                                                                                        new SettingModel("Hook (fast, 100% accurate, beta)", CaptureMethod.Log)
-                                                                                                    });
+        private readonly BindableCollection<SettingModel> engines = new BindableCollection<SettingModel>(new[]
+            {
+                new SettingModel("Auto detect (default)", CaptureMethod.AutoDetect),
+                new SettingModel("Screen Capture (supports background capture)", CaptureMethod.Wdm),
+                new SettingModel("DirectX (supports bg & full-screen)", CaptureMethod.DirectX),
+                new SettingModel("Hook (fast, 100% accurate, beta)", CaptureMethod.Log)
+            });
 
         private bool _autoStart;
 
@@ -97,10 +92,7 @@
 
         public SettingModel SelectedSpeed
         {
-            get
-            {
-                return selectedSpeed;
-            }
+            get { return selectedSpeed; }
             set
             {
                 if (Equals(value, selectedSpeed))
@@ -115,10 +107,7 @@
 
         public SettingModel SelectedEngine
         {
-            get
-            {
-                return selectedEngine;
-            }
+            get { return selectedEngine; }
             set
             {
                 if (value == selectedEngine)
@@ -131,13 +120,9 @@
             }
         }
 
-
         public bool AutoStart
         {
-            get
-            {
-                return _autoStart;
-            }
+            get { return _autoStart; }
             set
             {
                 if (value.Equals(_autoStart))
@@ -152,10 +137,7 @@
 
         public bool ShowControls
         {
-            get
-            {
-                return _showControls;
-            }
+            get { return _showControls; }
             set
             {
                 if (value.Equals(_showControls))
@@ -170,23 +152,20 @@
 
         public IObservableCollection<SettingModel> Engines
         {
-            get
-            {
-                return engines;
-            }
+            get { return engines; }
         }
 
         public UserPreferences UserPreferences
         {
-            get
-            {
-                return _userPreferences;
-            }
+            get { return _userPreferences; }
         }
 
         private void UpdateSettings()
         {
-            if (PauseNotify.IsPaused(this)) return;
+            if (PauseNotify.IsPaused(this))
+            {
+                return;
+            }
 
             _captureEngine.Speed = (int)SelectedSpeed.Value;
             _captureEngine.CaptureMethod = ((CaptureMethod)SelectedEngine.Value);
@@ -215,7 +194,7 @@
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {

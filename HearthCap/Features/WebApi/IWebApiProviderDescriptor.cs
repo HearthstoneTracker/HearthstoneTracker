@@ -1,7 +1,7 @@
+using System.ComponentModel;
+
 namespace HearthCap.Features.WebApi
 {
-    using System.ComponentModel;
-
     public interface IWebApiProviderDescriptor : INotifyPropertyChanged
     {
         string ProviderKey { get; }

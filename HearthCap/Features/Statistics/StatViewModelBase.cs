@@ -1,18 +1,15 @@
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Core;
+using HearthCap.Framework;
+using HearthCap.Util;
+
 namespace HearthCap.Features.Statistics
 {
-    using System;
-    using System.ComponentModel;
-    using System.ComponentModel.Composition;
-    using System.Linq;
-    using System.Linq.Expressions;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Core;
-    using HearthCap.Framework;
-    using HearthCap.Util;
-
     public abstract class StatViewModelBase : Screen, IStatsViewModel
     {
         private bool showWinRatio;
@@ -49,245 +46,215 @@ namespace HearthCap.Features.Statistics
 
         public DateTime? FromDate
         {
-            get
-            {
-                return this.fromDate;
-            }
+            get { return fromDate; }
             set
             {
-                if (value.Equals(this.fromDate))
+                if (value.Equals(fromDate))
                 {
                     return;
                 }
-                this.fromDate = value;
-                this.NotifyOfPropertyChange(() => this.FromDate);
+                fromDate = value;
+                NotifyOfPropertyChange(() => FromDate);
             }
         }
 
         public DateTime? ToDate
         {
-            get
-            {
-                return this.toDate;
-            }
+            get { return toDate; }
             set
             {
-                if (value.Equals(this.toDate))
+                if (value.Equals(toDate))
                 {
                     return;
                 }
-                this.toDate = value;
-                this.NotifyOfPropertyChange(() => this.ToDate);
+                toDate = value;
+                NotifyOfPropertyChange(() => ToDate);
             }
         }
 
         public string GameMode
         {
-            get
-            {
-                return this.gameMode;
-            }
+            get { return gameMode; }
             set
             {
-                if (value == this.gameMode)
+                if (value == gameMode)
                 {
                     return;
                 }
-                this.gameMode = value;
-                this.NotifyOfPropertyChange(() => this.GameMode);
+                gameMode = value;
+                NotifyOfPropertyChange(() => GameMode);
             }
         }
 
         public bool ShowWinRatio
         {
-            get
-            {
-                return this.showWinRatio;
-            }
+            get { return showWinRatio; }
             set
             {
-                if (value.Equals(this.showWinRatio) || this.IsLastSelected(value))
+                if (value.Equals(showWinRatio)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWinRatio = value;
-                this.NotifyOfPropertyChange(() => this.ShowWinRatio);
+                showWinRatio = value;
+                NotifyOfPropertyChange(() => ShowWinRatio);
             }
         }
 
         public bool ShowWins
         {
-            get
-            {
-                return this.showWins;
-            }
+            get { return showWins; }
             set
             {
-                if (value.Equals(this.showWins) || this.IsLastSelected(value))
+                if (value.Equals(showWins)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWins = value;
-                this.NotifyOfPropertyChange(() => this.ShowWins);
+                showWins = value;
+                NotifyOfPropertyChange(() => ShowWins);
             }
         }
 
         public bool ShowWinRatioCoin
         {
-            get
-            {
-                return this.showWinRatioCoin;
-            }
+            get { return showWinRatioCoin; }
             set
             {
-                if (value.Equals(this.showWinRatioCoin) || this.IsLastSelected(value))
+                if (value.Equals(showWinRatioCoin)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWinRatioCoin = value;
-                this.NotifyOfPropertyChange(() => this.ShowWinRatioCoin);
+                showWinRatioCoin = value;
+                NotifyOfPropertyChange(() => ShowWinRatioCoin);
             }
         }
 
         public bool ShowWinRatioNoCoin
         {
-            get
-            {
-                return this.showWinRatioNoCoin;
-            }
+            get { return showWinRatioNoCoin; }
             set
             {
-                if (value.Equals(this.showWinRatioNoCoin) || this.IsLastSelected(value))
+                if (value.Equals(showWinRatioNoCoin)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWinRatioNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.ShowWinRatioNoCoin);
+                showWinRatioNoCoin = value;
+                NotifyOfPropertyChange(() => ShowWinRatioNoCoin);
             }
         }
 
         public bool ShowWinsCoin
         {
-            get
-            {
-                return this.showWinsCoin;
-            }
+            get { return showWinsCoin; }
             set
             {
-                if (value.Equals(this.showWinsCoin) || this.IsLastSelected(value))
+                if (value.Equals(showWinsCoin)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWinsCoin = value;
-                this.NotifyOfPropertyChange(() => this.ShowWinsCoin);
+                showWinsCoin = value;
+                NotifyOfPropertyChange(() => ShowWinsCoin);
             }
         }
 
         public bool ShowWinsNoCoin
         {
-            get
-            {
-                return this.showWinsNoCoin;
-            }
+            get { return showWinsNoCoin; }
             set
             {
-                if (value.Equals(this.showWinsNoCoin) || this.IsLastSelected(value))
+                if (value.Equals(showWinsNoCoin)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showWinsNoCoin = value;
-                this.NotifyOfPropertyChange(() => this.ShowWinsNoCoin);
+                showWinsNoCoin = value;
+                NotifyOfPropertyChange(() => ShowWinsNoCoin);
             }
         }
 
         public bool ShowTotalGames
         {
-            get
-            {
-                return this.showTotalGames;
-            }
+            get { return showTotalGames; }
             set
             {
-                if (value.Equals(this.showTotalGames) || this.IsLastSelected(value))
+                if (value.Equals(showTotalGames)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showTotalGames = value;
-                this.NotifyOfPropertyChange(() => this.ShowTotalGames);
+                showTotalGames = value;
+                NotifyOfPropertyChange(() => ShowTotalGames);
             }
         }
 
         public bool ShowPlayedVsRatio
         {
-            get
-            {
-                return this.showPlayedVsRatio;
-            }
+            get { return showPlayedVsRatio; }
             set
             {
-                if (value.Equals(this.showPlayedVsRatio) || this.IsLastSelected(value))
+                if (value.Equals(showPlayedVsRatio)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showPlayedVsRatio = value;
-                this.NotifyOfPropertyChange(() => this.ShowPlayedVsRatio);
+                showPlayedVsRatio = value;
+                NotifyOfPropertyChange(() => ShowPlayedVsRatio);
             }
         }
 
         public ServerItemModel Server
         {
-            get
-            {
-                return this.server;
-            }
+            get { return server; }
             set
             {
-                if (Equals(value, this.server))
+                if (Equals(value, server))
                 {
                     return;
                 }
-                this.server = value;
-                this.NotifyOfPropertyChange(() => this.Server);
+                server = value;
+                NotifyOfPropertyChange(() => Server);
             }
         }
 
         public string Search
         {
-            get
-            {
-                return this.search;
-            }
+            get { return search; }
             set
             {
-                if (value == this.search)
+                if (value == search)
                 {
                     return;
                 }
-                this.search = value;
-                this.NotifyOfPropertyChange(() => this.Search);
+                search = value;
+                NotifyOfPropertyChange(() => Search);
             }
         }
 
         public bool ShowTotalGamesByCoin
         {
-            get
-            {
-                return this.showTotalGamesByCoin;
-            }
+            get { return showTotalGamesByCoin; }
             set
             {
-                if (value.Equals(this.showTotalGamesByCoin) || this.IsLastSelected(value))
+                if (value.Equals(showTotalGamesByCoin)
+                    || IsLastSelected(value))
                 {
                     return;
                 }
-                this.showTotalGamesByCoin = value;
-                this.NotifyOfPropertyChange(() => this.ShowTotalGamesByCoin);
+                showTotalGamesByCoin = value;
+                NotifyOfPropertyChange(() => ShowTotalGamesByCoin);
             }
         }
 
         private bool IsLastSelected(bool value, int min = 1)
         {
-            if (value) return false;
+            if (value)
+            {
+                return false;
+            }
             return Truth(
                 ShowWinRatio,
                 ShowWinRatioCoin,
@@ -309,7 +276,7 @@ namespace HearthCap.Features.Statistics
         {
             GameMode = String.Empty;
 
-            using (var reg = new StatRegistrySettings(this.GetType()))
+            using (var reg = new StatRegistrySettings(GetType()))
             {
                 ShowWinRatio = reg.ShowWinRatio;
                 ShowWinRatioCoin = reg.ShowWinRatioCoin;
@@ -328,7 +295,7 @@ namespace HearthCap.Features.Statistics
                 ShowTotalGames = true;
             }
             Busy = new BusyWatcher();
-            this.PropertyChanged += OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -344,7 +311,7 @@ namespace HearthCap.Features.Statistics
                 case "ShowTotalGames":
                 case "ShowTotalGamesByCoin":
                 case "ShowPlayedVsRatio":
-                    using (var reg = new StatRegistrySettings(this.GetType()))
+                    using (var reg = new StatRegistrySettings(GetType()))
                     {
                         reg.ShowWinRatio = ShowWinRatio;
                         reg.ShowWinRatioCoin = ShowWinRatioCoin;
@@ -362,7 +329,8 @@ namespace HearthCap.Features.Statistics
 
         protected Expression<Func<GameResult, bool>> GetFilterExpression()
         {
-            var query = PredicateBuilder.True<GameResult>(); ;
+            var query = PredicateBuilder.True<GameResult>();
+            ;
             if (FromDate != null)
             {
                 var filterFromDate = FromDate.Value.SetToBeginOfDay();
@@ -374,7 +342,8 @@ namespace HearthCap.Features.Statistics
                 query = query.And(x => x.Started <= filterToDate);
             }
 
-            if (this.Server != null && !String.IsNullOrEmpty(Server.Name))
+            if (Server != null
+                && !String.IsNullOrEmpty(Server.Name))
             {
                 var serverName = Server.Name;
                 query = query.And(x => x.Server == serverName);
@@ -394,7 +363,7 @@ namespace HearthCap.Features.Statistics
                 var s = Search.ToLowerInvariant().Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var keyword in s)
                 {
-                    string keyword1 = keyword;
+                    var keyword1 = keyword;
                     query = query.And(x =>
                         x.Notes.ToLower().Contains(keyword1) ||
                         x.Hero.ClassName.ToLower().Contains(keyword1) ||

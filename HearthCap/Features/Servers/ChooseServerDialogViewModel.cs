@@ -1,12 +1,10 @@
+using System.Linq;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+using HearthCap.Features.Core;
+
 namespace HearthCap.Features.Servers
 {
-    using System.Linq;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
-    using HearthCap.Features.Core;
-
     public class ChooseServerDialogViewModel : Screen
     {
         private readonly BindableCollection<ServerItemModel> servers;
@@ -16,48 +14,42 @@ namespace HearthCap.Features.Servers
         public ChooseServerDialogViewModel(BindableCollection<ServerItemModel> servers)
         {
             this.servers = servers;
-            this.DisplayName = "Choose default server:";
-            this.SelectedServer = servers.FirstOrDefault(x => x.IsChecked);
-            if (this.SelectedServer == null)
+            DisplayName = "Choose default server:";
+            SelectedServer = servers.FirstOrDefault(x => x.IsChecked);
+            if (SelectedServer == null)
             {
-                this.SelectedServer = servers.FirstOrDefault();
+                SelectedServer = servers.FirstOrDefault();
             }
         }
 
         public BindableCollection<ServerItemModel> Servers
         {
-            get
-            {
-                return this.servers;
-            }
+            get { return servers; }
         }
 
         public ServerItemModel SelectedServer
         {
-            get
-            {
-                return this.selectedServer;
-            }
+            get { return selectedServer; }
             set
             {
-                if (Equals(value, this.selectedServer))
+                if (Equals(value, selectedServer))
                 {
                     return;
                 }
-                this.selectedServer = value;
-                this.NotifyOfPropertyChange(() => this.SelectedServer);
+                selectedServer = value;
+                NotifyOfPropertyChange(() => SelectedServer);
             }
         }
 
         [Dependencies("SelectedServer")]
         public void SaveClose()
         {
-            this.TryClose();
+            TryClose();
         }
 
         public bool CanSaveClose()
         {
-            return this.SelectedServer != null;
+            return SelectedServer != null;
         }
     }
 }

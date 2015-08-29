@@ -23,14 +23,14 @@
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Label">
                 <Setter Property="FontSize"
-                        Value="16"></Setter>
+                        Value="16" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='320|Auto'}"></ColumnDefinition>
-            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|320'}"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='320|Auto'}" />
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|320'}" />
         </Grid.ColumnDefinitions>
         <Grid Margin="8 0 8 0"
               Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='1|0'}"
@@ -55,16 +55,22 @@
                             HorizontalAlignment="Stretch"
                             IsEnabled="{Binding CanTakeScreenshot}"
                             Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
-                            Name="TakeFirstScreenshot">Take first screenshot</Button>
+                            Name="TakeFirstScreenshot">
+                        Take first screenshot
+                    </Button>
                     <Button Margin="0 4 0 0"
                             HorizontalAlignment="Stretch"
                             IsEnabled="{Binding CanTakeScreenshot}"
                             Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
-                            Name="TakeSecondScreenshot">Take second screenshot</Button>
+                            Name="TakeSecondScreenshot">
+                        Take second screenshot
+                    </Button>
                     <Button Margin="0 0 0 0"
                             HorizontalAlignment="Stretch"
                             Visibility="{Binding TakingScreenshot, Converter={StaticResource booleanToVisibility}}"
-                            Name="CancelTakeScreenshot">Wait (click to cancel)</Button>
+                            Name="CancelTakeScreenshot">
+                        Wait (click to cancel)
+                    </Button>
                 </StackPanel>
                 <Button Width="100"
                         Grid.Column="1"
@@ -72,7 +78,9 @@
                         Margin="6 0 0 0"
                         VerticalAlignment="Bottom"
                         Visibility="{Binding DeckScreenshot1, Converter={StaticResource nullToCollapsed}}"
-                        Name="SaveScreenshotToDisk">Save to disk</Button>
+                        Name="SaveScreenshotToDisk">
+                    Save to disk
+                </Button>
             </Grid>
             <ScrollViewer Grid.Row="1"
                           Margin="0 6 0 0"
@@ -92,7 +100,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Top"
                            Source="{Binding DeckScreenshot1}" />
-                    <Separator Margin="0 8 0 8"></Separator>
+                    <Separator Margin="0 8 0 8" />
                     <Image x:Name="Screenshot2"
                            IsHitTestVisible="False"
                            UseLayoutRounding="True"
@@ -108,9 +116,9 @@
         </Grid>
         <Grid Grid.Column="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='0|1'}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="1"
                   HorizontalAlignment="Stretch"
@@ -137,7 +145,9 @@
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                                 <TextBlock VerticalAlignment="Center"
-                                           Margin="4 0 0 0">DELETE</TextBlock>
+                                           Margin="4 0 0 0">
+                                    DELETE
+                                </TextBlock>
                             </StackPanel>
                         </Button>
                         <Button Name="Merge"
@@ -153,7 +163,9 @@
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                                 <TextBlock VerticalAlignment="Center"
-                                           Margin="4 0 0 0">MERGE</TextBlock>
+                                           Margin="4 0 0 0">
+                                    MERGE
+                                </TextBlock>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -173,7 +185,9 @@
                             </Rectangle>
                             <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibilityInverse}}"
                                        VerticalAlignment="Center"
-                                       Margin="4 0 0 0">SHOW LATEST</TextBlock>
+                                       Margin="4 0 0 0">
+                                SHOW LATEST
+                            </TextBlock>
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -199,10 +213,14 @@
                                 </Rectangle>
                                 <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibilityInverse}}"
                                            VerticalAlignment="Center"
-                                           Margin="4 0 0 0">SHOW</TextBlock>
+                                           Margin="4 0 0 0">
+                                    SHOW
+                                </TextBlock>
                                 <TextBlock Visibility="{Binding ShowScreenshotColumn, Converter={StaticResource booleanToVisibility}}"
                                            VerticalAlignment="Center"
-                                           Margin="4 0 0 0">HIDE</TextBlock>
+                                           Margin="4 0 0 0">
+                                    HIDE
+                                </TextBlock>
                             </StackPanel>
                         </Button>
                         <Button Name="AddGame"
@@ -218,7 +236,9 @@
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                                 <TextBlock VerticalAlignment="Center"
-                                           Margin="4 0 0 0">ADD GAME</TextBlock>
+                                           Margin="4 0 0 0">
+                                    ADD GAME
+                                </TextBlock>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -238,7 +258,9 @@
                                     </Rectangle.OpacityMask>
                                 </Rectangle>
                                 <TextBlock VerticalAlignment="Center"
-                                           Margin="4 0 0 0">SAVE</TextBlock>
+                                           Margin="4 0 0 0">
+                                    SAVE
+                                </TextBlock>
                             </StackPanel>
                         </Button>
                     </StackPanel>
@@ -256,7 +278,7 @@
                                             Style="{StaticResource hccFormStyle}">
                         <ComboBox Name="Servers"
                                   DisplayMemberPath="Name"
-                                  SelectedItem="{Binding SelectedServer}"></ComboBox>
+                                  SelectedItem="{Binding SelectedServer}" />
                     </HeaderedContentControl>
                     <HeaderedContentControl x:Name="starttime"
                                             Header="Start time:"
@@ -264,8 +286,8 @@
                                             Style="{StaticResource hccFormStyle}">
                         <Grid Grid.Column="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <xctk:DateTimePicker Name="Started"
                                                  Value="{Binding Started}"
@@ -274,11 +296,11 @@
                                                  TimeFormat="Custom"
                                                  TimeFormatString="t"
                                                  ShowButtonSpinner="False"
-                                                 Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                                                 Foreground="{DynamicResource BlackBrush}" />
                             <Button Name="SetStartTime"
                                     Content="Now"
                                     Grid.Column="1"
-                                    Margin="4 0 0 0"></Button>
+                                    Margin="4 0 0 0" />
                         </Grid>
                     </HeaderedContentControl>
                     <HeaderedContentControl x:Name="endtime"
@@ -288,8 +310,8 @@
                                             Visibility="{Binding IsEnded, Converter={StaticResource booleanToVisibility}}">
                         <Grid Grid.Column="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <xctk:DateTimePicker Name="Ended"
                                                  Value="{Binding Ended}"
@@ -298,11 +320,11 @@
                                                  TimeFormat="Custom"
                                                  TimeFormatString="t"
                                                  ShowButtonSpinner="False"
-                                                 Foreground="{DynamicResource BlackBrush}"></xctk:DateTimePicker>
+                                                 Foreground="{DynamicResource BlackBrush}" />
                             <Button Name="SetEndTime"
                                     Content="Now"
                                     Grid.Column="1"
-                                    Margin="4 0 0 0"></Button>
+                                    Margin="4 0 0 0" />
                         </Grid>
                     </HeaderedContentControl>
                     <HeaderedContentControl x:Name="hero"
@@ -314,7 +336,7 @@
                                  SelectedItem="{Binding Hero}"
                                  SelectionMode="Single"
                                  Grid.Column="1"
-                                 Style="{StaticResource heroListBox}"></ListBox>
+                                 Style="{StaticResource heroListBox}" />
                     </HeaderedContentControl>
                     <HeaderedContentControl x:Name="wins"
                                             Header="Wins:"
@@ -322,9 +344,9 @@
                                             Style="{StaticResource hccFormStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80" SharedSizeGroup="SecondColumn"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="80" SharedSizeGroup="SecondColumn" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
                             <controls1:NumericUpDown Name="Wins"
                                                      Grid.Column="0"
@@ -341,7 +363,7 @@
                                                      Maximum="12" />
                             <Label Target="{Binding ElementName=Losses}"
                                    Content="Losses:"
-                                   Grid.Column="1"></Label>
+                                   Grid.Column="1" />
                             <controls1:NumericUpDown Name="Losses"
                                                      Grid.Column="2"
                                                      VerticalAlignment="Center"
@@ -364,18 +386,18 @@
                                             Style="{StaticResource hccFormStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition SharedSizeGroup="SecondColumn"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition SharedSizeGroup="SecondColumn" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
-                            <CheckBox Name="Retired"></CheckBox>
+                            <CheckBox Name="Retired" />
                             <Label Target="{Binding ElementName=IsEnded}"
                                    Content="Ended?"
-                                   Grid.Column="1"></Label>
+                                   Grid.Column="1" />
                             <CheckBox Name="IsEnded"
                                       IsChecked="{Binding IsEnded, Mode=TwoWay}"
                                       Grid.Column="2"
-                                      IsEnabled="False"></CheckBox>
+                                      IsEnabled="False" />
                         </Grid>
                     </HeaderedContentControl>
                     <Separator Margin="0 4 0 8" />
@@ -385,9 +407,9 @@
                                             Style="{StaticResource hccFormStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
                             <!--<TextBox Name="RewardGold"
                                  HorizontalContentAlignment="Right">
@@ -407,10 +429,10 @@
                                                      InterceptArrowKeys="True"
                                                      TrackMouseWheelWhenMouseOver="True"
                                                      Speedup="False"
-                                                     Interval="5"></controls1:NumericUpDown>
+                                                     Interval="5" />
                             <Label Target="{Binding ElementName=RewardDust}"
                                    Content="Dust:"
-                                   Grid.Column="1"></Label>
+                                   Grid.Column="1" />
                             <controls1:NumericUpDown HorizontalContentAlignment="Right"
                                                      Value="{Binding RewardDust}"
                                                      Minimum="0"
@@ -421,7 +443,7 @@
                                                      Speedup="False"
                                                      TrackMouseWheelWhenMouseOver="True"
                                                      InterceptArrowKeys="True"
-                                                     Interval="5"></controls1:NumericUpDown>
+                                                     Interval="5" />
                             <!--<TextBox Name="RewardDust"
                                  Grid.Column="2"
                                  HorizontalContentAlignment="Right">
@@ -439,9 +461,9 @@
                                             Style="{StaticResource hccFormStyle}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="80"></ColumnDefinition>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
                             </Grid.ColumnDefinitions>
                             <controls1:NumericUpDown Name="RewardPacks"
                                                      Grid.Column="0"
@@ -462,7 +484,7 @@
                                  MaxLength="4000"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
-                                 Height="100"></TextBox>
+                                 Height="100" />
                     </HeaderedContentControl>
                 </StackPanel>
             </ScrollViewer>

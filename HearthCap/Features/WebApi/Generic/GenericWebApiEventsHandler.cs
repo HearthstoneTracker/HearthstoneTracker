@@ -1,16 +1,12 @@
+using System;
+using System.Net.Http;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Features.WebApi.Hmac;
+using LogManager = NLog.LogManager;
+
 namespace HearthCap.Features.WebApi.Generic
 {
-    using System;
-    using System.Net.Http;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.WebApi.Hmac;
-
-    using NLog;
-
     public class GenericWebApiEventsHandler : IWebApiEventsHandler,
         IHandle<GameStarted>,
         IHandle<GameEnded>,
@@ -18,7 +14,7 @@ namespace HearthCap.Features.WebApi.Generic
         IHandle<ArenaSessionEnded>,
         IDisposable
     {
-        private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Log = LogManager.GetCurrentClassLogger();
 
         private WebApiProviderDescriptor providerDescriptor;
 
@@ -28,17 +24,13 @@ namespace HearthCap.Features.WebApi.Generic
 
         private bool _disposed;
 
-        public GenericWebApiEventsHandler()
-        {
-        }
-
         public void Initialize(WebApiProviderDescriptor providerDescriptor)
         {
             this.providerDescriptor = providerDescriptor;
-            this.baseUrl = this.providerDescriptor.Data["Url"];
-            if (!this.baseUrl.EndsWith("/"))
+            baseUrl = this.providerDescriptor.Data["Url"];
+            if (!baseUrl.EndsWith("/"))
             {
-                this.baseUrl = this.baseUrl + "/";
+                baseUrl = baseUrl + "/";
             }
 
             var signingHandler = new HmacSigningHandler(
@@ -47,33 +39,33 @@ namespace HearthCap.Features.WebApi.Generic
                 new CanonicalRepresentationBuilder(),
                 new HmacSignatureCalculator());
 
-            this.client = new HttpClient(
-                new RequestContentMd5Handler()
-                {
-                    InnerHandler = signingHandler
-                });            
+            client = new HttpClient(
+                new RequestContentMd5Handler
+                    {
+                        InnerHandler = signingHandler
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameStarted message)
         {
-            this.Post("gamestarted", message);
+            Post("gamestarted", message);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameEnded message)
         {
-            this.Post("gameended", message);
+            Post("gameended", message);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaSessionStarted message)
@@ -82,7 +74,7 @@ namespace HearthCap.Features.WebApi.Generic
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ArenaSessionEnded message)
@@ -94,8 +86,8 @@ namespace HearthCap.Features.WebApi.Generic
         {
             try
             {
-                var url = this.baseUrl + path;
-                this.client.PostAsJsonAsync(url, message);
+                var url = baseUrl + path;
+                client.PostAsJsonAsync(url, message);
             }
             catch (Exception ex)
             {
@@ -104,7 +96,7 @@ namespace HearthCap.Features.WebApi.Generic
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -115,7 +107,9 @@ namespace HearthCap.Features.WebApi.Generic
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed)
+            {
                 return;
+            }
 
             if (disposing)
             {

@@ -6,7 +6,7 @@
 
         public ServerChanged(ServerItemModel server)
         {
-            this.Server = server;
+            Server = server;
         }
     }
 }

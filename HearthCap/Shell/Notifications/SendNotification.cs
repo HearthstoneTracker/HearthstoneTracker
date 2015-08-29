@@ -4,9 +4,9 @@
     {
         public SendNotification(string message, NotificationType type = NotificationType.Info, int hideAfter = 5000)
         {
-            this.Message = message;
-            this.Type = type;
-            this.HideAfter = hideAfter;
+            Message = message;
+            Type = type;
+            HideAfter = hideAfter;
         }
 
         public SendNotification(string message, int hideAfter)
@@ -19,7 +19,7 @@
         public string Message { get; set; }
 
         /// <summary>
-        /// Hide after (in milliseconds). set to 0 or lower to hide; only on click
+        ///     Hide after (in milliseconds). set to 0 or lower to hide; only on click
         /// </summary>
         public int HideAfter { get; set; }
     }

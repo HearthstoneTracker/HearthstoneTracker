@@ -1,26 +1,25 @@
-﻿namespace HearthCap.Logging
+﻿using System.Threading;
+using NLog;
+using NLog.Targets;
+
+namespace HearthCap.Logging
 {
-    using System.Threading;
-
-    using NLog;
-    using NLog.Targets;
-
     public class RingTarget : TargetWithLayout
     {
         private const int logSize = 1024;
 
-        private readonly static string[] buffer;
+        private static readonly string[] buffer;
 
         private static int nextLogEntry;
 
         static RingTarget()
         {
-            RingTarget.buffer = new string[logSize];
+            buffer = new string[logSize];
         }
 
         protected override void Write(LogEventInfo logEvent)
         {
-            RingTarget.buffer[Interlocked.Increment(ref RingTarget.nextLogEntry) % logSize] = this.Layout.Render(logEvent);
+            buffer[Interlocked.Increment(ref nextLogEntry) % logSize] = Layout.Render(logEvent);
         }
     }
 }

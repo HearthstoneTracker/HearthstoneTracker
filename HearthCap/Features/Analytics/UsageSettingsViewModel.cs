@@ -1,12 +1,9 @@
-﻿namespace HearthCap.Features.Analytics
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Features.Settings;
+
+namespace HearthCap.Features.Analytics
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.Settings;
-    using HearthCap.Util;
-
     [Export(typeof(ISettingsScreen))]
     public class UsageSettingsViewModel : SettingsScreen
     {
@@ -18,49 +15,45 @@
         public UsageSettingsViewModel(IEventAggregator events)
         {
             this.events = events;
-            this.DisplayName = "Improve Hearthstone Tracker:";
-            this.Order = 11;
+            DisplayName = "Improve Hearthstone Tracker:";
+            Order = 11;
             events.Subscribe(this);
         }
 
         private void UpdateSettings()
         {
-            Tracker.IsEnabled = this.ShareUsageStatistics;
+            Tracker.IsEnabled = ShareUsageStatistics;
         }
 
         private void LoadSettings()
         {
             using (var reg = new AnalyticsRegistrySettings())
             {
-                this.ShareUsageStatistics = reg.ShareUsageStatistics;
+                ShareUsageStatistics = reg.ShareUsageStatistics;
             }
         }
 
         public bool ShareUsageStatistics
         {
-            get
-            {
-                return this.shareUsageStatistics;
-            }
+            get { return shareUsageStatistics; }
             set
             {
-                if (value.Equals(this.shareUsageStatistics))
+                if (value.Equals(shareUsageStatistics))
                 {
                     return;
                 }
-                this.shareUsageStatistics = value;
-                this.NotifyOfPropertyChange(() => this.ShareUsageStatistics);
-                this.UpdateSettings();
+                shareUsageStatistics = value;
+                NotifyOfPropertyChange(() => ShareUsageStatistics);
+                UpdateSettings();
             }
         }
 
         /// <summary>
-        /// Called when initializing.
+        ///     Called when initializing.
         /// </summary>
         protected override void OnInitialize()
         {
-            this.LoadSettings();
+            LoadSettings();
         }
-
     }
 }

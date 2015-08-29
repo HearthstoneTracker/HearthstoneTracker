@@ -1,9 +1,8 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
+﻿using System;
+using Caliburn.Micro;
+
+namespace HearthCap.Features.Diagnostics.AreaDesigner
 {
-    using System;
-
-    using Caliburn.Micro;
-
     public class RegionModel : PropertyChangedBase
     {
         private int xPos;
@@ -23,7 +22,7 @@
         protected virtual bool OnMoving(int x, int y)
         {
             var e = new RegionMovingEventArgs(x, y);
-            var handler = this.Moving;
+            var handler = Moving;
             if (handler != null)
             {
                 handler(this, e);
@@ -37,7 +36,7 @@
         protected virtual bool OnResizing(int width, int height)
         {
             var e = new RegionResizingEventArgs(width, height);
-            var handler = this.Resizing;
+            var handler = Resizing;
             if (handler != null)
             {
                 handler(this, e);
@@ -48,118 +47,106 @@
 
         public int XPos
         {
-            get
-            {
-                return this.xPos;
-            }
+            get { return xPos; }
             set
             {
-                if (value == this.xPos || value < 0)
+                if (value == xPos
+                    || value < 0)
                 {
                     return;
                 }
 
                 if (OnMoving(value, YPos))
                 {
-                    this.xPos = value;
-                    this.NotifyOfPropertyChange(() => this.XPos);
+                    xPos = value;
+                    NotifyOfPropertyChange(() => XPos);
                 }
             }
         }
 
         public int YPos
         {
-            get
-            {
-                return this.yPos;
-            }
+            get { return yPos; }
             set
             {
-                if (value == this.yPos || value < 0)
+                if (value == yPos
+                    || value < 0)
                 {
                     return;
                 }
 
                 if (OnMoving(XPos, value))
                 {
-                    this.yPos = value;
-                    this.NotifyOfPropertyChange(() => this.YPos);
+                    yPos = value;
+                    NotifyOfPropertyChange(() => YPos);
                 }
             }
         }
 
         public int Height
         {
-            get
-            {
-                return this.height;
-            }
+            get { return height; }
             set
             {
-                if (value == this.height || value < 0)
+                if (value == height
+                    || value < 0)
                 {
                     return;
                 }
 
                 if (OnResizing(Width, value))
                 {
-                    this.height = value;
-                    this.NotifyOfPropertyChange(() => this.Height);
+                    height = value;
+                    NotifyOfPropertyChange(() => Height);
                 }
             }
         }
 
         public int Width
         {
-            get
-            {
-                return this.width;
-            }
+            get { return width; }
             set
             {
-                if (value == this.width || value < 0)
+                if (value == width
+                    || value < 0)
                 {
                     return;
                 }
                 if (OnResizing(value, Height))
                 {
-                    this.width = value;
-                    this.NotifyOfPropertyChange(() => this.Width);
+                    width = value;
+                    NotifyOfPropertyChange(() => Width);
                 }
             }
         }
 
         public int MinHeight
         {
-            get
-            {
-                return this.minHeight;
-            }
+            get { return minHeight; }
             set
             {
-                if (value == this.minHeight || value < 0)
+                if (value == minHeight
+                    || value < 0)
                 {
                     return;
                 }
-                this.minHeight = value;
-                this.NotifyOfPropertyChange(() => this.MinHeight);
+                minHeight = value;
+                NotifyOfPropertyChange(() => MinHeight);
             }
         }
 
         public int MinWidth
         {
-            get
-            {
-                return this.minWidth;
-            }
+            get { return minWidth; }
             set
             {
-                if (value == this.minWidth || value < 0)
+                if (value == minWidth
+                    || value < 0)
                 {
                     return;
                 }
-                this.minWidth = value;
-                this.NotifyOfPropertyChange(() => this.MinWidth);
+                minWidth = value;
+                NotifyOfPropertyChange(() => MinWidth);
             }
         }
     }

@@ -19,17 +19,17 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Charts.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Charts.xaml" />
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Orientation="Horizontal"
                    Grid.Row="0"
@@ -44,7 +44,7 @@
                     <ComboBoxItem IsSelected="True"
                                   Style="{StaticResource DateComboBoxItem}"
                                   Content="do not remove1"
-                                  DataContext="{Binding}"></ComboBoxItem>
+                                  DataContext="{Binding}" />
                 </ComboBox>
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
@@ -53,7 +53,7 @@
                           VerticalAlignment="Stretch"
                           DisplayMemberPath="Name"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterServer}"></ComboBox>
+                          SelectedItem="{Binding FilterServer}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Heroes}">Hero:</Label>
@@ -61,7 +61,7 @@
                           VerticalAlignment="Stretch"
                           Background="{DynamicResource WhiteBrush}"
                           SelectedItem="{Binding FilterHero}"
-                          Style="{StaticResource heroCombobox}"></ComboBox>
+                          Style="{StaticResource heroCombobox}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Heroes}">Opponent:</Label>
@@ -69,20 +69,20 @@
                           ItemsSource="{Binding Heroes}"
                           Background="{DynamicResource WhiteBrush}"
                           SelectedItem="{Binding FilterOpponentHero}"
-                          Style="{StaticResource heroCombobox}"></ComboBox>
+                          Style="{StaticResource heroCombobox}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
                 <ComboBox ItemsSource="{Binding GameModes}"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+                          SelectedItem="{Binding FilterGameMode}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Decks}">Deck:</Label>
                 <ComboBox Name="Decks"
                           Background="{DynamicResource WhiteBrush}"
                           DisplayMemberPath="NameAndServer"
-                          SelectedItem="{Binding FilterDeck}"></ComboBox>
+                          SelectedItem="{Binding FilterDeck}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Search}">Search:</Label>
@@ -127,7 +127,7 @@
                                       Grid.Column="0"
                                       Margin="0">
                 <controls:MetroTabControl.ContentTemplate>
-                    <DataTemplate></DataTemplate>
+                    <DataTemplate />
                 </controls:MetroTabControl.ContentTemplate>
             </controls:MetroTabControl>
             <WrapPanel Grid.Column="1"
@@ -148,7 +148,9 @@
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                             <TextBlock FontSize="16"
-                                       Margin="4 0 0 0">Save to disk</TextBlock>
+                                       Margin="4 0 0 0">
+                                Save to disk
+                            </TextBlock>
                         </StackPanel>
                     </Button>
                     <Button Margin="8 0 0 0"
@@ -164,7 +166,9 @@
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                             <TextBlock FontSize="16"
-                                       Margin="4 0 0 0">Copy to clipboard</TextBlock>
+                                       Margin="4 0 0 0">
+                                Copy to clipboard
+                            </TextBlock>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -184,14 +188,15 @@
                         </Grid.RowDefinitions>
                         <ContentControl Name="ActiveItem"
                                         Grid.Row="0"
-                                        Margin="0 0 0 0"></ContentControl>
+                                        Margin="0 0 0 0" />
                         <TextBlock FontSize="14"
                                    Grid.Row="1"
                                    Name="GeneratedBy"
                                    HorizontalAlignment="Right"
                                    Opacity="0.50"
                                    Visibility="Collapsed">
-                            Generated by HearthstoneTracker.com</TextBlock>
+                            Generated by HearthstoneTracker.com
+                        </TextBlock>
                     </Grid>
                 </Grid>
             </ScrollViewer>

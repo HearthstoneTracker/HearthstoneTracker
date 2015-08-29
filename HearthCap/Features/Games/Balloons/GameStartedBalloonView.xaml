@@ -11,29 +11,29 @@
         <Style x:Key="Label"
                TargetType="TextBlock">
             <Setter Property="FontWeight"
-                    Value="Bold"></Setter>
+                    Value="Bold" />
             <Setter Property="FontSize"
-                    Value="12"></Setter>
+                    Value="12" />
             <Setter Property="Margin"
-                    Value="0 2 4 0"></Setter>
+                    Value="0 2 4 0" />
         </Style>
         <Style x:Key="Value"
                TargetType="TextBlock">
             <Setter Property="FontWeight"
-                    Value="Normal"></Setter>
+                    Value="Normal" />
             <Setter Property="FontSize"
-                    Value="12"></Setter>
+                    Value="12" />
             <Setter Property="Margin"
-                    Value="0 2 0 0"></Setter>
+                    Value="0 2 0 0" />
         </Style>
         <Style x:Key="Victory"
                TargetType="TextBlock">
             <Setter Property="HorizontalAlignment"
-                    Value="Center"></Setter>
+                    Value="Center" />
             <Setter Property="FontWeight"
-                    Value="Bold"></Setter>
+                    Value="Bold" />
             <Setter Property="FontSize"
-                    Value="14"></Setter>
+                    Value="14" />
         </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical"
@@ -41,35 +41,37 @@
                 Grid.IsSharedSizeScope="True">
         <Grid Height="40">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
                    Grid.Column="0"
                    HorizontalAlignment="Center"
                    Stretch="Uniform"
-                   Margin="2"></Image>
+                   Margin="2" />
             <TextBlock VerticalAlignment="Center"
                        FontWeight="Bold"
                        Grid.Column="1"
-                       HorizontalAlignment="Center">VS</TextBlock>
+                       HorizontalAlignment="Center">
+                VS
+            </TextBlock>
             <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
                    HorizontalAlignment="Center"
                    Stretch="Uniform"
                    Grid.Column="2"
-                   Margin="2"></Image>
+                   Margin="2" />
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"
-                                  SharedSizeGroup="gameresult_balloon"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                                  SharedSizeGroup="gameresult_balloon" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource Label}">Mode:</TextBlock>
             <TextBlock Grid.Column="1"
                        Style="{StaticResource Value}"
-                       Text="{Binding GameMode}"></TextBlock>
+                       Text="{Binding GameMode}" />
         </Grid>
         <!--<Grid>
             <TextBlock Style="{StaticResource Victory}"

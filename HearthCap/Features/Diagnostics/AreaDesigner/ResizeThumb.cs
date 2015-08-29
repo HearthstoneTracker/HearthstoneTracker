@@ -1,25 +1,24 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
-{
-    using System;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 
+namespace HearthCap.Features.Diagnostics.AreaDesigner
+{
     public class ResizeThumb : Thumb
     {
         public ResizeThumb()
         {
-            this.DragDelta += this.ResizeThumb_DragDelta;
+            DragDelta += ResizeThumb_DragDelta;
         }
 
         private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            var region = this.DataContext as RegionModel;
+            var region = DataContext as RegionModel;
 
             if (region != null)
             {
                 double deltaVertical, deltaHorizontal;
-                switch (this.VerticalAlignment)
+                switch (VerticalAlignment)
                 {
                     case VerticalAlignment.Bottom:
                         deltaVertical = Math.Min(-e.VerticalChange, region.Height - region.MinHeight);
@@ -32,7 +31,7 @@
                         break;
                 }
 
-                switch (this.HorizontalAlignment)
+                switch (HorizontalAlignment)
                 {
                     case HorizontalAlignment.Left:
                         deltaHorizontal = Math.Min(e.HorizontalChange, region.Width - region.MinWidth);

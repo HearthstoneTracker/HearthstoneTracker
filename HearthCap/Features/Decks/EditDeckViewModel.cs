@@ -1,10 +1,9 @@
-﻿namespace HearthCap.Features.Decks
+﻿using System;
+using Caliburn.Micro;
+using Caliburn.Micro.Recipes.Filters;
+
+namespace HearthCap.Features.Decks
 {
-    using System;
-
-    using Caliburn.Micro;
-    using Caliburn.Micro.Recipes.Filters;
-
     public class EditDeckViewModel : Screen
     {
         private string deckName;
@@ -13,16 +12,11 @@
 
         private DeckModel selectedDeck;
 
-        public EditDeckViewModel()
-        {
-            
-        }
-
         public event EventHandler Saved;
 
         protected virtual void OnSaved()
         {
-            var handler = this.Saved;
+            var handler = Saved;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
@@ -31,54 +25,48 @@
 
         public string DeckName
         {
-            get
-            {
-                return this.deckName;
-            }
+            get { return deckName; }
             set
             {
-                if (value == this.deckName)
+                if (value == deckName)
                 {
                     return;
                 }
-                this.deckName = value;
-                this.NotifyOfPropertyChange(() => this.DeckName);
+                deckName = value;
+                NotifyOfPropertyChange(() => DeckName);
             }
         }
 
         public string DeckSlot
         {
-            get
-            {
-                return this.deckSlot;
-            }
+            get { return deckSlot; }
             set
             {
-                if (value == this.deckSlot)
+                if (value == deckSlot)
                 {
                     return;
                 }
-                this.deckSlot = value;
-                this.NotifyOfPropertyChange(() => this.DeckSlot);
+                deckSlot = value;
+                NotifyOfPropertyChange(() => DeckSlot);
             }
         }
 
         public void Load(DeckModel deck)
         {
-            this.selectedDeck = deck;
-            this.DeckName = deck.Name;
-            this.DeckSlot = deck.Key;
+            selectedDeck = deck;
+            DeckName = deck.Name;
+            DeckSlot = deck.Key;
         }
 
         [Dependencies("DeckName")]
         public void Save()
         {
-            this.OnSaved();
+            OnSaved();
         }
 
         public bool CanSave()
         {
-            return !String.IsNullOrEmpty(this.DeckName);
+            return !String.IsNullOrEmpty(DeckName);
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace HearthCap.Shell.Theme
+﻿using System.ComponentModel.Composition;
+using HearthCap.Composition;
+using HearthCap.StartUp;
+
+namespace HearthCap.Shell.Theme
 {
-    using System.ComponentModel.Composition;
-
-    using HearthCap.Composition;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class StartupTasks : IStartupTask
     {
@@ -18,8 +17,8 @@
 
         public void Run()
         {
-            var viewLocator = this.serviceLocator.GetInstance<IViewLocator>();
-            Caliburn.Micro.ViewLocator.GetOrCreateViewType = viewLocator.GetOrCreateViewType;            
+            var viewLocator = serviceLocator.GetInstance<IViewLocator>();
+            Caliburn.Micro.ViewLocator.GetOrCreateViewType = viewLocator.GetOrCreateViewType;
         }
     }
 }

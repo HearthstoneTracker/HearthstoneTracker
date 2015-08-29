@@ -20,7 +20,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Theme.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Theme.xaml" />
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -28,55 +28,75 @@
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
                     Orientation="Vertical"
                     HorizontalAlignment="Center">
             <Label FontSize="24"
                    Visibility="{Binding CheckingForUpdates, Mode=OneWay, Converter={StaticResource booleanToVisibility}}"
-                   HorizontalAlignment="Center">Checking for updates...</Label>
+                   HorizontalAlignment="Center">
+                Checking for updates...
+            </Label>
             <Label FontSize="24"
                    Visibility="{Binding UpdateAvailable, Converter={StaticResource booleanToVisibility}}"
-                   HorizontalAlignment="Center">Update available!</Label>
+                   HorizontalAlignment="Center">
+                Update available!
+            </Label>
             <Label FontSize="24"
                    Visibility="{Binding Downloading, Converter={StaticResource booleanToVisibility}}"
-                   HorizontalAlignment="Center">Downloading update...</Label>
+                   HorizontalAlignment="Center">
+                Downloading update...
+            </Label>
             <Label FontSize="24"
                    Visibility="{Binding HasLatestVersion, Converter={StaticResource booleanToVisibility}}"
-                   HorizontalAlignment="Center">You have the latest version.</Label>
+                   HorizontalAlignment="Center">
+                You have the latest version.
+            </Label>
             <Label FontSize="24"
                    Visibility="{Binding Error, Converter={StaticResource nullToCollapsed}}"
-                   HorizontalAlignment="Center">An error occured during updating.</Label>
+                   HorizontalAlignment="Center">
+                An error occured during updating.
+            </Label>
             <Label FontSize="24"
                    Visibility="{Binding DownloadReady, Converter={StaticResource booleanToVisibility}}"
-                   HorizontalAlignment="Center">Update is ready for installation.</Label>
+                   HorizontalAlignment="Center">
+                Update is ready for installation.
+            </Label>
             <controls:ProgressRing IsActive="{Binding Busy.IsBusy, Mode=OneWay}" />
         </StackPanel>
         <Grid Grid.Row="1"
               Visibility="{Binding UpdateCheckDone, Converter={StaticResource booleanToVisibility}}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal">
                 <Button cal:Message.Attach="CheckForUpdates"
                         Visibility="{Binding Error, Converter={StaticResource nullToCollapsed}}"
-                        Width="150">Try again</Button>
+                        Width="150">
+                    Try again
+                </Button>
                 <Button cal:Message.Attach="Download"
                         Visibility="{Binding UpdateAvailable, Converter={StaticResource booleanToVisibility}}"
-                        Width="150">Download update</Button>
+                        Width="150">
+                    Download update
+                </Button>
                 <Button cal:Message.Attach="Install"
                         Visibility="{Binding DownloadReady, Converter={StaticResource booleanToVisibility}}"
                         Width="150"
-                        Margin="10 0 0 0">Close &amp; start update</Button>
+                        Margin="10 0 0 0">
+                    Close &amp; start update
+                </Button>
                 <Button cal:Message.Attach="Close"
                         Width="150"
                         Visibility="{Binding Busy.IsBusy, Converter={StaticResource booleanToVisibilityInverse}}"
-                        Margin="10 0 0 0">Close</Button>
+                        Margin="10 0 0 0">
+                    Close
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

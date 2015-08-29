@@ -1,11 +1,10 @@
+using System;
+using System.Security.AccessControl;
+using System.Windows;
+using Microsoft.Win32;
+
 namespace HearthCap.Shell.UserPreferences
 {
-    using System;
-    using System.Security.AccessControl;
-    using System.Windows;
-
-    using Microsoft.Win32;
-
     public abstract class RegistrySettings : IDisposable
     {
         private readonly string sectionName;
@@ -17,15 +16,12 @@ namespace HearthCap.Shell.UserPreferences
         protected RegistrySettings(string sectionName)
         {
             this.sectionName = sectionName;
-            this.section = this.EnsureSectionExists(sectionName);
+            section = EnsureSectionExists(sectionName);
         }
 
         public RegistryKey Section
         {
-            get
-            {
-                return this.section;
-            }
+            get { return section; }
         }
 
         private RegistryKey EnsureSectionExists(string sectionName)
@@ -38,10 +34,11 @@ namespace HearthCap.Shell.UserPreferences
             return sub;
         }
 
-        public T GetOrCreate<T>(string key, T defaultValue = default (T))
+        public T GetOrCreate<T>(string key, T defaultValue = default(T))
         {
             var value = section.GetValue(key, defaultValue);
-            if (value == null || value == (object)default (T))
+            if (value == null
+                || value == (object)default(T))
             {
                 value = defaultValue;
                 section.SetValue(key, defaultValue, RegistryValueKind.String);
@@ -80,7 +77,7 @@ namespace HearthCap.Shell.UserPreferences
 
         public void SetValue(string key, object value, RegistryValueKind kind = RegistryValueKind.String)
         {
-            object realValue = value;
+            var realValue = value;
             if (value is bool)
             {
                 realValue = (bool)value ? "1" : "0";
@@ -89,7 +86,7 @@ namespace HearthCap.Shell.UserPreferences
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -99,13 +96,16 @@ namespace HearthCap.Shell.UserPreferences
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
                 if (section != null)
                 {
-                    section.Dispose();                    
+                    section.Dispose();
                 }
             }
 

@@ -1,25 +1,22 @@
+using Caliburn.Micro;
+
 namespace HearthCap.Features.WebApi
 {
-    using Caliburn.Micro;
-
     public abstract class WebApiProviderSettingsViewModel : Screen, IWebApiProviderScreen
     {
         private bool isEnabled;
 
         public bool IsEnabled
         {
-            get
-            {
-                return this.isEnabled;
-            }
+            get { return isEnabled; }
             set
             {
-                if (value.Equals(this.isEnabled))
+                if (value.Equals(isEnabled))
                 {
                     return;
                 }
-                this.isEnabled = value;
-                this.NotifyOfPropertyChange(() => this.IsEnabled);
+                isEnabled = value;
+                NotifyOfPropertyChange(() => IsEnabled);
             }
         }
 

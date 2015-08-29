@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=about:DonateCommandBarViewModel, IsDesignTimeCreatable=False}"
              cal:Bind.AtDesignTime="False">
     <UserControl.Resources>
-        <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
+        <ResourceDictionary Source="/Resources/Icons.xaml" />
     </UserControl.Resources>
     <Button Name="Donate"
             Cursor="Hand"
@@ -27,15 +27,19 @@
             <TextBlock Foreground="White"
                        FontSize="16"
                        Margin="4 0 0 0"
-                       FontWeight="SemiBold">Donate</TextBlock>
+                       FontWeight="SemiBold">
+                Donate
+            </TextBlock>
         </StackPanel>
         <Button.ToolTip>
             <Border>
                 <StackPanel Orientation="Vertical">
                     <TextBlock FontSize="13">
-                        Support me with some coffee and donate a few bucks.</TextBlock>
+                        Support me with some coffee and donate a few bucks.
+                    </TextBlock>
                     <TextBlock FontSize="12">
-                        (This will open the Paypal donation website).</TextBlock>
+                        (This will open the Paypal donation website).
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Button.ToolTip>

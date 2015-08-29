@@ -4,25 +4,20 @@
     {
         private static string defaultWebsite = "http://www.google.com";
 
-        /// <summary>Initializes a new instance of the <see cref="VisitWebsiteCommand"/> class. 
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="VisitWebsiteCommand" /> class.
+        ///     Initializes a new instance of the <see cref="T:System.Object" /> class.
         /// </summary>
         /// <param name="website">The website.</param>
         public VisitWebsiteCommand(string website = null)
         {
-            this.Website = website ?? DefaultWebsite;
+            Website = website ?? DefaultWebsite;
         }
 
         public static string DefaultWebsite
         {
-            get
-            {
-                return defaultWebsite;
-            }
-            set
-            {
-                defaultWebsite = value;
-            }
+            get { return defaultWebsite; }
+            set { defaultWebsite = value; }
         }
 
         public string Website { get; set; }

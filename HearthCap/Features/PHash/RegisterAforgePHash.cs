@@ -1,13 +1,11 @@
-﻿namespace HearthCap.Features.PHash
+﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using HearthCap.StartUp;
+using PHash;
+using PHash.AForge;
+
+namespace HearthCap.Features.PHash
 {
-    using System.ComponentModel.Composition;
-    using System.ComponentModel.Composition.Hosting;
-
-    using global::PHash;
-    using global::PHash.AForge;
-
-    using HearthCap.StartUp;
-
     [Export(typeof(ICompositionTask))]
     public class RegisterAforgePHash : ICompositionTask
     {

@@ -1,21 +1,19 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Windows.Media.Imaging;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Core.GameCapture.Logging;
+using HearthCap.Core.GameCapture.Logging.LogEvents;
+using HearthCap.Core.Util;
+using HearthCap.Shell.Tabs;
+
 namespace HearthCap.Features.Diagnostics
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using System.IO;
-    using System.Windows.Media.Imaging;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Core.GameCapture.Logging;
-    using HearthCap.Core.GameCapture.Logging.LogEvents;
-    using HearthCap.Core.Util;
-    using HearthCap.Shell.Tabs;
-
     // [Export(typeof(ITab))]
     public sealed class DiagnosisViewModel : TabViewModel,
         IHandle<GameEvent>,
@@ -39,9 +37,9 @@ namespace HearthCap.Features.Diagnostics
 
         private int cardDistance = 90;
 
-        private BindableCollection<LogMessageModel> logMessages;
+        private readonly BindableCollection<LogMessageModel> logMessages;
 
-        private BindableCollection<LogMessageModel> engineEvents;
+        private readonly BindableCollection<LogMessageModel> engineEvents;
 
         [ImportingConstructor]
         public DiagnosisViewModel(
@@ -50,20 +48,20 @@ namespace HearthCap.Features.Diagnostics
         {
             this.events = events;
             this.captureEngine = captureEngine;
-            this.DisplayName = "Diag";
+            DisplayName = "Diag";
             Order = 1000;
 
-            this.engineEvents = new BindableCollection<LogMessageModel>();
-            this.logMessages = new BindableCollection<LogMessageModel>();
+            engineEvents = new BindableCollection<LogMessageModel>();
+            logMessages = new BindableCollection<LogMessageModel>();
             // CaptureEngineLogger.Hook(LogAction);
             events.Subscribe(this);
         }
 
         private void LogAction(string s, LogLevel logLevel, object arg3)
         {
-            if (this.logMessages.Count > 500)
+            if (logMessages.Count > 500)
             {
-                this.logMessages.Clear();
+                logMessages.Clear();
             }
 
             // this.logMessages.Add(new LogMessageModel(s, logLevel, DateTime.Now));
@@ -73,70 +71,52 @@ namespace HearthCap.Features.Diagnostics
 
         public string Notification
         {
-            get
-            {
-                return this.notification;
-            }
+            get { return notification; }
             set
             {
-                this.notification = value;
-                this.NotifyOfPropertyChange(() => this.Notification);
+                notification = value;
+                NotifyOfPropertyChange(() => Notification);
             }
         }
 
         public int HammingThreshold
         {
-            get
-            {
-                return this.hammingThreshold;
-            }
+            get { return hammingThreshold; }
             set
             {
-                this.hammingThreshold = value;
-                this.NotifyOfPropertyChange(() => this.HammingThreshold);
+                hammingThreshold = value;
+                NotifyOfPropertyChange(() => HammingThreshold);
             }
         }
 
         public BitmapImage Screenshot
         {
-            get
-            {
-                return this.screenshot;
-            }
+            get { return screenshot; }
             set
             {
-                this.screenshot = value;
-                this.NotifyOfPropertyChange(() => this.Screenshot);
+                screenshot = value;
+                NotifyOfPropertyChange(() => Screenshot);
             }
         }
 
         public int CardDistance
         {
-            get
-            {
-                return this.cardDistance;
-            }
+            get { return cardDistance; }
             set
             {
-                this.cardDistance = value;
-                this.NotifyOfPropertyChange(() => this.CardDistance);
+                cardDistance = value;
+                NotifyOfPropertyChange(() => CardDistance);
             }
         }
 
         public IObservableCollection<LogMessageModel> LogMessages
         {
-            get
-            {
-                return this.logMessages;
-            }
+            get { return logMessages; }
         }
 
         public IObservableCollection<LogMessageModel> EngineEvents
         {
-            get
-            {
-                return this.engineEvents;
-            }
+            get { return engineEvents; }
         }
 
         #endregion
@@ -148,19 +128,19 @@ namespace HearthCap.Features.Diagnostics
             if (wnd != IntPtr.Zero)
             {
                 var shot = new ScreenCapture();
-                this.screenshotBitmap = new Bitmap(shot.GetDesktopBitmap(wnd));
+                screenshotBitmap = new Bitmap(shot.GetDesktopBitmap(wnd));
                 var ms = new MemoryStream();
                 var bi = new BitmapImage();
                 bi.BeginInit();
-                this.screenshotBitmap.Save(ms, ImageFormat.Bmp);
+                screenshotBitmap.Save(ms, ImageFormat.Bmp);
                 ms.Seek(0, SeekOrigin.Begin);
                 bi.StreamSource = ms;
                 bi.EndInit();
-                this.Screenshot = bi;
+                Screenshot = bi;
             }
             else
             {
-                this.Notification = "failed to get window";
+                Notification = "failed to get window";
             }
 
             // this.hearthstoneWindowImage.Dispose();                
@@ -205,102 +185,101 @@ namespace HearthCap.Features.Diagnostics
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameModeChanged message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    if (engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
-                    }
-                    EngineEvents.Add(message.ToMessageModel(String.Format("Game mode from '{0}' to '{1}'", message.OldGameMode, message.GameMode)));
-                });
+                        if (engineEvents.Count > 1000)
+                        {
+                            engineEvents.Clear();
+                        }
+                        EngineEvents.Add(message.ToMessageModel(String.Format("Game mode from '{0}' to '{1}'", message.OldGameMode, message.GameMode)));
+                    });
         }
 
-
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(LogEvent message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    if (engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
-                    }
+                        if (engineEvents.Count > 1000)
+                        {
+                            engineEvents.Clear();
+                        }
 
-                    EngineEvents.Add(message.ToMessageModel());
-                });
+                        EngineEvents.Add(message.ToMessageModel());
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(WindowCaptured message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    // TODO: change 'Screenshot' to Image type and use converter
-                    var ms = new MemoryStream();
-                    var bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    message.Data.Save(ms, ImageFormat.Bmp);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    bi.StreamSource = ms;
-                    bi.EndInit();
-                    this.Screenshot = bi;
-                    ms.Dispose();
-                });
+                    {
+                        // TODO: change 'Screenshot' to Image type and use converter
+                        var ms = new MemoryStream();
+                        var bi = new BitmapImage();
+                        bi.BeginInit();
+                        bi.CacheOption = BitmapCacheOption.OnLoad;
+                        message.Data.Save(ms, ImageFormat.Bmp);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        bi.StreamSource = ms;
+                        bi.EndInit();
+                        Screenshot = bi;
+                        ms.Dispose();
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(DeckDetected message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    if (engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
-                    }
+                        if (engineEvents.Count > 1000)
+                        {
+                            engineEvents.Clear();
+                        }
 
-                    EngineEvents.Add(message.ToMessageModel(String.Format("Deck detected: {0}", message.Key)));
-                });
+                        EngineEvents.Add(message.ToMessageModel(String.Format("Deck detected: {0}", message.Key)));
+                    });
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(GameEvent message)
         {
             Execute.OnUIThread(
                 () =>
-                {
-                    if (engineEvents.Count > 1000)
                     {
-                        engineEvents.Clear();
-                    }
+                        if (engineEvents.Count > 1000)
+                        {
+                            engineEvents.Clear();
+                        }
 
-                    EngineEvents.Add(message.ToMessageModel("Generic event: " + message.GetType().Name));
-                });
+                        EngineEvents.Add(message.ToMessageModel("Generic event: " + message.GetType().Name));
+                    });
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {

@@ -1,10 +1,10 @@
-﻿namespace HearthCap.UI.Behaviors
-{
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Input;
-    using System.Windows.Interactivity;
+﻿using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interactivity;
 
+namespace HearthCap.UI.Behaviors
+{
     public static class BubbleScrollEventManager
     {
         public static readonly DependencyProperty BubbleScrollEvent = DependencyProperty.RegisterAttached(
@@ -16,7 +16,10 @@
         private static void OnBubbleScrollEventChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var el = d as FrameworkElement;
-            if (el == null) return;
+            if (el == null)
+            {
+                return;
+            }
 
             var bubble = GetBubbleScrollEvent(d);
             var behaviors = Interaction.GetBehaviors(d);
@@ -25,7 +28,8 @@
             {
                 behaviors.Add(new BubbleScrollEvent());
             }
-            else if (bubbleBehavior != null && !bubble)
+            else if (bubbleBehavior != null
+                     && !bubble)
             {
                 behaviors.Remove(bubbleBehavior);
             }
@@ -56,7 +60,7 @@
             base.OnDetaching();
         }
 
-        void AssociatedObject_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void AssociatedObject_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
             var e2 = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);

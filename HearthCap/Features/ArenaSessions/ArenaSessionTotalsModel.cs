@@ -1,16 +1,12 @@
+using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+using Caliburn.Micro;
+using HearthCap.Data;
+
 namespace HearthCap.Features.ArenaSessions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Linq.Expressions;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Games.Models;
-
     public class ArenaSessionTotalsModel : PropertyChangedBase
     {
         private int arenas;
@@ -39,229 +35,186 @@ namespace HearthCap.Features.ArenaSessions
 
         private decimal averageWins;
 
-        public ArenaSessionTotalsModel()
-        {
-        }
-
         public int Arenas
         {
-            get
-            {
-                return this.arenas;
-            }
+            get { return arenas; }
             set
             {
-                if (value == this.arenas)
+                if (value == arenas)
                 {
                     return;
                 }
-                this.arenas = value;
-                this.NotifyOfPropertyChange(() => this.Arenas);
+                arenas = value;
+                NotifyOfPropertyChange(() => Arenas);
             }
         }
 
         public int ZeroToSix
         {
-            get
-            {
-                return this.zeroToSix;
-            }
+            get { return zeroToSix; }
             set
             {
-                if (value == this.zeroToSix)
+                if (value == zeroToSix)
                 {
                     return;
                 }
-                this.zeroToSix = value;
-                this.NotifyOfPropertyChange(() => this.ZeroToSix);
+                zeroToSix = value;
+                NotifyOfPropertyChange(() => ZeroToSix);
             }
         }
 
         public int SevenPlus
         {
-            get
-            {
-                return this.sevenPlus;
-            }
+            get { return sevenPlus; }
             set
             {
-                if (value == this.sevenPlus)
+                if (value == sevenPlus)
                 {
                     return;
                 }
-                this.sevenPlus = value;
-                this.NotifyOfPropertyChange(() => this.SevenPlus);
+                sevenPlus = value;
+                NotifyOfPropertyChange(() => SevenPlus);
             }
         }
 
         public int Twelve
         {
-            get
-            {
-                return this.twelve;
-            }
+            get { return twelve; }
             set
             {
-                if (value == this.twelve)
+                if (value == twelve)
                 {
                     return;
                 }
-                this.twelve = value;
-                this.NotifyOfPropertyChange(() => this.Twelve);
+                twelve = value;
+                NotifyOfPropertyChange(() => Twelve);
             }
         }
 
         public int Hours
         {
-            get
-            {
-                return this.hours;
-            }
+            get { return hours; }
             set
             {
-                if (value == this.hours)
+                if (value == hours)
                 {
                     return;
                 }
-                this.hours = value;
-                this.NotifyOfPropertyChange(() => this.Hours);
+                hours = value;
+                NotifyOfPropertyChange(() => Hours);
             }
         }
 
         public int Minutes
         {
-            get
-            {
-                return this.minutes;
-            }
+            get { return minutes; }
             set
             {
-                if (value == this.minutes)
+                if (value == minutes)
                 {
                     return;
                 }
-                this.minutes = value;
-                this.NotifyOfPropertyChange(() => this.Minutes);
+                minutes = value;
+                NotifyOfPropertyChange(() => Minutes);
             }
         }
 
         public int TotalArenas
         {
-            get
-            {
-                return this.totalArenas;
-            }
+            get { return totalArenas; }
             set
             {
-                if (value == this.totalArenas)
+                if (value == totalArenas)
                 {
                     return;
                 }
-                this.totalArenas = value;
-                this.NotifyOfPropertyChange(() => this.TotalArenas);
+                totalArenas = value;
+                NotifyOfPropertyChange(() => TotalArenas);
             }
         }
 
         public int TotalHours
         {
-            get
-            {
-                return this.totalHours;
-            }
+            get { return totalHours; }
             set
             {
-                if (value == this.totalHours)
+                if (value == totalHours)
                 {
                     return;
                 }
-                this.totalHours = value;
-                this.NotifyOfPropertyChange(() => this.TotalHours);
+                totalHours = value;
+                NotifyOfPropertyChange(() => TotalHours);
             }
         }
 
         public int TotalMinutes
         {
-            get
-            {
-                return this.totalMinutes;
-            }
+            get { return totalMinutes; }
             set
             {
-                if (value == this.totalMinutes)
+                if (value == totalMinutes)
                 {
                     return;
                 }
-                this.totalMinutes = value;
-                this.NotifyOfPropertyChange(() => this.TotalMinutes);
+                totalMinutes = value;
+                NotifyOfPropertyChange(() => TotalMinutes);
             }
         }
 
         public int GoldEarned
         {
-            get
-            {
-                return this.goldEarned;
-            }
+            get { return goldEarned; }
             set
             {
-                if (value == this.goldEarned)
+                if (value == goldEarned)
                 {
                     return;
                 }
-                this.goldEarned = value;
-                this.NotifyOfPropertyChange(() => this.GoldEarned);
+                goldEarned = value;
+                NotifyOfPropertyChange(() => GoldEarned);
             }
         }
 
         public int DustEarned
         {
-            get
-            {
-                return this.dustEarned;
-            }
+            get { return dustEarned; }
             set
             {
-                if (value == this.dustEarned)
+                if (value == dustEarned)
                 {
                     return;
                 }
-                this.dustEarned = value;
-                this.NotifyOfPropertyChange(() => this.DustEarned);
+                dustEarned = value;
+                NotifyOfPropertyChange(() => DustEarned);
             }
         }
 
         public int PacksEarned
         {
-            get
-            {
-                return this.packsEarned;
-            }
+            get { return packsEarned; }
             set
             {
-                if (value == this.packsEarned)
+                if (value == packsEarned)
                 {
                     return;
                 }
-                this.packsEarned = value;
-                this.NotifyOfPropertyChange(() => this.PacksEarned);
+                packsEarned = value;
+                NotifyOfPropertyChange(() => PacksEarned);
             }
         }
 
         public decimal AverageWins
         {
-            get
-            {
-                return this.averageWins;
-            }
+            get { return averageWins; }
             set
             {
-                if (value == this.averageWins)
+                if (value == averageWins)
                 {
                     return;
                 }
 
-                this.averageWins = value;
-                NotifyOfPropertyChange(() => this.AverageWins);
+                averageWins = value;
+                NotifyOfPropertyChange(() => AverageWins);
             }
         }
 
@@ -271,7 +224,7 @@ namespace HearthCap.Features.ArenaSessions
             {
                 var arenas = context.ArenaSessions.Where(filter);
 
-                this.Arenas = arenas.Count();
+                Arenas = arenas.Count();
                 ZeroToSix = arenas.Count(x => x.Wins < 7);
                 SevenPlus = arenas.Count(x => x.Wins >= 7);
                 Twelve = arenas.Count(x => x.Wins == 12);
@@ -285,25 +238,25 @@ namespace HearthCap.Features.ArenaSessions
                     .Where(g => arenas.Contains(g.ArenaSession))
                     .Sum(g => DbFunctions.DiffMinutes(g.Started, g.Stopped));
                 var totalMinutes = totalMinutesV ?? 0;
-                this.Hours = totalMinutes / 60;
-                this.Minutes = totalMinutes % 60;
+                Hours = totalMinutes / 60;
+                Minutes = totalMinutes % 60;
 
-                this.TotalArenas = context.ArenaSessions.Count();
+                TotalArenas = context.ArenaSessions.Count();
                 var totaltotalminutes = context.Database.SqlQuery<int?>("SELECT SUM(DATEDIFF(mi, [Started], [Stopped])) FROM GameResults WHERE ArenaSessionId IS NOT NULL").FirstOrDefault();
                 if (totaltotalminutes.HasValue)
                 {
-                    this.TotalHours = totaltotalminutes.Value / 60;
-                    this.TotalMinutes = totaltotalminutes.Value % 60;
+                    TotalHours = totaltotalminutes.Value / 60;
+                    TotalMinutes = totaltotalminutes.Value % 60;
                 }
 
-                this.GoldEarned = arenas.Sum(x => (int?)x.RewardGold) ?? 0;
-                this.DustEarned = arenas.Sum(x => (int?)x.RewardDust) ?? 0;
-                this.PacksEarned = arenas.Sum(x => (int?)x.RewardPacks) ?? 0;
+                GoldEarned = arenas.Sum(x => (int?)x.RewardGold) ?? 0;
+                DustEarned = arenas.Sum(x => (int?)x.RewardDust) ?? 0;
+                PacksEarned = arenas.Sum(x => (int?)x.RewardPacks) ?? 0;
 
                 if (Arenas > 0)
                 {
                     var wins = arenas.Sum(x => (int?)x.Wins) ?? 0;
-                    this.AverageWins = Math.Round(wins / (decimal)Arenas, 1);
+                    AverageWins = Math.Round(wins / (decimal)Arenas, 1);
                 }
             }
         }

@@ -30,50 +30,64 @@
                     Margin="0 2 0 0"
                     VerticalAlignment="Stretch">
             <TextBlock Foreground="ForestGreen"
-                       Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}">Hearthstone is running</TextBlock>
+                       Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}">
+                Hearthstone is running
+            </TextBlock>
             <TextBlock Foreground="Red"
-                       Visibility="{Binding WindowMinimized, Converter={StaticResource booleanToVisibility}}">Hearthstone is running, window not visible</TextBlock>
+                       Visibility="{Binding WindowMinimized, Converter={StaticResource booleanToVisibility}}">
+                Hearthstone is running, window not visible
+            </TextBlock>
             <TextBlock Foreground="Red"
-                       Visibility="{Binding WindowLost, Converter={StaticResource booleanToVisibility}}">Hearthstone not running</TextBlock>
+                       Visibility="{Binding WindowLost, Converter={StaticResource booleanToVisibility}}">
+                Hearthstone not running
+            </TextBlock>
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}">
                 <Rectangle Width="1"
                            Margin="6 2 6 0"
-                           Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                           Fill="{DynamicResource GrayBrush5}" />
                 <StackPanel Orientation="Horizontal"
                             Visibility="{Binding IsUnknownGameMode, Converter={StaticResource booleanToVisibility}}">
                     <TextBlock Foreground="{DynamicResource BlackBrush}">Game mode:</TextBlock>
                     <TextBlock Foreground="ForestGreen"
                                Visibility="{Binding WindowFound, Converter={StaticResource booleanToVisibility}}"
-                               Margin="4 0 0 0">Menu</TextBlock>
+                               Margin="4 0 0 0">
+                        Menu
+                    </TextBlock>
                     <TextBlock Foreground="Red"
                                Visibility="{Binding WindowMinimized, Converter={StaticResource booleanToVisibility}}"
-                               Margin="4 0 0 0">Unknown</TextBlock>
+                               Margin="4 0 0 0">
+                        Unknown
+                    </TextBlock>
                     <TextBlock Foreground="Red"
                                Visibility="{Binding WindowLost, Converter={StaticResource booleanToVisibility}}"
-                               Margin="4 0 0 0">Unknown</TextBlock>
+                               Margin="4 0 0 0">
+                        Unknown
+                    </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal"
                             Visibility="{Binding IsUnknownGameMode, Converter={StaticResource booleanToVisibilityInverse}}">
                     <TextBlock Foreground="{DynamicResource BlackBrush}">Game mode:</TextBlock>
                     <TextBlock Foreground="ForestGreen"
                                Margin="4 0 0 0"
-                               Text="{Binding GameMode}"></TextBlock>
+                               Text="{Binding GameMode}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         Visibility="{Binding ShowDeck, Converter={StaticResource booleanToVisibility}}">
                 <Rectangle Width="1"
                            Margin="6 2 6 0"
-                           Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                           Fill="{DynamicResource GrayBrush5}" />
                 <TextBlock Visibility="{Binding IsUnknownDeck, Converter={StaticResource booleanToVisibility}}"
-                           Foreground="Red">No deck detected</TextBlock>
+                           Foreground="Red">
+                    No deck detected
+                </TextBlock>
                 <StackPanel Orientation="Horizontal"
                             Visibility="{Binding IsUnknownDeck, Converter={StaticResource booleanToVisibilityInverse}}">
                     <TextBlock Foreground="{DynamicResource BlackBrush}">Deck:</TextBlock>
                     <TextBlock Margin="4 0 0 0"
                                Foreground="ForestGreen"
-                               Text="{Binding Deck}"></TextBlock>
+                               Text="{Binding Deck}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
@@ -82,12 +96,12 @@
                             Visibility="{Binding Hero, Converter={StaticResource nullToCollapsed}}">
                     <Rectangle Width="1"
                                Margin="6 2 6 0"
-                               Fill="{DynamicResource GrayBrush5}"></Rectangle>
+                               Fill="{DynamicResource GrayBrush5}" />
                     <TextBlock Foreground="{DynamicResource BlackBrush}">Playing as:</TextBlock>
                     <Image Source="{Binding Hero.Key, Converter={StaticResource heroKeyToImage}}"
                            Stretch="Uniform"
                            Height="22"
-                           Margin="4 0 0 0"></Image>
+                           Margin="4 0 0 0" />
                     <!--<TextBlock Margin="4 0 0 0"
                                Foreground="{DynamicResource BlackBrush}"
                                Text="{Binding Hero.ClassName}"></TextBlock>-->
@@ -95,24 +109,30 @@
                 <StackPanel Orientation="Horizontal"
                             Visibility="{Binding OpponentHero, Converter={StaticResource nullToCollapsed}}">
                     <TextBlock Margin="4 0 0 0"
-                               Foreground="{DynamicResource BlackBrush}">vs</TextBlock>
+                               Foreground="{DynamicResource BlackBrush}">
+                        vs
+                    </TextBlock>
                     <Image Source="{Binding OpponentHero.Key, Converter={StaticResource heroKeyToImage}}"
                            Stretch="Uniform"
                            Height="22"
-                           Margin="4 0 0 0"></Image>
+                           Margin="4 0 0 0" />
                     <!--<TextBlock Margin="4 0 0 0"
                                Foreground="{DynamicResource BlackBrush}"
                                Text="{Binding OpponentHero.ClassName}"></TextBlock>-->
                 </StackPanel>
                 <TextBlock Foreground="{DynamicResource BlackBrush}"
                            Margin="4 0 0 0"
-                           Text="{Binding Turns, StringFormat='{}turn #{0},'}"></TextBlock>
+                           Text="{Binding Turns, StringFormat='{}turn #{0},'}" />
                 <TextBlock Visibility="{Binding MyTurn, Converter={StaticResource booleanToVisibility}}"
                            Margin="4 0 0 0"
-                           Foreground="{DynamicResource BlackBrush}">your turn</TextBlock>
+                           Foreground="{DynamicResource BlackBrush}">
+                    your turn
+                </TextBlock>
                 <TextBlock Visibility="{Binding MyTurn, Converter={StaticResource booleanToVisibilityInverse}}"
                            Margin="4 0 0 0"
-                           Foreground="{DynamicResource BlackBrush}">enemy turn</TextBlock>
+                           Foreground="{DynamicResource BlackBrush}">
+                    enemy turn
+                </TextBlock>
             </StackPanel>
         </StackPanel>
     </Grid>

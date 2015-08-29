@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Charts.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Charts.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="Label">
                 <Setter Property="FontFamily"
@@ -31,11 +31,11 @@
                   VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0"
@@ -43,88 +43,104 @@
                 <Grid.Resources>
                     <Style TargetType="Label">
                         <Setter Property="Margin"
-                                Value="0 0 6 2"></Setter>
+                                Value="0 0 6 2" />
                         <Setter Property="Padding"
-                                Value="0"></Setter>
+                                Value="0" />
                         <Setter Property="FontSize"
-                                Value="13"></Setter>
+                                Value="13" />
                     </Style>
                     <Style TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="13"></Setter>
+                        <Setter Property="FontSize" Value="13" />
                     </Style>
                 </Grid.Resources>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TextBlock FontSize="16"
                            Margin="0 0 0 6"
-                           Grid.ColumnSpan="3">Win/loss ratios:</TextBlock>
+                           Grid.ColumnSpan="3">
+                    Win/loss ratios:
+                </TextBlock>
                 <Label Grid.Row="1"
-                       Grid.Column="1">Today:</Label>
+                       Grid.Column="1">
+                    Today:
+                </Label>
                 <TextBlock Grid.Row="1"
                            Grid.Column="2">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}% / {1}% ({2})">
-                            <Binding Path="TodayRatioWin"></Binding>
-                            <Binding Path="TodayRatioLoss"></Binding>
-                            <Binding Path="TodayRatio"></Binding>
+                            <Binding Path="TodayRatioWin" />
+                            <Binding Path="TodayRatioLoss" />
+                            <Binding Path="TodayRatio" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
                 <Label Grid.Row="2"
-                       Grid.Column="1">This week:</Label>
+                       Grid.Column="1">
+                    This week:
+                </Label>
                 <TextBlock Grid.Row="2"
                            Grid.Column="2">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}% / {1}% ({2})">
-                            <Binding Path="ThisWeekRatioWin"></Binding>
-                            <Binding Path="ThisWeekRatioLoss"></Binding>
-                            <Binding Path="ThisWeekRatio"></Binding>
+                            <Binding Path="ThisWeekRatioWin" />
+                            <Binding Path="ThisWeekRatioLoss" />
+                            <Binding Path="ThisWeekRatio" />
                         </MultiBinding>
-                    </TextBlock.Text></TextBlock>
+                    </TextBlock.Text>
+                </TextBlock>
                 <Label Grid.Row="3"
-                       Grid.Column="1">This month:</Label>
+                       Grid.Column="1">
+                    This month:
+                </Label>
                 <TextBlock Grid.Row="3"
                            Grid.Column="2">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}% / {1}% ({2})">
-                            <Binding Path="ThisMonthRatioWin"></Binding>
-                            <Binding Path="ThisMonthRatioLoss"></Binding>
-                            <Binding Path="ThisMonthRatio"></Binding>
+                            <Binding Path="ThisMonthRatioWin" />
+                            <Binding Path="ThisMonthRatioLoss" />
+                            <Binding Path="ThisMonthRatio" />
                         </MultiBinding>
-                    </TextBlock.Text></TextBlock>
+                    </TextBlock.Text>
+                </TextBlock>
                 <Label Grid.Row="4"
-                       Grid.Column="1">7 days:</Label>
+                       Grid.Column="1">
+                    7 days:
+                </Label>
                 <TextBlock Grid.Row="4"
                            Grid.Column="2">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}% / {1}% ({2})">
-                            <Binding Path="Last7DaysRatioWin"></Binding>
-                            <Binding Path="Last7DaysRatioLoss"></Binding>
-                            <Binding Path="Last7DaysRatio"></Binding>
+                            <Binding Path="Last7DaysRatioWin" />
+                            <Binding Path="Last7DaysRatioLoss" />
+                            <Binding Path="Last7DaysRatio" />
                         </MultiBinding>
-                    </TextBlock.Text></TextBlock>
+                    </TextBlock.Text>
+                </TextBlock>
                 <Label Grid.Row="5"
-                       Grid.Column="1">30 days:</Label>
+                       Grid.Column="1">
+                    30 days:
+                </Label>
                 <TextBlock Grid.Row="5"
                            Grid.Column="2">
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0}% / {1}% ({2})">
-                            <Binding Path="Last30DaysRatioWin"></Binding>
-                            <Binding Path="Last30DaysRatioLoss"></Binding>
-                            <Binding Path="Last30DaysRatio"></Binding>
+                            <Binding Path="Last30DaysRatioWin" />
+                            <Binding Path="Last30DaysRatioLoss" />
+                            <Binding Path="Last30DaysRatio" />
                         </MultiBinding>
-                    </TextBlock.Text></TextBlock>
+                    </TextBlock.Text>
+                </TextBlock>
             </Grid>
             <StackPanel Grid.Row="1">
                 <Label>Win/loss ratio:</Label>
@@ -142,7 +158,7 @@
                                                 DisplayMember="Category"
                                                 ValueMember="Number"
                                                 FontSize="12"
-                                                ItemsSource="{Binding Path=WinsAndLosses}"></metroChart:ChartSeries>
+                                                ItemsSource="{Binding Path=WinsAndLosses}" />
                     </metroChart:RadialGaugeChart.Series>
                 </metroChart:RadialGaugeChart>
             </StackPanel>
@@ -160,7 +176,7 @@
                                                 DisplayMember="Category"
                                                 ValueMember="Number"
                                                 FontSize="12"
-                                                ItemsSource="{Binding Path=WithCoin}"></metroChart:ChartSeries>
+                                                ItemsSource="{Binding Path=WithCoin}" />
                     </metroChart:RadialGaugeChart.Series>
                 </metroChart:RadialGaugeChart>
             </StackPanel>
@@ -180,7 +196,7 @@
                                                 FontSize="12"
                                                 VerticalAlignment="Top"
                                                 VerticalContentAlignment="Top"
-                                                ItemsSource="{Binding Path=WithoutCoin}"></metroChart:ChartSeries>
+                                                ItemsSource="{Binding Path=WithoutCoin}" />
                     </metroChart:RadialGaugeChart.Series>
                 </metroChart:RadialGaugeChart>
             </StackPanel>

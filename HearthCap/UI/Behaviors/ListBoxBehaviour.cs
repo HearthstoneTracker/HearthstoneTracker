@@ -1,10 +1,10 @@
-﻿namespace HearthCap.UI.Behaviors
-{
-    using System.Text;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
+﻿using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
+namespace HearthCap.UI.Behaviors
+{
     public static class ListBoxBehaviour
     {
         public static readonly DependencyProperty AutoCopyProperty = DependencyProperty.RegisterAttached("AutoCopy",
@@ -29,17 +29,17 @@
                 {
                     ExecutedRoutedEventHandler handler =
                         (sender, arg) =>
-                        {
-                            if (listBox.SelectedItems.Count > 0)
                             {
-                                var sb = new StringBuilder();
-                                foreach (var selectedItem in listBox.SelectedItems)
+                                if (listBox.SelectedItems.Count > 0)
                                 {
-                                    sb.AppendLine(selectedItem.ToString());
+                                    var sb = new StringBuilder();
+                                    foreach (var selectedItem in listBox.SelectedItems)
+                                    {
+                                        sb.AppendLine(selectedItem.ToString());
+                                    }
+                                    Clipboard.SetDataObject(sb.ToString());
                                 }
-                                Clipboard.SetDataObject(sb.ToString());
-                            }
-                        };
+                            };
 
                     var command = new RoutedCommand("Copy", typeof(ListBox));
                     command.InputGestures.Add(new KeyGesture(Key.C, ModifierKeys.Control, "Copy"));

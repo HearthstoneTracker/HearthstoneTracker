@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Features.Diagnostics.AreaDesigner
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Features.Diagnostics.AreaDesigner
+{
     public class RegionResizingEventArgs : EventArgs
     {
         public double Width { get; protected set; }
@@ -12,8 +12,8 @@
 
         public RegionResizingEventArgs(double width, double height)
         {
-            this.Width = width;
-            this.Height = height;
+            Width = width;
+            Height = height;
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿namespace HearthCap.UI.Converters
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Windows.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Windows.Data;
 
+namespace HearthCap.UI.Converters
+{
     public class BooleanConverter<T> : IValueConverter
     {
         public BooleanConverter(T trueValue, T falseValue)

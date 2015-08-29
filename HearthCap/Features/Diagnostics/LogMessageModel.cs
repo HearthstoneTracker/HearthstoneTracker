@@ -1,12 +1,11 @@
+using System;
+using System.Windows;
+using System.Windows.Media;
+using Caliburn.Micro;
+using NLog;
+
 namespace HearthCap.Features.Diagnostics
 {
-    using System;
-    using System.Windows;
-    using System.Windows.Media;
-
-    using Caliburn.Micro;
-    using NLog;
-
     public class LogMessageModel : PropertyChangedBase
     {
         private string _message;
@@ -27,10 +26,7 @@ namespace HearthCap.Features.Diagnostics
 
         public DateTime Date
         {
-            get
-            {
-                return _date;
-            }
+            get { return _date; }
             set
             {
                 if (value.Equals(_date))
@@ -44,10 +40,7 @@ namespace HearthCap.Features.Diagnostics
 
         public string Message
         {
-            get
-            {
-                return _message;
-            }
+            get { return _message; }
             set
             {
                 if (value == _message)
@@ -61,10 +54,7 @@ namespace HearthCap.Features.Diagnostics
 
         public LogLevel Level
         {
-            get
-            {
-                return _level;
-            }
+            get { return _level; }
             set
             {
                 if (value == _level)
@@ -78,10 +68,7 @@ namespace HearthCap.Features.Diagnostics
 
         public object Data
         {
-            get
-            {
-                return _data;
-            }
+            get { return _data; }
             set
             {
                 if (Equals(value, _data))
@@ -104,10 +91,10 @@ namespace HearthCap.Features.Diagnostics
         public bool IsVisible { get; set; }
 
         /// <summary>
-        /// Returns a string that represents the current object.
+        ///     Returns a string that represents the current object.
         /// </summary>
         /// <returns>
-        /// A string that represents the current object.
+        ///     A string that represents the current object.
         /// </returns>
         public override string ToString()
         {

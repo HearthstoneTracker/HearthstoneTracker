@@ -1,32 +1,32 @@
-﻿namespace HearthCap.Shell.Dialogs
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+
+namespace HearthCap.Shell.Dialogs
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    [Export(typeof(IMessageBox)), PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(IMessageBox))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class MessageBoxViewModel : Screen, IMessageBox
     {
-        MessageBoxOptions selection;
+        private MessageBoxOptions selection;
 
         public bool OkVisible
         {
-            get { return this.IsVisible(MessageBoxOptions.Ok); }
+            get { return IsVisible(MessageBoxOptions.Ok); }
         }
 
         public bool CancelVisible
         {
-            get { return this.IsVisible(MessageBoxOptions.Cancel); }
+            get { return IsVisible(MessageBoxOptions.Cancel); }
         }
 
         public bool YesVisible
         {
-            get { return this.IsVisible(MessageBoxOptions.Yes); }
+            get { return IsVisible(MessageBoxOptions.Yes); }
         }
 
         public bool NoVisible
         {
-            get { return this.IsVisible(MessageBoxOptions.No); }
+            get { return IsVisible(MessageBoxOptions.No); }
         }
 
         public string Message { get; set; }
@@ -35,38 +35,38 @@
 
         public void Ok()
         {
-            this.Select(MessageBoxOptions.Ok);
+            Select(MessageBoxOptions.Ok);
         }
 
         public void Cancel()
         {
-            this.Select(MessageBoxOptions.Cancel);
+            Select(MessageBoxOptions.Cancel);
         }
 
         public void Yes()
         {
-            this.Select(MessageBoxOptions.Yes);
+            Select(MessageBoxOptions.Yes);
         }
 
         public void No()
         {
-            this.Select(MessageBoxOptions.No);
+            Select(MessageBoxOptions.No);
         }
 
         public bool WasSelected(MessageBoxOptions option)
         {
-            return (this.selection & option) == option;
+            return (selection & option) == option;
         }
 
         private bool IsVisible(MessageBoxOptions option)
         {
-            return (this.Options & option) == option;
+            return (Options & option) == option;
         }
 
         private void Select(MessageBoxOptions option)
         {
-            this.selection = option;
-            this.TryClose();
+            selection = option;
+            TryClose();
         }
     }
 }

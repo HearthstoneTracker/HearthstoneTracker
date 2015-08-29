@@ -1,17 +1,15 @@
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.GameManager.Events;
+using HearthCap.Features.Games.Models;
+
 namespace HearthCap.Features.TextFiles.Listeners
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Globalization;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.GameManager.Events;
-    using HearthCap.Features.Games.Models;
-
     [Export(typeof(TextFilesEventsListener))]
     public class ArenaEventsListener :
         TextFilesEventsListener,
@@ -30,19 +28,19 @@ namespace HearthCap.Features.TextFiles.Listeners
             this.repository = repository;
             this.events = events;
             events.Subscribe(this);
-            this.Variables.Add(new KeyValuePair<string, string>(carenaWins, "Current arena wins"));
-            this.Variables.Add(new KeyValuePair<string, string>(carenaLosses, "Current arena losses"));
+            Variables.Add(new KeyValuePair<string, string>(carenaWins, "Current arena wins"));
+            Variables.Add(new KeyValuePair<string, string>(carenaLosses, "Current arena losses"));
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public Task Handle(ArenaSessionUpdated message)
         {
             if (message.IsLatest)
             {
-                this.Refresh();
+                Refresh();
                 //return Task.Run(
                 //    () =>
                 //    {
@@ -75,11 +73,11 @@ namespace HearthCap.Features.TextFiles.Listeners
 
         protected internal override string Handle(string currentContent)
         {
-            var latest = this.repository.Query(x => x.OrderByDescending(e => e.StartDate).Take(1).FirstOrDefault());
+            var latest = repository.Query(x => x.OrderByDescending(e => e.StartDate).Take(1).FirstOrDefault());
 
             if (latest != null)
             {
-                return this.Handle(currentContent, latest.ToModel());
+                return Handle(currentContent, latest.ToModel());
             }
 
             return currentContent;

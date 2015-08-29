@@ -22,9 +22,9 @@
                     <CheckBox Name="EnableSlowOpponentMode"
                               IsChecked="{Binding EnableSlowOpponentMode}">
                         <TextBlock>
-                        Popup Hearthstone window on your turn.
+                            Popup Hearthstone window on your turn.
                         </TextBlock>
-                    </CheckBox>                    
+                    </CheckBox>
                 </StackPanel>
             </HeaderedContentControl>
         </StackPanel>

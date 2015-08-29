@@ -1,12 +1,10 @@
-﻿namespace HearthCap.Features.Support
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Shell.Dialogs;
+using HearthCap.Shell.WindowCommands;
+
+namespace HearthCap.Features.Support
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.WindowCommands;
-
     [Export(typeof(IWindowCommand))]
     public class SupportCommandBarViewModel : WindowCommandViewModel
     {
@@ -22,7 +20,7 @@
             IEventAggregator events,
             SupportViewModel supportViewModel)
         {
-            this.Order = 95;
+            Order = 95;
             this.dialogManager = dialogManager;
             this.events = events;
             this.supportViewModel = supportViewModel;

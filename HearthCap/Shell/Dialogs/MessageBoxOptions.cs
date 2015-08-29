@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Shell.Dialogs
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Shell.Dialogs
+{
     [Flags]
     public enum MessageBoxOptions
     {

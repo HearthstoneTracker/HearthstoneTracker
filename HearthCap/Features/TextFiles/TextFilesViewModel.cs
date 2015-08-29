@@ -1,17 +1,15 @@
-﻿namespace HearthCap.Features.TextFiles
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using Caliburn.Micro;
+using HearthCap.Data;
+using HearthCap.Features.Analytics;
+using HearthCap.Shell.Flyouts;
+using Microsoft.Win32;
+using Omu.ValueInjecter;
+
+namespace HearthCap.Features.TextFiles
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.Composition;
-    using System.Threading.Tasks;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Data;
-    using HearthCap.Features.Analytics;
-    using HearthCap.Shell.Flyouts;
-
-    using Omu.ValueInjecter;
-
     [Export(typeof(IFlyout))]
     public class TextFilesViewModel : FlyoutViewModel
     {
@@ -30,27 +28,27 @@
         private KeyValuePair<string, string>? selectedVariable;
 
         [ImportingConstructor]
-        public TextFilesViewModel(IEventAggregator events, 
+        public TextFilesViewModel(IEventAggregator events,
             IRepository<TextFileTemplate> repository,
             TextFilesManager textFilesManager)
         {
-            this.Name = Flyouts.TextFiles;
-            this.Header = this.DisplayName = "Auto generated text files:";
+            Name = Flyouts.TextFiles;
+            Header = DisplayName = "Auto generated text files:";
 
             this.events = events;
             this.repository = repository;
             this.textFilesManager = textFilesManager;
 
             events.Subscribe(this);
-            this.templates = textFilesManager.Templates;
+            templates = textFilesManager.Templates;
             InitializeVariables(textFilesManager.Listeners);
-            this.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == "IsOpen" && IsOpen)
+            PropertyChanged += (sender, args) =>
                 {
-                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
-                }
-            };
+                    if (args.PropertyName == "IsOpen" && IsOpen)
+                    {
+                        Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
+                    }
+                };
         }
 
         private void InitializeVariables(IEnumerable<TextFilesEventsListener> filesEventsListeners)
@@ -63,51 +61,39 @@
 
         public BindableCollection<TextFileModel> Templates
         {
-            get
-            {
-                return this.templates;
-            }
+            get { return templates; }
         }
 
         public TextFileModel SelectedTemplate
         {
-            get
-            {
-                return this.selectedTemplate;
-            }
+            get { return selectedTemplate; }
             set
             {
-                if (Equals(value, this.selectedTemplate))
+                if (Equals(value, selectedTemplate))
                 {
                     return;
                 }
-                this.selectedTemplate = value;
-                this.NotifyOfPropertyChange(() => this.SelectedTemplate);
+                selectedTemplate = value;
+                NotifyOfPropertyChange(() => SelectedTemplate);
             }
         }
 
         public IObservableCollection<KeyValuePair<string, string>> Variables
         {
-            get
-            {
-                return variables;
-            }
+            get { return variables; }
         }
 
         public KeyValuePair<string, string>? SelectedVariable
         {
-            get
-            {
-                return this.selectedVariable;
-            }
+            get { return selectedVariable; }
             set
             {
-                if (value.Equals(this.selectedVariable))
+                if (value.Equals(selectedVariable))
                 {
                     return;
                 }
-                this.selectedVariable = value;
-                this.NotifyOfPropertyChange(() => this.SelectedVariable);
+                selectedVariable = value;
+                NotifyOfPropertyChange(() => SelectedVariable);
             }
         }
 
@@ -125,11 +111,11 @@
             string file;
             if (OpenSaveAsDialog(out file) == true)
             {
-                var model = new TextFileModel()
-                                {
-                                    Filename = file,
-                                    Template = "%carena_wins% - %carena_losses%"
-                                };
+                var model = new TextFileModel
+                    {
+                        Filename = file,
+                        Template = "%carena_wins% - %carena_losses%"
+                    };
                 Templates.Add(model);
                 SelectedTemplate = model;
                 Save();
@@ -138,7 +124,10 @@
 
         public async Task Delete()
         {
-            if (SelectedTemplate == null) return;
+            if (SelectedTemplate == null)
+            {
+                return;
+            }
             await repository.Delete(SelectedTemplate.Id);
             Templates.Remove(SelectedTemplate);
             SelectedTemplate = null;
@@ -146,7 +135,11 @@
 
         public void InsertVariable()
         {
-            if (SelectedTemplate == null || SelectedVariable == null) return;
+            if (SelectedTemplate == null
+                || SelectedVariable == null)
+            {
+                return;
+            }
 
             SelectedTemplate.Template += SelectedVariable.Value.Key;
         }
@@ -161,12 +154,12 @@
 
         private bool? OpenSaveAsDialog(out string file)
         {
-            var dlg = new Microsoft.Win32.SaveFileDialog
-                          {
-                              FileName = "filename", 
-                              DefaultExt = ".txt", 
-                              Filter = "Text documents |*.txt"
-                          };
+            var dlg = new SaveFileDialog
+                {
+                    FileName = "filename",
+                    DefaultExt = ".txt",
+                    Filter = "Text documents |*.txt"
+                };
 
             var result = dlg.ShowDialog();
             file = dlg.FileName;

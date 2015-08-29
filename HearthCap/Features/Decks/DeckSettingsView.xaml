@@ -21,8 +21,8 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='280|Auto'}"></ColumnDefinition>
-            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|280'}"></ColumnDefinition>
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='280|Auto'}" />
+            <ColumnDefinition Width="{Binding Position, Converter={StaticResource positionToValue}, ConverterParameter='Auto|280'}" />
         </Grid.ColumnDefinitions>
         <Grid Margin="8 0 8 0"
               Width="280"
@@ -40,8 +40,8 @@
                 </Grid.RowDefinitions>
                 <Grid Margin="4 0 4 0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <Button Width="32"
@@ -62,20 +62,22 @@
                             </Rectangle>
                         </Button>
                         <Label HorizontalAlignment="Left"
-                               FontSize="16">Edit deck:</Label>
+                               FontSize="16">
+                            Edit deck:
+                        </Label>
                     </Grid>
                     <StackPanel Grid.Row="1"
                                 Grid.IsSharedSizeScope="True">
                         <HeaderedContentControl Header="Name:"
                                                 Tag="{Binding ElementName=DeckName}"
                                                 Style="{StaticResource hccFormStyle}">
-                            <TextBox Name="DeckName"></TextBox>
+                            <TextBox Name="DeckName" />
                         </HeaderedContentControl>
                         <HeaderedContentControl Header="Slot:"
                                                 Tag="{Binding ElementName=Slots}"
                                                 Style="{StaticResource hccFormStyle}">
                             <ComboBox Name="Slots"
-                                      SelectedItem="{Binding DeckSlot}"></ComboBox>
+                                      SelectedItem="{Binding DeckSlot}" />
                         </HeaderedContentControl>
                         <HeaderedContentControl Header="Notes:"
                                                 Tag="{Binding ElementName=DeckNotes}"
@@ -84,7 +86,7 @@
                                      Text="{Binding DeckNotes, UpdateSourceTrigger=PropertyChanged}"
                                      TextWrapping="Wrap"
                                      Height="50"
-                                     AcceptsReturn="True"></TextBox>
+                                     AcceptsReturn="True" />
                         </HeaderedContentControl>
                         <Grid Margin="4 4 4 4">
                             <Grid.RowDefinitions>
@@ -98,21 +100,29 @@
                                     <Button Width="100"
                                             Margin="0 4 0 0"
                                             Visibility="{Binding CanDeleteDeck, Converter={StaticResource booleanToVisibility}}"
-                                            Name="DeleteDeck">Delete</Button>
+                                            Name="DeleteDeck">
+                                        Delete
+                                    </Button>
                                     <Button Width="100"
                                             Margin="0 4 0 0"
                                             Visibility="{Binding SelectedDeck.Deleted, Converter={StaticResource booleanToVisibility}}"
-                                            Name="UndeleteDeck">Undelete</Button>
+                                            Name="UndeleteDeck">
+                                        Undelete
+                                    </Button>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical"
                                             HorizontalAlignment="Right">
                                     <Button Width="100"
                                             HorizontalAlignment="Right"
-                                            Name="UpdateDeck">Save</Button>
+                                            Name="UpdateDeck">
+                                        Save
+                                    </Button>
                                     <Button Width="100"
                                             Margin="0 8 0 0"
                                             HorizontalAlignment="Right"
-                                            Name="SaveAsNewDeck">Save as new</Button>
+                                            Name="SaveAsNewDeck">
+                                        Save as new
+                                    </Button>
                                 </StackPanel>
                             </Grid>
                             <!--<StackPanel Margin="0 8 0 0"
@@ -144,14 +154,20 @@
                             HorizontalAlignment="Center">
                     <Button Visibility="{Binding CanTakeScreenshot, Converter={StaticResource booleanToVisibility}}"
                             Margin="0 0 0 0"
-                            Name="TakeScreenshot">Take screenshot</Button>
+                            Name="TakeScreenshot">
+                        Take screenshot
+                    </Button>
                     <Button Visibility="{Binding CanTakeScreenshot, Converter={StaticResource booleanToVisibilityInverse}}"
                             Margin="0 0 0 0"
-                            Name="CancelTakeScreenshot">Wait.. (Click to cancel)</Button>
+                            Name="CancelTakeScreenshot">
+                        Wait.. (Click to cancel)
+                    </Button>
                     <Button Width="100"
                             Margin="6 0 0 0"
                             Visibility="{Binding DeckScreenshot, Converter={StaticResource nullToCollapsed}}"
-                            Name="SaveScreenshotToDisk">Save to disk</Button>
+                            Name="SaveScreenshotToDisk">
+                        Save to disk
+                    </Button>
                 </StackPanel>
                 <ScrollViewer Grid.Row="1"
                               Visibility="{Binding DeckScreenshot, Converter={StaticResource nullToCollapsed}}"
@@ -188,7 +204,7 @@
                 <ComboBox Name="Servers"
                           ItemsSource="{Binding Servers}"
                           SelectedItem="{Binding SelectedServer}"
-                          DisplayMemberPath="Name"></ComboBox>
+                          DisplayMemberPath="Name" />
             </HeaderedContentControl>
             <!--<ItemsControl Name="AvailableDecks"
                           Grid.Row="3"
@@ -222,9 +238,13 @@
                             HorizontalAlignment="Left"
                             Margin="0 0 0 0">
                     <Button Width="100"
-                            Name="AddDeck">Add new deck</Button>
+                            Name="AddDeck">
+                        Add new deck
+                    </Button>
                     <CheckBox IsChecked="{Binding ShowHiddenDecks}"
-                              Margin="6 0 0 0">Show deleted decks</CheckBox>
+                              Margin="6 0 0 0">
+                        Show deleted decks
+                    </CheckBox>
                 </StackPanel>
             </Grid>
             <ListView Name="Decks"
@@ -243,10 +263,10 @@
                                                         FixedWidth="38"
                                                         Width="38"
                                                         DisplayMemberBinding="{Binding Key}"
-                                                        behaviors:GridViewColumnResize.Width="32"></behaviors:FixedWidthColumn>
+                                                        behaviors:GridViewColumnResize.Width="32" />
                             <GridViewColumn Header="Name"
                                             DisplayMemberBinding="{Binding Name}"
-                                            behaviors:GridViewColumnResize.Width="*"></GridViewColumn>
+                                            behaviors:GridViewColumnResize.Width="*" />
                             <GridViewColumn Header="Del.?"
                                             behaviors:GridViewColumnResize.Width="40">
                                 <GridViewColumn.CellTemplate>

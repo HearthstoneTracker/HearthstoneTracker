@@ -200,6 +200,6 @@
     </Style>
     <Style TargetType="xctk:TimePicker">
         <Setter Property="Foreground"
-                Value="{DynamicResource BlackBrush}"></Setter>
+                Value="{DynamicResource BlackBrush}" />
     </Style>
 </ResourceDictionary>

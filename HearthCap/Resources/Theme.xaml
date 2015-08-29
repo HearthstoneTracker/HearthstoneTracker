@@ -18,15 +18,15 @@
         <ResourceDictionary Source="Buttons.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <BitmapImage x:Key="HearthstoneTrackerLogo1"
-                 UriSource="/Resources/logo1.png"></BitmapImage>
+                 UriSource="/Resources/logo1.png" />
     <BitmapImage x:Key="HearthstoneTrackerLogo2"
-                 UriSource="/Resources/logo2.png"></BitmapImage>
+                 UriSource="/Resources/logo2.png" />
     <BitmapImage x:Key="HearthstoneTrackerLogo3"
-                 UriSource="/Resources/logo3.png"></BitmapImage>
+                 UriSource="/Resources/logo3.png" />
     <BitmapImage x:Key="HearthstoneIcon"
-                 UriSource="hearthstone_icon.png"></BitmapImage>
+                 UriSource="hearthstone_icon.png" />
     <BitmapImage x:Key="PaypalButton"
-                 UriSource="/Resources/btn_donate_SM.gif"></BitmapImage>
+                 UriSource="/Resources/btn_donate_SM.gif" />
     <ControlTemplate x:Key="DataGridTemplate"
                      TargetType="{x:Type DataGrid}">
         <Border BorderBrush="{TemplateBinding BorderBrush}"
@@ -62,7 +62,7 @@
                                     </Binding>
                                 </Button.Visibility>
                             </Button>
-                            <Border Background="{DynamicResource WhiteBrush}" Grid.Row="0" Grid.Column="0"></Border>
+                            <Border Background="{DynamicResource WhiteBrush}" Grid.Row="0" Grid.Column="0" />
                             <DataGridColumnHeadersPresenter x:Name="PART_ColumnHeadersPresenter"
                                                             Grid.Row="0"
                                                             Grid.Column="1">

@@ -27,7 +27,7 @@
                         <Label Target="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
                                HorizontalAlignment="Left"
                                Grid.Column="0"
-                               Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"></Label>
+                               Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}" />
                         <ContentPresenter Grid.Column="1" />
                     </Grid>
                 </ControlTemplate>
@@ -55,7 +55,7 @@
                                HorizontalAlignment="Left"
                                Grid.Column="0"
                                FontWeight="Bold"
-                               Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"></Label>
+                               Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}" />
                         <ContentPresenter Grid.Column="1" />
                     </Grid>
                 </ControlTemplate>
@@ -77,8 +77,8 @@
                 <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10"
@@ -113,8 +113,8 @@
                 <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="10"

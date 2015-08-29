@@ -1,18 +1,15 @@
+using System;
+using System.ComponentModel.Composition;
+using System.Reflection;
+using Caliburn.Micro;
+using HearthCap.Features.Analytics;
+using HearthCap.Properties;
+using HearthCap.Shell.Commands;
+using HearthCap.Shell.Flyouts;
+using MahApps.Metro.Controls;
+
 namespace HearthCap.Features.About
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Reflection;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Features.Analytics;
-    using HearthCap.Properties;
-    using HearthCap.Shell.Commands;
-    using HearthCap.Shell.Flyouts;
-
-    using MahApps.Metro.Controls;
-
     [Export(typeof(IFlyout))]
     public class AboutViewModel : FlyoutViewModel
     {
@@ -22,17 +19,17 @@ namespace HearthCap.Features.About
         public AboutViewModel(IEventAggregator events)
         {
             this.events = events;
-            this.Name = "about";
-            this.Header = "About";
+            Name = "about";
+            Header = "About";
             SetPosition(Position.Left);
             CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
-            this.PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == "IsOpen" && IsOpen)
+            PropertyChanged += (sender, args) =>
                 {
-                    Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
-                }
-            };
+                    if (args.PropertyName == "IsOpen" && IsOpen)
+                    {
+                        Tracker.TrackEventAsync(Tracker.FlyoutsCategory, "Open", Name, 1);
+                    }
+                };
         }
 
         public string AboutText { get; set; }

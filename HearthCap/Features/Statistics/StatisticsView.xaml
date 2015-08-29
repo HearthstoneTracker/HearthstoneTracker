@@ -14,15 +14,15 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Icons.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/FilterStyles.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+                <ResourceDictionary Source="/Resources/FilterStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="4">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0"
                    Orientation="Horizontal"
@@ -33,7 +33,7 @@
                 <Label Target="{Binding ElementName=FilterTypes}">Type:</Label>
                 <ComboBox Name="FilterTypes"
                           DisplayMemberPath="Value"
-                          SelectedItem="{Binding SelectedFilterType}"></ComboBox>
+                          SelectedItem="{Binding SelectedFilterType}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0"
                         Orientation="Vertical">
@@ -44,7 +44,7 @@
                     <ComboBoxItem IsSelected="True"
                                   Style="{StaticResource DateComboBoxItem}"
                                   Content="do not remove1"
-                                  DataContext="{Binding}"></ComboBoxItem>
+                                  DataContext="{Binding}" />
                 </ComboBox>
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
@@ -53,13 +53,13 @@
                           VerticalAlignment="Stretch"
                           DisplayMemberPath="Name"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterServer}"></ComboBox>
+                          SelectedItem="{Binding FilterServer}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=GameModes}">Mode:</Label>
                 <ComboBox ItemsSource="{Binding GameModes}"
                           Background="{DynamicResource WhiteBrush}"
-                          SelectedItem="{Binding FilterGameMode}"></ComboBox>
+                          SelectedItem="{Binding FilterGameMode}" />
             </StackPanel>
             <StackPanel Margin="0 0 8 0">
                 <Label Target="{Binding ElementName=Search}">Search:</Label>
@@ -96,24 +96,24 @@
         </WrapPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="1"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0"
                   Margin="8 4 8 0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Label FontSize="18"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource AccentColorBrush}"
-                       Content="Show statistics:"></Label>
+                       Content="Show statistics:" />
                 <Grid Grid.Row="1"
                       Margin="8 4 0 0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal"
@@ -163,7 +163,7 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"></ContentControl>
+                            VerticalContentAlignment="Stretch" />
         </Grid>
     </Grid>
 </UserControl>

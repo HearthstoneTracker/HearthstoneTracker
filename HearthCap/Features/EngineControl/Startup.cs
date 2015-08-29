@@ -1,15 +1,13 @@
-﻿namespace HearthCap.Features.EngineControl
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Windows;
+using Caliburn.Micro;
+using HearthCap.Core.GameCapture;
+using HearthCap.Shell.Events;
+using HearthCap.StartUp;
+
+namespace HearthCap.Features.EngineControl
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Windows;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Core.GameCapture;
-    using HearthCap.Shell.Events;
-    using HearthCap.StartUp;
-
     [Export(typeof(IStartupTask))]
     public class Startup : IStartupTask,
         IHandle<ShellReady>
@@ -32,11 +30,11 @@
 
         public void Run()
         {
-            this.events.Subscribe(this);
+            events.Subscribe(this);
         }
 
         /// <summary>
-        /// Handles the message.
+        ///     Handles the message.
         /// </summary>
         /// <param name="message">The message.</param>
         public void Handle(ShellReady message)
@@ -45,7 +43,7 @@
             using (var reg = new EngineRegistrySettings())
             {
                 captureEngine.CaptureMethod = reg.CaptureMethod;
-                captureEngine.Speed = (int)reg.Speed;
+                captureEngine.Speed = reg.Speed;
                 autoStart = reg.AutoStart;
             }
 

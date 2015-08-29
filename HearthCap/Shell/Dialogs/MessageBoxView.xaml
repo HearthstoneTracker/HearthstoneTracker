@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              MaxWidth="375">
     <StackPanel>
-        <TextBlock x:Name="Message" 
+        <TextBlock x:Name="Message"
                    TextWrapping="Wrap" />
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"

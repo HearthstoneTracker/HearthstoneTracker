@@ -1,14 +1,11 @@
-﻿namespace HearthCap.Features.About
+﻿using System.ComponentModel.Composition;
+using Caliburn.Micro;
+using HearthCap.Shell.Dialogs;
+using HearthCap.Shell.Flyouts;
+using HearthCap.Shell.WindowCommands;
+
+namespace HearthCap.Features.About
 {
-    using System.ComponentModel.Composition;
-
-    using Caliburn.Micro;
-
-    using HearthCap.Shell.Commands;
-    using HearthCap.Shell.Dialogs;
-    using HearthCap.Shell.Flyouts;
-    using HearthCap.Shell.WindowCommands;
-
     [Export(typeof(IWindowCommand))]
     public class AboutCommandBarViewModel : WindowCommandViewModel
     {

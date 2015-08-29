@@ -1,15 +1,14 @@
+using System;
+using System.Collections.Generic;
+using Caliburn.Micro;
+
 namespace HearthCap.Features.Games
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Caliburn.Micro;
-
     public static class ListExtensions
     {
         public static void Replace<T>(this BindableCollection<T> lst, Func<T, bool> expr, T newItem)
         {
-            for (int i = lst.Count - 1; i >= 0; i--)
+            for (var i = lst.Count - 1; i >= 0; i--)
             {
                 if (expr(lst[i]))
                 {
@@ -30,13 +29,22 @@ namespace HearthCap.Features.Games
 
         public static int FindIndex<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            if (predicate == null)
+            {
+                throw new ArgumentNullException("predicate");
+            }
 
-            int i = 0;
+            var i = 0;
             foreach (var val in source)
             {
-                if (predicate(val)) return i;
+                if (predicate(val))
+                {
+                    return i;
+                }
                 i++;
             }
             return -1;

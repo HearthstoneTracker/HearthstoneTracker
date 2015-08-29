@@ -1,7 +1,7 @@
+using System;
+
 namespace HearthCap.Shell.UserPreferences
 {
-    using System;
-
     public class ApplicationRegistrySettings : RegistrySettings
     {
         public ApplicationRegistrySettings()
@@ -11,26 +11,14 @@ namespace HearthCap.Shell.UserPreferences
 
         public string DefaultServer
         {
-            get
-            {
-                return GetOrCreate("DefaultServer", String.Empty);
-            }
-            set
-            {
-                SetValue("DefaultServer", value);
-            }
+            get { return GetOrCreate("DefaultServer", String.Empty); }
+            set { SetValue("DefaultServer", value); }
         }
 
         public string Servers
         {
-            get
-            {
-                return GetOrCreate("Servers", "EU|NA|Asia|CN");
-            }
-            set
-            {
-                SetValue("Servers", value);
-            }
+            get { return GetOrCreate("Servers", "EU|NA|Asia|CN"); }
+            set { SetValue("Servers", value); }
         }
     }
 }

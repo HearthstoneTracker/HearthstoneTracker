@@ -1,10 +1,8 @@
-﻿namespace HearthCap.Util
+﻿using System;
+using System.Collections.Generic;
+
+namespace HearthCap.Util
 {
-    using System;
-    using System.Collections.Generic;
-
-    using Action = System.Action;
-
     public static class PauseNotify
     {
         private static readonly IDictionary<object, Releaser> Releasers = new Dictionary<object, Releaser>();
@@ -43,13 +41,12 @@
             }
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
             /// </summary>
             public void Dispose()
             {
-                PauseNotify.Releasers.Remove(this.pausedObject);
+                Releasers.Remove(pausedObject);
             }
         }
     }
-
 }

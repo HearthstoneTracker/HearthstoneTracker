@@ -1,9 +1,8 @@
+using System;
+using HearthCap.Shell.UserPreferences;
+
 namespace HearthCap.Features.Statistics
 {
-    using System;
-
-    using HearthCap.Shell.UserPreferences;
-
     public class StatRegistrySettings : RegistrySettings
     {
         public StatRegistrySettings(Type statViewModelType)
@@ -13,111 +12,56 @@ namespace HearthCap.Features.Statistics
 
         public bool ShowWinRatio
         {
-            get
-            {
-                return this.GetOrCreate("ShowWinRatio", true);
-            }
-            set
-            {
-                this.SetValue("ShowWinRatio", value);
-            }
+            get { return GetOrCreate("ShowWinRatio", true); }
+            set { SetValue("ShowWinRatio", value); }
         }
 
         public bool ShowWinRatioCoin
         {
-            get
-            {
-                return this.GetOrCreate("ShowWinRatioCoin", true);
-            }
-            set
-            {
-                this.SetValue("ShowWinRatioCoin", value);
-            }
+            get { return GetOrCreate("ShowWinRatioCoin", true); }
+            set { SetValue("ShowWinRatioCoin", value); }
         }
 
         public bool ShowWinRatioNoCoin
         {
-            get
-            {
-                return this.GetOrCreate("ShowWinRatioNoCoin", true);
-            }
-            set
-            {
-                this.SetValue("ShowWinRatioNoCoin", value);
-            }
+            get { return GetOrCreate("ShowWinRatioNoCoin", true); }
+            set { SetValue("ShowWinRatioNoCoin", value); }
         }
 
         public bool ShowWins
         {
-            get
-            {
-                return this.GetOrCreate("ShowWins", true);
-            }
-            set
-            {
-                this.SetValue("ShowWins", value);
-            }
+            get { return GetOrCreate("ShowWins", true); }
+            set { SetValue("ShowWins", value); }
         }
 
         public bool ShowWinsCoin
         {
-            get
-            {
-                return this.GetOrCreate("ShowWinsCoin", true);
-            }
-            set
-            {
-                this.SetValue("ShowWinsCoin", value);
-            }
+            get { return GetOrCreate("ShowWinsCoin", true); }
+            set { SetValue("ShowWinsCoin", value); }
         }
 
         public bool ShowWinsNoCoin
         {
-            get
-            {
-                return this.GetOrCreate("ShowWinsNoCoin", true);
-            }
-            set
-            {
-                this.SetValue("ShowWinsNoCoin", value);
-            }
+            get { return GetOrCreate("ShowWinsNoCoin", true); }
+            set { SetValue("ShowWinsNoCoin", value); }
         }
 
         public bool ShowTotalGames
         {
-            get
-            {
-                return this.GetOrCreate("ShowTotalGames", true);
-            }
-            set
-            {
-                this.SetValue("ShowTotalGames", value);
-            }
+            get { return GetOrCreate("ShowTotalGames", true); }
+            set { SetValue("ShowTotalGames", value); }
         }
 
         public bool ShowTotalGamesByCoin
         {
-            get
-            {
-                return this.GetOrCreate("ShowTotalGamesByCoin", true);
-            }
-            set
-            {
-                this.SetValue("ShowTotalGamesByCoin", value);
-            }
+            get { return GetOrCreate("ShowTotalGamesByCoin", true); }
+            set { SetValue("ShowTotalGamesByCoin", value); }
         }
 
         public bool ShowPlayedVsRatio
         {
-            get
-            {
-                return this.GetOrCreate("ShowPlayedVsRatio", true);
-            }
-            set
-            {
-                this.SetValue("ShowPlayedVsRatio", value);
-            }
+            get { return GetOrCreate("ShowPlayedVsRatio", true); }
+            set { SetValue("ShowPlayedVsRatio", value); }
         }
-
     }
 }

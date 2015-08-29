@@ -1,8 +1,8 @@
+using HearthCap.Core.GameCapture.HS.Events;
+using HearthCap.Core.GameCapture.Logging;
+
 namespace HearthCap.Features.Diagnostics
 {
-    using HearthCap.Core.GameCapture.HS.Events;
-    using HearthCap.Core.GameCapture.Logging;
-
     public static class LogExtensions
     {
         public static LogMessageModel ToMessageModel(this LogEvent logEvent)

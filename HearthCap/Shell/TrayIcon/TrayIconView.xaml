@@ -60,13 +60,13 @@
                 </MenuItem.Icon>
                 <MenuItem Header="Game-mode/deck change"
                           IsCheckable="True"
-                          IsChecked="{Binding BalloonSettings.GameMode}"></MenuItem>
+                          IsChecked="{Binding BalloonSettings.GameMode}" />
                 <MenuItem Header="Game starts/ends"
                           IsCheckable="True"
-                          IsChecked="{Binding BalloonSettings.GameStartEnd}"></MenuItem>
+                          IsChecked="{Binding BalloonSettings.GameStartEnd}" />
                 <MenuItem Header="Every game turn"
                           IsCheckable="True"
-                          IsChecked="{Binding BalloonSettings.GameTurns}"></MenuItem>
+                          IsChecked="{Binding BalloonSettings.GameTurns}" />
             </MenuItem>
             <MenuItem Header="Show"
                       cal:Message.Attach="[Event Click] = [Action RestoreWindow]">

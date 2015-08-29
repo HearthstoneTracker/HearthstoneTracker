@@ -1,12 +1,14 @@
-﻿namespace HearthCap.Shell.UserPreferences
+﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
+using System.Reflection;
+using System.Threading;
+using System.Windows;
+using Caliburn.Micro;
+using Microsoft.Win32;
+
+namespace HearthCap.Shell.UserPreferences
 {
-    using System;
-    using System.ComponentModel.Composition;
-    using System.Windows;
-    using Caliburn.Micro;
-
-    using Microsoft.Win32;
-
     [Export(typeof(UserPreferences))]
     public sealed class UserPreferences : PropertyChangedBase, IDisposable
     {
@@ -20,7 +22,7 @@
 
         private bool dontSave;
 
-        private System.Threading.Timer timer;
+        private Timer timer;
 
         private readonly object timerLock = new object();
 
@@ -32,103 +34,112 @@
 
         public double WindowTop
         {
-            get { return this.windowTop; }
+            get { return windowTop; }
             set
             {
-                if (value.Equals(this.windowTop)) return;
-                this.windowTop = value;
-                this.NotifyOfPropertyChange(() => this.WindowTop);
+                if (value.Equals(windowTop))
+                {
+                    return;
+                }
+                windowTop = value;
+                NotifyOfPropertyChange(() => WindowTop);
             }
         }
 
         public double WindowLeft
         {
-            get { return this.windowLeft; }
+            get { return windowLeft; }
             set
             {
-                if (value.Equals(this.windowLeft)) return;
-                this.windowLeft = value;
-                this.NotifyOfPropertyChange(() => this.WindowLeft);
+                if (value.Equals(windowLeft))
+                {
+                    return;
+                }
+                windowLeft = value;
+                NotifyOfPropertyChange(() => WindowLeft);
             }
         }
 
         public double WindowHeight
         {
-            get { return this.windowHeight; }
+            get { return windowHeight; }
             set
             {
-                if (value.Equals(this.windowHeight)) return;
-                this.windowHeight = value;
-                this.NotifyOfPropertyChange(() => this.WindowHeight);
+                if (value.Equals(windowHeight))
+                {
+                    return;
+                }
+                windowHeight = value;
+                NotifyOfPropertyChange(() => WindowHeight);
             }
         }
 
         public double WindowWidth
         {
-            get { return this.windowWidth; }
+            get { return windowWidth; }
             set
             {
-                if (value.Equals(this.windowWidth)) return;
-                this.windowWidth = value;
-                this.NotifyOfPropertyChange(() => this.WindowWidth);
+                if (value.Equals(windowWidth))
+                {
+                    return;
+                }
+                windowWidth = value;
+                NotifyOfPropertyChange(() => WindowWidth);
             }
         }
 
         public WindowState WindowState
         {
-            get { return this.windowState; }
+            get { return windowState; }
             set
             {
-                if (value == this.windowState) return;
-                this.windowState = value;
-                this.NotifyOfPropertyChange(() => this.WindowState);
+                if (value == windowState)
+                {
+                    return;
+                }
+                windowState = value;
+                NotifyOfPropertyChange(() => WindowState);
             }
         }
 
         public bool StartMinimized
         {
-            get
-            {
-                return this.startMinimized;
-            }
+            get { return startMinimized; }
             set
             {
-                if (value.Equals(this.startMinimized))
+                if (value.Equals(startMinimized))
                 {
                     return;
                 }
-                this.startMinimized = value;
-                this.NotifyOfPropertyChange(() => this.StartMinimized);
+                startMinimized = value;
+                NotifyOfPropertyChange(() => StartMinimized);
             }
         }
 
         public bool StartOnLogon
         {
-            get
-            {
-                return this.startOnLogon;
-            }
+            get { return startOnLogon; }
             set
             {
-                if (value.Equals(this.startOnLogon))
+                if (value.Equals(startOnLogon))
                 {
                     return;
                 }
-                this.startOnLogon = value;
-                this.NotifyOfPropertyChange(() => this.StartOnLogon);
+                startOnLogon = value;
+                NotifyOfPropertyChange(() => StartOnLogon);
             }
         }
 
         public bool MinimizeToTray
         {
-            get
-            {
-                return this.minimizeToTray;
-            }
+            get { return minimizeToTray; }
             set
             {
-                if (value.Equals(this.minimizeToTray)) return;
-                this.minimizeToTray = value;
+                if (value.Equals(minimizeToTray))
+                {
+                    return;
+                }
+                minimizeToTray = value;
                 NotifyOfPropertyChange(() => MinimizeToTray);
             }
         }
@@ -141,24 +152,24 @@
 
         public void Initialize()
         {
-            this.dontSave = true;
-            this.PropertyChanged += UserPreferences_PropertyChanged;
+            dontSave = true;
+            PropertyChanged += UserPreferences_PropertyChanged;
             SizeToFit();
             MoveIntoView();
-            this.dontSave = false;
+            dontSave = false;
             Save();
         }
 
-        void UserPreferences_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void UserPreferences_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // just catch all as we don't have other properties yet.
-            if (this.timer == null)
+            if (timer == null)
             {
                 lock (timerLock)
                 {
-                    if (this.timer == null)
+                    if (timer == null)
                     {
-                        timer = new System.Threading.Timer(TimerOnElapsed, null, 250, -1);
+                        timer = new Timer(TimerOnElapsed, null, 250, -1);
                     }
                 }
             }
@@ -173,8 +184,8 @@
             Save();
             if (timer != null)
             {
-                this.timer.Dispose();
-                this.timer = null;                
+                timer.Dispose();
+                timer = null;
             }
         }
 
@@ -196,7 +207,7 @@
             var virtualScreenHeight = SystemParameters.VirtualScreenHeight;
             if (WindowTop + WindowHeight / 2 > virtualScreenHeight)
             {
-                WindowTop = virtualScreenHeight - this.windowHeight;
+                WindowTop = virtualScreenHeight - windowHeight;
             }
 
             var virtualScreenWidth = SystemParameters.VirtualScreenWidth;
@@ -222,7 +233,8 @@
             using (var reg = new WindowRegistrySettings())
             {
                 // On first startup
-                if (reg.WindowHeight == 0 || reg.WindowWidth == 0)
+                if (reg.WindowHeight == 0
+                    || reg.WindowWidth == 0)
                 {
                     Save();
                     return;
@@ -243,10 +255,10 @@
                         var startupLocation = section.GetValue("HearthstoneTracker");
                         if (startupLocation != null)
                         {
-                            this.StartOnLogon = true;
+                            StartOnLogon = true;
 
                             // Verify location still correct:
-                            var exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
+                            var exeName = Assembly.GetEntryAssembly().Location;
                             var value = String.Format("\"{0}\" -logon", exeName);
                             if (startupLocation.ToString() != value)
                             {
@@ -260,7 +272,8 @@
 
         public void Save()
         {
-            if (WindowState != WindowState.Minimized && !dontSave)
+            if (WindowState != WindowState.Minimized
+                && !dontSave)
             {
                 using (var reg = new WindowRegistrySettings())
                 {
@@ -282,7 +295,7 @@
                         {
                             if (StartOnLogon)
                             {
-                                var exeName = System.Reflection.Assembly.GetEntryAssembly().Location;
+                                var exeName = Assembly.GetEntryAssembly().Location;
                                 var value = String.Format("\"{0}\" -logon", exeName);
                                 section.SetValue("HearthstoneTracker", value);
                             }
@@ -297,8 +310,9 @@
         }
 
         #endregion //Functions
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {

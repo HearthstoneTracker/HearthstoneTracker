@@ -4,11 +4,6 @@ namespace HearthCap.Features.WebApi.Twitter
     {
         private WebApiProviderDescriptor providerDescriptor;
 
-        public TwitterApiEventsHandler()
-        {
-            
-        }
-
         public void Initialize(WebApiProviderDescriptor providerDescriptor)
         {
             this.providerDescriptor = providerDescriptor;

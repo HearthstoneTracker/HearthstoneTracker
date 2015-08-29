@@ -1,10 +1,10 @@
-﻿namespace HearthCap.Composition
-{
-    using System;
-    using System.ComponentModel.Composition;
-    using System.ComponentModel.Composition.Hosting;
-    using System.Linq;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 
+namespace HearthCap.Composition
+{
     [Export(typeof(IServiceLocator))]
     public class MefServiceLocator : IServiceLocator
     {
@@ -24,7 +24,7 @@
         public object GetInstance(Type type, string key = null)
         {
             var str = String.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(type) : key;
-            var obj = this.compositionContainer.GetExportedValues<object>(str).FirstOrDefault<object>();
+            var obj = compositionContainer.GetExportedValues<object>(str).FirstOrDefault();
             if (obj == null)
             {
                 throw new InvalidOperationException("Could not locate any exported values for '{0}'.");

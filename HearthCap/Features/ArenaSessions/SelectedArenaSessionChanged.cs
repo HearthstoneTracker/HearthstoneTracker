@@ -1,7 +1,7 @@
-﻿namespace HearthCap.Features.ArenaSessions
-{
-    using System;
+﻿using System;
 
+namespace HearthCap.Features.ArenaSessions
+{
     public class SelectedArenaSessionChanged
     {
         public object Source { get; protected set; }
@@ -10,8 +10,8 @@
 
         public SelectedArenaSessionChanged(object source, Guid? id)
         {
-            this.Source = source;
-            this.Id = id;
+            Source = source;
+            Id = id;
         }
     }
 }

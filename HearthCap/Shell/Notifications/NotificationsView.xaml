@@ -39,7 +39,7 @@
                                                                 From="0,0,0,-50"
                                                                 To="0,0,0,0">
                                                 <ThicknessAnimation.EasingFunction>
-                                                    <CubicEase EasingMode="EaseOut"></CubicEase>
+                                                    <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
                                         </Storyboard>
@@ -71,9 +71,7 @@
                 <Style>
                     <Setter Property="Control.Template">
                         <Setter.Value>
-                            <ControlTemplate>
-
-                            </ControlTemplate>
+                            <ControlTemplate />
                         </Setter.Value>
                     </Setter>
                 </Style>
@@ -82,8 +80,7 @@
                 <DataTemplate>
                     <ContentControl cal:View.Model="{Binding}"
                                     cal:View.Context="{Binding Notification.Type}"
-                                    Style="{StaticResource AnimatedStyle}">
-                    </ContentControl>
+                                    Style="{StaticResource AnimatedStyle}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
