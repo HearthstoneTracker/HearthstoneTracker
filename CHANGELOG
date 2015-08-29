@@ -1,0 +1,24 @@
+Legend:
+ + New feature or noticable improvement
+ * Improved functionality
+ - Bug fix or minor improvement
+
+v 1.10 (unreleased)
+ + Support new game modes (mission / tavern brawl)
+ + Compatible hook engine with latest HearthStone version
+ + Add an option to not attach to HearthStone on startup
+ + Can start/stop capture engine from the toolbar
+ * Major performance optimization in the DirectX hook
+ * Startup performance optimizations
+ * Updated some screen capture detection hashes
+ - Hide deck in statusbar when in main menu
+ - Proper popup of game/arena flyouts
+ - Fix deck screenshot capture
+ - Updated 3rd party packages
+ - Make solution build on AppVeyor and deploy on GitHub
+ - Fixed some checkbox click areas
+ - Small code fixes and cleanup
+  
+v 1.9
+  No changelog for version 1.9 and before.
+

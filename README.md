@@ -1,12 +1,15 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/dsn7ujwtsyluqxrw/branch/master?svg=true)](https://ci.appveyor.com/project/hearthstonetracker/hearthstonetracker/branch/master)
-[![Gitter chat](https://badges.gitter.im/HearthstoneTracker/HearthstoneTracker.png)](https://gitter.im/HearthstoneTracker/HearthstoneTracker)
-
 Hearthstone Tracker 
 =========
 
 > Automatically track and generate statistics for all your HearthStone games.
 
+[![Build status](https://img.shields.io/appveyor/ci/hearthstonetracker/hearthstonetracker/master.svg?style=flat-square)](https://ci.appveyor.com/project/hearthstonetracker/hearthstonetracker/branch/master)
+[![Releases](https://img.shields.io/github/release/hearthstonetracker/hearthstonetracker.svg?style=flat-square)](https://github.com/hearthstonetracker/hearthstonetracker/releases/latest)
+[![Issues](https://img.shields.io/github/issues/hearthstonetracker/hearthstonetracker.svg?style=flat-square)](https://github.com/hearthstonetracker/hearthstonetracker/issues)
+[![Twitter](https://img.shields.io/badge/twitter-%40TrackHearth-55acee.svg?style=flat-square)](https://twitter.com/TrackHearth)
+
 More information, screenshots, downloads and news can be found on our main website: [hearthstonetracker.com](http://hearthstonetracker.com)
+
 Features
 ----
 
