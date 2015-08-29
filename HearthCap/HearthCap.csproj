@@ -1058,8 +1058,7 @@
     </ItemGroup>
   </Target>
   <Target Name="BeforeBuild" BeforeTargets="Build">
-    <CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />
-    <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt">
+    <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt" StartDate="January 1, 2014" RevisionType="Automatic">
       <Output TaskParameter="Major" PropertyName="VersionMajor" />
       <Output TaskParameter="Minor" PropertyName="VersionMinor" />
       <Output TaskParameter="Build" PropertyName="VersionBuild" />
@@ -1070,7 +1069,7 @@
     </CreateProperty>
     <AssemblyInfo CodeLanguage="CS" OutputFile="$(MSBuildProjectDirectory)\Properties\CommonAssemblyInfo.cs" AssemblyTitle="HearthstoneTracker" AssemblyDescription="HearthstoneTracker.com" AssemblyConfiguration="" AssemblyCompany="HearthstoneTracker.com" AssemblyProduct="HearthstoneTracker" AssemblyCopyright="Copyright © 2015 - HearthstoneTracker.com" AssemblyTrademark="HearthstoneTracker.com" ComVisible="false" CLSCompliant="false" Guid="51e88eaa-dc6b-4fbb-b6bf-046b04584e69" AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
   </Target>
-  <Target Name="AfterBuild" AfterTargets="Build">
+  <Target Name="AfterBuild" AfterTargets="Build">    
   </Target>
   <Target Name="CreateZipPackage">
     <ItemGroup>
@@ -1108,9 +1107,10 @@
     </ItemGroup>
     <Delete Files="@(ReferenceCopyLocalPathsReal->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Condition="'$(Configuration)' == 'Release' " />
     <CallTarget Targets="CreateZipPackage" Condition="'$(Configuration)' == 'Release' " />
+	<CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />
   </Target>
   <Target Name="IncrementVersion">
-    <Version VersionFile="Version.txt" StartDate="January 1, 2014" BuildType="Increment" RevisionType="Automatic">
+    <Version VersionFile="Version.txt" BuildType="Increment">
       <Output TaskParameter="Major" PropertyName="VersionMajor" />
       <Output TaskParameter="Minor" PropertyName="VersionMinor" />
       <Output TaskParameter="Build" PropertyName="VersionBuild" />
