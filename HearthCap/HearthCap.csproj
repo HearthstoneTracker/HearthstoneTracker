@@ -1066,7 +1066,7 @@
       <Output TaskParameter="Revision" PropertyName="VersionRevision" />
     </Version>
     <CreateProperty Condition="'$(APPVEYOR_BUILD_NUMBER)' != ''" Value="$(APPVEYOR_BUILD_NUMBER)">
-      <Output PropertyName="VersionBuild" TaskParameter="Value" />
+      <Output PropertyName="VersionRevision" TaskParameter="Value" />
     </CreateProperty>
     <AssemblyInfo CodeLanguage="CS" OutputFile="$(MSBuildProjectDirectory)\Properties\CommonAssemblyInfo.cs" AssemblyTitle="HearthstoneTracker" AssemblyDescription="HearthstoneTracker.com" AssemblyConfiguration="" AssemblyCompany="HearthstoneTracker.com" AssemblyProduct="HearthstoneTracker" AssemblyCopyright="Copyright © 2015 - HearthstoneTracker.com" AssemblyTrademark="HearthstoneTracker.com" ComVisible="false" CLSCompliant="false" Guid="51e88eaa-dc6b-4fbb-b6bf-046b04584e69" AssemblyVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
   </Target>
