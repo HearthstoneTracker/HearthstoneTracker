@@ -1,10 +1,10 @@
-version: v1.10.6.{build}
+version: v1.10.6.{build}-pre
 pull_requests:
   do_not_increment_build_number: true
 branches:
   only:
   - master
-  - release
+  - /release\/.*/
 os: Visual Studio 2015
 configuration: Release
 environment:
