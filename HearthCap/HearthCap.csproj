@@ -1043,7 +1043,7 @@
   <PropertyGroup>
     <ToolsVersion Condition="'$(ToolsVersion)' == ''">12.0</ToolsVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(ToolsVersion)</VSToolsPath>
-	<GitHubUrl>https://github.com/HearthstoneTracker/HearthstoneTracker/releases/download/v</GitHubUrl>
+	<GitHubUrl>https://github.com/HearthstoneTracker/HearthstoneTracker/releases/download/</GitHubUrl>
   </PropertyGroup>
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(ToolsVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="AfterCompile" Condition="exists('App.$(Configuration).config')">
@@ -1083,10 +1083,10 @@
     </FormatVersion>
 	-->
     <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" ZipLevel="9" />
-    <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild)" />
-    <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild)" />
-	<XmlUpdate XPath="item/updater" XmlFileName="update.xml" Value="$(GitHubUrl)$(VersionMajor).$(VersionMinor).$(VersionBuild)/HearthCap.Updater.exe" />
-    <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="$(GitHubUrl)$(VersionMajor).$(VersionMinor).$(VersionBuild)/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" />
+    <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
+    <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
+	<XmlUpdate XPath="item/updater" XmlFileName="update.xml" Value="$(GitHubUrl)v$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)/HearthCap.Updater.exe" />
+    <XmlUpdate XPath="item/file" XmlFileName="update.xml" Value="$(GitHubUrl)v$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)/HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)-$(Configuration).zip" />
     <Copy SourceFiles="update.xml" DestinationFolder="$(SolutionDir)\package\" />
     <Copy SourceFiles="$(TargetDir)\HearthCap.Updater.exe" DestinationFolder="$(SolutionDir)\package\" />
   </Target>
@@ -1107,7 +1107,7 @@
     </ItemGroup>
     <Delete Files="@(ReferenceCopyLocalPathsReal->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" Condition="'$(Configuration)' == 'Release' " />
     <CallTarget Targets="CreateZipPackage" Condition="'$(Configuration)' == 'Release' " />
-	<CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />
+	<!--<CallTarget Targets="IncrementVersion" Condition="'$(Configuration)' == 'Release' " />-->
   </Target>
   <Target Name="IncrementVersion">
     <Version VersionFile="Version.txt" BuildType="Increment">

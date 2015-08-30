@@ -1,14 +1,10 @@
-version: 1.10.6.{build}
+version: v1.10.6.{build}
 pull_requests:
   do_not_increment_build_number: true
 branches:
   only:
   - master
-  - release/1.10
-  - release/1.11
-  - release/1.12
-  - release/1.13
-  - release/2.0
+  - release
 os: Visual Studio 2015
 configuration: Release
 environment:
