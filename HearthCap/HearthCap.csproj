@@ -1082,7 +1082,7 @@
       <Output PropertyName="TheApplicationVersion" TaskParameter="OutputVersion" />
     </FormatVersion>
 	-->
-    <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild)-$(Configuration).zip" ZipLevel="9" />
+    <Zip Files="@(ZipFiles)" WorkingDirectory="$(TargetDir)" ZipFileName="$(SolutionDir)\package\packages\HearthstoneTracker-$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)-$(Configuration).zip" ZipLevel="9" />
     <XmlUpdate XPath="item/title" XmlFileName="update.xml" Value="Version $(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
     <XmlUpdate XPath="item/version" XmlFileName="update.xml" Value="$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)" />
 	<XmlUpdate XPath="item/updater" XmlFileName="update.xml" Value="$(GitHubUrl)v$(VersionMajor).$(VersionMinor).$(VersionBuild).$(VersionRevision)/HearthCap.Updater.exe" />

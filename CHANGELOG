@@ -5,7 +5,14 @@ Legend:
 
 v 1.11 (unreleased)
  
-v 1.10 
+
+v 1.10.17
+ - fix the zip filename
+ 
+v 1.10.16
+ - fix the auto update url
+ 
+v 1.10.15
  + Support new game modes (mission / tavern brawl)
  + Compatible hook engine with latest HearthStone version
  + Add an option to not attach to HearthStone on startup
