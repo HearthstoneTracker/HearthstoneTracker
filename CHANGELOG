@@ -3,7 +3,9 @@ Legend:
  * Improved functionality
  - Bug fix or minor improvement
 
-v 1.10 (unreleased)
+v 1.11 (unreleased)
+ 
+v 1.10 
  + Support new game modes (mission / tavern brawl)
  + Compatible hook engine with latest HearthStone version
  + Add an option to not attach to HearthStone on startup
