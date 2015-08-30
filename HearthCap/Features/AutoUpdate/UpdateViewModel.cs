@@ -39,8 +39,8 @@ namespace HearthCap.Features.AutoUpdate
 
         private Version _currentVersion;
 
-        private readonly string _updateBaseUrl = "http://hearthstonetracker.com/install";
-        private readonly string _updateXmlUrl = "http://hearthstonetracker.com/install/update.xml";
+        private readonly string _updateBaseUrl = "http://hearthstonetracker.com/install/latest/package";
+        private readonly string _updateXmlUrl = "http://hearthstonetracker.com/install/latest/package/update.xml";
 
         private string _error;
 
