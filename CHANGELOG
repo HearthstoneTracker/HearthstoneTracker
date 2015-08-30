@@ -3,6 +3,9 @@ Legend:
  * Improved functionality
  - Bug fix or minor improvement
 
+v 1.10.16
+ - fix the auto update url
+ 
 v 1.10.15
  + Support new game modes (mission / tavern brawl)
  + Compatible hook engine with latest HearthStone version
