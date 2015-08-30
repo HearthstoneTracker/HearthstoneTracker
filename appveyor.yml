@@ -1,0 +1,57 @@
+version: 1.10.6.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+  - release/1.10
+  - release/1.11
+  - release/1.12
+  - release/1.13
+  - release/2.0
+os: Visual Studio 2015
+configuration: Release
+environment:
+  VisualStudioVersion: 14.0
+cache:
+- packages -> **\packages.config
+- c:\buildtools
+build:
+  project: Build.proj
+  verbosity: minimal
+after_build:
+- ps: >-
+    function Expand-ZIPFile($file, $destination)
+    {
+      $shell = new-object -com shell.application
+      $zip = $shell.NameSpace($file)
+      foreach($item in $zip.items())
+      {
+        $shell.Namespace($destination).copyhere($item)
+      }
+    }
+
+    $toolspath = "c:\buildtools"
+    $nsispath = "$toolspath\nsis-3.0b2"
+    $makensis = "$nsispath\makensis.exe"
+
+    If((Test-Path -Path $makensis) -eq $false)
+    {
+    	New-Item -ItemType Directory -Force -Path $toolspath
+    	$output = "$toolspath\nsis-3.0b2.zip"
+    	$url = "http://freefr.dl.sourceforge.net/project/nsis/NSIS%203%20Pre-release/3.0b2/nsis-3.0b2.zip"
+    	Invoke-WebRequest -Uri $url -OutFile $output
+    	Expand-ZIPFile -File $output -Destination $toolspath
+    }
+
+    &$makensis "$env:APPVEYOR_BUILD_FOLDER\installer\HearthstoneTracker.nsi"
+test: off
+artifacts:
+- path: package/packages/*
+  name: Release
+- path: package/update.xml
+  name: updatexml
+- path: package/HearthCap.Updater.exe
+  name: updater
+- path: package/**/*.*
+  name: All
