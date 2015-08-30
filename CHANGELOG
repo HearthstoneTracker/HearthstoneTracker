@@ -3,6 +3,9 @@ Legend:
  * Improved functionality
  - Bug fix or minor improvement
 
+v 1.10.17
+ - fix the zip filename
+ 
 v 1.10.16
  - fix the auto update url
  
