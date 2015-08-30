@@ -22,6 +22,7 @@ build:
 after_build:
 - ps: >-
     function Expand-ZIPFile($file, $destination)
+
     {
       $shell = new-object -com shell.application
       $zip = $shell.NameSpace($file)
@@ -31,11 +32,16 @@ after_build:
       }
     }
 
+
     $toolspath = "c:\buildtools"
+
     $nsispath = "$toolspath\nsis-3.0b2"
+
     $makensis = "$nsispath\makensis.exe"
 
+
     If((Test-Path -Path $makensis) -eq $false)
+
     {
     	New-Item -ItemType Directory -Force -Path $toolspath
     	$output = "$toolspath\nsis-3.0b2.zip"
@@ -43,6 +49,7 @@ after_build:
     	Invoke-WebRequest -Uri $url -OutFile $output
     	Expand-ZIPFile -File $output -Destination $toolspath
     }
+
 
     &$makensis "$env:APPVEYOR_BUILD_FOLDER\installer\HearthstoneTracker.nsi"
 test: off
