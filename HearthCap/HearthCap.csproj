@@ -1058,7 +1058,7 @@
     </ItemGroup>
   </Target>
   <Target Name="BeforeBuild" BeforeTargets="Build">
-    <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt" StartDate="January 1, 2014" RevisionType="Automatic">
+    <Version VersionFile="$(MSBuildProjectDirectory)\Version.txt">
       <Output TaskParameter="Major" PropertyName="VersionMajor" />
       <Output TaskParameter="Minor" PropertyName="VersionMinor" />
       <Output TaskParameter="Build" PropertyName="VersionBuild" />
